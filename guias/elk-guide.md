@@ -1,122 +1,141 @@
 # 🧠 Centralización de Logs con ELK Stack
 
-> *Guía práctica para implementar una solución de centralización de logs usando Docker Compose y el stack ELK, como componente clave de la observabilidad en arquitecturas de microservicios.*
+> *Guía práctica para implementar una solución básica de centralización de logs usando Docker Compose y el stack ELK, como instanciación concreta de la arquitectura conceptual de observabilidad presentada en el documento central.*
 
 ---
 
-## 🌟 Objetivo
+## 🌟 Objetivo de la guía
 
-Implementar una arquitectura básica de centralización de logs utilizando Docker Compose con los siguientes componentes:
-
-- **Logstash**: Recolector y procesador de logs.
-- **Elasticsearch**: Motor de almacenamiento y búsqueda.
-- **Kibana**: Herramienta de visualización.
-
-Esta guía está orientada a entornos de desarrollo, donde la **observabilidad** es esencial para depurar, entender y monitorear sistemas distribuidos.
+Implementar y validar una arquitectura básica de centralización de logs mediante Docker Compose y el stack ELK, como ejercicio aplicado de los conceptos de observabilidad estudiados previamente.
 
 ---
 
-## 🧩 1. Observabilidad y logs
+## 🎯 Resultados de aprendizaje esperados
 
-En sistemas modernos basados en microservicios, la observabilidad permite comprender el comportamiento interno del sistema a través de señales externas: **logs**, **métricas** y **trazas**. Dentro de estos pilares, los logs centralizados permiten:
+Al finalizar esta guía, el estudiante será capaz de:
 
-- Realizar diagnósticos rápidos.
-- Correlacionar eventos entre servicios.
-- Detectar errores y comportamientos inesperados.
-- Apoyar auditoría y análisis post-mortem.
+- Identificar los componentes de una arquitectura de centralización de logs.
+- Relacionar conceptos teóricos de observabilidad con una implementación práctica.
+- Configurar aplicaciones para emitir logs estructurados.
+- Analizar y correlacionar eventos centralizados.
+- Reconocer desafíos y limitaciones de una solución básica de logging.
 
-El stack ELK es una de las soluciones más populares y extendidas para implementar esta funcionalidad.
+---
+
+## 🧭 Propósito y alcance del recurso
+
+El propósito principal de este recurso es guiar el diseño, despliegue y uso de una **arquitectura básica de centralización de logs** utilizando contenedores Docker y el stack ELK (Elasticsearch, Logstash y Kibana).
+
+El material está concebido como:
+
+- Un **recurso educativo aplicado**, orientado a cursos de arquitectura de software, microservicios, DevOps y observabilidad.
+- Un **entorno de laboratorio reproducible**, que permite experimentar con flujos reales de generación, centralización y análisis de logs.
+- Un **caso de estudio técnico**, que ilustra la integración entre aplicaciones Java (Quarkus y Logback) y una plataforma de observabilidad.
+
+El alcance del recurso se limita a la **centralización y visualización de logs**. No se abordan en profundidad otros pilares de la observabilidad, como métricas o trazas distribuidas, aunque se dejan sentadas las bases conceptuales para su integración futura.
+
+Aunque la implementación se apoya en el stack ELK, los principios abordados son **transferibles a otros ecosistemas de observabilidad**.
+
+---
+
+## 🧩 1. Observabilidad y centralización de logs
+
+En arquitecturas basadas en microservicios, la observabilidad permite comprender el comportamiento interno del sistema a partir de señales externas. Los **logs** constituyen una fuente primaria de información debido a su riqueza semántica y contextual.
+
+La **centralización de logs** mitiga la dispersión inherente a los sistemas distribuidos, consolidando los registros generados por múltiples componentes en un repositorio común que facilita su análisis, correlación temporal y visualización.
 
 ---
 
 ## ⚙️ 2. Requisitos previos
 
-✅ Docker instalado ([Guía de instalación](https://docs.docker.com/engine/install/))  
-✅ Docker Compose ([Guía](https://docs.docker.com/compose/install/))  
-✅ 4 GB de RAM (mínimo para ejecución fluida de Elasticsearch)
+- Docker instalado  
+  https://docs.docker.com/engine/install/
+- Docker Compose  
+  https://docs.docker.com/compose/install/
+- Al menos **4 GB de RAM** disponibles
 
 ---
 
 ## 📂 3. Estructura del proyecto
 
-Organiza tu proyecto con la siguiente estructura de archivos:
-
 ```
 logs-centralizados/
 ├── docker-compose.yml
-├── logs.producer/                 # Aplicación que genera logs
+├── logs.producer/
 │   ├── src/
 │   └── pom.xml
 ├── logstash/
 │   └── pipelines/
-│       └── ecs.conf               # Configuración de Logstash
-└── .env                           # Opcional, para variables de entorno
+│       └── ecs.conf
+└── .env
 ```
-
-📌 *Consejo:* Si trabajas en grupo, sube este proyecto a un repositorio GitHub para facilitar colaboración y revisión.
 
 ---
 
-## 📊 4. Diagrama de arquitectura
+## 📊 4. Arquitectura de la solución
 
 ```
 [Aplicaciones Java/Quarkus] --- (TCP JSON) ---> [Logstash] ---> [Elasticsearch] ---> [Kibana]
-                                               └────────── stdout
 ```
 
-Este flujo representa cómo los eventos de log generados por las aplicaciones son enviados a Logstash, procesados y almacenados en Elasticsearch. Luego pueden ser visualizados en Kibana.
+La arquitectura implementada en este recurso se fundamenta en tres componentes principales:
+
+- **Logstash**: encargado de la ingestión, procesamiento y transformación de logs generados por las aplicaciones.
+- **Elasticsearch**: motor de almacenamiento e indexación distribuida, que permite la búsqueda eficiente de eventos.
+- **Kibana**: capa de visualización y exploración de los datos centralizados.
+
+El uso de **Docker Compose** permite describir y desplegar la arquitectura como código, garantizando la **portabilidad, reproducibilidad y facilidad de experimentación** del entorno, características fundamentales en un contexto formativo.
 
 ---
 
-## 🛠️ 5. Configuración de Contenedores
+## 🛠️ 5. Implementación de la arquitectura conceptual con ELK
 
-### a. `docker-compose.yml`
+### 5.1 docker-compose.yml
+
 ```yaml
 services:
   elasticsearch:
     image: docker.io/elasticsearch:8.18.0
-    container_name: elasticsearch # Opcional
+    container_name: elasticsearch
     environment:
       - discovery.type=single-node
-      - xpack.security.enabled=false # Desactiva autenticación para desarrollo
+      - xpack.security.enabled=false
       - cluster.routing.allocation.disk.threshold_enabled=false
       - ES_JAVA_OPTS=-Xms512m -Xmx512m
     volumes:
-      - es_data:/usr/share/elasticsearch/data # Opcional en cuando se realizan pruebas de configuración
+      - es_data:/usr/share/elasticsearch/data
     ports:
       - "9200:9200"
       - "9300:9300"
-    
+
   kibana:
     image: docker.io/kibana:8.18.0
-    container_name: kibana # Opcional
+    container_name: kibana
     depends_on:
       - elasticsearch
     ports:
       - "5601:5601"
     environment:
-      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200 # Opcional, el valor por defecto de ELASTICSEARCH_HOSTS es http://elasticsearch:9200
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
 
   logstash:
     image: docker.io/logstash:8.18.0
-    container_name: logstash # Opcional
+    container_name: logstash
     volumes:
-      - source: ./logstash/pipelines
-        target: /usr/share/logstash/pipeline
-        type: bind
+      - ./logstash/pipelines:/usr/share/logstash/pipeline
     ports:
       - "4560:4560"
-    environment:
-       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200 # Opcional, el valor por defecto de ELASTICSEARCH_HOSTS es http://elasticsearch:9200
     depends_on:
       - elasticsearch
-
 
 volumes:
   es_data:
 ```
 
-### b. Configuración de logstash (`logstash/pipelines/ecs.conf`)
+---
+
+### 5.2 Pipeline de Logstash (`ecs.conf`)
+
 ```text
 input {
   tcp {
@@ -130,14 +149,14 @@ filter {
     mutate { rename => { "[mdc][spanId]" => "[span][id]" } }
   }
   if ![trace][id] and [mdc][traceId] {
-    mutate { rename => {"[mdc][traceId]" => "[trace][id]"} }
+    mutate { rename => { "[mdc][traceId]" => "[trace][id]" } }
   }
 }
 
 output {
   stdout {}
   elasticsearch {
-    hosts => [${ELASTICSEARCH_HOSTS:http://elasticsearch:9200}]
+    hosts => ["http://elasticsearch:9200"]
   }
 }
 ```
@@ -146,33 +165,40 @@ output {
 
 ## ▶️ 6. Despliegue y validación
 
-### Paso 1: Iniciar los servicios
+### Inicialización de los servicios
+
+El despliegue del entorno se realiza mediante un único comando, el cual levanta de forma coordinada todos los componentes definidos en el archivo `docker-compose.yml`.
+
 ```bash
 docker-compose up -d
 ```
 
-### Paso 2: Verificar contenedores
+---
+
+### Validación de los servicios
+
+La validación del entorno permite comprobar que los contenedores asociados a Elasticsearch, Logstash y Kibana se encuentran en ejecución y disponibles.
+
 ```bash
 docker-compose ps
-```
-Salida esperada:
-```
-NAME                STATUS              PORTS
-elasticsearch       Up                  9200/tcp, 9300/tcp
-kibana              Up                  5601/tcp
-logstash            Up                  4560/tcp  
 ```
 
 ---
 
-## 6. Configuración de Aplicaciones
+### Persistencia y configuración del entorno
 
-Cree una aplicación java que envíe sus logs a **logstash**
+Se emplean **volúmenes Docker** para garantizar la persistencia de los datos almacenados en **Elasticsearch**, incluso ante reinicios del entorno.
 
-### a. Para aplicaciones Quarkus
-En el caso de aplicaciones quarkus deberá adicionar:
+---
 
-- Crear su aplicación 
+## 🔌 7. Emisión de logs desde aplicaciones
+
+### 7.1 Aplicaciones Quarkus
+
+El recurso contempla un ejemplo de integración con aplicaciones desarrolladas en **Quarkus**, utilizando **logging estructurado en formato JSON** y el estándar **ECS (Elastic Common Schema)**.  
+Esta aproximación favorece la **normalización semántica de los eventos**, facilitando su procesamiento, correlación y análisis posterior dentro de la plataforma de centralización de logs.
+
+- En caso de no tener una aplicación puede crear con el siguiente comando.
 
 ```shell
 mvn io.quarkus.platform:quarkus-maven-plugin:3.19.1:create \
@@ -182,143 +208,109 @@ mvn io.quarkus.platform:quarkus-maven-plugin:3.19.1:create \
     -DnoCode
 ```
 
-- Adicionar la siguiente dependencia en el archivo **`logs.producer/pom.xml`**.
+- Adicionar la siguiente dependencia a su proyecto.
 
 ```xml
 <dependency>
-   <groupId>io.quarkus</groupId>
-   <artifactId>quarkus-logging-json</artifactId>
+  <groupId>io.quarkus</groupId>
+  <artifactId>quarkus-logging-json</artifactId>
 </dependency>
 ```
 
-- Configure la aplicación en el **`logs.producer/src/main/resources/application.properties`** para que los logs sean enviados a logstash
+- Configure su aplicación para que los logs sean enviados a logstash. (**`application.properties`**)
 
 ```properties
-# to keep the logs in the usual format in the console
 quarkus.log.console.json=false
-
 quarkus.log.socket.enable=true
 quarkus.log.socket.json=true
-# El valor de quarkus.log.socket.endpoint indica la url para el envío de logs 
 quarkus.log.socket.endpoint=localhost:4560
-
-# to have the exception serialized into a single text element
 quarkus.log.socket.json.exception-output-type=formatted
-
-# specify the format of the produced JSON log
 quarkus.log.socket.json.log-format=ECS
 ```
 
-- Para el registro de logs en su aplicación haga uso de la clase **`org.jboss.logging.Logger`** que puede ser inicializada o inyectada.
+**Uso del logger:**
 
 ```java
 private static final Logger LOG = Logger.getLogger(MiClase.class);
 ```
 
-o
+---
 
-```java
-@Inject
-private final Logger log;
-```
+### 7.2 Otras aplicaciones Java (Logback)
 
-o
+Para otras aplicaciones Java que no utilizan Quarkus, el recurso presenta un ejemplo basado en **Logback**, empleando un *encoder* compatible con Logstash para la generación de logs estructurados en formato JSON.
 
-```java
-private final Logger log;
-
-@Inject
-public MiClase(Logger log) {
-   this.log = log;
-}
-```
-
-o
-
-```java
-private final Logger log;
-
-public MiClase(Logger log) {
-   this.log = log;
-}
-```
-
-> ℹ️ En quarkus es posible omitir la anotación **`@Inject`**
-
-### b. Para otras aplicaciones java
-Se puede hacer uso de librerías como Logback para el envío de los logs.
+Este enfoque permite ilustrar cómo aplicaciones Java tradicionales pueden integrarse a una arquitectura de centralización de logs, aun cuando no provean soporte nativo para estándares como ECS, resaltando la importancia de la estructuración y consistencia de los eventos generados.
 
 ```xml
 <dependency>
-   <groupId>ch.qos.logback</groupId>
-   <artifactId>logback-classic</artifactId>
-   <version>1.5.18</version>
-   <scope>compile</scope>
+  <groupId>ch.qos.logback</groupId>
+  <artifactId>logback-classic</artifactId>
+  <version>1.5.18</version>
 </dependency>
 <dependency>
-   <groupId>net.logstash.logback</groupId>
-   <artifactId>logstash-logback-encoder</artifactId>
-   <version>8.1</version>
+  <groupId>net.logstash.logback</groupId>
+  <artifactId>logstash-logback-encoder</artifactId>
+  <version>8.1</version>
 </dependency>
 ```
 
 Configura `logback.xml` para enviar logs a Logstash:
+
 ```xml
-<configuration>
-   <appender name="logstash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-      <destination>localhost:4560</destination>
-   
-      <!-- Configuración del encoder para JSON -->
-      <encoder class="net.logstash.logback.encoder.LogstashEncoder">
-         <customFields>{"appname":"tu-aplicacion","environment":"dev"}</customFields>
-         <includeContext>true</includeContext>
-         <timeZone>UTC</timeZone>
-      </encoder>
-   </appender>
-   
-   <root level="INFO">
-      <appender-ref ref="logstash" />
-   </root>
-</configuration>
+<appender name="logstash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+  <destination>localhost:4560</destination>
+  <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+    <customFields>{"appname":"demo","environment":"dev"}</customFields>
+  </encoder>
+</appender>
+
+<root level="INFO">
+  <appender-ref ref="logstash" />
+</root>
 ```
 
 ---
 
-## 8. Visualización en Kibana
-1. Accede a Kibana:
-   ```bash
-   http://localhost:5601
-   ```  
-2. Ingrese a **Observability > Logs > Logs Explorer**:
+## 📊 8. Visualización en Kibana
+
+Una vez centralizados, los logs pueden ser explorados mediante Kibana, permitiendo:
+
+- Búsqueda textual y estructurada.
+- Filtros temporales.
+- Identificación de patrones y anomalías.
+
+Estas capacidades resultan especialmente relevantes en contextos educativos para ilustrar procesos de diagnóstico y análisis de fallos.
+
+Accede a:
+
+```
+http://localhost:5601
+```
+
+
+Ruta sugerida:
+
+**Observability → Logs → Logs Explorer**
 
 ---
 
-## 📚 9. Desafíos y buenas prácticas
+## 🧪 9. Actividades de profundización
 
-### a. Desafíos guiados
-
-- ✍️ Configura alertas en Kibana para eventos críticos
-- 🔄 Simula caídas de servicio y rastrea su causa por logs
-- 🔄 Compara ECS con un esquema personalizado
-- Cambia la configuración del stack para implementar **Elasticsearch en cluster** (múltiples nodos).
-- Añade autenticación con X-Pack.
-
-### b. Buenas prácticas
-
-- Usar logs estructurados
-- Separar entornos (dev, test, prod)
-- Configurar niveles de log (INFO, WARN, ERROR)
-
+- Simular fallos y rastrear su origen mediante logs.
+- Comparar ECS con esquemas personalizados.
+- Analizar múltiples productores de logs.
+- Identificar limitaciones de envío TCP sin autenticación.
 
 ---
 
-## **Referencias**
-- [Logstash](https://www.elastic.co/docs/reference/logstash)
-- [Elasticsearch](https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html)
-- [Kibana](https://www.elastic.co/docs/deploy-manage/deploy/self-managed/install-kibana-with-docker)
-- [KQL - Kibana Query Language](https://www.elastic.co/guide/en/kibana/current/kuery-query.html)
-- [Elastic Common Schema (ECS)](https://www.elastic.co/guide/en/ecs/current/ecs-reference.html)
+## 📚 Referencias
+
+- Logstash – https://www.elastic.co/docs/reference/logstash
+- Elasticsearch – https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html
+- Kibana – https://www.elastic.co/docs/deploy-manage/deploy/self-managed/install-kibana-with-docker
+- Elastic Common Schema – https://www.elastic.co/guide/en/ecs/current/ecs-reference.html
 
 ---
 
-ℹ️ *Este recurso forma parte de una estrategia de fortalecimiento de la observabilidad en la asignatura "Arquitectura Orientada a Microservicios".*
+ℹ️ *Esta guía complementa el marco teórico de observabilidad y centralización de logs desarrollado en el documento central.*
