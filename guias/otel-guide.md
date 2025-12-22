@@ -89,19 +89,16 @@ mvn io.quarkus.platform:quarkus-maven-plugin:3.19.1:create \
 ```xml
 <dependency>
    <groupId>io.quarkus</groupId>
-   <artifactId>quarkus-logging-json</artifactId>
+   <artifactId>quarkus-opentelemetry</artifactId>
 </dependency>
 ```
 
 - Configure la aplicación en el **`logs.producer/src/main/resources/application.properties`** para que los logs sean enviados a logstash
 
 ```properties
-quarkus.log.console.json=false
-quarkus.log.syslog.enable=true
-quarkus.log.syslog.endpoint=localhost:5140
-quarkus.log.syslog.protocol=udp
-quarkus.log.syslog.app-name=logs.producer
-quarkus.log.syslog.hostname=${HOSTNAME}
+quarkus.application.name=myservice
+quarkus.otel.logs.enabled=true
+quarkus.otel.exporter.otlp.logs.endpoint=http://localhost:4317
 ```
 
 - Para el registro de logs en su aplicación haga uso de la clase **`org.jboss.logging.Logger`** que puede ser inicializada o inyectada.
