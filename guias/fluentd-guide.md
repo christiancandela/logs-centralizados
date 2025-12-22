@@ -1,123 +1,184 @@
-# **Centralización de Logs - ELK Stack**
+# 🧠 Centralización de Logs con Fluentd
+
+> *Guía práctica para implementar una solución básica de centralización de logs utilizando Docker Compose y Fluentd, como instanciación concreta de la arquitectura conceptual de observabilidad presentada en el documento central.*
 
 ---
 
-## **Objetivo**
-Configurar una arquitectura centralizada de logs usando **Docker Compose** con los siguientes componentes:
-- **fluentd** (Colector/Agregador de logs)
-- **Elasticsearch** (Almacenamiento y búsqueda)
-- **Kibana** (Visualización)
+## 🌟 Objetivo de la guía
 
+Implementar y validar una arquitectura básica de centralización de logs mediante Docker Compose y Fluentd, como ejercicio aplicado de los conceptos de observabilidad estudiados previamente.
 
 ---
 
-## **1. Requisitos Previos**
-✅ Docker instalado ([Guía de instalación](https://docs.docker.com/engine/install/))  
-✅ Docker Compose ([Guía](https://docs.docker.com/compose/install/))  
-✅ 4 GB de RAM mínimo (recomendado para Elasticsearch)
+## 🎯 Resultados de aprendizaje esperados
+
+Al finalizar esta guía, el estudiante será capaz de:
+
+- Identificar los componentes de una arquitectura de centralización de logs.
+- Relacionar conceptos teóricos de observabilidad con una implementación práctica.
+- Configurar aplicaciones para emitir logs hacia Fluentd.
+- Analizar y correlacionar eventos centralizados.
+- Reconocer desafíos y limitaciones de una solución básica de logging.
 
 ---
 
-## **2. Estructura del Proyecto**
-Crea la siguiente estructura de archivos:
+## 🧭 Propósito y alcance del recurso
+
+El propósito principal de este recurso es guiar el diseño, despliegue y uso de una **arquitectura básica de centralización de logs** utilizando Fluentd, Elasticsearch y Kibana.
+
+El material está concebido como:
+
+- Un **recurso educativo aplicado**, orientado a cursos de arquitectura de software, microservicios, DevOps y observabilidad.
+- Un **entorno de laboratorio reproducible**, que permite experimentar con flujos reales de generación, centralización y análisis de logs.
+- Un **caso de estudio técnico**, que ilustra la integración entre aplicaciones Java y una plataforma de observabilidad.
+
+El alcance del recurso se limita a la **centralización y visualización de logs**. No se abordan métricas ni trazas distribuidas, aunque se dejan sentadas las bases conceptuales para su integración futura.
+
+---
+
+## 🧩 1. Observabilidad y centralización de logs
+
+En arquitecturas basadas en microservicios, la observabilidad permite comprender el comportamiento interno del sistema a partir de las señales externas que este produce durante su ejecución. Los **logs** constituyen una fuente primaria de información debido a su riqueza semántica y contextual.
+
+La **centralización de logs** mitiga la dispersión inherente a los sistemas distribuidos, consolidando los registros generados por múltiples componentes en un repositorio común que facilita su análisis, correlación temporal y visualización.
+
+---
+
+## ⚙️ 2. Requisitos previos
+
+- Docker instalado  
+  https://docs.docker.com/engine/install/
+- Docker Compose  
+  https://docs.docker.com/compose/install/
+- Al menos **4 GB de RAM** disponibles
+
+---
+
+## 📂 3. Estructura del proyecto
+
 ```bash
 logs-centralizados/
 ├── docker-compose.yml
-├── logs.producer
+├── logs.producer/
 │   ├── src/
 │   └── pom.xml
 ├── fluentd/
 │   ├── Dockerfile
 │   └── conf/
 │       └── fluentd.conf
-└── .env (opcional, para variables)
+└── .env
 ```
 
 ---
 
-## **3. Configuración de Contenedores**
+## 📊 4. Arquitectura de la solución
 
-### **a. `docker-compose.yml`**
+```text
+[Aplicaciones Java / Quarkus]
+        |
+        | (Syslog / UDP)
+        v
+     [Fluentd]
+        |
+        v
+ [Elasticsearch] ---> [Kibana]
+```
+
+La arquitectura implementada en este recurso se fundamenta en tres componentes principales:
+
+- **Fluentd**: actúa como componente de **recolección y procesamiento**, desacoplando la generación de eventos de su almacenamiento y análisis posterior.
+- **Elasticsearch**: motor de almacenamiento e indexación distribuida, que permite la búsqueda eficiente de eventos.
+- **Kibana**: capa de visualización y exploración de los datos centralizados.
+
+El uso de **Docker Compose** permite describir y desplegar la arquitectura como código, garantizando la **portabilidad, reproducibilidad y facilidad de experimentación** del entorno, características fundamentales en un contexto formativo.
+
+---
+
+## 🛠️ 5. Implementación de la arquitectura conceptual con Fluentd
+
+### 5.1 docker-compose.yml
+
 ```yaml
 services:
   elasticsearch:
     image: docker.io/elasticsearch:8.18.0
-    container_name: elasticsearch # Opcional
+    container_name: elasticsearch
     environment:
       - discovery.type=single-node
-      - xpack.security.enabled=false # Desactiva autenticación para desarrollo
+      - xpack.security.enabled=false
       - cluster.routing.allocation.disk.threshold_enabled=false
       - ES_JAVA_OPTS=-Xms512m -Xmx512m
-    volumes:
-      - es_data:/usr/share/elasticsearch/data # Opcional en cuando se realizan pruebas de configuración
     ports:
       - "9200:9200"
       - "9300:9300"
-    
+
   kibana:
     image: docker.io/kibana:8.18.0
-    container_name: kibana # Opcional
+    container_name: kibana
     depends_on:
       - elasticsearch
     ports:
       - "5601:5601"
     environment:
-      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200 # Opcional, el valor por defecto de ELASTICSEARCH_HOSTS es http://elasticsearch:9200
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
 
   fluentd:
-     build: ./fluentd
-     container_name: fluentd # Opcional
-     volumes:
-        - ./fluentd/conf:/fluentd/etc
-     ports:
-        - "24224:24224"
-        - "5140:5140/udp"
-     depends_on:
-        - elasticsearch
-
+    build: ./fluentd
+    container_name: fluentd
+    volumes:
+      - ./fluentd/conf:/fluentd/etc
+    ports:
+      - "24224:24224"
+      - "5140:5140/udp"
+    depends_on:
+      - elasticsearch
 
 volumes:
   es_data:
 ```
 
-### **b. Configuración de fluentd (`fluentd/conf/fluentd.conf`)**
+---
+
+### 5.2 Configuración de Fluentd (`fluentd.conf`)
+
 ```xml
 <source>
-   @type syslog
-   port 5140
-   bind 0.0.0.0
-   message_format rfc5424
-   tag app.logs
+  @type syslog
+  port 5140
+  bind 0.0.0.0
+  message_format rfc5424
+  tag app.logs
 </source>
 
-# (Opcional) Filtro para enriquecer los logs
 <filter app.logs.**>
   @type record_transformer
   enable_ruby true
   remove_keys ident
-   <record>
-   service.name ${record.has_key?('ident') ? record['ident'] : 'app-unknow'}
-   data_stream.type logs
-   data_stream {"namespace" : "default", "type" : "logs", "dataset" : "generic"}
-   </record>
+  <record>
+    service.name ${record.has_key?('ident') ? record['ident'] : 'app-unknow'}
+    data_stream.type logs
+    data_stream {"namespace" : "default", "type" : "logs", "dataset" : "generic"}
+  </record>
 </filter>
 
-# Envío a Elasticsearch (con buffer para evitar pérdidas)
 <match app.logs.**>
   @type elasticsearch
   host elasticsearch
   port 9200
   logstash_format true
   logstash_prefix logs
-   <buffer>
-      @type file
-      path /var/log/fluentd/buffers/quarkus
-      flush_interval 5s
-   </buffer>
+  <buffer>
+    @type file
+    path /var/log/fluentd/buffers/quarkus
+    flush_interval 5s
+  </buffer>
 </match>
 ```
 
-### **c. Dockerfile de fluentd (`fluentd/Dockerfile`)**
+---
+
+### 5.3 Dockerfile de Fluentd
+
 ```dockerfile
 FROM fluent/fluentd:v1.18.0-debian
 RUN gem install fluent-plugin-elasticsearch
@@ -125,35 +186,41 @@ RUN gem install fluent-plugin-elasticsearch
 
 ---
 
-## **4. Despliegue**
+## ▶️ 6. Despliegue y validación
 
-### **Paso 1: Iniciar los servicios**
+### Inicialización de los servicios
+
+El despliegue del entorno se realiza mediante un único comando, el cual levanta de forma coordinada todos los componentes definidos en el archivo `docker-compose.yml`.
+
 ```bash
 docker-compose up -d
 ```
 
-### **Paso 2: Verificar contenedores**
+### Validación de los servicios
+
+La validación del entorno permite comprobar que los contenedores asociados a Elasticsearch, Fluentd y Kibana se encuentran en ejecución y disponibles.
+
 ```bash
 docker-compose ps
-```
-Salida esperada:
-```
-NAME                STATUS              PORTS
-elasticsearch       Up                  9200/tcp, 9300/tcp
-kibana              Up                  5601/tcp
-fluentd             Up                  5140/udp  
 ```
 
 ---
 
-## **5. Configuración de Aplicaciones**
+### Persistencia y configuración del entorno
 
-Cree una aplicación java que envíe sus logs a **fluentd**
+Se emplean **volúmenes Docker** para garantizar la persistencia de los datos almacenados en **Elasticsearch**, incluso ante reinicios del entorno.
 
-### **a. Para aplicaciones Quarkus**
-En el caso de aplicaciones quarkus deberá adicionar:
+---
 
-- Crear su aplicación 
+
+## 🔌 7. Emisión de logs desde aplicaciones
+
+### 7.1 Aplicaciones Quarkus
+
+El recurso contempla un ejemplo de integración con aplicaciones desarrolladas en **Quarkus**, utilizando **logging estructurado en formato JSON**.  
+Esta aproximación favorece la **normalización semántica de los eventos**, facilitando su procesamiento, correlación y análisis posterior dentro de la plataforma de centralización de logs.
+
+- En caso de no tener una aplicación puede crear con el siguiente comando.
 
 ```shell
 mvn io.quarkus.platform:quarkus-maven-plugin:3.19.1:create \
@@ -163,16 +230,16 @@ mvn io.quarkus.platform:quarkus-maven-plugin:3.19.1:create \
     -DnoCode
 ```
 
-- Adicionar la siguiente dependencia en el archivo **`logs.producer/pom.xml`**.
+- Adicionar la siguiente dependencia a su proyecto.
 
 ```xml
 <dependency>
-   <groupId>io.quarkus</groupId>
-   <artifactId>quarkus-logging-json</artifactId>
+  <groupId>io.quarkus</groupId>
+  <artifactId>quarkus-logging-json</artifactId>
 </dependency>
 ```
 
-- Configure la aplicación en el **`logs.producer/src/main/resources/application.properties`** para que los logs sean enviados a logstash
+- Configure su aplicación para que los logs sean enviados a fluentd. (**`application.properties`**)
 
 ```properties
 quarkus.log.console.json=false
@@ -183,44 +250,17 @@ quarkus.log.syslog.app-name=logs.producer
 quarkus.log.syslog.hostname=${HOSTNAME}
 ```
 
-- Para el registro de logs en su aplicación haga uso de la clase **`org.jboss.logging.Logger`** que puede ser inicializada o inyectada.
+**Uso del logger:**
 
 ```java
 private static final Logger LOG = Logger.getLogger(MiClase.class);
 ```
 
-o
+### 7.2 Otras aplicaciones Java (Logback)
 
-```java
-@Inject
-private final Logger log;
-```
+Para otras aplicaciones Java que no utilizan Quarkus, el recurso presenta un ejemplo basado en **Fluentd**, empleando un *encoder* compatible con Fluentd para la generación de logs estructurados en formato JSON.
 
-o
-
-```java
-private final Logger log;
-
-@Inject
-public MiClase(Logger log) {
-   this.log = log;
-}
-```
-
-o
-
-```java
-private final Logger log;
-
-public MiClase(Logger log) {
-   this.log = log;
-}
-```
-
-> ℹ️ En quarkus es posible omitir la anotación **`@Inject`**
-
-### **b. Para otras aplicaciones java**
-Se puede hacer uso de librerías como Logback para el envío de los logs.
+Este enfoque permite ilustrar cómo aplicaciones Java tradicionales pueden integrarse a una arquitectura de centralización de logs, resaltando la importancia de la estructuración y consistencia de los eventos generados.
 
 ```xml
 <dependency>
@@ -232,52 +272,61 @@ Se puede hacer uso de librerías como Logback para el envío de los logs.
 ```
 
 Configura `logback.xml` para enviar logs a Logstash:
+
 ```xml
-<appender name="FLUENTD" class="ch.qos.logback.classic.net.SyslogAppender">
-  <remoteHost>fluentd</remoteHost>
-  <port>5140</port>
-  <suffixPattern>%logger{36} - %msg</suffixPattern>
-  <protocol>UDP</protocol> 
-</appender>
-<root level="INFO">
-<appender-ref ref="FLUENTD" />
-</root>
+<configuration>
+  <appender name="FLUENTD" class="ch.qos.logback.classic.net.SyslogAppender">
+    <remoteHost>fluentd</remoteHost>
+    <port>5140</port>
+    <suffixPattern>%logger{36} - %msg</suffixPattern>
+    <protocol>UDP</protocol> 
+  </appender>
+  <root level="INFO">
+    <appender-ref ref="FLUENTD" />
+  </root>
+</configuration>
 ```
 
 ---
 
-## **6. Visualización en Kibana**
-1. Accede a Kibana:
-   ```bash
-   http://localhost:5601
-   ```  
-2. Ingrese a **Observability > Logs > Logs Explorer**:
+## 📊 8. Visualización en Kibana
+
+Una vez centralizados, los logs pueden ser explorados mediante Kibana, permitiendo:
+
+- Búsqueda textual y estructurada.
+- Filtros temporales.
+- Identificación de patrones y anomalías.
+
+Estas capacidades resultan especialmente relevantes en contextos educativos para ilustrar procesos de diagnóstico y análisis de fallos.
+
+Accede a:
+
+```
+http://localhost:5601
+```
+
+Ruta sugerida:
+
+**Observability → Logs → Logs Explorer**
 
 ---
 
-## **7. Escalabilidad**
-### **Para entornos productivos:**
-- Usa **Elasticsearch en cluster** (múltiples nodos).
-- Añade autenticación con X-Pack.
+## 🧪 9. Actividades de profundización
+
+- Comparar Fluentd y Logstash como componentes de procesamiento.
+- Modificar filtros para enriquecer eventos.
+- Simular múltiples productores de logs.
+- Analizar implicaciones del uso de UDP.
 
 ---
 
-## **8. Comandos Útiles**
-| Comando                     | Descripción                          |
-|-----------------------------|--------------------------------------|
-| `docker-compose logs -f`    | Ver logs en tiempo real              |
-| `docker-compose down -v`    | Detener y eliminar volúmenes         |
-| `curl http://localhost:9200`| Verificar Elasticsearch              |
+## 📚 Referencias
+
+- Fluentd - https://docs.fluentd.org
+- Fluentd (plugins) - https://www.fluentd.org/plugins
+- Elasticsearch – https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html
+- Kibana – https://www.elastic.co/docs/deploy-manage/deploy/self-managed/install-kibana-with-docker
 
 ---
 
-## **Referencias**
-- [Fluentd Plugins](https://www.fluentd.org/plugins)
-- [Fluentd Documentation](https://docs.fluentd.org)
-- [Fluentd Guides](https://www.fluentd.org/guides)
-- [Elasticsearch](https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html)
-- [Kibana](https://www.elastic.co/docs/deploy-manage/deploy/self-managed/install-kibana-with-docker)
-- [Kibana Query Language (KQL)](https://www.elastic.co/guide/en/kibana/current/kuery-query.html)
-
----
-
+ℹ️ *Esta guía complementa el marco teórico de observabilidad y centralización de logs desarrollado en el documento central.*
