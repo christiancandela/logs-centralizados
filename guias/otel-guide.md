@@ -191,7 +191,7 @@ Configura `logback.xml` para enviar logs a Logstash:
 ---
 
 ## **6. Visualización en Grafana**
-1. Accede a Kibana:
+1. Accede a Grafana:
    ```bash
    http://localhost:3000
    ```  
