@@ -316,6 +316,7 @@ Ruta sugerida:
 
 ## 🧪 9. Actividades de profundización
 
+- Simular fallos y rastrear su origen mediante logs.
 - Comparar Fluentd y Logstash como componentes de procesamiento.
 - Modificar filtros para enriquecer eventos.
 - Simular múltiples productores de logs.
