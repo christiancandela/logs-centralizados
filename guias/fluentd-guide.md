@@ -130,6 +130,9 @@ services:
     ports:
       - "24224:24224"
       - "5140:5140/udp"
+    environment:
+       - ELASTICSEARCH_HOST=elasticsearch
+       - ELASTICSEARCH_PORT=9200 
     depends_on:
       - elasticsearch
 
@@ -163,8 +166,8 @@ volumes:
 
 <match app.logs.**>
   @type elasticsearch
-  host elasticsearch
-  port 9200
+  host "#{ENV['ELASTICSEARCH_HOST'] || 'elasticsearch'}"
+  port "#{ENV['ELASTICSEARCH_PORT'] || 9200}"
   logstash_format true
   logstash_prefix logs
   <buffer>
