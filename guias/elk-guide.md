@@ -58,7 +58,7 @@ La **centralización de logs** mitiga la dispersión inherente a los sistemas di
 
 ## 📂 3. Estructura del proyecto
 
-```
+```bash
 logs-centralizados/
 ├── docker-compose.yml
 ├── logs.producer/
@@ -125,6 +125,8 @@ services:
       - ./logstash/pipelines:/usr/share/logstash/pipeline
     ports:
       - "4560:4560"
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
     depends_on:
       - elasticsearch
 
@@ -156,7 +158,7 @@ filter {
 output {
   stdout {}
   elasticsearch {
-    hosts => ["http://elasticsearch:9200"]
+    hosts => [${ELASTICSEARCH_HOSTS:http://elasticsearch:9200}]
   }
 }
 ```
@@ -258,16 +260,20 @@ Este enfoque permite ilustrar cómo aplicaciones Java tradicionales pueden integ
 Configura `logback.xml` para enviar logs a Logstash:
 
 ```xml
-<appender name="logstash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-  <destination>localhost:4560</destination>
-  <encoder class="net.logstash.logback.encoder.LogstashEncoder">
-    <customFields>{"appname":"demo","environment":"dev"}</customFields>
-  </encoder>
-</appender>
+<configuration>
+  <appender name="logstash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+    <destination>localhost:4560</destination>
+    <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+      <customFields>{"appname":"tu-aplicacion","environment":"dev"}</customFields>
+      <includeContext>true</includeContext>
+      <timeZone>UTC</timeZone>
+    </encoder>
+  </appender>
 
-<root level="INFO">
-  <appender-ref ref="logstash" />
-</root>
+  <root level="INFO">
+    <appender-ref ref="logstash" />
+  </root>
+</configuration>
 ```
 
 ---
