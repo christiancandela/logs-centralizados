@@ -1,95 +1,154 @@
-# **Centralización de Logs - OLO Stack**
+# 🧠 Centralización de Logs con OLO Stack (OpenSearch + Logstash)
+
+> *Guía práctica para implementar una solución básica de centralización de logs utilizando Docker Compose y el stack OLO, como instanciación concreta de la arquitectura conceptual de observabilidad presentada en el documento central.*
 
 ---
 
-## **Objetivo**
-Configurar una arquitectura centralizada de logs usando **Docker Compose** con los siguientes componentes:
-- **logstash** (Colector/Agregador de logs)
-- **Opensearch** (Almacenamiento y búsqueda)
-- **Opensearch Dashboards** (Visualización)
+## 🌟 Objetivo de la guía
 
+Implementar y validar una arquitectura básica de centralización de logs mediante Docker Compose y el stack **OLO (OpenSearch, Logstash y OpenSearch Dashboards)**, como ejercicio aplicado de los conceptos de observabilidad estudiados previamente.
 
 ---
 
-## **1. Requisitos Previos**
-✅ Docker instalado ([Guía de instalación](https://docs.docker.com/engine/install/))  
-✅ Docker Compose ([Guía](https://docs.docker.com/compose/install/))  
-✅ 4 GB de RAM mínimo (recomendado para Elasticsearch)
+## 🎯 Resultados de aprendizaje esperados
+
+Al finalizar esta guía, el estudiante será capaz de:
+
+- Identificar los componentes de una arquitectura de centralización de logs.
+- Relacionar conceptos teóricos de observabilidad con una implementación práctica.
+- Configurar aplicaciones para emitir logs estructurados.
+- Analizar y correlacionar eventos centralizados.
+- Reconocer desafíos y limitaciones de una solución básica de logging.
 
 ---
 
-## **2. Estructura del Proyecto**
-Crea la siguiente estructura de archivos:
+## 🧭 Propósito y alcance del recurso
+
+El propósito principal de este recurso es guiar el diseño, despliegue y uso de una **arquitectura básica de centralización de logs** utilizando OpenSearch, Logstash y OpenSearch Dashboards.
+
+El material está concebido como:
+
+- Un **recurso educativo aplicado**, orientado a cursos de arquitectura de software, microservicios, DevOps y observabilidad.
+- Un **entorno de laboratorio reproducible**, que permite experimentar con flujos reales de generación, centralización y análisis de logs.
+- Un **caso de estudio técnico**, que ilustra la integración entre aplicaciones Java (Quarkus y Logback) y una plataforma de observabilidad.
+
+El alcance del recurso se limita a la **centralización y visualización de logs**. No se abordan métricas ni trazas distribuidas, aunque se dejan sentadas las bases conceptuales para su integración futura.
+
+---
+
+## 🧩 1. Observabilidad y centralización de logs
+
+En arquitecturas basadas en microservicios, la observabilidad permite comprender el comportamiento interno del sistema a partir de las señales externas que este produce durante su ejecución. Los **logs** constituyen una fuente primaria de información debido a su riqueza semántica y contextual.
+
+La **centralización de logs** mitiga la dispersión inherente a los sistemas distribuidos, consolidando los registros generados por múltiples componentes en un repositorio común que facilita su análisis, correlación temporal y visualización.
+
+---
+
+## ⚙️ 2. Requisitos previos
+
+- Docker instalado  
+  https://docs.docker.com/engine/install/
+- Docker Compose  
+  https://docs.docker.com/compose/install/
+- Al menos **4 GB de RAM** disponibles
+
+---
+
+## 📂 3. Estructura del proyecto
+
 ```bash
 logs-centralizados/
 ├── docker-compose.yml
-├── logs.producer
+├── logs.producer/
 │   ├── src/
 │   └── pom.xml
 ├── logstash/
+│   ├── Dockerfile
 │   └── pipelines/
 │       └── logstash.conf
-└── .env (opcional, para variables)
+└── .env
 ```
 
 ---
 
-## **3. Configuración de Contenedores**
+## 📊 4. Arquitectura de la solución
 
-### **a. `docker-compose.yml`**
+```text
+[Aplicaciones Java / Quarkus]
+        |
+        | (TCP JSON)
+        v
+     [Logstash]
+        |
+        v
+   [OpenSearch] ---> [OpenSearch Dashboards]
+```
+
+La arquitectura implementada en este recurso se fundamenta en tres componentes principales:
+
+- **Logstash**: encargado de la ingestión, procesamiento y transformación de logs generados por las aplicaciones.
+- **OpenSearch**: motor de almacenamiento e indexación distribuida, que permite la búsqueda eficiente de eventos.
+- **OpenSearch Dashboards**: capa de visualización y exploración de los datos centralizados.
+
+El uso de **Docker Compose** permite describir y desplegar la arquitectura como código, garantizando la **portabilidad, reproducibilidad y facilidad de experimentación** del entorno, características fundamentales en un contexto formativo.
+
+---
+
+## 🛠️ 5. Implementación de la arquitectura conceptual con OLO
+
+### 5.1 docker-compose.yml
+
 ```yaml
 services:
-   opensearch:
-      image: opensearchproject/opensearch:3
-      container_name: opensearch
-      environment:
-         - discovery.type=single-node
-         - DISABLE_SECURITY_PLUGIN=true
-         - bootstrap.memory_lock=true
-         - OPENSEARCH_JAVA_OPTS=-Xms1g -Xmx1g
-      ulimits:
-         memlock:
-            soft: -1
-            hard: -1
-      volumes:
-         - opensearch_data:/usr/share/opensearch/data
-      ports:
-         - "9200:9200"
+  opensearch:
+    image: opensearchproject/opensearch:3
+    container_name: opensearch
+    environment:
+      - discovery.type=single-node
+      - DISABLE_SECURITY_PLUGIN=true
+      - bootstrap.memory_lock=true
+      - OPENSEARCH_JAVA_OPTS=-Xms1g -Xmx1g
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - opensearch_data:/usr/share/opensearch/data
+    ports:
+      - "9200:9200"
 
-   dashboards:
-      image: opensearchproject/opensearch-dashboards:3
-      container_name: dashboards
-      environment:
-         - OPENSEARCH_HOSTS=http://opensearch:9200
-         - DISABLE_SECURITY_DASHBOARDS_PLUGIN=true
-      ports:
-         - "5601:5601"
-      depends_on:
-         - opensearch
+  dashboards:
+    image: opensearchproject/opensearch-dashboards:3
+    container_name: dashboards
+    depends_on:
+      - opensearch
+    ports:
+      - "5601:5601"
+    environment:
+      - OPENSEARCH_HOSTS=http://opensearch:9200
+      - DISABLE_SECURITY_DASHBOARDS_PLUGIN=true
 
-   logstash:
-      build: logstash
-      container_name: logstash
-      volumes:
-         - ./logstash/pipelines:/usr/share/logstash/pipeline
-      ports:
-         - "4560:4560"
-      depends_on:
-         - opensearch
-      environment:
-         - xpack.monitoring.enabled=false
+  logstash:
+    build: ./logstash
+    container_name: logstash
+    volumes:
+      - ./logstash/pipelines:/usr/share/logstash/pipeline
+    ports:
+      - "4560:4560"
+    environment:
+      - xpack.monitoring.enabled=false
+      - OPENSEARCH_HOSTS=http://opensearch:9200
+    depends_on:
+      - opensearch
 
 volumes:
-   opensearch_data:
+  opensearch_data:
 ```
 
-### **b. Dockerfile de logstash (`logstash/Dockerfile`)**
-```Dockerfile
-FROM docker.io/logstash:8.18.0
-RUN logstash-plugin install logstash-output-opensearch
-```
+---
 
-### **c. Configuración de logstash (`logstash/pipelines/logstash.conf`)**
+### 5.2 Pipeline de Logstash (`logstash.conf`)
+
 ```text
 input {
   tcp {
@@ -103,14 +162,14 @@ filter {
     mutate { rename => { "[mdc][spanId]" => "[span][id]" } }
   }
   if ![trace][id] and [mdc][traceId] {
-    mutate { rename => {"[mdc][traceId]" => "[trace][id]"} }
+    mutate { rename => { "[mdc][traceId]" => "[trace][id]" } }
   }
 }
 
 output {
   stdout {}
   opensearch {
-    hosts => ["http://opensearch:9200"]
+    hosts => [${OPENSEARCH_HOSTS:http://opensearch:9200}]
     index => "logstash-%{+YYYY.MM.dd}"
   }
 }
@@ -118,28 +177,42 @@ output {
 
 ---
 
-## **4. Despliegue**
+### 5.3 Dockerfile de Logstash
 
-### **Paso 1: Iniciar los servicios**
+```dockerfile
+FROM docker.io/logstash:8.18.0
+RUN logstash-plugin install logstash-output-opensearch
+```
+
+---
+
+## ▶️ 6. Despliegue y validación
+
+### Inicialización de los servicios
+
+El despliegue del entorno se realiza mediante un único comando, el cual levanta de forma coordinada todos los componentes definidos en el archivo `docker-compose.yml`.
+
 ```bash
 docker-compose up -d
 ```
 
-### **Paso 2: Verificar contenedores**
+---
+
+### Validación de los servicios
+
+La validación del entorno permite comprobar que los contenedores asociados a OpenSearch, Logstash y OpenSearch Dashboards se encuentran en ejecución y disponibles.
+
 ```bash
 docker-compose ps
 ```
-Salida esperada:
-```
-NAME                STATUS              PORTS
-elasticsearch       Up                  9200/tcp, 9300/tcp
-kibana              Up                  5601/tcp
-logstash            Up                  4560/tcp  
-```
 
-### **Paso 3: Crear index-pattern en el dashboard**
+---
 
-El siguiente comando pretende crear un index-pattern en el Dashboard con el fin de poder visualizar los logs generados por logstash.
+### Persistencia y configuración del entorno
+
+Se emplean **volúmenes Docker** para garantizar la persistencia de los datos almacenados en **OpenSearch**, incluso ante reinicios del entorno.
+
+Opensearch-dashboards requiere una configuración adicional para facilitar la visualización de logs. El siguiente comando pretende crear un index-pattern en el Dashboard con el fin de poder visualizar los logs generados por logstash.
 
 ```shell
 curl -XPOST "http://localhost:5601/api/saved_objects/index-pattern" \
@@ -155,14 +228,14 @@ curl -XPOST "http://localhost:5601/api/saved_objects/index-pattern" \
 
 ---
 
-## **5. Configuración de Aplicaciones**
+## 🔌 7. Emisión de logs desde aplicaciones
 
-Cree una aplicación java que envíe sus logs a **logstash**
+### 7.1 Aplicaciones Quarkus
 
-### **a. Para aplicaciones Quarkus**
-En el caso de aplicaciones quarkus deberá adicionar:
+El recurso contempla un ejemplo de integración con aplicaciones desarrolladas en **Quarkus**, utilizando **logging estructurado en formato JSON** y el estándar **ECS (Elastic Common Schema)**.  
+Esta aproximación favorece la **normalización semántica de los eventos**, facilitando su procesamiento, correlación y análisis posterior dentro de la plataforma de centralización de logs.
 
-- Crear su aplicación 
+- En caso de no tener una aplicación puede crear con el siguiente comando.
 
 ```shell
 mvn io.quarkus.platform:quarkus-maven-plugin:3.19.1:create \
@@ -172,139 +245,109 @@ mvn io.quarkus.platform:quarkus-maven-plugin:3.19.1:create \
     -DnoCode
 ```
 
-- Adicionar la siguiente dependencia en el archivo **`logs.producer/pom.xml`**.
+- Adicionar la siguiente dependencia a su proyecto.
 
 ```xml
 <dependency>
-   <groupId>io.quarkus</groupId>
-   <artifactId>quarkus-logging-json</artifactId>
+  <groupId>io.quarkus</groupId>
+  <artifactId>quarkus-logging-json</artifactId>
 </dependency>
 ```
 
-- Configure la aplicación en el **`logs.producer/src/main/resources/application.properties`** para que los logs sean enviados a logstash
+- Configure su aplicación para que los logs sean enviados a Logstash. (**`application.properties`**)
 
 ```properties
-# to keep the logs in the usual format in the console
 quarkus.log.console.json=false
-
 quarkus.log.socket.enable=true
 quarkus.log.socket.json=true
-# El valor de quarkus.log.socket.endpoint indica la url para el envío de logs 
 quarkus.log.socket.endpoint=localhost:4560
-
-# to have the exception serialized into a single text element
 quarkus.log.socket.json.exception-output-type=formatted
-
-# specify the format of the produced JSON log
 quarkus.log.socket.json.log-format=ECS
 ```
 
-- Para el registro de logs en su aplicación haga uso de la clase **`org.jboss.logging.Logger`** que puede ser inicializada o inyectada.
+**Uso del logger:**
 
 ```java
 private static final Logger LOG = Logger.getLogger(MiClase.class);
 ```
 
-o
+---
 
-```java
-@Inject
-private final Logger log;
-```
+### 7.2 Otras aplicaciones Java (Logback)
 
-o
-
-```java
-private final Logger log;
-
-@Inject
-public MiClase(Logger log) {
-   this.log = log;
-}
-```
-
-o
-
-```java
-private final Logger log;
-
-public MiClase(Logger log) {
-   this.log = log;
-}
-```
-
-> ℹ️ En quarkus es posible omitir la anotación **`@Inject`**
-
-### **b. Para otras aplicaciones java**
-Se puede hacer uso de librerías como Logback para el envío de los logs.
+Para otras aplicaciones Java que no utilizan Quarkus, el recurso presenta un ejemplo basado en **Logback**, empleando un *encoder* compatible con Logstash para la generación de logs estructurados en formato JSON.
 
 ```xml
 <dependency>
-   <groupId>ch.qos.logback</groupId>
-   <artifactId>logback-classic</artifactId>
-   <version>1.5.18</version>
-   <scope>compile</scope>
+  <groupId>ch.qos.logback</groupId>
+  <artifactId>logback-classic</artifactId>
+  <version>1.5.18</version>
 </dependency>
 <dependency>
-   <groupId>net.logstash.logback</groupId>
-   <artifactId>logstash-logback-encoder</artifactId>
-   <version>8.1</version>
+  <groupId>net.logstash.logback</groupId>
+  <artifactId>logstash-logback-encoder</artifactId>
+  <version>8.1</version>
 </dependency>
 ```
 
 Configura `logback.xml` para enviar logs a Logstash:
+
 ```xml
 <configuration>
-   <appender name="logstash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-      <destination>localhost:4560</destination>
-   
-      <!-- Configuración del encoder para JSON -->
-      <encoder class="net.logstash.logback.encoder.LogstashEncoder">
-         <customFields>{"appname":"tu-aplicacion","environment":"dev"}</customFields>
-         <includeContext>true</includeContext>
-         <timeZone>UTC</timeZone>
-      </encoder>
-   </appender>
-   
-   <root level="INFO">
-      <appender-ref ref="logstash" />
-   </root>
+  <appender name="logstash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+    <destination>localhost:4560</destination>
+    <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+      <customFields>{"appname":"tu-aplicacion","environment":"dev"}</customFields>
+      <includeContext>true</includeContext>
+      <timeZone>UTC</timeZone>
+    </encoder>
+  </appender>
+
+  <root level="INFO">
+    <appender-ref ref="logstash" />
+  </root>
 </configuration>
 ```
 
 ---
 
-## **6. Visualización en Opensearch Dashboard**
-1. Accede a Opensearch Dashboard:
-   ```bash
-   http://localhost:5601
-   ```  
-2. Ingrese a **Opensearch Dashboard > Discover**: Allí podrá ver un registro de los logs. Alternativamente, también puede acceder a **Observability > Logs** y en el campo PPL ingresar `source = logstash-*`, esto le indica al sistema de donde deberá obtener los logs que se desean consultar. 
+## 📊 8. Visualización en OpenSearch Dashboards
+
+Una vez centralizados, los logs pueden ser explorados mediante OpenSearch Dashboards, permitiendo:
+
+- Búsqueda textual y estructurada.
+- Filtros temporales.
+- Identificación de patrones y anomalías.
+
+Estas capacidades resultan especialmente relevantes en contextos educativos para ilustrar procesos de diagnóstico y análisis de fallos.
+
+Accede a:
+
+```
+http://localhost:5601
+```
+
+Ingrese a **Opensearch Dashboard > Discover**: Allí podrá ver un registro de los logs. Alternativamente, también puede acceder a **Observability > Logs** y en el campo PPL ingresar `source = logstash-*`, esto le indica al sistema de donde deberá obtener los logs que se desean consultar.
 
 ---
 
-## **7. Escalabilidad**
-### **Para entornos productivos:**
-- Usa **Opensearch en cluster** (múltiples nodos).
-- Active la autenticación para mejorar la seguridad del sistema.
+## 🧪 9. Actividades de profundización
+
+- Simular fallos y rastrear su origen mediante logs.
+- Comparar OpenSearch y Elasticsearch como motores de búsqueda.
+- Analizar múltiples productores de logs.
+- Identificar limitaciones de envío TCP sin autenticación.
 
 ---
 
-## **8. Comandos Útiles**
-| Comando                     | Descripción                          |
-|-----------------------------|--------------------------------------|
-| `docker-compose logs -f`    | Ver logs en tiempo real              |
-| `docker-compose down -v`    | Detener y eliminar volúmenes         |
-| `curl http://localhost:9200`| Verificar Elasticsearch              |
+## 📚 Referencias
+
+- OpenSearch – https://opensearch.org
+- OpenSearch (Docker) – https://docs.opensearch.org/docs/latest/install-and-configure/install-opensearch/docker/
+- OpenSearch Dashboards – https://docs.opensearch.org/docs/latest/dashboards/
+- Logstash – https://www.elastic.co/docs/reference/logstash
+- Elastic Common Schema – https://www.elastic.co/guide/en/ecs/current/ecs-reference.html
 
 ---
 
-## **Referencias**
-- [Logstash](https://www.elastic.co/docs/reference/logstash)
-- [Opensearch](https://opensearch.org)
-- [Opensearch Docker Guide](https://docs.opensearch.org/docs/latest/install-and-configure/install-opensearch/docker/)
-- [Opensearch Dashboard Guide](https://docs.opensearch.org/docs/latest/dashboards/)
-- [Elasticsearch](https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html)
-- [Opensearch Dashboard Query Language (DQL)](https://docs.opensearch.org/docs/latest/dashboards/dql/)
----
-
+ℹ️ *Esta guía complementa el marco teórico de observabilidad y centralización de logs desarrollado en el documento central.*
