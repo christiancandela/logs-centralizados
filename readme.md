@@ -79,7 +79,7 @@ Estos beneficios refuerzan el valor de la centralización de logs como herramien
 
 El diseño de soluciones de centralización de logs implica enfrentar diversos desafíos técnicos y operativos (Kitchin, 2014; Beyer et al., 2016). Abordarlos adecuadamente requiere la adopción de criterios conceptuales sólidos:
 
-- **Estandarización Semántica:** En arquitecturas heterogéneas, consolidar logs carece de valor si no comparten un esquema común. El uso de estándares como *Elastic Common Schema (ECS)* o las Convenciones Semánticas de *OpenTelemetry* es fundamental para garantizar que los eventos de distintos servicios puedan correlacionarse correctamente.
+- **Estandarización Semántica:** En arquitecturas heterogéneas, consolidar logs carece de valor si no comparten un esquema común. El uso de estándares como *Elastic Common Schema (ECS)* o las Convenciones Semánticas de *OpenTelemetry* es fundamental para garantizar que los eventos de distintos servicios puedan correlacionarse correctamente, permitiendo trazar flujos de ejecución completos a través de múltiples microservicios (Sigelman et al., 2010).
 - **Ciclo de Vida y Retención de Datos:** Dado el inmenso volumen de información operativa, los sistemas de centralización deben implementar políticas de retención, rotación y almacenamiento por niveles (*Hot/Cold storage*) para gestionar el impacto en la infraestructura sin perder capacidades de auditoría a largo plazo.
 - **Seguridad y Privacidad (Sanitización):** Los logs suelen capturar inadvertidamente información sensible (contraseñas, tokens, datos de usuarios PII). Es imperativo que las arquitecturas incluyan mecanismos de censura o enmascaramiento de datos durante la fase de procesamiento antes de su indexación.
 
@@ -122,7 +122,7 @@ Desde el punto de vista conceptual, este procesamiento permite reducir el ruido 
 
 El **almacenamiento y motor de búsqueda** constituye el núcleo analítico de una solución de centralización de logs. Su función principal es conservar los registros de manera eficiente y habilitar mecanismos de consulta flexibles que faciliten el análisis exploratorio y el diagnóstico de incidentes.
 
-A nivel conceptual, este componente introduce nociones fundamentales relacionadas con la indexación de datos, la gestión de la retención de información y la ejecución de consultas temporales. Estos aspectos resultan esenciales para comprender cómo se construye la visibilidad del sistema a lo largo del tiempo y cómo se posibilita el análisis retrospectivo de eventos (Kitchin, 2014).
+A nivel conceptual, este componente introduce nociones fundamentales relacionadas con la indexación de datos, la gestión de la retención de información y la ejecución de consultas temporales. Estos aspectos resultan esenciales para comprender cómo se construye la visibilidad del sistema a lo largo del tiempo y cómo se posibilita el análisis retrospectivo de eventos (Kitchin, 2014; Kleppmann, 2017).
 
 #### 4.7.4 Visualización y análisis
 
@@ -199,11 +199,15 @@ Cito, J., Leitner, P., Fritz, T., & Gall, H. C. (2015). The making of cloud appl
 
 Kitchin, R. (2014). *The data revolution: Big data, open data, data infrastructures and their consequences*. Sage Publications.
 
+Kleppmann, M. (2017). *Designing Data-Intensive Applications: The Big Ideas Behind Reliable, Scalable, and Maintainable Systems*. O'Reilly Media.
+
 Majors, C., Fong-Jones, L., & Miranda, G. (2022). *Observability Engineering: Achieving Production Excellence*. O’Reilly Media.
 
 Newman, S. (2015). *Building microservices: Designing fine-grained systems*. O’Reilly Media.
 
 Oliner, A. J., Ganapathi, A., & Xu, W. (2012). Advances and challenges in log analysis. *Communications of the ACM, 55*(2), 55–61. https://doi.org/10.1145/2076450.2076466
+
+Sigelman, B. H., Barroso, L. A., Burrows, M., Stephenson, P., Plakal, M., Beaver, D., Jaspan, S., & Shanbhag, C. (2010). Dapper, a Large-Scale Distributed Systems Tracing Infrastructure. *Google Technical Report*.
 
 Turnbull, J. (2014). *The art of monitoring*. Turnbull Press.
 
