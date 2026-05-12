@@ -52,7 +52,7 @@ En esta guía el énfasis está en la **centralización de logs**, usando Grafan
   https://docs.docker.com/engine/install/
 - Docker Compose  
   https://docs.docker.com/compose/install/
-- Al menos **4 GB de RAM** disponibles
+- Al menos **8 GB de RAM** libres
 
 ---
 
@@ -173,7 +173,7 @@ mvn io.quarkus.platform:quarkus-maven-plugin:3.19.1:create \
 </dependency>
 ```
 
-- Configure su aplicación para que los logs sean enviados a fluentd. (**`application.properties`**)
+- Configure su aplicación para que los logs sean enviados a OpenTelemetry. (**`application.properties`**)
 
 ```properties
 quarkus.application.name=myservice
@@ -268,7 +268,7 @@ Ruta sugerida:
 
 ## 🧪 9. Actividades de profundización
 
-- Simular fallos y rastrear su origen mediante logs.
+- **Simular fallos y rastrear su origen:** Implemente un endpoint en la aplicación productora (ej. `GET /api/error`) que genere intencionalmente una excepción (como `NullPointerException`). Ejecute el endpoint y utilice Grafana para buscar el error y visualizar los atributos correlacionados (como el `traceId` inyectado automáticamente por OpenTelemetry).
 - Comparar OpenTelemetry, Fluentd y Logstash como componentes de procesamiento.
 - Modificar filtros para enriquecer eventos.
 - Simular múltiples productores de logs.

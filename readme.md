@@ -77,7 +77,11 @@ Estos beneficios refuerzan el valor de la centralización de logs como herramien
 
 ### 4.6 Desafíos y criterios conceptuales
 
-El diseño de soluciones de centralización de logs implica enfrentar desafíos relacionados con el volumen de información generado, la necesidad de estructuración semántica de los registros, el impacto potencial en el rendimiento y la protección de información sensible (Kitchin, 2014; Beyer et al., 2016). Abordar estos desafíos requiere la adopción de criterios conceptuales que orienten el diseño de soluciones robustas y sostenibles.
+El diseño de soluciones de centralización de logs implica enfrentar diversos desafíos técnicos y operativos (Kitchin, 2014; Beyer et al., 2016). Abordarlos adecuadamente requiere la adopción de criterios conceptuales sólidos:
+
+- **Estandarización Semántica:** En arquitecturas heterogéneas, consolidar logs carece de valor si no comparten un esquema común. El uso de estándares como *Elastic Common Schema (ECS)* o las Convenciones Semánticas de *OpenTelemetry* es fundamental para garantizar que los eventos de distintos servicios puedan correlacionarse correctamente.
+- **Ciclo de Vida y Retención de Datos:** Dado el inmenso volumen de información operativa, los sistemas de centralización deben implementar políticas de retención, rotación y almacenamiento por niveles (*Hot/Cold storage*) para gestionar el impacto en la infraestructura sin perder capacidades de auditoría a largo plazo.
+- **Seguridad y Privacidad (Sanitización):** Los logs suelen capturar inadvertidamente información sensible (contraseñas, tokens, datos de usuarios PII). Es imperativo que las arquitecturas incluyan mecanismos de censura o enmascaramiento de datos durante la fase de procesamiento antes de su indexación.
 
 Desde una perspectiva académica, el análisis de estos desafíos permite a los estudiantes desarrollar criterios transferibles a distintos contextos tecnológicos, fomentando una comprensión crítica de las decisiones de diseño y sus implicaciones operativas y éticas.
 
@@ -86,6 +90,21 @@ Desde una perspectiva académica, el análisis de estos desafíos permite a los 
 Aunque las implementaciones prácticas de la centralización de logs pueden variar ampliamente en función de las tecnologías empleadas, la literatura y la experiencia industrial coinciden en que dichas soluciones comparten una **arquitectura conceptual común**, compuesta por varios componentes claramente diferenciables (Turnbull, 2014; Newman, 2015).
 
 Introducir esta arquitectura a nivel conceptual resulta pertinente desde el punto de vista formativo, ya que permite a los estudiantes comprender la lógica subyacente de las soluciones antes de enfrentarse a su implementación práctica, facilitando la transferencia de conocimiento entre distintos ecosistemas tecnológicos.
+
+```mermaid
+graph LR
+    A[Recolección] --> B[Procesamiento]
+    B --> C[Almacenamiento]
+    C --> D[Visualización]
+    
+    subgraph Generación
+    E[Aplicación / Servicio] -. Logs .-> A
+    end
+    
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
+    classDef proc fill:#e1f5fe,stroke:#0288d1;
+    class A,B,C,D proc;
+```
 
 #### 4.7.1 Recolección de logs
 
@@ -141,15 +160,20 @@ Con el propósito de afianzar los fundamentos teóricos desarrollados a lo largo
 
 Las actividades prácticas no se conciben como ejercicios aislados ni como simples tutoriales de herramientas, sino como escenarios de aplicación que permiten reconocer, en contextos concretos, los componentes conceptuales analizados: recolección, procesamiento, almacenamiento, búsqueda y visualización de logs. De este modo, las guías prácticas refuerzan la transferencia del conocimiento teórico hacia entornos reales de operación, manteniendo la neutralidad tecnológica del marco conceptual presentado.
 
-Las guías desarrolladas son las siguientes:
+**Requisitos técnicos:** El despliegue de estos ecosistemas mediante contenedores requiere un uso intensivo de memoria. Se recomienda disponer de al menos **8 GB de RAM** libres y configurar adecuadamente los límites del sistema operativo (como `vm.max_map_count` en Linux/WSL) según se detalla en las guías, para evitar caídas en los servicios.
 
-- [Configurar una solución básica de centralización de logs utilizando ELK stack.](guias/elk-guide.md)
-- [Configurar una solución básica de centralización de logs utilizando Fluentd.](guias/fluentd-guide.md)
-- [Configurar una solución básica de centralización de logs utilizando OpenTelemetry.](guias/otel-guide.md)
-- [Configurar una solución básica de centralización de logs utilizando GELF y Graylog.](guias/gelf-graylog-guide.md)
-- [Configurar una solución básica de centralización de logs utilizando OLO stack (OpenSearch).](guias/olo-guide.md)
+**Ruta de Aprendizaje Sugerida:**
 
-Estas guías se presentan como material complementario al trabajo escrito y pueden ser utilizadas de manera independiente o secuencial, según los objetivos formativos del curso o espacio académico en el que se integren.
+Aunque las guías son independientes, se sugiere el siguiente orden de consumo para una progresión pedagógica óptima:
+
+1. **[ELK Stack](guias/elk-guide.md):** Ideal para comenzar, siendo el ecosistema tradicional más extendido en la industria.
+2. **[OLO Stack (OpenSearch)](guias/olo-guide.md):** Permite explorar la evolución natural y el *fork* Open Source de Elasticsearch.
+3. **[Fluentd](guias/fluentd-guide.md):** Introduce enfoques alternativos y desacoplados para la recolección y ruteo de logs.
+4. **[Promtail y Loki (Grafana)](guias/promtail-guide.md):** Aborda un modelo altamente eficiente basado en la indexación exclusiva de etiquetas, integrando las herramientas exactas mencionadas en la propuesta original.
+5. **[GELF y Graylog](guias/gelf-graylog-guide.md):** Presenta formatos de transporte específicos y plataformas enfocadas exclusivamente en la gestión de logs.
+6. **[OpenTelemetry](guias/otel-guide.md):** Presenta el estándar unificador actual y más interoperable para la observabilidad unificada.
+7. **[Vector, Loki y Grafana](guias/vector-guide.md):** (*Estado del Arte*) Introduce el concepto de *Pipeline de Observabilidad* de alto rendimiento utilizando Rust para desplazar a recolectores pesados.
+8. **[SigNoz (ClickHouse)](guias/signoz-guide.md):** (*Estado del Arte*) Plataforma "Todo en Uno" que utiliza OpenTelemetry nativamente y almacenamiento analítico columnar, representando la alternativa libre a plataformas comerciales.
 
 ---
 

@@ -1,4 +1,4 @@
-# **Centralización de Logs - ELK Stack**
+# **Centralización de Logs - GELF/Graylog Stack**
 
 > *Guía práctica para implementar una solución básica de centralización de logs utilizando Docker Compose y GELF/Graylog, como instanciación concreta de la arquitectura conceptual de observabilidad presentada en el documento central.*
 
@@ -51,7 +51,7 @@ La **centralización de logs** mitiga la dispersión inherente a los sistemas di
   https://docs.docker.com/engine/install/
 - Docker Compose  
   https://docs.docker.com/compose/install/
-- Al menos **4 GB de RAM** disponibles
+- Al menos **8 GB de RAM** libres
 
 ---
 
@@ -346,7 +346,7 @@ Ruta sugerida:
 
 ## 🧪 9. Actividades de profundización
 
-- Simular fallos y rastrear su origen mediante logs centralizados.
+- **Simular fallos y rastrear su origen:** Implemente un endpoint en la aplicación productora (ej. `GET /api/error`) que genere intencionalmente una excepción (como `NullPointerException`). Ejecute el endpoint y utilice Graylog para localizar el evento de error, inspeccionando el stacktrace y los campos de origen (`originHost`).
 - Comparar GELF UDP frente a envíos basados en TCP/HTTP (en términos de confiabilidad y pérdida de mensajes).
 - Evaluar el impacto de **fragmentación** (`maxChunkSize`) en mensajes grandes.
 - Implementar múltiples productores de logs y distinguirlos por campos como `originHost` o metadatos del evento.

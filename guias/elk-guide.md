@@ -52,7 +52,7 @@ La **centralización de logs** mitiga la dispersión inherente a los sistemas di
   https://docs.docker.com/engine/install/
 - Docker Compose  
   https://docs.docker.com/compose/install/
-- Al menos **4 GB de RAM** disponibles
+- Al menos **8 GB de RAM** libres
 
 ---
 
@@ -303,10 +303,21 @@ Ruta sugerida:
 
 ## 🧪 9. Actividades de profundización
 
-- Simular fallos y rastrear su origen mediante logs.
+- **Simular fallos y rastrear su origen:** Implemente un endpoint en la aplicación productora (ej. `GET /api/error`) que genere intencionalmente una excepción (como `NullPointerException`). Ejecute el endpoint y utilice Kibana para rastrear el *stacktrace* del error, validando la ventaja del formato estructurado multilínea.
 - Comparar ECS con esquemas personalizados.
 - Analizar múltiples productores de logs.
 - Identificar limitaciones de envío TCP sin autenticación.
+
+---
+
+## 🛠️ 10. Troubleshooting
+
+**Error común:** El contenedor `elasticsearch` se detiene inesperadamente o marca estado `Exit 78` / `Exit 137`.
+
+**Solución:** Elasticsearch requiere configurar la memoria virtual del sistema anfitrión. En sistemas Linux o entornos WSL, ejecute el siguiente comando en la terminal de su máquina (fuera del contenedor) antes de iniciar `docker-compose up -d`:
+```bash
+sudo sysctl -w vm.max_map_count=262144
+```
 
 ---
 

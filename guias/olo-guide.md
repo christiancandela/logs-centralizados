@@ -50,7 +50,7 @@ La **centralización de logs** mitiga la dispersión inherente a los sistemas di
   https://docs.docker.com/engine/install/
 - Docker Compose  
   https://docs.docker.com/compose/install/
-- Al menos **4 GB de RAM** disponibles
+- Al menos **8 GB de RAM** libres
 
 ---
 
@@ -214,6 +214,8 @@ Se emplean **volúmenes Docker** para garantizar la persistencia de los datos al
 
 Opensearch-dashboards requiere una configuración adicional para facilitar la visualización de logs. El siguiente comando pretende crear un index-pattern en el Dashboard con el fin de poder visualizar los logs generados por logstash.
 
+> ⚠️ **Importante:** Antes de ejecutar el siguiente comando, asegúrese de que OpenSearch Dashboards haya finalizado su inicialización y sea accesible desde el navegador.
+
 ```shell
 curl -XPOST "http://localhost:5601/api/saved_objects/index-pattern" \
   -H "Content-Type: application/json" \
@@ -333,10 +335,21 @@ Ingrese a **Opensearch Dashboard > Discover**: Allí podrá ver un registro de l
 
 ## 🧪 9. Actividades de profundización
 
-- Simular fallos y rastrear su origen mediante logs.
+- **Simular fallos y rastrear su origen:** Implemente un endpoint en la aplicación productora (ej. `GET /api/error`) que genere intencionalmente una excepción (como `NullPointerException`). Ejecute el endpoint y utilice OpenSearch Dashboards para rastrear el *stacktrace* del error, validando la ventaja del formato estructurado multilínea.
 - Comparar OpenSearch y Elasticsearch como motores de búsqueda.
 - Analizar múltiples productores de logs.
 - Identificar limitaciones de envío TCP sin autenticación.
+
+---
+
+## 🛠️ 10. Troubleshooting
+
+**Error común:** El contenedor `opensearch` se detiene inesperadamente o marca estado `Exit 78` / `Exit 137`.
+
+**Solución:** OpenSearch requiere configurar la memoria virtual del sistema anfitrión. En sistemas Linux o entornos WSL, ejecute el siguiente comando en la terminal de su máquina (fuera del contenedor) antes de iniciar `docker-compose up -d`:
+```bash
+sudo sysctl -w vm.max_map_count=262144
+```
 
 ---
 

@@ -50,7 +50,7 @@ La **centralización de logs** mitiga la dispersión inherente a los sistemas di
   https://docs.docker.com/engine/install/
 - Docker Compose  
   https://docs.docker.com/compose/install/
-- Al menos **4 GB de RAM** disponibles
+- Al menos **8 GB de RAM** libres
 
 ---
 
@@ -158,7 +158,7 @@ volumes:
   enable_ruby true
   remove_keys ident
   <record>
-    service.name ${record.has_key?('ident') ? record['ident'] : 'app-unknow'}
+    service.name ${record.has_key?('ident') ? record['ident'] : 'app-unknown'}
     data_stream.type logs
     data_stream {"namespace" : "default", "type" : "logs", "dataset" : "generic"}
   </record>
@@ -220,8 +220,8 @@ Se emplean **volúmenes Docker** para garantizar la persistencia de los datos al
 
 ### 7.1 Aplicaciones Quarkus
 
-El recurso contempla un ejemplo de integración con aplicaciones desarrolladas en **Quarkus**, utilizando **logging estructurado en formato JSON**.  
-Esta aproximación favorece la **normalización semántica de los eventos**, facilitando su procesamiento, correlación y análisis posterior dentro de la plataforma de centralización de logs.
+El recurso contempla un ejemplo de integración con aplicaciones desarrolladas en **Quarkus**, utilizando **el estándar Syslog (RFC5424)**.  
+Esta aproximación permite ilustrar cómo Fluentd puede integrarse fluidamente con protocolos de red clásicos y estandarizados para la emisión de logs desde el nivel de aplicación.
 
 - En caso de no tener una aplicación puede crear con el siguiente comando.
 
@@ -231,15 +231,6 @@ mvn io.quarkus.platform:quarkus-maven-plugin:3.19.1:create \
     -DprojectArtifactId=logs.producer \
     -Dextensions='rest' \
     -DnoCode
-```
-
-- Adicionar la siguiente dependencia a su proyecto.
-
-```xml
-<dependency>
-  <groupId>io.quarkus</groupId>
-  <artifactId>quarkus-logging-json</artifactId>
-</dependency>
 ```
 
 - Configure su aplicación para que los logs sean enviados a fluentd. (**`application.properties`**)
@@ -261,9 +252,9 @@ private static final Logger LOG = Logger.getLogger(MiClase.class);
 
 ### 7.2 Otras aplicaciones Java (Logback)
 
-Para otras aplicaciones Java que no utilizan Quarkus, el recurso presenta un ejemplo basado en **Fluentd**, empleando un *encoder* compatible con Fluentd para la generación de logs estructurados en formato JSON.
+Para otras aplicaciones Java que no utilizan Quarkus, el recurso presenta un ejemplo empleando la librería estándar de **Logback** con el `SyslogAppender` nativo, para la emisión de logs bajo el formato Syslog vía UDP hacia Fluentd.
 
-Este enfoque permite ilustrar cómo aplicaciones Java tradicionales pueden integrarse a una arquitectura de centralización de logs, resaltando la importancia de la estructuración y consistencia de los eventos generados.
+Este enfoque permite ilustrar cómo aplicaciones Java tradicionales pueden integrarse a una arquitectura de centralización de logs sin dependencias complejas, resaltando la importancia de estandarizar la capa de transporte.
 
 ```xml
 <dependency>
@@ -274,7 +265,7 @@ Este enfoque permite ilustrar cómo aplicaciones Java tradicionales pueden integ
 </dependency>
 ```
 
-Configura `logback.xml` para enviar logs a Logstash:
+Configura `logback.xml` para enviar logs a Fluentd:
 
 ```xml
 <configuration>
@@ -316,11 +307,22 @@ Ruta sugerida:
 
 ## 🧪 9. Actividades de profundización
 
-- Simular fallos y rastrear su origen mediante logs.
+- **Simular fallos y rastrear su origen:** Implemente un endpoint en la aplicación productora (ej. `GET /api/error`) que genere intencionalmente una excepción (como `NullPointerException`). Ejecute el endpoint y utilice Kibana para rastrear el *stacktrace* del error, validando la ventaja del formato estructurado JSON.
 - Comparar Fluentd y Logstash como componentes de procesamiento.
 - Modificar filtros para enriquecer eventos.
 - Simular múltiples productores de logs.
 - Analizar implicaciones del uso de UDP.
+
+---
+
+## 🛠️ 10. Troubleshooting
+
+**Error común:** El contenedor `elasticsearch` se detiene inesperadamente o marca estado `Exit 78` / `Exit 137`.
+
+**Solución:** Elasticsearch requiere configurar la memoria virtual del sistema anfitrión. En sistemas Linux o entornos WSL, ejecute el siguiente comando en la terminal de su máquina (fuera del contenedor) antes de iniciar `docker-compose up -d`:
+```bash
+sudo sysctl -w vm.max_map_count=262144
+```
 
 ---
 
