@@ -135,14 +135,6 @@ Este documento se limita intencionalmente a la **fundamentación teórica y conc
 
 ---
 
-
-
-
-
-
-
-
-
 ## 6. Articulación con las actividades prácticas
 
 Con el propósito de afianzar los fundamentos teóricos desarrollados a lo largo de este trabajo escrito, se han diseñado y documentado un conjunto de **guías prácticas** orientadas a la implementación de soluciones de centralización de logs mediante diferentes *stacks* tecnológicos. Estas guías permiten a los estudiantes materializar los conceptos de observabilidad y arquitectura conceptual estudiados, favoreciendo un aprendizaje activo y progresivo.
