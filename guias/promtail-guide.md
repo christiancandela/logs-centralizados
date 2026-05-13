@@ -2,7 +2,7 @@
 
 > *Guía práctica para implementar una solución de centralización de logs utilizando Docker Compose con el ecosistema de Grafana (Promtail y Loki), como instanciación de la arquitectura conceptual de observabilidad presentada en el documento central.*
 
-> ⚠️ **Estado de Promtail:** A partir de 2023, Grafana Labs ha puesto Promtail en **modo mantenimiento**. Se siguen publicando correcciones de seguridad, pero no se añaden nuevas funcionalidades. La herramienta recomendada para nuevos proyectos es [**Grafana Alloy**](https://grafana.com/docs/alloy/), el sucesor unificado que incorpora las capacidades de Promtail y del Grafana Agent. Esta guía usa Promtail porque su modelo conceptual —*file tailing* hacia Loki— es más directo para el aprendizaje y sigue siendo completamente funcional. Una vez comprendido Promtail, la migración a Alloy es natural.
+> ⚠️ **Estado de Promtail:** A partir de 2023, Grafana Labs ha puesto Promtail en **modo mantenimiento**. Se siguen publicando correcciones de seguridad, pero no se añaden nuevas funcionalidades. La versión `3.0.0` es la última de la rama principal y no se prevén versiones posteriores. La herramienta recomendada para nuevos proyectos es [**Grafana Alloy**](https://grafana.com/docs/alloy/), el sucesor unificado que incorpora las capacidades de Promtail y del Grafana Agent. Esta guía usa Promtail porque su modelo conceptual —*file tailing* hacia Loki— es más directo para el aprendizaje y sigue siendo completamente funcional. Una vez comprendido Promtail, la migración a Alloy es natural.
 
 ---
 

@@ -281,7 +281,9 @@ private static final Logger LOG = Logger.getLogger(MiClase.class);
 
 ### 7.2 Otras aplicaciones Java (Logback con Syslog)
 
-> ⚠️ **Esta sección es una configuración alternativa de referencia**, no incluida en el `docker-compose.yml` del recurso. Para experimentar con ella, deberá agregar el source `in_syslog` a `fluent.conf` y exponer el puerto `5140:5140/udp` en el servicio `fluentd` del compose.
+> ⚠️ **SECCIÓN DE REFERENCIA — NO EJECUTABLE TAL COMO ESTÁ**
+>
+> Esta sección ilustra un patrón de integración alternativo (Syslog UDP) con fines pedagógicos. **No forma parte del `docker-compose.yml` del recurso** y no puede ejecutarse directamente sin modificaciones. Para experimentar con ella deberá: (1) agregar el source `in_syslog` a `fluent.conf`, y (2) exponer el puerto `5140:5140/udp` en el servicio `fluentd` del compose. Se incluye aquí para ampliar la comprensión de la versatilidad de Fluentd como colector multi-protocolo.
 
 Para aplicaciones Java que no utilizan Quarkus, Fluentd puede actuar como receptor **Syslog (RFC5424) vía UDP**. Esto ilustra cómo Fluentd se integra con protocolos clásicos de red, ampliando el espectro de productores de logs compatibles.
 

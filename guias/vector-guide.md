@@ -83,7 +83,7 @@ logs-centralizados/
          |
      (TCP JSON :4560)
          v
-      [Vector 0.38]
+      [Vector 0.55]
       Source → Transform (VRL) → Sink
          |
      (HTTP API push)

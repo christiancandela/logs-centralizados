@@ -83,9 +83,9 @@ logs-centralizados/
   (almacenamiento)  (configuración)
 ```
 
-La arquitectura implementada en este recurso se fundamenta en tres componentes principales:
+La arquitectura implementada en este recurso se fundamenta en **un protocolo de transporte y tres servicios**:
 
-- **GELF (Graylog Extended Log Format)**: protocolo estructurado de envío de logs vía **UDP** (puerto 12201).
+- **GELF (Graylog Extended Log Format)**: protocolo estructurado de envío de logs vía **UDP** (puerto 12201). A diferencia de los stacks anteriores, el transporte es responsabilidad del protocolo, no de un agente recolector separado.
 - **Graylog**: plataforma de ingestión, búsqueda y visualización de logs.
 - **OpenSearch**: motor de almacenamiento e indexación de eventos.
 - **MongoDB**: almacenamiento de configuración y metadatos de Graylog.

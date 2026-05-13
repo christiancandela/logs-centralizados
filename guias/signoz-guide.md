@@ -34,7 +34,7 @@ El material está concebido como:
 
 - Un **recurso educativo aplicado**, orientado a cursos de arquitectura de software y observabilidad.
 - Un **entorno de laboratorio reproducible**: se clona el repositorio oficial de SigNoz a una versión fija y se extiende con un compose de *override* mínimo.
-- Un **caso de estudio técnico**, que ilustra las diferencias entre un stack ensamblado y una plataforma integrada, y la técnica de composición de múltiples archivos `docker-compose`.
+- Un **caso de estudio técnico**, que ilustra las diferencias entre un stack ensamblado y una plataforma integrada, y la técnica de composición de múltiples archivos de `docker compose`.
 
 El alcance del recurso cubre logs, métricas y trazas distribuidas (los tres pilares de la observabilidad), aunque el énfasis educativo está en los logs.
 

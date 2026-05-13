@@ -8,6 +8,8 @@
 
 Implementar y validar una arquitectura básica de centralización de logs mediante Docker Compose y el stack **OLO (OpenSearch, Logstash y OpenSearch Dashboards)**, como ejercicio aplicado de los conceptos de observabilidad estudiados previamente.
 
+> ℹ️ **Nota sobre la denominación "OLO":** Este acrónimo es una convención adoptada en este recurso educativo para nombrar el stack OpenSearch + Logstash + OpenSearch Dashboards, de manera análoga a como la industria denomina "ELK" al stack Elasticsearch + Logstash + Kibana. No es un término estándar de la industria; al buscar referencias externas sobre este stack conviene usar los nombres individuales de los componentes o buscar documentación de OpenSearch directamente.
+
 ---
 
 ## 🎯 Resultados de aprendizaje esperados

@@ -58,7 +58,7 @@ Esta guía se limita al caso de uso equivalente a Promtail: *file tailing* de lo
   https://docs.docker.com/engine/install/
 - Docker Compose
   https://docs.docker.com/compose/install/
-- Al menos **4 GB de RAM** libres (Alloy es considerablemente más ligero que la pila completa ELK)
+- Al menos **4 GB de RAM** libres (este stack no incluye Elasticsearch ni OpenSearch; Alloy, Loki y Grafana tienen un huella de memoria significativamente menor que los stacks ELK/OLO — este requisito reducido es en sí mismo un punto de comparación pedagógico con las guías anteriores)
 
 ---
 
@@ -294,6 +294,29 @@ Esta interfaz no existe en Promtail y es una de las ventajas operativas más imp
 ---
 
 ## 🔌 8. Emisión de logs desde la aplicación
+
+> ℹ️ **Reutilización de la aplicación:** Si ya completó la guía Promtail, puede reutilizar la misma aplicación `logs.producer` — la configuración de escritura a archivo JSON (`application.properties`) es idéntica. Si aún no la tiene, créela con el siguiente comando:
+
+```shell
+mvn io.quarkus.platform:quarkus-maven-plugin:3.18.4:create \
+    -DprojectGroupId=co.uniquindio.ingesis.logs \
+    -DprojectArtifactId=logs.producer \
+    -Dextensions='rest,logging-json' \
+    -DnoCode
+```
+
+Configure la escritura a archivo JSON en `application.properties`:
+
+```properties
+quarkus.log.console.json=false
+
+# Escribir logs estructurados en formato JSON al archivo compartido con Alloy
+quarkus.log.file.enable=true
+quarkus.log.file.json=true
+quarkus.log.file.path=/deployments/logs/application.log
+quarkus.log.file.json.exception-output-type=formatted
+quarkus.log.file.json.log-format=ECS
+```
 
 La aplicación expone los mismos endpoints que en las guías anteriores:
 
