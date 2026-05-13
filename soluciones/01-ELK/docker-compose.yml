@@ -1,0 +1,59 @@
+services:
+  logs.producer:
+    build:
+      context: logs.producer
+      dockerfile: src/main/docker/Dockerfile.compose
+    ports:
+      - "8080:8080"
+    environment:
+      LOGSTASH_HOST: logstash
+    depends_on:
+      - logstash
+
+  elasticsearch:
+    image: docker.io/elasticsearch:9.4.1
+    container_name: elasticsearch
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+      discovery.type: "single-node"
+      cluster.routing.allocation.disk.threshold_enabled: false
+      xpack.security.enabled: false
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:9200/_cluster/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
+  logstash:
+    image: docker.io/logstash:9.4.1
+    container_name: logstash
+    volumes:
+      - source: ./logstash/pipelines
+        target: /usr/share/logstash/pipeline
+        type: bind
+    ports:
+      - "4560:4560"
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+
+  kibana:
+    image: docker.io/kibana:9.4.1
+    container_name: kibana
+    ports:
+      - "5601:5601"
+    environment:
+      ELASTICSEARCH_HOSTS: "http://elasticsearch:9200"
+      xpack.fleet.enabled: "false"
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+
+volumes:
+  es_data:

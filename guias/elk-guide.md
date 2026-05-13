@@ -94,41 +94,61 @@ El uso de **Docker Compose** permite describir y desplegar la arquitectura como 
 
 ```yaml
 services:
-  elasticsearch:
-    image: docker.io/elasticsearch:8.18.0
-    container_name: elasticsearch
+  logs.producer:
+    build:
+      context: logs.producer
+      dockerfile: src/main/docker/Dockerfile.compose
+    ports:
+      - "8080:8080"
     environment:
-      - discovery.type=single-node
-      - xpack.security.enabled=false
-      - cluster.routing.allocation.disk.threshold_enabled=false
-      - ES_JAVA_OPTS=-Xms512m -Xmx512m
-    volumes:
-      - es_data:/usr/share/elasticsearch/data
+      LOGSTASH_HOST: logstash
+    depends_on:
+      - logstash
+
+  elasticsearch:
+    image: docker.io/elasticsearch:9.4.1
+    container_name: elasticsearch
     ports:
       - "9200:9200"
       - "9300:9300"
+    environment:
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+      discovery.type: "single-node"
+      cluster.routing.allocation.disk.threshold_enabled: false
+      xpack.security.enabled: false
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:9200/_cluster/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
+  logstash:
+    image: docker.io/logstash:9.4.1
+    container_name: logstash
+    volumes:
+      - source: ./logstash/pipelines
+        target: /usr/share/logstash/pipeline
+        type: bind
+    ports:
+      - "4560:4560"
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
 
   kibana:
-    image: docker.io/kibana:8.18.0
+    image: docker.io/kibana:9.4.1
     container_name: kibana
-    depends_on:
-      - elasticsearch
     ports:
       - "5601:5601"
     environment:
-      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
-
-  logstash:
-    image: docker.io/logstash:8.18.0
-    container_name: logstash
-    volumes:
-      - ./logstash/pipelines:/usr/share/logstash/pipeline
-    ports:
-      - "4560:4560"
-    environment:
-      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      ELASTICSEARCH_HOSTS: "http://elasticsearch:9200"
+      xpack.fleet.enabled: "false"
     depends_on:
-      - elasticsearch
+      elasticsearch:
+        condition: service_healthy
 
 volumes:
   es_data:
@@ -158,10 +178,17 @@ filter {
 output {
   stdout {}
   elasticsearch {
-    hosts => [${ELASTICSEARCH_HOSTS:http://elasticsearch:9200}]
+    hosts => ["http://elasticsearch:9200"]
+    data_stream => true
+    data_stream_auto_routing => false
+    data_stream_type => "logs"
+    data_stream_dataset => "producer"
+    data_stream_namespace => "default"
   }
 }
 ```
+
+> ℹ️ **Nota (Elasticsearch 9.x):** A partir de la versión 9, el output de Logstash utiliza *data streams* en lugar de índices con fecha (`logstash-YYYY.MM.dd`). La configuración anterior crea el data stream `logs-producer-default`, que sigue la convención `{type}-{dataset}-{namespace}` definida por ECS. Esto es transparente para la visualización en Kibana.
 
 ---
 
@@ -203,29 +230,21 @@ Esta aproximación favorece la **normalización semántica de los eventos**, fac
 - En caso de no tener una aplicación puede crear con el siguiente comando.
 
 ```shell
-mvn io.quarkus.platform:quarkus-maven-plugin:3.19.1:create \
+mvn io.quarkus.platform:quarkus-maven-plugin:3.18.4:create \
     -DprojectGroupId=co.uniquindio.ingesis.logs \
     -DprojectArtifactId=logs.producer \
-    -Dextensions='rest' \
+    -Dextensions='rest,logging-json' \
     -DnoCode
 ```
 
-- Adicionar la siguiente dependencia a su proyecto.
-
-```xml
-<dependency>
-  <groupId>io.quarkus</groupId>
-  <artifactId>quarkus-logging-json</artifactId>
-</dependency>
-```
-
-- Configure su aplicación para que los logs sean enviados a logstash. (**`application.properties`**)
+- Configure su aplicación para que los logs sean enviados a Logstash. (**`application.properties`**)
 
 ```properties
 quarkus.log.console.json=false
 quarkus.log.socket.enable=true
 quarkus.log.socket.json=true
-quarkus.log.socket.endpoint=localhost:4560
+# Cuando se ejecuta desde el IDE apunta a localhost; docker compose inyecta LOGSTASH_HOST=logstash
+quarkus.log.socket.endpoint=${LOGSTASH_HOST:localhost}:4560
 quarkus.log.socket.json.exception-output-type=formatted
 quarkus.log.socket.json.log-format=ECS
 ```
@@ -294,19 +313,26 @@ Accede a:
 http://localhost:5601
 ```
 
-
-Ruta sugerida:
+**Opción A — Logs Explorer (recomendada):**
 
 **Observability → Logs → Logs Explorer**
+
+Selecciona la fuente `logs-producer-default` para ver únicamente los eventos de la aplicación.
+
+**Opción B — Discover:**
+
+**Hamburger menu → Discover**
+
+Crea o selecciona el data view `logs-*` con campo de tiempo `@timestamp`. Esta vista muestra todos los data streams que coinciden con el patrón.
 
 ---
 
 ## 🧪 9. Actividades de profundización
 
-- **Simular fallos y rastrear su origen:** Implemente un endpoint en la aplicación productora (ej. `GET /api/error`) que genere intencionalmente una excepción (como `NullPointerException`). Ejecute el endpoint y utilice Kibana para rastrear el *stacktrace* del error, validando la ventaja del formato estructurado multilínea.
-- Comparar ECS con esquemas personalizados.
-- Analizar múltiples productores de logs.
-- Identificar limitaciones de envío TCP sin autenticación.
+- **Simular fallos y rastrear su origen:** El endpoint `GET /api/error` de la aplicación de ejemplo genera intencionalmente una `NullPointerException`. Ejecútelo y utilice Kibana para localizar el *stacktrace* del error, validando la ventaja del campo `exception` en formato ECS estructurado.
+- Comparar ECS con esquemas personalizados: modifique el pipeline de Logstash para agregar un campo personalizado y observe cómo se indexa en Elasticsearch.
+- Desplegar dos instancias de `logs.producer` en puertos distintos y correlacionar sus eventos en Kibana mediante el campo `service.name`.
+- Identificar las implicaciones de seguridad del envío TCP sin autenticación ni cifrado.
 
 ---
 
@@ -318,6 +344,14 @@ Ruta sugerida:
 ```bash
 sudo sysctl -w vm.max_map_count=262144
 ```
+
+---
+
+**Error común:** Kibana muestra el mensaje *"Kibana cannot connect to the Elastic Package Registry"* al abrir la interfaz.
+
+**Explicación:** Kibana 9.x intenta conectarse por defecto al registro externo de integraciones de Fleet (`epr.elastic.co`). En un entorno de laboratorio local sin acceso a internet este intento falla. El aviso es **no bloqueante**: Kibana funciona correctamente para visualización de logs.
+
+**Solución:** El archivo `docker-compose.yml` de esta guía ya incluye `xpack.fleet.enabled: "false"` en el servicio Kibana, lo que elimina el aviso. Si crea su propio `docker-compose.yml`, asegúrese de incluir esa variable de entorno.
 
 ---
 
