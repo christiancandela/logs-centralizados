@@ -1,0 +1,26 @@
+services:
+  logs.producer:
+    build:
+      context: logs.producer
+      dockerfile: src/main/docker/Dockerfile.compose
+    ports:
+      - "8080:8080"
+    environment:
+      OTEL_HOST: otel-lgtm
+    depends_on:
+      otel-lgtm:
+        condition: service_healthy
+
+  otel-lgtm:
+    image: grafana/otel-lgtm:0.27.1
+    container_name: otel-lgtm
+    ports:
+      - "3000:3000"
+      - "4317:4317"
+      - "4318:4318"
+    healthcheck:
+      test: ["CMD-SHELL", "test -f /tmp/ready || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 15s
