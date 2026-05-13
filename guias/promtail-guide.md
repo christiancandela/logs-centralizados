@@ -39,8 +39,8 @@ El material está concebido como:
 En arquitecturas basadas en microservicios, la observabilidad permite comprender el comportamiento interno del sistema. Los **logs** constituyen una fuente primaria de información debido a su riqueza contextual.
 
 El ecosistema de Grafana aborda la centralización con un enfoque muy eficiente:
-- **Promtail** es el agente encargado de descubrir y leer archivos de log (o recibir streams) para enviarlos a Loki.
-- **Loki** almacena los logs, pero solo indexa los metadatos (etiquetas/labels), lo que lo hace muy ligero comparado con motores de indexación completa como Elasticsearch o OpenSearch.
+- **Promtail** es el agente encargado de descubrir y leer archivos de log (*file tailing*) para enviarlos a Loki.
+- **Loki** almacena los logs, pero solo indexa los **metadatos (etiquetas/labels)**, no el contenido completo del mensaje. Esto lo hace significativamente más ligero que motores de indexación completa como Elasticsearch u OpenSearch.
 
 ---
 
@@ -62,7 +62,11 @@ logs-centralizados/
 │   └── pom.xml
 ├── promtail/
 │   └── promtail-config.yaml
-└── logs/                 <-- Directorio compartido para logs
+├── grafana/
+│   └── provisioning/
+│       └── datasources/
+│           └── loki.yaml
+└── logs/                 <-- Volumen compartido para archivos de log
 ```
 
 ---
@@ -74,16 +78,22 @@ logs-centralizados/
          |
     (Escribe en archivo .log)
          v
-  [Volumen Compartido]
+  [Volumen Compartido ./logs]
          |
-    (Lee archivo)
+    (Lee archivo / tailing)
          v
      [Promtail]
          |
-     (API HTTP)
+     (API HTTP push)
          v
        [Loki] ---> [Grafana]
 ```
+
+La arquitectura implementada en este recurso se fundamenta en tres componentes principales:
+
+- **Promtail**: agente de recolección que vigila (*tail*) archivos de log en un volumen compartido y los envía a Loki.
+- **Loki**: motor de almacenamiento ligero que indexa solo etiquetas (labels), no el contenido textual de los logs.
+- **Grafana**: capa de visualización y exploración mediante el lenguaje de consulta **LogQL**.
 
 ---
 
@@ -93,22 +103,40 @@ logs-centralizados/
 
 ```yaml
 services:
+  logs.producer:
+    build:
+      context: logs.producer
+      dockerfile: src/main/docker/Dockerfile.compose
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./logs:/deployments/logs
+
   loki:
     image: grafana/loki:3.0.0
     container_name: loki
     ports:
       - "3100:3100"
     command: -config.file=/etc/loki/local-config.yaml
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:3100/ready || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 15s
 
   promtail:
     image: grafana/promtail:3.0.0
     container_name: promtail
     volumes:
-      - ./logs:/var/log/app_logs
-      - ./promtail/promtail-config.yaml:/etc/promtail/config.yml
+      - ./logs:/var/log/app_logs:ro
+      - source: ./promtail/promtail-config.yaml
+        target: /etc/promtail/config.yml
+        type: bind
     command: -config.file=/etc/promtail/config.yml
     depends_on:
-      - loki
+      loki:
+        condition: service_healthy
 
   grafana:
     image: grafana/grafana:11.0.0
@@ -119,13 +147,20 @@ services:
       - GF_AUTH_DISABLE_LOGIN_FORM=true
     ports:
       - "3000:3000"
+    volumes:
+      - source: ./grafana/provisioning
+        target: /etc/grafana/provisioning
+        type: bind
     depends_on:
-      - loki
+      loki:
+        condition: service_healthy
 ```
 
-### 5.2 Configuración de Promtail (`promtail-config.yaml`)
+> ℹ️ **Nota:** La carpeta `./logs` actúa como volumen compartido: `logs.producer` escribe los archivos allí y Promtail los lee en modo solo lectura (`:ro`). La carpeta `./grafana/provisioning` configura automáticamente Loki como fuente de datos en Grafana.
 
-Cree un archivo llamado `promtail-config.yaml` dentro de la carpeta `promtail/`:
+---
+
+### 5.2 Configuración de Promtail (`promtail-config.yaml`)
 
 ```yaml
 server:
@@ -139,23 +174,51 @@ clients:
   - url: http://loki:3100/loki/api/v1/push
 
 scrape_configs:
-- job_name: java_apps
-  static_configs:
-  - targets:
-      - localhost
-    labels:
-      job: quarkus_app
-      environment: dev
-      __path__: /var/log/app_logs/*.log
+  - job_name: java_apps
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: quarkus_app
+          environment: dev
+          __path__: /var/log/app_logs/*.log
+    pipeline_stages:
+      - regex:
+          expression: '"log\.level":"(?P<level>[^"]+)"'
+      - labels:
+          level:
 ```
 
-> **Nota:** Promtail está configurado para vigilar cualquier archivo `.log` dentro del directorio mapeado (`/var/log/app_logs/`).
+> ℹ️ **Nota:** La etapa `regex` extrae el campo `log.level` del JSON de cada línea y lo convierte en un **label de Loki** (`level`). Esto permite filtrar logs por nivel directamente en LogQL sin necesidad de parsear el contenido. Las claves con punto (como `log.level`) no pueden ser extraídas con la etapa `json` estándar de Promtail porque gjson las interpreta como rutas anidadas; el enfoque `regex` resuelve este caso.
+
+---
+
+### 5.3 Aprovisionamiento de Grafana (`grafana/provisioning/datasources/loki.yaml`)
+
+```yaml
+apiVersion: 1
+
+datasources:
+  - name: Loki
+    type: loki
+    access: proxy
+    url: http://loki:3100
+    isDefault: true
+```
+
+> ℹ️ **Nota:** Este archivo configura Loki como fuente de datos de Grafana automáticamente al arrancar el contenedor. No es necesario agregarla manualmente desde la interfaz.
 
 ---
 
 ## ▶️ 6. Despliegue y validación
 
-Ejecute el entorno con:
+Antes de levantar el stack, cree el directorio compartido para los logs:
+
+```bash
+mkdir -p logs
+```
+
+Luego ejecute:
 
 ```bash
 docker-compose up -d
@@ -171,37 +234,47 @@ docker-compose ps
 
 ## 🔌 7. Emisión de logs desde aplicaciones
 
-A diferencia de otras guías donde se usa envío por red (TCP/UDP), Promtail se especializa en **leer archivos de log**. Configuraremos nuestras aplicaciones para escribir logs en la carpeta compartida `./logs`.
+A diferencia de otras guías donde se usa envío por red (TCP/UDP), Promtail se especializa en **leer archivos de log**. La aplicación escribe en un archivo dentro del volumen compartido `./logs`, y Promtail lo vigila continuamente.
 
 ### 7.1 Aplicaciones Quarkus
 
-Asegúrese de agregar el soporte para JSON y configurar Quarkus para escribir en archivo.
+- En caso de no tener una aplicación puede crear con el siguiente comando.
 
-**Dependencia Maven:**
-```xml
-<dependency>
-  <groupId>io.quarkus</groupId>
-  <artifactId>quarkus-logging-json</artifactId>
-</dependency>
+```shell
+mvn io.quarkus.platform:quarkus-maven-plugin:3.18.4:create \
+    -DprojectGroupId=co.uniquindio.ingesis.logs \
+    -DprojectArtifactId=logs.producer \
+    -Dextensions='rest,logging-json' \
+    -DnoCode
 ```
 
-**`application.properties`**:
+- Configure su aplicación para escribir logs en formato JSON al archivo compartido. (**`application.properties`**)
+
 ```properties
-# Desactivamos JSON en consola (opcional)
 quarkus.log.console.json=false
 
-# Activamos el log en archivo con formato JSON
+# Escribir logs estructurados en formato JSON al archivo compartido con Promtail
 quarkus.log.file.enable=true
 quarkus.log.file.json=true
-quarkus.log.file.path=../logs/application.log
+quarkus.log.file.path=/deployments/logs/application.log
+quarkus.log.file.json.exception-output-type=formatted
+quarkus.log.file.json.log-format=ECS
 ```
-*(Asegúrese de que la ruta relativa coincida con el directorio `./logs` de su proyecto docker-compose).*
+
+> ℹ️ **Nota:** La ruta `/deployments/logs/application.log` es la ruta **dentro del contenedor**. El `docker-compose.yml` monta `./logs` en `/deployments/logs`, por lo que el archivo quedará disponible en `./logs/application.log` en el host.
+
+**Uso del logger:**
+
+```java
+private static final Logger LOG = Logger.getLogger(MiClase.class);
+```
+
+---
 
 ### 7.2 Otras aplicaciones Java (Logback)
 
 Si usa Logback, configure un `FileAppender` con el codificador JSON de Logstash.
 
-**Dependencias:**
 ```xml
 <dependency>
   <groupId>ch.qos.logback</groupId>
@@ -215,11 +288,12 @@ Si usa Logback, configure un `FileAppender` con el codificador JSON de Logstash.
 </dependency>
 ```
 
-**`logback.xml`**:
+`logback.xml`:
+
 ```xml
 <configuration>
   <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-    <file>../logs/application.log</file>
+    <file>/deployments/logs/application.log</file>
     <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
   </appender>
 
@@ -233,33 +307,67 @@ Si usa Logback, configure un `FileAppender` con el codificador JSON de Logstash.
 
 ## 📊 8. Visualización en Grafana
 
-1. Acceda a Grafana en `http://localhost:3000`.
-2. Como configuramos acceso anónimo como Administrador, entrará directo.
-3. Vaya a **Connections -> Data sources** y agregue **Loki**.
-   - URL: `http://loki:3100`
-   - Clic en **Save & test**.
-4. Vaya a **Explore** (menú izquierdo).
-5. Seleccione Loki como fuente de datos.
-6. En el campo "Label filters", seleccione `job` = `quarkus_app`.
-7. Haga clic en **Run query** para ver los logs recolectados.
+Acceda a Grafana en `http://localhost:3000`. La fuente de datos Loki ya está preconfigurada.
+
+Navegue a **Explore** (icono de brújula en el menú izquierdo) y seleccione **Loki** como fuente de datos.
+
+**Consultas LogQL de ejemplo:**
+
+Todos los logs de la aplicación:
+```logql
+{job="quarkus_app"}
+```
+
+Filtrar por nivel:
+```logql
+{job="quarkus_app", level="ERROR"}
+```
+
+Buscar errores por contenido:
+```logql
+{job="quarkus_app"} |= "NullPointerException"
+```
+
+Parsear campos del JSON y mostrar solo el mensaje:
+```logql
+{job="quarkus_app"} | json | line_format "{{.message}}"
+```
 
 ---
 
 ## 🧪 9. Actividades de profundización
 
-- **Simular fallos y rastrear su origen:** Implemente un endpoint en la aplicación (ej. `GET /api/error`) que genere intencionalmente una excepción (`NullPointerException`). Utilice la pestaña Explore de Grafana y el lenguaje LogQL para buscar errores (`{job="quarkus_app"} |= "Exception"`).
-- Analizar cómo Promtail maneja la lectura del archivo (*tailing*) y la rotación de logs.
-- Comparar este enfoque basado en archivos contra enfoques de envío directo por red (TCP/UDP).
+- **Simular fallos y rastrear su origen:** El endpoint `GET /api/error` genera intencionalmente una `NullPointerException`. Ejecútelo y utilice la consulta LogQL `{job="quarkus_app"} |= "NullPointerException"` para localizarlo en Grafana.
+- Analizar cómo Promtail maneja la lectura del archivo (*tailing*) y la posición de lectura (archivo `positions.yaml`).
+- Comparar el enfoque basado en archivos contra el envío directo por red (TCP/UDP): ¿qué ventajas y desventajas ofrece cada uno en términos de acoplamiento, confiabilidad y rendimiento?
+- Desplegar dos instancias de `logs.producer` escribiendo en archivos distintos y distinguirlas mediante labels de Promtail.
+- Analizar las implicaciones del modelo de indexación de Loki (solo labels) frente a la indexación completa de Elasticsearch.
 
 ---
 
 ## 🛠️ 10. Troubleshooting
 
-**Error común:** Grafana no logra conectarse a Loki.
-**Solución:** Verifique en el archivo `docker-compose.yml` que Grafana y Loki compartan la misma red (o que se utilice el nombre de servicio correcto `http://loki:3100`). Asegúrese de que el contenedor de Loki esté en estado *Up* y no reiniciándose.
+**Error común:** El archivo `./logs/application.log` no se crea.
 
-**Error común:** Promtail no envía los logs a Grafana.
-**Solución:** Asegúrese de que su aplicación Java esté creando efectivamente el archivo en el directorio `./logs` de la máquina host, y que Promtail tenga los permisos de lectura sobre ese volumen montado.
+**Solución:** Verifique que el directorio `./logs` exista en el host antes de ejecutar `docker-compose up`. El contenedor `logs.producer` escribe en `/deployments/logs/` que debe estar montado correctamente. Cree el directorio con `mkdir -p logs`.
+
+---
+
+**Error común:** Grafana no muestra datos al consultar en Explore.
+
+**Solución:** Verifique que Promtail esté enviando logs con `docker-compose logs promtail`. Asegúrese de que el archivo de log exista en `./logs/` y que Loki esté saludable (`docker-compose ps`). Confirme que la URL de la datasource en Grafana sea `http://loki:3100`.
+
+---
+
+**Error común:** Loki devuelve error al iniciar por permisos en `/tmp/loki`.
+
+**Solución:** Loki en modo single-node almacena datos en `/tmp/loki` por defecto. Si el contenedor se reinicia frecuentemente, agregue un volumen persistente:
+```yaml
+loki:
+  volumes:
+    - loki_data:/tmp/loki
+```
+Y declare `loki_data:` en la sección `volumes:` del compose.
 
 ---
 
@@ -268,3 +376,8 @@ Si usa Logback, configure un `FileAppender` con el codificador JSON de Logstash.
 - Loki Documentation: https://grafana.com/docs/loki/latest/
 - Promtail Documentation: https://grafana.com/docs/loki/latest/send-data/promtail/
 - LogQL (Loki Query Language): https://grafana.com/docs/loki/latest/query/
+- Grafana – https://grafana.com/docs/grafana/latest/
+
+---
+
+ℹ️ *Esta guía complementa el marco teórico de observabilidad y centralización de logs desarrollado en el documento central.*

@@ -1,0 +1,52 @@
+services:
+  logs.producer:
+    build:
+      context: logs.producer
+      dockerfile: src/main/docker/Dockerfile.compose
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./logs:/deployments/logs
+
+  loki:
+    image: grafana/loki:3.0.0
+    container_name: loki
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:3100/ready || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 15s
+
+  promtail:
+    image: grafana/promtail:3.0.0
+    container_name: promtail
+    volumes:
+      - ./logs:/var/log/app_logs:ro
+      - source: ./promtail/promtail-config.yaml
+        target: /etc/promtail/config.yml
+        type: bind
+    command: -config.file=/etc/promtail/config.yml
+    depends_on:
+      loki:
+        condition: service_healthy
+
+  grafana:
+    image: grafana/grafana:11.0.0
+    container_name: grafana
+    environment:
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_AUTH_DISABLE_LOGIN_FORM=true
+    ports:
+      - "3000:3000"
+    volumes:
+      - source: ./grafana/provisioning
+        target: /etc/grafana/provisioning
+        type: bind
+    depends_on:
+      loki:
+        condition: service_healthy
