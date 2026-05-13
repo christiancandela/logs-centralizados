@@ -100,8 +100,19 @@ El uso de **Docker Compose** permite describir y desplegar la arquitectura como 
 
 ```yaml
 services:
+  logs.producer:
+    build:
+      context: logs.producer
+      dockerfile: src/main/docker/Dockerfile.compose
+    ports:
+      - "8080:8080"
+    environment:
+      LOGSTASH_HOST: logstash
+    depends_on:
+      - logstash
+
   opensearch:
-    image: opensearchproject/opensearch:3
+    image: opensearchproject/opensearch:3.0.0
     container_name: opensearch
     environment:
       - discovery.type=single-node
@@ -116,30 +127,39 @@ services:
       - opensearch_data:/usr/share/opensearch/data
     ports:
       - "9200:9200"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:9200/_cluster/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
 
   dashboards:
-    image: opensearchproject/opensearch-dashboards:3
+    image: opensearchproject/opensearch-dashboards:3.0.0
     container_name: dashboards
-    depends_on:
-      - opensearch
     ports:
       - "5601:5601"
     environment:
       - OPENSEARCH_HOSTS=http://opensearch:9200
       - DISABLE_SECURITY_DASHBOARDS_PLUGIN=true
+    depends_on:
+      opensearch:
+        condition: service_healthy
 
   logstash:
     build: ./logstash
     container_name: logstash
     volumes:
-      - ./logstash/pipelines:/usr/share/logstash/pipeline
+      - source: ./logstash/pipelines
+        target: /usr/share/logstash/pipeline
+        type: bind
     ports:
       - "4560:4560"
     environment:
       - xpack.monitoring.enabled=false
-      - OPENSEARCH_HOSTS=http://opensearch:9200
     depends_on:
-      - opensearch
+      opensearch:
+        condition: service_healthy
 
 volumes:
   opensearch_data:
@@ -169,8 +189,9 @@ filter {
 output {
   stdout {}
   opensearch {
-    hosts => [${OPENSEARCH_HOSTS:http://opensearch:9200}]
-    index => "logstash-%{+YYYY.MM.dd}"
+    hosts => ["http://opensearch:9200"]
+    index => "logs-producer-%{+YYYY.MM.dd}"
+    manage_template => false
   }
 }
 ```
@@ -180,9 +201,11 @@ output {
 ### 5.3 Dockerfile de Logstash
 
 ```dockerfile
-FROM docker.io/logstash:8.18.0
+FROM docker.io/logstash:9.4.1
 RUN logstash-plugin install logstash-output-opensearch
 ```
+
+> ℹ️ **Nota:** La versión 2.x del plugin `logstash-output-opensearch` tiene un bug de compatibilidad con JRuby 10 (incluido en Logstash 9.x) que impide la instalación de templates. Por eso el pipeline incluye `manage_template => false`, lo que hace que Logstash cree los índices dinámicamente sin plantilla previa. En producción se recomienda definir un index template explícito en OpenSearch.
 
 ---
 
@@ -222,8 +245,8 @@ curl -XPOST "http://localhost:5601/api/saved_objects/index-pattern" \
   -H "osd-xsrf: true" \
   -d '{
     "attributes": {
-      "title": "logstash-*",  
-      "timeFieldName": "@timestamp"  
+      "title": "logs-producer-*",
+      "timeFieldName": "@timestamp"
     }
   }'
 ```
@@ -240,20 +263,11 @@ Esta aproximación favorece la **normalización semántica de los eventos**, fac
 - En caso de no tener una aplicación puede crear con el siguiente comando.
 
 ```shell
-mvn io.quarkus.platform:quarkus-maven-plugin:3.19.1:create \
+mvn io.quarkus.platform:quarkus-maven-plugin:3.18.4:create \
     -DprojectGroupId=co.uniquindio.ingesis.logs \
     -DprojectArtifactId=logs.producer \
-    -Dextensions='rest' \
+    -Dextensions='rest,logging-json' \
     -DnoCode
-```
-
-- Adicionar la siguiente dependencia a su proyecto.
-
-```xml
-<dependency>
-  <groupId>io.quarkus</groupId>
-  <artifactId>quarkus-logging-json</artifactId>
-</dependency>
 ```
 
 - Configure su aplicación para que los logs sean enviados a Logstash. (**`application.properties`**)
@@ -262,7 +276,8 @@ mvn io.quarkus.platform:quarkus-maven-plugin:3.19.1:create \
 quarkus.log.console.json=false
 quarkus.log.socket.enable=true
 quarkus.log.socket.json=true
-quarkus.log.socket.endpoint=localhost:4560
+# Cuando se ejecuta desde el IDE apunta a localhost; docker compose inyecta LOGSTASH_HOST=logstash
+quarkus.log.socket.endpoint=${LOGSTASH_HOST:localhost}:4560
 quarkus.log.socket.json.exception-output-type=formatted
 quarkus.log.socket.json.log-format=ECS
 ```
@@ -329,16 +344,21 @@ Accede a:
 http://localhost:5601
 ```
 
-Ingrese a **Opensearch Dashboard > Discover**: Allí podrá ver un registro de los logs. Alternativamente, también puede acceder a **Observability > Logs** y en el campo PPL ingresar `source = logstash-*`, esto le indica al sistema de donde deberá obtener los logs que se desean consultar.
+Ingrese a **OpenSearch Dashboards → Discover**: una vez creado el index pattern `logs-producer-*` (paso anterior), selecciónelo y verá el registro de los logs con todos sus campos ECS.
+
+Alternativamente, acceda a **Observability → Logs** y en el campo PPL ingrese:
+```
+source = logs-producer-*
+```
 
 ---
 
 ## 🧪 9. Actividades de profundización
 
-- **Simular fallos y rastrear su origen:** Implemente un endpoint en la aplicación productora (ej. `GET /api/error`) que genere intencionalmente una excepción (como `NullPointerException`). Ejecute el endpoint y utilice OpenSearch Dashboards para rastrear el *stacktrace* del error, validando la ventaja del formato estructurado multilínea.
-- Comparar OpenSearch y Elasticsearch como motores de búsqueda.
-- Analizar múltiples productores de logs.
-- Identificar limitaciones de envío TCP sin autenticación.
+- **Simular fallos y rastrear su origen:** El endpoint `GET /api/error` de la aplicación de ejemplo genera intencionalmente una `NullPointerException`. Ejecútelo y utilice OpenSearch Dashboards para localizar el evento de error e inspeccionar el stacktrace estructurado.
+- Comparar el modelo de índices con fecha (`logs-producer-YYYY.MM.dd`) de este stack frente a los data streams de Elasticsearch 9.x de la guía anterior.
+- Desplegar dos instancias de `logs.producer` y distinguirlas en Discover por el campo `service.name`.
+- Identificar las implicaciones de seguridad del envío TCP sin autenticación ni cifrado.
 
 ---
 
@@ -350,6 +370,12 @@ Ingrese a **Opensearch Dashboard > Discover**: Allí podrá ver un registro de l
 ```bash
 sudo sysctl -w vm.max_map_count=262144
 ```
+
+---
+
+**Error común:** Logstash arranca pero no indexa documentos; en sus logs aparece `undefined method 'exists?' for class File`.
+
+**Explicación:** El plugin `logstash-output-opensearch` 2.x tiene un bug de compatibilidad con JRuby 10 (Logstash 9.x) al intentar instalar templates de índice. El pipeline de esta guía ya incluye `manage_template => false` para evitarlo. Si crea su propio pipeline, asegúrese de incluir esa opción.
 
 ---
 
