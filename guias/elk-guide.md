@@ -199,7 +199,7 @@ output {
 El despliegue del entorno se realiza mediante un único comando, el cual levanta de forma coordinada todos los componentes definidos en el archivo `docker-compose.yml`.
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 ---
@@ -209,7 +209,7 @@ docker-compose up -d
 La validación del entorno permite comprobar que los contenedores asociados a Elasticsearch, Logstash y Kibana se encuentran en ejecución y disponibles.
 
 ```bash
-docker-compose ps
+docker compose ps
 ```
 
 ---
@@ -334,13 +334,19 @@ Crea o selecciona el data view `logs-*` con campo de tiempo `@timestamp`. Esta v
 - Desplegar dos instancias de `logs.producer` en puertos distintos y correlacionar sus eventos en Kibana mediante el campo `service.name`.
 - Identificar las implicaciones de seguridad del envío TCP sin autenticación ni cifrado.
 
+### Preguntas de verificación
+
+1. ¿Qué ventaja concreta ofrece el Elastic Common Schema (ECS) frente a un esquema de logs personalizado cuando se correlacionan eventos de múltiples servicios en Kibana Discover?
+2. El pipeline de Logstash de esta guía usa un appender TCP sin TLS. Analice qué riesgos de seguridad introduce este diseño y qué cambios de configuración serían necesarios para mitigarlos en un entorno productivo.
+3. Evalúe las diferencias arquitectónicas entre los data streams de Elasticsearch 9.x (usados en esta guía) y los índices con fecha (`logs-YYYY.MM.dd`): ¿en qué escenarios concretos justificaría elegir uno sobre el otro?
+
 ---
 
 ## 🛠️ 10. Troubleshooting
 
 **Error común:** El contenedor `elasticsearch` se detiene inesperadamente o marca estado `Exit 78` / `Exit 137`.
 
-**Solución:** Elasticsearch requiere configurar la memoria virtual del sistema anfitrión. En sistemas Linux o entornos WSL, ejecute el siguiente comando en la terminal de su máquina (fuera del contenedor) antes de iniciar `docker-compose up -d`:
+**Solución:** Elasticsearch requiere configurar la memoria virtual del sistema anfitrión. En sistemas Linux o entornos WSL, ejecute el siguiente comando en la terminal de su máquina (fuera del contenedor) antes de iniciar `docker compose up -d`:
 ```bash
 sudo sysctl -w vm.max_map_count=262144
 ```

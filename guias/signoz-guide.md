@@ -303,6 +303,12 @@ curl http://localhost:8090/api/error
 - **Explorar el protocolo opAMP:** Investigue qué es el protocolo opAMP (*Open Agent Management Protocol*) y por qué SigNoz lo usa para la configuración dinámica del colector en producción.
 - **Desplegar una segunda aplicación:** Agregue un segundo servicio al override, asígnele un `quarkus.application.name` diferente y filtre por él en el Logs Explorer.
 
+### Preguntas de verificación
+
+1. ClickHouse almacena datos en formato columnar (OLAP), mientras que Elasticsearch usa índices invertidos orientados a búsqueda de texto. Explique por qué el almacenamiento columnar ofrece ventajas de compresión y velocidad de ingesta para logs de alta frecuencia, y qué tipo de consultas se vuelven más eficientes con cada motor.
+2. El override de Docker Compose de esta guía solo redefine el campo `command` del servicio `otel-collector` sin duplicar el resto de su definición. Analice el mecanismo de fusión de archivos que usa Docker Compose para entender cómo se combinan las claves del compose oficial con las del override, y qué ocurriría si se omitiera el override al levantar el stack.
+3. El protocolo opAMP (*Open Agent Management Protocol*) permite la configuración dinámica del OTel Collector desde SigNoz sin reiniciar el contenedor. Evalúe las implicaciones de seguridad y operativas de habilitar opAMP en producción frente al enfoque de configuración estática usado en esta guía de laboratorio.
+
 ---
 
 ## 🛠️ 10. Troubleshooting

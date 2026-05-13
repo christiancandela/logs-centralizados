@@ -1,0 +1,44 @@
+// ─── 1. Descubrir el archivo de log ─────────────────────────────────────────
+local.file_match "quarkus_logs" {
+  path_targets = [{"__path__" = "/var/log/app/*.log"}]
+  sync_period  = "5s"
+}
+
+// ─── 2. Leer el archivo (file tailing) ──────────────────────────────────────
+loki.source.file "quarkus_tail" {
+  targets    = local.file_match.quarkus_logs.targets
+  forward_to = [loki.process.enrich.receiver]
+}
+
+// ─── 3. Extraer el nivel de log y enriquecer con etiquetas ──────────────────
+// El formato ECS de Quarkus produce claves planas con punto: {"log.level":"INFO",...}
+// stage.regex extrae el nivel con la misma expresión validada en la guía Promtail.
+loki.process "enrich" {
+  stage.regex {
+    expression = "\"log\\.level\":\"(?P<level>[^\"]+)\""
+  }
+
+  stage.labels {
+    values = {
+      "level"       = "",
+      "job"         = "",
+      "environment" = "",
+    }
+  }
+
+  stage.static_labels {
+    values = {
+      "job"         = "alloy_app_logs",
+      "environment" = "dev",
+    }
+  }
+
+  forward_to = [loki.write.loki_backend.receiver]
+}
+
+// ─── 4. Enviar a Loki ────────────────────────────────────────────────────────
+loki.write "loki_backend" {
+  endpoint {
+    url = "http://loki:3100/loki/api/v1/push"
+  }
+}

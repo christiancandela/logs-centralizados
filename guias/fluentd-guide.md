@@ -223,7 +223,7 @@ USER fluent
 El despliegue del entorno se realiza mediante un único comando, el cual levanta de forma coordinada todos los componentes definidos en el archivo `docker-compose.yml`.
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 ### Validación de los servicios
@@ -231,7 +231,7 @@ docker-compose up -d
 La validación del entorno permite comprobar que los contenedores asociados a Elasticsearch, Fluentd y Kibana se encuentran en ejecución y disponibles.
 
 ```bash
-docker-compose ps
+docker compose ps
 ```
 
 ---
@@ -357,13 +357,19 @@ Navegue a **Hamburger menu → Discover**. Cree un data view con el patrón `log
 - Modificar `fluent.conf` para agregar un campo personalizado (ej. `environment: dev`) usando el plugin `record_transformer` y observar cómo se indexa en Elasticsearch.
 - Analizar las implicaciones de usar índices con fecha (`logs-YYYY.MM.dd`) frente a data streams de Elasticsearch 9.x.
 
+### Preguntas de verificación
+
+1. En la configuración de Fluentd de esta guía, el bloque `<buffer>` usa `@type file` con `flush_interval 5s`. Explique qué papel cumple este buffer en términos de confiabilidad de entrega y qué ocurriría si el contenedor de Fluentd se reinicia antes de que el buffer se vacíe.
+2. Compare el modelo de configuración de Fluentd (`fluent.conf` con directivas `<source>`, `<filter>`, `<match>`) frente al pipeline de Logstash (`input`, `filter`, `output`): ¿qué diferencias de diseño se observan en la forma de enrutar eventos a múltiples destinos?
+3. La sección 7.2 describe el transporte Syslog UDP como alternativa al TCP JSON. Evalúe las implicaciones de observabilidad de cada protocolo: ¿cuál ofrece mayor fidelidad semántica y por qué el enfoque TCP JSON es preferible para sistemas modernos?
+
 ---
 
 ## 🛠️ 10. Troubleshooting
 
 **Error común:** El contenedor `elasticsearch` se detiene inesperadamente o marca estado `Exit 78` / `Exit 137`.
 
-**Solución:** Elasticsearch requiere configurar la memoria virtual del sistema anfitrión. En sistemas Linux o entornos WSL, ejecute el siguiente comando en la terminal de su máquina (fuera del contenedor) antes de iniciar `docker-compose up -d`:
+**Solución:** Elasticsearch requiere configurar la memoria virtual del sistema anfitrión. En sistemas Linux o entornos WSL, ejecute el siguiente comando en la terminal de su máquina (fuera del contenedor) antes de iniciar `docker compose up -d`:
 ```bash
 sudo sysctl -w vm.max_map_count=262144
 ```

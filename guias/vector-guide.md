@@ -236,13 +236,13 @@ datasources:
 ### Inicialización de los servicios
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 ### Validación de los servicios
 
 ```bash
-docker-compose ps
+docker compose ps
 ```
 
 Salida esperada (referencial):
@@ -361,6 +361,12 @@ Parsear campos ECS y mostrar solo el mensaje:
 - **Censura de datos sensibles:** Añada una transformación VRL que elimine un campo del evento antes de enviarlo a Loki (ej. `del(."process.thread.name")`).
 - **Múltiples destinos:** Configure un segundo sink en `vector.toml` que además de Loki escriba los eventos en un archivo local (type = "file"). Esto ilustra el enrutamiento a múltiples backends simultáneamente.
 - **Comparar recursos:** Ejecute `docker stats` con el stack Vector activo y compare el consumo de memoria del contenedor `vector` frente al de `fluentd` o `logstash` en las guías anteriores.
+
+### Preguntas de verificación
+
+1. En el pipeline de Vector de esta guía, la transformación VRL accede al campo `"log.level"` con la sintaxis `."log.level"` (entre comillas). Explique por qué es necesaria esa sintaxis y qué diferencia introduce respecto a acceder a un campo ordinario como `.message`.
+2. El modelo de pipeline de Vector (Source → Transform → Sink) es declarativo y tipado. Analice cómo este diseño facilita o dificulta la implementación de enrutamiento condicional (enviar logs de nivel ERROR a un destino distinto que los de nivel INFO) en comparación con el modelo de Fluentd o Logstash.
+3. Vector está implementado en Rust y opera sin JVM ni runtime de Ruby. Evalúe en qué escenarios de producción esta diferencia de implementación justifica migrar desde Logstash o Fluentd, y en cuáles el ecosistema de plugins de esas herramientas sería un factor determinante para no hacerlo.
 
 ---
 

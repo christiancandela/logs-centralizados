@@ -137,13 +137,13 @@ services:
 ### Inicialización de los servicios
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 ### Validación de los servicios
 
 ```bash
-docker-compose ps
+docker compose ps
 ```
 
 Salida esperada (referencial):
@@ -259,6 +259,12 @@ Los logs generados durante peticiones HTTP llevan automáticamente `trace_id` y 
 - Explorar las métricas exportadas automáticamente por Quarkus (JVM, HTTP requests) en la sección de **Prometheus** de Grafana.
 - Desplegar dos instancias de `logs.producer` con distintos `quarkus.application.name` y distinguirlas por `service_name` en LogQL.
 - Analizar la diferencia entre `severity_text` (nivel semántico OTel) y el nivel de log tradicional de Java.
+
+### Preguntas de verificación
+
+1. OpenTelemetry enriquece automáticamente los logs con `trace_id` y `span_id` cuando se generan dentro de una petición HTTP activa. Explique el mecanismo por el cual Quarkus propaga este contexto de traza al logger sin que el desarrollador lo haga explícitamente.
+2. La imagen `grafana/otel-lgtm` empaqueta en un solo contenedor el OTel Collector, Loki, Prometheus, Tempo y Grafana. Analice las ventajas y limitaciones de esta decisión de diseño para entornos de laboratorio frente a un despliegue de componentes separados como en la guía PLG.
+3. Evalúe la diferencia arquitectónica entre exportar logs mediante OTLP/gRPC (esta guía) y los enfoques basados en TCP JSON (ELK/OLO/Vector) o file tailing (PLG): ¿qué pilares de la observabilidad se habilitan o quedan incompletos con cada enfoque?
 
 ---
 

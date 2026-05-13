@@ -8,6 +8,8 @@ En este escenario, comprender el comportamiento interno de los sistemas en ejecu
 
 El presente trabajo escrito tiene como propósito desarrollar, desde un enfoque académico y formativo, los fundamentos conceptuales de la observabilidad en sistemas distribuidos, con énfasis en la **centralización de logs** como uno de sus pilares principales. El documento se concibe como un recurso educativo orientado a facilitar el aprendizaje progresivo de estos conceptos, priorizando los principios y la arquitectura conceptual sobre el uso de herramientas o tecnologías específicas.
 
+Las guías prácticas complementarias cubren un espectro tecnológico más amplio que el enunciado originalmente en la propuesta de trabajo. Esta ampliación es una decisión deliberada: el estado del arte de la observabilidad ha evolucionado de forma acelerada durante el período de desarrollo del recurso, incorporando estándares de protocolo unificado y plataformas de nueva generación que ofrecen un valor pedagógico significativo y mejoran la transferibilidad del conocimiento. Las guías adicionales se diseñaron con el mismo rigor y estructura que las originalmente propuestas, manteniendo coherencia con el marco conceptual presentado en este documento.
+
 ---
 
 ## 2. Justificación
@@ -32,6 +34,17 @@ Desarrollar un marco conceptual que permita comprender la observabilidad en sist
 - Examinar el rol de los logs como fuente primaria de información sobre la ejecución de sistemas de software.
 - Describir la centralización de logs como un mecanismo para reducir la complejidad cognitiva y operativa.
 - Identificar beneficios y desafíos conceptuales asociados al diseño de soluciones de centralización de logs.
+
+### 3.3 Resultados de aprendizaje esperados
+
+Al finalizar el estudio de este documento, el estudiante será capaz de:
+
+- **Definir** la observabilidad como principio de ingeniería y distinguirla de la monitorización tradicional en el contexto de sistemas distribuidos.
+- **Explicar** por qué los logs constituyen una fuente primaria de información sobre el comportamiento interno de un sistema en ejecución.
+- **Describir** la problemática de la dispersión de logs en arquitecturas de microservicios y argumentar la necesidad de su centralización.
+- **Identificar** los componentes de la arquitectura conceptual de centralización de logs (recolección, procesamiento, almacenamiento y visualización) y el rol de cada uno dentro del flujo de información.
+- **Analizar** los desafíos de diseño asociados a la estandarización semántica, el ciclo de vida de los datos y la protección de información sensible.
+- **Relacionar** los conceptos teóricos desarrollados en este documento con las implementaciones prácticas abordadas en las guías complementarias.
 
 ---
 
@@ -79,7 +92,7 @@ Estos beneficios refuerzan el valor de la centralización de logs como herramien
 
 El diseño de soluciones de centralización de logs implica enfrentar diversos desafíos técnicos y operativos (Kitchin, 2014; Beyer et al., 2016). Abordarlos adecuadamente requiere la adopción de criterios conceptuales sólidos:
 
-- **Estandarización Semántica:** En arquitecturas heterogéneas, consolidar logs carece de valor si no comparten un esquema común. El uso de estándares como *Elastic Common Schema (ECS)* o las Convenciones Semánticas de *OpenTelemetry* es fundamental para garantizar que los eventos de distintos servicios puedan correlacionarse correctamente, permitiendo trazar flujos de ejecución completos a través de múltiples microservicios (Sigelman et al., 2010).
+- **Estandarización Semántica:** En arquitecturas heterogéneas, consolidar logs carece de valor si no comparten un esquema común. La adopción de estándares de esquema semántico ampliamente reconocidos en la industria —que definen convenciones uniformes para nombres de campos, tipos de datos y niveles de severidad— es fundamental para garantizar que los eventos de distintos servicios puedan correlacionarse correctamente, permitiendo trazar flujos de ejecución completos a través de múltiples microservicios (Sigelman et al., 2010). Las guías prácticas complementarias ilustran la aplicación concreta de varios de estos estándares en diferentes ecosistemas tecnológicos.
 - **Ciclo de Vida y Retención de Datos:** Dado el inmenso volumen de información operativa, los sistemas de centralización deben implementar políticas de retención, rotación y almacenamiento por niveles (*Hot/Cold storage*) para gestionar el impacto en la infraestructura sin perder capacidades de auditoría a largo plazo.
 - **Seguridad y Privacidad (Sanitización):** Los logs suelen capturar inadvertidamente información sensible (contraseñas, tokens, datos de usuarios PII). Es imperativo que las arquitecturas incluyan mecanismos de censura o enmascaramiento de datos durante la fase de procesamiento antes de su indexación (Aghili, Li & Khomh, 2025).
 
@@ -96,15 +109,21 @@ graph LR
     A[Recolección] --> B[Procesamiento]
     B --> C[Almacenamiento]
     C --> D[Visualización]
-    
+
     subgraph Generación
-    E[Aplicación / Servicio] -. Logs .-> A
+        E[Aplicación / Servicio] -. Logs .-> A
+        E -. Métricas .-> A
+        E -. Trazas .-> A
     end
-    
+
     classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
     classDef proc fill:#e1f5fe,stroke:#0288d1;
+    classDef gen fill:#fff8e1,stroke:#f9a825;
     class A,B,C,D proc;
+    class E gen;
 ```
+
+> **Nota sobre el alcance del diagrama:** Los sistemas distribuidos generan tres tipos de señales de observabilidad: **logs** (eventos discretos con contexto semántico), **métricas** (mediciones numéricas agregadas en el tiempo) y **trazas** (recorridos de solicitudes a través de múltiples servicios). La arquitectura conceptual de cuatro etapas —recolección, procesamiento, almacenamiento y visualización— aplica a las tres señales. Este documento centra su desarrollo en los **logs**, por ser la señal de mayor riqueza contextual y la más directamente vinculada a la comprensión del comportamiento interno del sistema (Majors, Fong-Jones & Miranda, 2022). Las guías prácticas complementarias amplían el tratamiento hacia métricas y trazas en los ecosistemas que las integran de forma nativa.
 
 #### 4.7.1 Recolección de logs
 
@@ -174,6 +193,7 @@ Aunque las guías son independientes, se sugiere el siguiente orden de consumo p
 6. **[OpenTelemetry](guias/otel-guide.md):** Presenta el estándar unificador actual y más interoperable para la observabilidad unificada.
 7. **[Vector, Loki y Grafana](guias/vector-guide.md):** (*Estado del Arte*) Introduce el concepto de *Pipeline de Observabilidad* de alto rendimiento utilizando Rust para desplazar a recolectores pesados.
 8. **[SigNoz (ClickHouse)](guias/signoz-guide.md):** (*Estado del Arte*) Plataforma "Todo en Uno" que utiliza OpenTelemetry nativamente y almacenamiento analítico columnar, representando la alternativa libre a plataformas comerciales.
+9. **[Grafana Alloy](guias/alloy-guide.md):** (*Guía complementaria*) Migración de Promtail al sucesor oficial. Introduce el modelo de configuración orientado al flujo de datos (*dataflow*) con componentes explícitamente conectados.
 
 ---
 

@@ -53,6 +53,8 @@ La **centralización de logs** mitiga la dispersión inherente a los sistemas di
   https://docs.docker.com/compose/install/
 - Al menos **8 GB de RAM** libres
 
+> ℹ️ **Nota sobre versiones:** Esta guía usa **OpenSearch 2.12**, no la versión 3.x empleada en la guía OLO. Graylog 7.1 requiere compatibilidad con la API de Elasticsearch 7.x, que OpenSearch 2.x mantiene; la rama 3.x introdujo cambios de API que Graylog aún no soporta. Ambas elecciones son intencionadas y correctas para cada contexto.
+
 ---
 
 ## 📂 3. Estructura del proyecto
@@ -183,13 +185,13 @@ volumes:
 ### Inicialización de los servicios
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 ### Validación de los servicios
 
 ```bash
-docker-compose ps
+docker compose ps
 ```
 
 Salida esperada (referencial):
@@ -314,6 +316,17 @@ Desde allí puede:
 - Evaluar el impacto de **fragmentación** (`maxChunkSize`) en mensajes grandes con stacktraces extensos.
 - Implementar múltiples productores de logs y distinguirlos por el campo `source`.
 - Analizar consideraciones de seguridad (TLS, autenticación, control de acceso) para escenarios productivos.
+- **Hardening de credenciales (actividad de seguridad):** El `docker-compose.yml` de esta guía contiene credenciales de laboratorio (`GRAYLOG_PASSWORD_SECRET: "forpasswordencryption"`, contraseña `admin`). Esto es un **anti-patrón** para cualquier entorno que no sea exclusivamente local. Practique el ciclo correcto:
+  1. Genere un secreto seguro con `openssl rand -hex 32` y reemplace el valor de `GRAYLOG_PASSWORD_SECRET`.
+  2. Calcule el hash SHA-256 de su nueva contraseña con `echo -n "nuevaContraseña" | sha256sum` y reemplace `GRAYLOG_ROOT_PASSWORD_SHA2`.
+  3. Verifique que Graylog arranque correctamente con las nuevas credenciales.
+  4. Analice por qué estos valores **nunca deben almacenarse en texto claro en un repositorio de código** y explore cómo Docker Compose soporta archivos `.env` y secretos como alternativa.
+
+### Preguntas de verificación
+
+1. GELF en esta guía utiliza transporte UDP (puerto 12201). Explique qué ocurre con los mensajes de log cuando la red experimenta congestión o pérdida de paquetes, y por qué este comportamiento puede ser aceptable o no según el contexto de uso.
+2. La fragmentación de mensajes GELF (parámetro `maxChunkSize`) es necesaria cuando el payload supera el MTU de la red. Analice cómo un stacktrace de Java de 50 líneas podría afectar la entrega de mensajes GELF y qué estrategia de configuración mitigaría el riesgo de pérdida de fragmentos.
+3. Compare la arquitectura de Graylog (con su propio journal, OpenSearch y MongoDB) frente al stack ELK: ¿qué ventajas ofrece Graylog al integrar en una sola plataforma la ingestión, el almacenamiento y la visualización, y qué complejidades operativas introduce el componente MongoDB?
 
 ---
 

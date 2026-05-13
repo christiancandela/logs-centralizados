@@ -52,6 +52,8 @@ La **centralización de logs** mitiga la dispersión inherente a los sistemas di
   https://docs.docker.com/compose/install/
 - Al menos **8 GB de RAM** libres
 
+> ℹ️ **Nota sobre versiones:** Esta guía usa **OpenSearch 3.0**, la versión más reciente de la línea principal. La guía GELF/Graylog utiliza OpenSearch 2.12 porque Graylog 7.1 requiere compatibilidad con la API de Elasticsearch 7.x que solo mantiene la rama 2.x. Ambas elecciones son intencionadas y correctas para cada contexto.
+
 ---
 
 ## 📂 3. Estructura del proyecto
@@ -216,7 +218,7 @@ RUN logstash-plugin install logstash-output-opensearch
 El despliegue del entorno se realiza mediante un único comando, el cual levanta de forma coordinada todos los componentes definidos en el archivo `docker-compose.yml`.
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 ---
@@ -226,7 +228,7 @@ docker-compose up -d
 La validación del entorno permite comprobar que los contenedores asociados a OpenSearch, Logstash y OpenSearch Dashboards se encuentran en ejecución y disponibles.
 
 ```bash
-docker-compose ps
+docker compose ps
 ```
 
 ---
@@ -360,13 +362,19 @@ source = logs-producer-*
 - Desplegar dos instancias de `logs.producer` y distinguirlas en Discover por el campo `service.name`.
 - Identificar las implicaciones de seguridad del envío TCP sin autenticación ni cifrado.
 
+### Preguntas de verificación
+
+1. OpenSearch es un fork de Elasticsearch. Explique qué es el campo `manage_template => false` en el pipeline de Logstash de esta guía y por qué es necesario específicamente con el plugin `logstash-output-opensearch` 2.x sobre Logstash 9.x.
+2. Compare el modelo de índices con fecha (`logs-producer-YYYY.MM.dd`) que usa este stack frente a los data streams de Elasticsearch 9.x de la guía ELK: ¿qué implicaciones tiene cada enfoque para la gestión del ciclo de vida de los datos (ILM)?
+3. Evalúe las razones técnicas y de gobernanza que llevaron a la bifurcación de OpenSearch desde Elasticsearch 7.10. ¿Cómo afecta esa historia a la elección de versión en esta guía (OpenSearch 3.0) frente a la guía GELF (OpenSearch 2.12)?
+
 ---
 
 ## 🛠️ 10. Troubleshooting
 
 **Error común:** El contenedor `opensearch` se detiene inesperadamente o marca estado `Exit 78` / `Exit 137`.
 
-**Solución:** OpenSearch requiere configurar la memoria virtual del sistema anfitrión. En sistemas Linux o entornos WSL, ejecute el siguiente comando en la terminal de su máquina (fuera del contenedor) antes de iniciar `docker-compose up -d`:
+**Solución:** OpenSearch requiere configurar la memoria virtual del sistema anfitrión. En sistemas Linux o entornos WSL, ejecute el siguiente comando en la terminal de su máquina (fuera del contenedor) antes de iniciar `docker compose up -d`:
 ```bash
 sudo sysctl -w vm.max_map_count=262144
 ```

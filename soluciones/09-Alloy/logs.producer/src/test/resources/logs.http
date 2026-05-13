@@ -1,0 +1,35 @@
+POST http://localhost:8080/logs
+Content-Type: application/json
+
+{
+  "level": "INFO",
+  "message": "Log de prueba"
+}
+
+###
+
+POST http://localhost:8080/logs
+Content-Type: application/json
+
+{
+  "level": "WARN",
+  "message": "Advertencia de prueba"
+}
+
+###
+
+POST http://localhost:8080/logs
+Content-Type: application/json
+
+{
+  "level": "ERROR",
+  "message": "Error de prueba"
+}
+
+###
+
+# Activa el endpoint de error intencional (NullPointerException)
+# Úselo para la actividad de profundización: busque el stacktrace en Kibana
+GET http://localhost:8080/api/error
+
+###

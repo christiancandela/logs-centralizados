@@ -2,6 +2,8 @@
 
 > *Guía práctica para implementar una solución de centralización de logs utilizando Docker Compose con el ecosistema de Grafana (Promtail y Loki), como instanciación de la arquitectura conceptual de observabilidad presentada en el documento central.*
 
+> ⚠️ **Estado de Promtail:** A partir de 2023, Grafana Labs ha puesto Promtail en **modo mantenimiento**. Se siguen publicando correcciones de seguridad, pero no se añaden nuevas funcionalidades. La herramienta recomendada para nuevos proyectos es [**Grafana Alloy**](https://grafana.com/docs/alloy/), el sucesor unificado que incorpora las capacidades de Promtail y del Grafana Agent. Esta guía usa Promtail porque su modelo conceptual —*file tailing* hacia Loki— es más directo para el aprendizaje y sigue siendo completamente funcional. Una vez comprendido Promtail, la migración a Alloy es natural.
+
 ---
 
 ## 🌟 Objetivo de la guía
@@ -221,13 +223,13 @@ mkdir -p logs
 Luego ejecute:
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 Verifique que los servicios estén activos:
 
 ```bash
-docker-compose ps
+docker compose ps
 ```
 
 ---
@@ -343,19 +345,25 @@ Parsear campos del JSON y mostrar solo el mensaje:
 - Desplegar dos instancias de `logs.producer` escribiendo en archivos distintos y distinguirlas mediante labels de Promtail.
 - Analizar las implicaciones del modelo de indexación de Loki (solo labels) frente a la indexación completa de Elasticsearch.
 
+### Preguntas de verificación
+
+1. La configuración de Promtail usa una etapa `regex` para extraer `log.level` como label de Loki. Explique por qué no se puede usar la etapa `json` estándar para esta tarea con el formato ECS de Quarkus.
+2. Analice el mecanismo de *file tailing* de Promtail y el archivo `positions.yaml`: ¿qué garantías de entrega ofrece este enfoque si el contenedor de Promtail se reinicia inesperadamente? ¿Es equivalente al buffer de Fluentd o al TCP de Logstash?
+3. Loki indexa solo etiquetas (labels) y no el contenido textual de los logs. Evalúe las ventajas e inconvenientes de este diseño frente a la indexación completa de Elasticsearch: ¿qué tipos de consultas se vuelven más costosas con Loki y cuáles se benefician de su ligereza?
+
 ---
 
 ## 🛠️ 10. Troubleshooting
 
 **Error común:** El archivo `./logs/application.log` no se crea.
 
-**Solución:** Verifique que el directorio `./logs` exista en el host antes de ejecutar `docker-compose up`. El contenedor `logs.producer` escribe en `/deployments/logs/` que debe estar montado correctamente. Cree el directorio con `mkdir -p logs`.
+**Solución:** Verifique que el directorio `./logs` exista en el host antes de ejecutar `docker compose up`. El contenedor `logs.producer` escribe en `/deployments/logs/` que debe estar montado correctamente. Cree el directorio con `mkdir -p logs`.
 
 ---
 
 **Error común:** Grafana no muestra datos al consultar en Explore.
 
-**Solución:** Verifique que Promtail esté enviando logs con `docker-compose logs promtail`. Asegúrese de que el archivo de log exista en `./logs/` y que Loki esté saludable (`docker-compose ps`). Confirme que la URL de la datasource en Grafana sea `http://loki:3100`.
+**Solución:** Verifique que Promtail esté enviando logs con `docker compose logs promtail`. Asegúrese de que el archivo de log exista en `./logs/` y que Loki esté saludable (`docker compose ps`). Confirme que la URL de la datasource en Grafana sea `http://loki:3100`.
 
 ---
 
