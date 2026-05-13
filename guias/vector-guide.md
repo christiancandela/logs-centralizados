@@ -119,7 +119,7 @@ services:
         condition: service_healthy
 
   vector:
-    image: timberio/vector:0.38.0-alpine
+    image: timberio/vector:0.55.0-alpine
     container_name: vector
     command: ["--config", "/etc/vector/vector.toml"]
     volumes:
