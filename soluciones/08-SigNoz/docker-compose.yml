@@ -1,0 +1,21 @@
+services:
+  # Override: remove --manager-config so OTLP receivers (port 4317) activate without
+  # needing a live SigNoz account / opamp connection.
+  otel-collector:
+    command:
+      - -c
+      - |
+        /signoz-otel-collector migrate sync check &&
+        /signoz-otel-collector --config=/etc/otel-collector-config.yaml
+
+  logs.producer:
+    build:
+      context: ../../../logs.producer
+      dockerfile: src/main/docker/Dockerfile.compose
+    ports:
+      - "8090:8080"
+    environment:
+      SIGNOZ_HOST: signoz-otel-collector
+    networks:
+      - signoz-net
+    restart: unless-stopped
