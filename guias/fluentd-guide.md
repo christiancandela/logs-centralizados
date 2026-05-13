@@ -65,7 +65,7 @@ logs-centralizados/
 ├── fluentd/
 │   ├── Dockerfile
 │   └── conf/
-│       └── fluentd.conf
+│       └── fluent.conf
 └── .env
 ```
 
@@ -76,7 +76,7 @@ logs-centralizados/
 ```text
 [Aplicaciones Java / Quarkus]
         |
-        | (Syslog / UDP)
+        | (TCP JSON)
         v
      [Fluentd]
         |
@@ -100,41 +100,71 @@ El uso de **Docker Compose** permite describir y desplegar la arquitectura como 
 
 ```yaml
 services:
-  elasticsearch:
-    image: docker.io/elasticsearch:8.18.0
-    container_name: elasticsearch
+  logs.producer:
+    build:
+      context: logs.producer
+      dockerfile: src/main/docker/Dockerfile.compose
+    ports:
+      - "8080:8080"
     environment:
-      - discovery.type=single-node
-      - xpack.security.enabled=false
-      - cluster.routing.allocation.disk.threshold_enabled=false
-      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      FLUENTD_HOST: fluentd
+    depends_on:
+      fluentd:
+        condition: service_healthy
+
+  elasticsearch:
+    image: docker.io/elasticsearch:9.4.1
+    container_name: elasticsearch
     ports:
       - "9200:9200"
       - "9300:9300"
+    environment:
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+      discovery.type: "single-node"
+      cluster.routing.allocation.disk.threshold_enabled: false
+      xpack.security.enabled: false
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:9200/_cluster/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
 
   kibana:
-    image: docker.io/kibana:8.18.0
+    image: docker.io/kibana:9.4.1
     container_name: kibana
-    depends_on:
-      - elasticsearch
     ports:
       - "5601:5601"
     environment:
-      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      ELASTICSEARCH_HOSTS: "http://elasticsearch:9200"
+      xpack.fleet.enabled: "false"
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
 
   fluentd:
     build: ./fluentd
     container_name: fluentd
     volumes:
-      - ./fluentd/conf:/fluentd/etc
+      - source: ./fluentd/conf
+        target: /fluentd/etc
+        type: bind
     ports:
-      - "24224:24224"
-      - "5140:5140/udp"
+      - "4560:4560"
     environment:
-       - ELASTICSEARCH_HOST=elasticsearch
-       - ELASTICSEARCH_PORT=9200 
+      - ELASTICSEARCH_HOST=elasticsearch
+      - ELASTICSEARCH_PORT=9200
+    healthcheck:
+      test: ["CMD-SHELL", "ruby -rsocket -e 'TCPSocket.new(\"127.0.0.1\", 4560).close' 2>/dev/null"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 15s
     depends_on:
-      - elasticsearch
+      elasticsearch:
+        condition: service_healthy
 
 volumes:
   es_data:
@@ -142,29 +172,20 @@ volumes:
 
 ---
 
-### 5.2 Configuración de Fluentd (`fluentd.conf`)
+### 5.2 Configuración de Fluentd (`fluent.conf`)
 
 ```xml
 <source>
-  @type syslog
-  port 5140
+  @type tcp
+  port 4560
   bind 0.0.0.0
-  message_format rfc5424
+  <parse>
+    @type json
+  </parse>
   tag app.logs
 </source>
 
-<filter app.logs.**>
-  @type record_transformer
-  enable_ruby true
-  remove_keys ident
-  <record>
-    service.name ${record.has_key?('ident') ? record['ident'] : 'app-unknown'}
-    data_stream.type logs
-    data_stream {"namespace" : "default", "type" : "logs", "dataset" : "generic"}
-  </record>
-</filter>
-
-<match app.logs.**>
+<match app.logs>
   @type elasticsearch
   host "#{ENV['ELASTICSEARCH_HOST'] || 'elasticsearch'}"
   port "#{ENV['ELASTICSEARCH_PORT'] || 9200}"
@@ -172,11 +193,13 @@ volumes:
   logstash_prefix logs
   <buffer>
     @type file
-    path /var/log/fluentd/buffers/quarkus
+    path /fluentd/log/buffers/app
     flush_interval 5s
   </buffer>
 </match>
 ```
+
+> ℹ️ **Nota:** A diferencia de Logstash, la imagen oficial de Fluentd **no incluye** el plugin de Elasticsearch. El plugin `fluent-plugin-elasticsearch` debe instalarse al construir la imagen personalizada (ver Dockerfile en la siguiente sección). El archivo de configuración debe llamarse `fluent.conf`, que es el nombre esperado por el entrypoint del contenedor.
 
 ---
 
@@ -184,8 +207,12 @@ volumes:
 
 ```dockerfile
 FROM fluent/fluentd:v1.18.0-debian
-RUN gem install fluent-plugin-elasticsearch
+USER root
+RUN gem install fluent-plugin-elasticsearch --no-document
+USER fluent
 ```
+
+> ℹ️ **Nota:** La imagen base de Fluentd corre como usuario no privilegiado `fluent`. La instalación de gems requiere cambiar temporalmente al usuario `root` y volver a `fluent` al finalizar.
 
 ---
 
@@ -215,33 +242,33 @@ Se emplean **volúmenes Docker** para garantizar la persistencia de los datos al
 
 ---
 
-
 ## 🔌 7. Emisión de logs desde aplicaciones
 
 ### 7.1 Aplicaciones Quarkus
 
-El recurso contempla un ejemplo de integración con aplicaciones desarrolladas en **Quarkus**, utilizando **el estándar Syslog (RFC5424)**.  
-Esta aproximación permite ilustrar cómo Fluentd puede integrarse fluidamente con protocolos de red clásicos y estandarizados para la emisión de logs desde el nivel de aplicación.
+El recurso contempla un ejemplo de integración con aplicaciones desarrolladas en **Quarkus**, utilizando **logging estructurado en formato JSON** y el estándar **ECS (Elastic Common Schema)**.  
+Fluentd recibe estos eventos a través de su plugin `in_tcp` configurado con un parser JSON, aprovechando la misma interfaz de red que ya ofrece la extensión de logging de Quarkus.
 
 - En caso de no tener una aplicación puede crear con el siguiente comando.
 
 ```shell
-mvn io.quarkus.platform:quarkus-maven-plugin:3.19.1:create \
+mvn io.quarkus.platform:quarkus-maven-plugin:3.18.4:create \
     -DprojectGroupId=co.uniquindio.ingesis.logs \
     -DprojectArtifactId=logs.producer \
-    -Dextensions='rest' \
+    -Dextensions='rest,logging-json' \
     -DnoCode
 ```
 
-- Configure su aplicación para que los logs sean enviados a fluentd. (**`application.properties`**)
+- Configure su aplicación para que los logs sean enviados a Fluentd. (**`application.properties`**)
 
 ```properties
 quarkus.log.console.json=false
-quarkus.log.syslog.enable=true
-quarkus.log.syslog.endpoint=localhost:5140
-quarkus.log.syslog.protocol=udp
-quarkus.log.syslog.app-name=logs.producer
-quarkus.log.syslog.hostname=${HOSTNAME}
+quarkus.log.socket.enable=true
+quarkus.log.socket.json=true
+# Cuando se ejecuta desde el IDE apunta a localhost; docker compose inyecta FLUENTD_HOST=fluentd
+quarkus.log.socket.endpoint=${FLUENTD_HOST:localhost}:4560
+quarkus.log.socket.json.exception-output-type=formatted
+quarkus.log.socket.json.log-format=ECS
 ```
 
 **Uso del logger:**
@@ -250,36 +277,53 @@ quarkus.log.syslog.hostname=${HOSTNAME}
 private static final Logger LOG = Logger.getLogger(MiClase.class);
 ```
 
-### 7.2 Otras aplicaciones Java (Logback)
+---
 
-Para otras aplicaciones Java que no utilizan Quarkus, el recurso presenta un ejemplo empleando la librería estándar de **Logback** con el `SyslogAppender` nativo, para la emisión de logs bajo el formato Syslog vía UDP hacia Fluentd.
+### 7.2 Otras aplicaciones Java (Logback con Syslog)
 
-Este enfoque permite ilustrar cómo aplicaciones Java tradicionales pueden integrarse a una arquitectura de centralización de logs sin dependencias complejas, resaltando la importancia de estandarizar la capa de transporte.
+> ⚠️ **Esta sección es una configuración alternativa de referencia**, no incluida en el `docker-compose.yml` del recurso. Para experimentar con ella, deberá agregar el source `in_syslog` a `fluent.conf` y exponer el puerto `5140:5140/udp` en el servicio `fluentd` del compose.
+
+Para aplicaciones Java que no utilizan Quarkus, Fluentd puede actuar como receptor **Syslog (RFC5424) vía UDP**. Esto ilustra cómo Fluentd se integra con protocolos clásicos de red, ampliando el espectro de productores de logs compatibles.
+
+En este caso, Fluentd expone el puerto `5140/udp` con el plugin `in_syslog` y la aplicación utiliza el `SyslogAppender` de Logback:
 
 ```xml
 <dependency>
-   <groupId>ch.qos.logback</groupId>
-   <artifactId>logback-classic</artifactId>
-   <version>1.5.18</version>
-   <scope>compile</scope>
+  <groupId>ch.qos.logback</groupId>
+  <artifactId>logback-classic</artifactId>
+  <version>1.5.18</version>
 </dependency>
 ```
 
-Configura `logback.xml` para enviar logs a Fluentd:
+Configuración de `logback.xml`:
 
 ```xml
 <configuration>
   <appender name="FLUENTD" class="ch.qos.logback.classic.net.SyslogAppender">
-    <remoteHost>fluentd</remoteHost>
+    <syslogHost>fluentd</syslogHost>
     <port>5140</port>
     <suffixPattern>%logger{36} - %msg</suffixPattern>
-    <protocol>UDP</protocol> 
+    <protocol>UDP</protocol>
   </appender>
   <root level="INFO">
     <appender-ref ref="FLUENTD" />
   </root>
 </configuration>
 ```
+
+Configuración de Fluentd para recibir Syslog:
+
+```xml
+<source>
+  @type syslog
+  port 5140
+  bind 0.0.0.0
+  message_format rfc5424
+  tag app.logs
+</source>
+```
+
+> ℹ️ **Nota:** A diferencia del transporte TCP JSON (sección 7.1), el protocolo Syslog no transporta campos estructurados: el cuerpo del mensaje es texto plano. Esta diferencia es pedagógicamente relevante al comparar el nivel de observabilidad obtenido con cada protocolo.
 
 ---
 
@@ -299,19 +343,19 @@ Accede a:
 http://localhost:5601
 ```
 
-Ruta sugerida:
+**Discover:**
 
-**Observability → Logs → Logs Explorer**
+Navegue a **Hamburger menu → Discover**. Cree un data view con el patrón `logs-*` y campo de tiempo `@timestamp`. Esta vista muestra todos los índices generados por Fluentd con el prefijo `logs-YYYY.MM.dd`.
 
 ---
 
 ## 🧪 9. Actividades de profundización
 
-- **Simular fallos y rastrear su origen:** Implemente un endpoint en la aplicación productora (ej. `GET /api/error`) que genere intencionalmente una excepción (como `NullPointerException`). Ejecute el endpoint y utilice Kibana para rastrear el *stacktrace* del error, validando la ventaja del formato estructurado JSON.
-- Comparar Fluentd y Logstash como componentes de procesamiento.
-- Modificar filtros para enriquecer eventos.
-- Simular múltiples productores de logs.
-- Analizar implicaciones del uso de UDP.
+- **Simular fallos y rastrear su origen:** El endpoint `GET /api/error` de la aplicación de ejemplo genera intencionalmente una `NullPointerException`. Ejecútelo y utilice Kibana para localizar el evento de error e inspeccionar el stacktrace estructurado.
+- Comparar Fluentd y Logstash como componentes de procesamiento: ¿qué diferencias existen en su modelo de configuración y su ecosistema de plugins?
+- Desplegar dos instancias de `logs.producer` y distinguirlas en Kibana por el campo `service.name`.
+- Modificar `fluent.conf` para agregar un campo personalizado (ej. `environment: dev`) usando el plugin `record_transformer` y observar cómo se indexa en Elasticsearch.
+- Analizar las implicaciones de usar índices con fecha (`logs-YYYY.MM.dd`) frente a data streams de Elasticsearch 9.x.
 
 ---
 
@@ -326,10 +370,27 @@ sudo sysctl -w vm.max_map_count=262144
 
 ---
 
+**Error común:** Kibana muestra el mensaje *"Kibana cannot connect to the Elastic Package Registry"* al abrir la interfaz.
+
+**Explicación:** Kibana 9.x intenta conectarse por defecto al registro externo de integraciones de Fleet. En un entorno de laboratorio local sin acceso a internet, este intento falla. El aviso es **no bloqueante**.
+
+**Solución:** El archivo `docker-compose.yml` de esta guía ya incluye `xpack.fleet.enabled: "false"` en el servicio Kibana. Si crea su propio `docker-compose.yml`, asegúrese de incluir esa variable de entorno.
+
+---
+
+**Error común:** Fluentd no inicia y reporta `No such file or directory @ rb_sysopen - /fluentd/etc/fluent.conf`.
+
+**Explicación:** El entrypoint del contenedor de Fluentd busca el archivo de configuración con el nombre exacto `fluent.conf` (no `fluentd.conf`).
+
+**Solución:** Asegúrese de que el archivo de configuración se llame `fluent.conf`.
+
+---
+
 ## 📚 Referencias
 
 - Fluentd - https://docs.fluentd.org
 - Fluentd (plugins) - https://www.fluentd.org/plugins
+- fluent-plugin-elasticsearch - https://github.com/uken/fluent-plugin-elasticsearch
 - Elasticsearch – https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html
 - Kibana – https://www.elastic.co/docs/deploy-manage/deploy/self-managed/install-kibana-with-docker
 
