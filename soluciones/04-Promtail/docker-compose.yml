@@ -35,7 +35,7 @@ services:
         condition: service_healthy
 
   grafana:
-    image: grafana/grafana:11.0.0
+    image: grafana/grafana:13.0.1
     container_name: grafana
     environment:
       - GF_AUTH_ANONYMOUS_ENABLED=true
