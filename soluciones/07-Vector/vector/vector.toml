@@ -1,0 +1,31 @@
+# Habilita la API interna de Vector (requerida para el healthcheck)
+[api]
+enabled = true
+address = "0.0.0.0:8686"
+
+# 1. ORIGEN: recibe logs JSON delimitados por newline via TCP
+[sources.java_app]
+type = "socket"
+address = "0.0.0.0:4560"
+mode = "tcp"
+framing.method = "newline_delimited"
+decoding.codec = "json"
+
+# 2. TRANSFORMACIÓN: extrae el nivel de log desde la clave plana "log.level" (formato ECS)
+[transforms.enrich]
+type = "remap"
+inputs = ["java_app"]
+source = '''
+.level = ."log.level" || "unknown"
+'''
+
+# 3. DESTINO: envía los eventos enriquecidos a Loki
+[sinks.loki_out]
+type = "loki"
+inputs = ["enrich"]
+endpoint = "http://loki:3100"
+encoding.codec = "json"
+
+  [sinks.loki_out.labels]
+  job = "vector_app_logs"
+  level = "{{ level }}"
