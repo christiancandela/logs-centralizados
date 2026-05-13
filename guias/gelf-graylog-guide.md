@@ -1,4 +1,4 @@
-# **Centralización de Logs - GELF/Graylog Stack**
+# 🧠 Centralización de Logs con GELF y Graylog
 
 > *Guía práctica para implementar una solución básica de centralización de logs utilizando Docker Compose y GELF/Graylog, como instanciación concreta de la arquitectura conceptual de observabilidad presentada en el documento central.*
 
@@ -63,10 +63,7 @@ logs-centralizados/
 ├── logs.producer/
 │   ├── src/
 │   └── pom.xml
-└── .env (opcional)
 ```
-
-> ℹ️ La estructura de la aplicación de ejemplo (`logs.producer/`) es ilustrativa. Puede integrarse cualquier productor de logs Java/Quarkus.
 
 ---
 
@@ -75,25 +72,23 @@ logs-centralizados/
 ```text
 [Aplicaciones Java / Quarkus]
         |
-        |   GELF (UDP)
+        |   GELF (UDP 12201)
         v
-      [Graylog]
-        |
-        v
-[Graylog DataNode]  (almacenamiento / indexación)
-        ^
-        |
-     [MongoDB]  (metadatos/configuración)
+     [Graylog 7.1]
+        |             \
+        v              v
+  [OpenSearch 2.12]  [MongoDB 7.0]
+  (almacenamiento)  (configuración)
 ```
 
 La arquitectura implementada en este recurso se fundamenta en tres componentes principales:
 
-- **GELF (Graylog Extended Log Format)** como formato/protocolo de envío (en este caso, **UDP**).
-- **Graylog** como plataforma de ingestión, búsqueda y visualización.
-- **MongoDB** para configuración y metadatos.
-- **Graylog DataNode** (incluye el motor de almacenamiento/indexación requerido por Graylog en esta arquitectura).
+- **GELF (Graylog Extended Log Format)**: protocolo estructurado de envío de logs vía **UDP** (puerto 12201).
+- **Graylog**: plataforma de ingestión, búsqueda y visualización de logs.
+- **OpenSearch**: motor de almacenamiento e indexación de eventos.
+- **MongoDB**: almacenamiento de configuración y metadatos de Graylog.
 
-El uso de **Docker Compose** permite describir y desplegar la arquitectura como código, garantizando la **portabilidad, reproducibilidad y facilidad de experimentación** del entorno, características fundamentales en un contexto formativo.
+El uso de **Docker Compose** permite describir y desplegar la arquitectura como código, garantizando la **portabilidad, reproducibilidad y facilidad de experimentación** del entorno.
 
 ---
 
@@ -101,67 +96,84 @@ El uso de **Docker Compose** permite describir y desplegar la arquitectura como 
 
 ### 5.1 docker-compose.yml
 
-> ⚠️ Importante: conserve los valores y puertos indicados, ya que han sido usados como referencia en las configuraciones de envío y en la creación del input GELF.
-
 ```yaml
 services:
-   mongo:
-      image: mongo:6.0
-      container_name: mongo
+  logs.producer:
+    build:
+      context: logs.producer
+      dockerfile: src/main/docker/Dockerfile.compose
+    ports:
+      - "8080:8080"
+    environment:
+      GRAYLOG_HOST: graylog
+    depends_on:
+      graylog:
+        condition: service_healthy
 
-   datanode:
-      image: graylog/graylog-datanode:6.1
-      hostname: "datanode"
-      container_name: datanode
-      environment:
-         GRAYLOG_DATANODE_NODE_ID_FILE: "/var/lib/graylog-datanode/node-id"
-         # GRAYLOG_DATANODE_PASSWORD_SECRET and GRAYLOG_PASSWORD_SECRET MUST be the same value
-         GRAYLOG_DATANODE_PASSWORD_SECRET: "forpasswordencryption"
-         GRAYLOG_DATANODE_MONGODB_URI: mongodb://mongo:27017/graylog
-      ulimits:
-         memlock:
-            hard: -1
-            soft: -1
-         nofile:
-            soft: 65536
-            hard: 65536
-      ports:
-         - "8999:8999/tcp"   # DataNode API
-         - "9200:9200/tcp"
-         - "9300:9300/tcp"
-      volumes:
-         - "graylog-datanode:/var/lib/graylog-datanode"
+  mongo:
+    image: mongo:7.0
+    container_name: mongo
+    volumes:
+      - mongo_data:/data/db
 
-   graylog:
-      image: graylog/graylog:6.1
-      container_name: graylog
-      ports:
-         - "9000:9000"
-         - "12201:12201/udp"
-         - "1514:1514"
-      environment:
-         # Configuración de MongoDB
-         GRAYLOG_MONGODB_URI: mongodb://mongo:27017/graylog
-         GRAYLOG_NODE_ID_FILE: "/usr/share/graylog/data/data/node-id"
-         GRAYLOG_HTTP_EXTERNAL_URI: "http://127.0.0.1:9000/"
-         # o se puede también GRAYLOG_HTTP_EXTERNAL_URI: "http://localhost:9000/"
-         GRAYLOG_HTTP_BIND_ADDRESS: "0.0.0.0:9000"
-         # CHANGE ME (must be at least 16 characters)!
-         GRAYLOG_PASSWORD_SECRET: "forpasswordencryption"
-         # Password: admin
-         GRAYLOG_ROOT_PASSWORD_SHA2: "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918"
-      volumes:
-         - "graylog_data:/usr/share/graylog/data/data"
-      depends_on:
-         mongo:
-            condition: "service_started"
-         datanode:
-            condition: "service_started"
-      entrypoint: "/usr/bin/tini --  /docker-entrypoint.sh"
+  opensearch:
+    image: opensearchproject/opensearch:2.12.0
+    container_name: opensearch
+    environment:
+      - discovery.type=single-node
+      - DISABLE_SECURITY_PLUGIN=true
+      - OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m
+      - bootstrap.memory_lock=true
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - opensearch_data:/usr/share/opensearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:9200/_cluster/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
+  graylog:
+    image: graylog/graylog:7.1.1-1
+    container_name: graylog
+    ports:
+      - "9000:9000"
+      - "12201:12201/udp"
+      - "1514:1514"
+    environment:
+      GRAYLOG_MONGODB_URI: mongodb://mongo:27017/graylog
+      GRAYLOG_HTTP_EXTERNAL_URI: "http://127.0.0.1:9000/"
+      GRAYLOG_HTTP_BIND_ADDRESS: "0.0.0.0:9000"
+      GRAYLOG_ELASTICSEARCH_HOSTS: "http://opensearch:9200"
+      # Reduce journal size para entornos con disco limitado (por defecto 5 GB)
+      GRAYLOG_MESSAGE_JOURNAL_MAX_SIZE: "512mb"
+      # CHANGE ME (must be at least 16 characters)
+      GRAYLOG_PASSWORD_SECRET: "forpasswordencryption"
+      # Password: admin
+      GRAYLOG_ROOT_PASSWORD_SHA2: "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918"
+    volumes:
+      - graylog_data:/usr/share/graylog/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:9000/api/system/lbstatus | grep -q ALIVE || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 20
+      start_period: 60s
+    depends_on:
+      mongo:
+        condition: service_started
+      opensearch:
+        condition: service_healthy
+    entrypoint: "/usr/bin/tini -- /docker-entrypoint.sh"
 
 volumes:
-   graylog-datanode:
-   graylog_data:
+  mongo_data:
+  opensearch_data:
+  graylog_data:
 ```
 
 ---
@@ -170,17 +182,11 @@ volumes:
 
 ### Inicialización de los servicios
 
-El despliegue del entorno se realiza mediante un único comando, el cual levanta de forma coordinada todos los componentes definidos en el archivo `docker-compose.yml`.
-
 ```bash
 docker-compose up -d
 ```
 
----
-
 ### Validación de los servicios
-
-La validación del entorno permite comprobar que los contenedores asociados a MongoDB, DataNode y Graylog se encuentran en ejecución y disponibles.
 
 ```bash
 docker-compose ps
@@ -189,104 +195,70 @@ docker-compose ps
 Salida esperada (referencial):
 
 ```text
-NAME      STATUS   PORTS
-mongo     Up
-datanode  Up       8999/tcp, 9200/tcp, 9300/tcp
-graylog   Up       9000/tcp, 12201/udp, 1514/tcp
+NAME         STATUS
+mongo        Up
+opensearch   Up (healthy)
+graylog      Up (healthy)
+logs.producer  Up
 ```
-
----
-
-### Configuración inicial de Graylog
-
-1. Accede a Graylog en:
-   ```text
-   http://localhost:9000
-   ```
-2. Graylog puede solicitar credenciales iniciales durante el asistente de configuración.  
-   Una vez finalice, ingrese con:
-
-- Usuario: `admin`
-- Contraseña: `admin`
 
 ---
 
 ### Creación de la entrada GELF UDP (Input)
 
-Graylog debe tener configurado un **input** para recibir mensajes GELF. Puede crearlo:
-
-#### Opción A: Creación por API (recomendado para reproducibilidad)
+Antes de que los logs puedan ser recibidos, Graylog debe tener configurado un **input**. Espere a que Graylog esté disponible en `http://localhost:9000`, luego ejecute:
 
 ```bash
-curl -H "Content-Type: application/json" -H "Authorization: Basic YWRtaW46YWRtaW4=" -H "X-Requested-By: curl" -X POST -v -d \
-'{"title":"udp input","configuration":{"recv_buffer_size":262144,"bind_address":"0.0.0.0","port":12201,"decompress_size_limit":8388608},"type":"org.graylog2.inputs.gelf.udp.GELFUDPInput","global":true}' \
-http://localhost:9000/api/system/inputs
+curl -H "Content-Type: application/json" \
+     -H "Authorization: Basic YWRtaW46YWRtaW4=" \
+     -H "X-Requested-By: curl" \
+     -X POST \
+     -d '{"title":"GELF UDP","configuration":{"recv_buffer_size":262144,"bind_address":"0.0.0.0","port":12201,"decompress_size_limit":8388608},"type":"org.graylog2.inputs.gelf.udp.GELFUDPInput","global":true}' \
+     http://localhost:9000/api/system/inputs
 ```
 
-#### Opción B: Creación desde la consola web
-
-- **System → Inputs**
-- Seleccione **GELF UDP**
-- Clic en **Launch new input**
-- Configure el puerto **12201** y finalice con **Launch Input**
+> ℹ️ La cabecera `Authorization: Basic YWRtaW46YWRtaW4=` corresponde a `admin:admin` en Base64. Alternativamente, puede crear el input desde la interfaz web: **System → Inputs → GELF UDP → Launch new input**.
 
 ---
 
 ## 🔌 7. Emisión de logs desde aplicaciones
 
-En esta sección se presentan dos rutas de integración:
-
-- **Quarkus** con `logging-gelf`
-- **Aplicaciones Java tradicionales** con Logback y `logback-gelf`
-
----
-
 ### 7.1 Aplicaciones Quarkus
 
-#### Crear una aplicación (opcional)
+El recurso contempla un ejemplo de integración con aplicaciones desarrolladas en **Quarkus**, utilizando la extensión `logging-gelf` que envía logs directamente a Graylog mediante el protocolo GELF/UDP.
+
+- En caso de no tener una aplicación puede crear con el siguiente comando.
 
 ```shell
-mvn io.quarkus.platform:quarkus-maven-plugin:3.19.1:create \
+mvn io.quarkus.platform:quarkus-maven-plugin:3.18.4:create \
     -DprojectGroupId=co.uniquindio.ingesis.logs \
     -DprojectArtifactId=logs.producer \
     -Dextensions='rest,logging-gelf' \
     -DnoCode
 ```
 
-#### Configurar envío GELF (`application.properties`)
-
-> ℹ️ Este envío asume Graylog en `localhost` y el input GELF UDP escuchando en el puerto `12201`.
+- Configure su aplicación para que los logs sean enviados a Graylog. (**`application.properties`**)
 
 ```properties
 quarkus.log.handler.gelf.enabled=true
-quarkus.log.handler.gelf.host=localhost
+# Cuando se ejecuta desde el IDE apunta a localhost; docker compose inyecta GRAYLOG_HOST=graylog
+quarkus.log.handler.gelf.host=${GRAYLOG_HOST:localhost}
 quarkus.log.handler.gelf.port=12201
 ```
 
-#### Uso del logger
+> ℹ️ **Nota:** Al usar `logging-gelf`, no se requiere la extensión `logging-json`. La consola mostrará logs en formato estándar (texto plano) y los eventos estructurados se enviarán por UDP a Graylog.
 
-Para el registro de logs en su aplicación haga uso de la clase `org.jboss.logging.Logger`:
+**Uso del logger:**
 
 ```java
 private static final Logger LOG = Logger.getLogger(MiClase.class);
 ```
 
-También puede ser inyectado (según el estilo de su proyecto):
-
-```java
-@Inject
-Logger log;
-```
-
-> ℹ️ En Quarkus es posible omitir `@Inject` en ciertos escenarios de inyección.
-
 ---
 
 ### 7.2 Otras aplicaciones Java (Logback)
 
-Para aplicaciones Java que no utilizan Quarkus, se puede enviar GELF mediante Logback.
-
-#### Dependencia Maven
+Para aplicaciones Java que no utilizan Quarkus, se puede enviar GELF mediante Logback con la librería `logback-gelf`.
 
 ```xml
 <dependency>
@@ -296,13 +268,12 @@ Para aplicaciones Java que no utilizan Quarkus, se puede enviar GELF mediante Lo
 </dependency>
 ```
 
-#### Configuración de `logback.xml`
+Configuración de `logback.xml`:
 
 ```xml
 <configuration>
-  <!-- Appender GELF UDP -->
   <appender name="GELF" class="de.siegmar.logbackgelf.GelfUdpAppender">
-    <graylogHost>127.0.0.1</graylogHost>
+    <graylogHost>graylog</graylogHost>
     <graylogPort>12201</graylogPort>
     <maxChunkSize>508</maxChunkSize>
     <useCompression>true</useCompression>
@@ -313,44 +284,61 @@ Para aplicaciones Java que no utilizan Quarkus, se puede enviar GELF mediante Lo
     </layout>
   </appender>
 
-  <root level="info">
+  <root level="INFO">
     <appender-ref ref="GELF" />
   </root>
 </configuration>
 ```
 
-> ⚠️ En escenarios distintos a laboratorio, ajuste `graylogHost` al hostname/IP del servidor Graylog.
-
 ---
 
 ## 📊 8. Visualización en Graylog
 
-Una vez centralizados, los logs pueden ser explorados mediante Graylog, permitiendo:
-
-- Búsqueda textual y estructurada.
-- Filtros temporales.
-- Exploración por streams/inputs.
-- Análisis rápido de eventos y contexto.
-
-Accede a:
-
-```text
-http://localhost:9000
-```
+Acceda a Graylog en `http://localhost:9000` con usuario `admin` y contraseña `admin`.
 
 Ruta sugerida:
 
-- **Search → All messages**
+**Search → All messages**
+
+Desde allí puede:
+- Filtrar por campos (`level`, `source`, `facility`).
+- Consultar con el lenguaje de búsqueda de Graylog (ej: `level:3` para errores, `message:Exception`).
+- Crear streams y dashboards para análisis continuo.
 
 ---
 
 ## 🧪 9. Actividades de profundización
 
-- **Simular fallos y rastrear su origen:** Implemente un endpoint en la aplicación productora (ej. `GET /api/error`) que genere intencionalmente una excepción (como `NullPointerException`). Ejecute el endpoint y utilice Graylog para localizar el evento de error, inspeccionando el stacktrace y los campos de origen (`originHost`).
-- Comparar GELF UDP frente a envíos basados en TCP/HTTP (en términos de confiabilidad y pérdida de mensajes).
-- Evaluar el impacto de **fragmentación** (`maxChunkSize`) en mensajes grandes.
-- Implementar múltiples productores de logs y distinguirlos por campos como `originHost` o metadatos del evento.
+- **Simular fallos y rastrear su origen:** El endpoint `GET /api/error` de la aplicación de ejemplo genera intencionalmente una `NullPointerException`. Ejecútelo y utilice Graylog para localizar el evento de error, inspeccionando el stacktrace y los campos de origen.
+- Comparar GELF UDP frente a envíos basados en TCP/JSON (en términos de confiabilidad y pérdida de mensajes).
+- Evaluar el impacto de **fragmentación** (`maxChunkSize`) en mensajes grandes con stacktraces extensos.
+- Implementar múltiples productores de logs y distinguirlos por el campo `source`.
 - Analizar consideraciones de seguridad (TLS, autenticación, control de acceso) para escenarios productivos.
+
+---
+
+## 🛠️ 10. Troubleshooting
+
+**Error común:** Graylog falla al iniciar con `PreflightCheckException: Journal directory has not enough free space`.
+
+**Explicación:** Graylog reserva por defecto **5 GB** para el journal de mensajes. En entornos con Docker Desktop donde el disco del VM es limitado, esto puede fallar.
+
+**Solución:** El `docker-compose.yml` de esta guía ya incluye `GRAYLOG_MESSAGE_JOURNAL_MAX_SIZE: "512mb"` para reducir la reserva. Si crea su propio compose, asegúrese de incluir esta variable.
+
+---
+
+**Error común:** El contenedor `opensearch` se detiene con `Exit 78` / `Exit 137`.
+
+**Solución:** OpenSearch requiere configurar la memoria virtual del sistema anfitrión. En Linux o WSL:
+```bash
+sudo sysctl -w vm.max_map_count=262144
+```
+
+---
+
+**Error común:** Los logs no aparecen en Graylog aunque la aplicación está corriendo.
+
+**Solución:** Verifique que el input GELF UDP haya sido creado (sección 6). Sin el input, Graylog descarta los paquetes UDP recibidos en el puerto 12201. Confirme su existencia en **System → Inputs**.
 
 ---
 
@@ -358,7 +346,8 @@ Ruta sugerida:
 
 - Graylog – https://graylog.org
 - Graylog Docs (Docker) – https://docs.graylog.org/docs/docker
-- GELF (Getting in logs) – https://go2docs.graylog.org/current/getting_in_log_data/gelf.html
+- GELF Format – https://go2docs.graylog.org/current/getting_in_log_data/gelf.html
+- Quarkus logging-gelf – https://quarkus.io/guides/logging#gelf-log-handler
 
 ---
 
