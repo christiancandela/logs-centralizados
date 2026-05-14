@@ -61,7 +61,12 @@ jobs:
         if: steps.cache-tinytex.outputs.cache-hit != 'true'
         run: |
           quarto install tinytex --no-prompt
-          TLMGR=$(find ~/.TinyTeX -name tlmgr -type f | head -1)
+          TLMGR=$(find ~/.TinyTeX -name tlmgr | head -1)
+          if [ -z "$TLMGR" ]; then
+            echo "tlmgr no encontrado en ~/.TinyTeX — estructura actual:"
+            find ~/.TinyTeX -maxdepth 4 | head -30
+            exit 1
+          fi
           "$TLMGR" install \
             koma-script microtype geometry xcolor hyperref bookmark \
             babel-spanish hyphen-spanish \
@@ -71,7 +76,7 @@ jobs:
       # Asegurar que tlmgr está en PATH aunque la caché haya sido restaurada
       - name: Añadir TinyTeX al PATH
         run: |
-          TINYTEX_BIN=$(find ~/.TinyTeX -name tlmgr -type f | head -1 | xargs dirname)
+          TINYTEX_BIN=$(find ~/.TinyTeX -name tlmgr | head -1 | xargs dirname)
           echo "$TINYTEX_BIN" >> "$GITHUB_PATH"
 
       # ── 6. Compilar ───────────────────────────────────────────────────────
