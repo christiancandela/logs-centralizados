@@ -61,9 +61,8 @@ jobs:
         if: steps.cache-tinytex.outputs.cache-hit != 'true'
         run: |
           quarto install tinytex --no-prompt
-          export PATH="$HOME/.TinyTeX/bin/$(uname -m)-linux:$PATH"
-          # Paquetes que LuaLaTeX necesita y TinyTeX no incluye por defecto
-          tlmgr install \
+          TLMGR=$(find ~/.TinyTeX -name tlmgr -type f | head -1)
+          "$TLMGR" install \
             koma-script microtype geometry xcolor hyperref bookmark \
             babel-spanish hyphen-spanish \
             fancyvrb listings float fontspec luaotfload \
@@ -71,7 +70,9 @@ jobs:
 
       # Asegurar que tlmgr está en PATH aunque la caché haya sido restaurada
       - name: Añadir TinyTeX al PATH
-        run: echo "$HOME/.TinyTeX/bin/$(uname -m)-linux" >> "$GITHUB_PATH"
+        run: |
+          TINYTEX_BIN=$(find ~/.TinyTeX -name tlmgr -type f | head -1 | xargs dirname)
+          echo "$TINYTEX_BIN" >> "$GITHUB_PATH"
 
       # ── 6. Compilar ───────────────────────────────────────────────────────
       - name: Compilar libro PDF
