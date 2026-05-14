@@ -1,0 +1,14 @@
+_output/
+_book/
+.quarto/
+_mermaid/
+*.aux
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.synctex.gz
+
+/.quarto/
+**/*.quarto_ipynb

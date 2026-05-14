@@ -1,0 +1,96 @@
+project:
+  type: book
+  output-dir: _output
+
+book:
+  title: "Recurso educativo para la centralización de logs y la observabilidad en sistemas distribuidos"
+  subtitle: "Marco conceptual, guía de estudio, guía docente y nueve guías prácticas reproducibles"
+  author:
+    - name: "Ph.D. Christian Andrés Candela Uribe"
+      affiliation: "Profesor Asociado, Universidad del Quindío"
+    - name: "M.Sc. Paola Andrea Acero Franco"
+      affiliation: "Profesor Asociado, Universidad del Quindío"
+    - name: "Ph.D. Luis Eduardo Sepúlveda Rodríguez"
+      affiliation: "Profesor Asociado, Universidad del Quindío"
+  date: "2026-05-14"
+  date-format: "MMMM [de] YYYY"
+  language: es
+  reader-mode: true
+
+  chapters:
+    - index.qmd
+    - part: "I. Marco conceptual"
+      chapters:
+        - 01-marco-conceptual.qmd
+    - part: "II. Material de estudio y docencia"
+      chapters:
+        - 02-guia-estudio.qmd
+        - 03-guia-docente.qmd
+    - part: "III. Guías prácticas"
+      chapters:
+        - guias/01-elk.qmd
+        - guias/02-olo.qmd
+        - guias/03-fluentd.qmd
+        - guias/04-promtail.qmd
+        - guias/05-gelf-graylog.qmd
+        - guias/06-otel.qmd
+        - guias/07-vector.qmd
+        - guias/08-signoz.qmd
+        - guias/09-alloy.qmd
+
+  page-footer:
+    left: "© 2026 Universidad del Quindío"
+    center: "Versión 1.0.0"
+    right: "CC BY-SA 4.0"
+
+lang: es
+
+filters:
+  - mermaid-filter.lua
+  - strip-emojis.lua
+
+format:
+  pdf:
+    documentclass: scrbook
+    classoption:
+      - twoside
+      - openright
+      - 11pt
+    papersize: letter
+    geometry:
+      - top=2.5cm
+      - bottom=2.5cm
+      - left=2.8cm
+      - right=2.8cm
+      - headheight=14pt
+    linestretch: 1.15
+    toc: true
+    toc-depth: 2
+    toc-title: "Tabla de contenido"
+    number-sections: true
+    number-depth: 3
+    colorlinks: true
+    linkcolor: MidnightBlue
+    urlcolor: MidnightBlue
+    citecolor: MidnightBlue
+    filecolor: MidnightBlue
+    pdf-engine: lualatex
+    code-block-bg: "#F7F7F7"
+    code-block-border-left: "#1F4E79"
+    fig-pos: "H"
+    keep-tex: false
+    mermaid-format: svg
+    include-in-header:
+      text: |
+        \usepackage{microtype}
+        \renewcommand{\partname}{Parte}
+        \renewcommand{\chaptername}{Capítulo}
+        \renewcommand{\figurename}{Figura}
+        \renewcommand{\tablename}{Tabla}
+
+  html:
+    theme: cosmo
+    toc: true
+    code-copy: true
+    mermaid:
+      theme: default

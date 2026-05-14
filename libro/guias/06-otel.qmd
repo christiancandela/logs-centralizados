@@ -1,0 +1,1 @@
+{{< include ../../guias/otel-guide.md >}}

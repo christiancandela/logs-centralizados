@@ -1,0 +1,61 @@
+Recurso Educativo para la Centralización de Logs y la Observabilidad
+en Sistemas Distribuidos
+
+Copyright (c) 2026
+  Christian Andrés Candela Uribe
+  Paola Andrea Acero Franco
+  Luis Eduardo Sepúlveda Rodríguez
+Universidad del Quindío — Programa de Ingeniería de Sistemas y Computación
+
+═══════════════════════════════════════════════════════════════════════════════
+
+Este trabajo (incluidos el documento teórico, las guías prácticas, la guía
+de estudio, la guía docente y los archivos de configuración y código fuente
+en el directorio `soluciones/`) está licenciado bajo la
+
+    Licencia Creative Commons Atribución-CompartirIgual 4.0 Internacional
+    (CC BY-SA 4.0)
+
+Para ver una copia legible de la licencia, visite:
+  https://creativecommons.org/licenses/by-sa/4.0/deed.es
+
+Para ver el texto legal completo, visite:
+  https://creativecommons.org/licenses/by-sa/4.0/legalcode.es
+
+───────────────────────────────────────────────────────────────────────────────
+RESUMEN DE TÉRMINOS (no sustituye al texto legal)
+───────────────────────────────────────────────────────────────────────────────
+
+USTED ES LIBRE DE:
+
+  • Compartir — copiar y redistribuir el material en cualquier medio
+    o formato.
+
+  • Adaptar — remezclar, transformar y crear a partir del material
+    para cualquier propósito, incluso comercialmente.
+
+El licenciante no puede revocar estas libertades en tanto usted siga los
+términos de la licencia.
+
+BAJO LOS SIGUIENTES TÉRMINOS:
+
+  • Atribución — Debe dar crédito de manera adecuada, brindar un enlace
+    a la licencia e indicar si se han realizado cambios. Puede hacerlo
+    en cualquier forma razonable, pero no de forma tal que sugiera que
+    usted o su uso tienen el apoyo de los licenciantes.
+
+  • CompartirIgual — Si remezcla, transforma o crea a partir del material,
+    debe distribuir su contribución bajo la misma licencia del original.
+
+  • No hay restricciones adicionales — No puede aplicar términos legales
+    ni medidas tecnológicas que restrinjan legalmente a otros a hacer
+    cualquier uso permitido por la licencia.
+
+───────────────────────────────────────────────────────────────────────────────
+ATRIBUCIÓN SUGERIDA
+───────────────────────────────────────────────────────────────────────────────
+
+Candela Uribe, C. A., Acero Franco, P. A., & Sepúlveda Rodríguez, L. E. (2026).
+*Recurso educativo para la centralización de logs y la observabilidad en
+sistemas distribuidos* (Versión 1.0.0) [Recurso educativo abierto].
+Universidad del Quindío.

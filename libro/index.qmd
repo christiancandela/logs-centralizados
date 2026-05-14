@@ -1,0 +1,41 @@
+---
+title: "Prefacio"
+---
+
+# Prefacio {.unnumbered}
+
+Este libro recoge en un único volumen el **Recurso educativo para la centralización de logs y la observabilidad en sistemas distribuidos**, producto resultante del trabajo académico de los tres profesores autores adscritos al Programa de Ingeniería de Sistemas y Computación de la Universidad del Quindío.
+
+## A quién está dirigido
+
+El recurso se concibe como material de apoyo para cursos universitarios de pregrado y posgrado en áreas relacionadas con la arquitectura de software, los sistemas distribuidos y la ingeniería de microservicios. Está específicamente calibrado para la asignatura **Arquitectura Orientada a Microservicios** del programa de Ingeniería de Sistemas y Computación, aunque su diseño modular permite reutilizarlo en cursos electivos, semilleros de investigación o programas de formación continuada.
+
+## Estructura del libro
+
+El volumen se organiza en tres partes complementarias:
+
+- **Parte I — Marco conceptual.** Desarrolla, desde un enfoque teórico y tecnológicamente neutral, los fundamentos de la observabilidad en sistemas distribuidos, con énfasis en la centralización de logs. Aborda la justificación, los objetivos formativos, la arquitectura conceptual de cuatro etapas, los desafíos transversales de diseño y la ruta de aprendizaje propuesta.
+
+- **Parte II — Material de estudio y docencia.** Reúne dos instrumentos pedagógicos: la *Guía de estudio*, organizada en formato pregunta–respuesta con un glosario terminológico y un bloque de preguntas de articulación teoría–práctica; y la *Guía docente*, que ofrece planificaciones sugeridas, rúbricas de evaluación y orientaciones para la integración del recurso en cursos universitarios reales.
+
+- **Parte III — Guías prácticas.** Reúne nueve laboratorios reproducibles, cada uno orientado a una pila tecnológica distinta de centralización y observabilidad. Las guías comparten una estructura común (objetivo, prerrequisitos, despliegue con Docker Compose, validación, profundización) y se diseñaron para permitir tanto la lectura lineal como el uso selectivo según los intereses del lector o el tiempo disponible en clase.
+
+## Sobre el uso autónomo y supervisado del recurso
+
+Aunque el recurso fue diseñado pensando en su uso supervisado dentro del aula, su estructura es deliberadamente autónoma: un lector autodidacta puede recorrer las tres partes en orden y construir una comprensión sólida del tema sin requerir acompañamiento docente. Las guías prácticas son particularmente diseñadas para ser ejecutables en un único equipo personal, sin depender de infraestructura institucional ni de credenciales externas.
+
+## Acceso al material complementario
+
+El código fuente completo de las nueve guías prácticas, incluidos los archivos `docker-compose.yml`, las configuraciones de cada herramienta y la aplicación Java/Quarkus productora de logs, está disponible en el repositorio público del recurso. Las versiones digitales de este libro y de sus componentes individuales se distribuyen bajo licencia **Creative Commons Atribución-CompartirIgual 4.0 Internacional (CC BY-SA 4.0)**, lo que habilita su reutilización, adaptación y redistribución por parte de docentes, estudiantes e instituciones que deseen incorporarlo a sus propios procesos formativos.
+
+## Forma de cita sugerida
+
+> Candela Uribe, C. A., Acero Franco, P. A., & Sepúlveda Rodríguez, L. E. (2026). *Recurso educativo para la centralización de logs y la observabilidad en sistemas distribuidos* (Versión 1.0.0) [Recurso educativo abierto]. Universidad del Quindío.
+
+\vspace{1em}
+
+Los autores agradecen a la Universidad del Quindío y al Programa de Ingeniería de Sistemas y Computación por el espacio institucional que hizo posible la elaboración de este recurso, así como a los estudiantes que, en su rol de primeros lectores, contribuyeron con sus dudas y observaciones a mejorar la claridad del material final.
+
+\vfill
+
+*Armenia, Quindío. Mayo de 2026.*

@@ -1,5 +1,19 @@
 # Recurso Educativo para la Centralización de Logs y la Observabilidad en Sistemas Distribuidos
 
+**Autores**
+- Ph.D. Christian Andrés Candela Uribe — Profesor Asociado
+- M.Sc. Paola Andrea Acero Franco — Profesor Asociado
+- Ph.D. Luis Eduardo Sepúlveda Rodríguez — Profesor Asociado
+
+**Universidad del Quindío** — Programa de Ingeniería de Sistemas y Computación
+**Asignatura asociada:** Arquitectura Orientada a Microservicios
+**Versión:** 1.0.0 · **Fecha:** mayo de 2026
+**Licencia:** [Creative Commons Atribución-CompartirIgual 4.0 Internacional (CC BY-SA 4.0)](./LICENSE)
+
+> Este recurso educativo abierto consta de: (1) el presente marco conceptual, (2) una guía de estudio con preguntas de comprensión y articulación teoría–práctica ([`guia_estudio.md`](./guia_estudio.md)), (3) una guía para docentes con planificación sugerida y rúbricas ([`guia_docente.md`](./guia_docente.md)), y (4) nueve guías prácticas reproducibles en el directorio [`guias/`](./guias/) con sus respectivas soluciones en [`soluciones/`](./soluciones/).
+
+---
+
 ## 1. Introducción
 
 La adopción creciente de arquitecturas basadas en sistemas distribuidos y microservicios ha transformado de manera significativa el desarrollo y la operación del software contemporáneo (Newman, 2015; Richardson, 2018; Bosch, 2016). Estas arquitecturas aportan beneficios claros en términos de escalabilidad, resiliencia y evolución independiente de los componentes; sin embargo, también introducen un aumento considerable en la complejidad asociada a su análisis y gestión.
@@ -250,4 +264,35 @@ Usman, M., Ferlin, S., Brunstrom, A., & Taheri, J. (2022). A survey on observabi
 Xu, W., Huang, L., Fox, A., Patterson, D., & Jordan, M. I. (2009). Detecting large-scale system problems by mining console logs. In *Proceedings of the ACM SIGOPS 22nd Symposium on Operating Systems Principles* (pp. 117–132). Association for Computing Machinery. https://doi.org/10.1145/1629575.1629587
 
 Zhu, J., He, S., Liu, J., He, P., Xie, Q., Zheng, Z., & Lyu, M. R. (2019). Tools and benchmarks for automated log parsing. In *Proceedings of the 41st International Conference on Software Engineering: Software Engineering in Practice* (pp. 121–130). IEEE. https://doi.org/10.1109/ICSE-SEIP.2019.00021
+
+---
+
+## 9. Cómo citar este trabajo
+
+Si reutiliza, adapta o referencia este recurso educativo en publicaciones académicas, materiales docentes o trabajos derivados, se sugiere la siguiente forma de cita en formato APA 7:
+
+> Candela Uribe, C. A., Acero Franco, P. A., & Sepúlveda Rodríguez, L. E. (2026). *Recurso educativo para la centralización de logs y la observabilidad en sistemas distribuidos* (Versión 1.0.0) [Recurso educativo abierto]. Universidad del Quindío.
+
+**Entrada BibTeX:**
+
+```bibtex
+@misc{candela2026logs,
+  author       = {Candela Uribe, Christian Andr{\'e}s and
+                  Acero Franco, Paola Andrea and
+                  Sep{\'u}lveda Rodr{\'i}guez, Luis Eduardo},
+  title        = {Recurso educativo para la centralizaci{\'o}n de logs
+                  y la observabilidad en sistemas distribuidos},
+  year         = {2026},
+  version      = {1.0.0},
+  howpublished = {Recurso educativo abierto},
+  institution  = {Universidad del Quind{\'i}o},
+  note         = {Licencia CC BY-SA 4.0}
+}
+```
+
+---
+
+## 10. Licencia
+
+Este obra está licenciada bajo una [Licencia Creative Commons Atribución-CompartirIgual 4.0 Internacional (CC BY-SA 4.0)](https://creativecommons.org/licenses/by-sa/4.0/deed.es). Vea el archivo [`LICENSE`](./LICENSE) para los términos completos.
 
