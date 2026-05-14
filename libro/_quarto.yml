@@ -51,7 +51,6 @@ filters:
 
 format:
   pdf:
-    output-file: "recurso-educativo-logs"
     documentclass: scrbook
     classoption:
       - twoside
