@@ -87,7 +87,12 @@ jobs:
       - name: Renombrar PDF con la versión del tag
         run: |
           TAG="${{ github.ref_name }}"
-          SRC="libro/_output/recurso-educativo-logs.pdf"
+          SRC=$(find libro/_output -name "*.pdf" | head -1)
+          if [ -z "$SRC" ]; then
+            echo "No se encontró ningún PDF en libro/_output:"
+            find libro/_output | head -30
+            exit 1
+          fi
           DST="libro/_output/recurso-educativo-logs-${TAG}.pdf"
           mv "$SRC" "$DST"
           echo "PDF_PATH=$DST" >> "$GITHUB_ENV"
