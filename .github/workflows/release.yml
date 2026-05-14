@@ -98,9 +98,16 @@ jobs:
           echo "PDF_PATH=$DST" >> "$GITHUB_ENV"
           echo "PDF_NAME=$(basename $DST)" >> "$GITHUB_ENV"
 
-      # ── 7. GitHub Release ─────────────────────────────────────────────────
-      # Zenodo detecta este release automáticamente y archiva un snapshot
-      # con DOI permanente (requiere conexión previa en zenodo.org).
+      # ── 7. Empaquetar fuentes ─────────────────────────────────────────────
+      - name: Crear ZIP del código fuente
+        run: |
+          TAG="${{ github.ref_name }}"
+          ZIP_NAME="logs-centralizados-${TAG}.zip"
+          git archive --format=zip --prefix="logs-centralizados-${TAG}/" HEAD -o "${ZIP_NAME}"
+          echo "ZIP_PATH=${ZIP_NAME}" >> "$GITHUB_ENV"
+          echo "ZIP_NAME=${ZIP_NAME}" >> "$GITHUB_ENV"
+
+      # ── 8. GitHub Release ─────────────────────────────────────────────────
       - name: Crear GitHub Release
         uses: softprops/action-gh-release@v2
         with:
@@ -127,8 +134,31 @@ jobs:
 
             ### Cómo citar
             > Candela Uribe, C. A., Acero Franco, P. A., & Sepúlveda Rodríguez, L. E. (${{ github.ref_name == 'v1.0.0' && '2026' || '2026' }}). *Recurso educativo para el despliegue de ecosistemas de centralización de logs mediante Docker* (Versión ${{ github.ref_name }}) [Recurso educativo abierto]. Universidad del Quindío.
-          files: ${{ env.PDF_PATH }}
+          files: |
+            ${{ env.PDF_PATH }}
+            ${{ env.ZIP_PATH }}
           fail_on_unmatched_files: true
           generate_release_notes: false
           draft: false
           prerelease: false
+
+      # ── 9. Publicar en Zenodo vía API ─────────────────────────────────────
+      - name: Publicar en Zenodo
+        id: zenodo
+        env:
+          ZENODO_TOKEN: ${{ secrets.ZENODO_TOKEN }}
+          TAG: ${{ github.ref_name }}
+        run: python3 .github/scripts/zenodo_publish.py
+
+      # ── 10. Actualizar DOI en archivos del repositorio ────────────────────
+      - name: Actualizar DOI en readme.md y CITATION.cff
+        run: python3 .github/scripts/update_doi.py "${{ steps.zenodo.outputs.doi }}"
+
+      - name: Commit y push del DOI actualizado
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add readme.md CITATION.cff
+          git diff --staged --quiet && echo "Sin cambios de DOI" && exit 0
+          git commit -m "docs: actualizar DOI a ${{ steps.zenodo.outputs.doi }}"
+          git push origin HEAD:main
