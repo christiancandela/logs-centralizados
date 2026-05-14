@@ -61,6 +61,7 @@ jobs:
         if: steps.cache-tinytex.outputs.cache-hit != 'true'
         run: |
           quarto install tinytex --no-prompt
+          export PATH="$HOME/.TinyTeX/bin/$(uname -m)-linux:$PATH"
           # Paquetes que LuaLaTeX necesita y TinyTeX no incluye por defecto
           tlmgr install \
             koma-script microtype geometry xcolor hyperref bookmark \
@@ -94,7 +95,7 @@ jobs:
         with:
           name: "Versión ${{ github.ref_name }}"
           body: |
-            ## Recurso educativo para la centralización de logs y la observabilidad en sistemas distribuidos
+            ## Recurso educativo para el despliegue de ecosistemas de centralización de logs mediante Docker
 
             **Versión:** `${{ github.ref_name }}`
 
@@ -114,7 +115,7 @@ jobs:
             **Licencia:** [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/deed.es)
 
             ### Cómo citar
-            > Candela Uribe, C. A., Acero Franco, P. A., & Sepúlveda Rodríguez, L. E. (${{ github.ref_name == 'v1.0.0' && '2026' || '2026' }}). *Recurso educativo para la centralización de logs y la observabilidad en sistemas distribuidos* (Versión ${{ github.ref_name }}) [Recurso educativo abierto]. Universidad del Quindío.
+            > Candela Uribe, C. A., Acero Franco, P. A., & Sepúlveda Rodríguez, L. E. (${{ github.ref_name == 'v1.0.0' && '2026' || '2026' }}). *Recurso educativo para el despliegue de ecosistemas de centralización de logs mediante Docker* (Versión ${{ github.ref_name }}) [Recurso educativo abierto]. Universidad del Quindío.
           files: ${{ env.PDF_PATH }}
           fail_on_unmatched_files: true
           generate_release_notes: false
