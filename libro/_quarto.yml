@@ -1,9 +1,10 @@
 project:
   type: book
   output-dir: _output
+  output-file: "recurso-educativo-logs"
 
 book:
-  title: "Recurso educativo para la centralización de logs y la observabilidad en sistemas distribuidos"
+  title: "Recurso Educativo para el Despliegue de Ecosistemas de Centralización de Logs Mediante Docker"
   subtitle: "Marco conceptual, guía de estudio, guía docente y nueve guías prácticas reproducibles"
   author:
     - name: "Ph.D. Christian Andrés Candela Uribe"

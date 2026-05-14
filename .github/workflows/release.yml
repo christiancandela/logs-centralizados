@@ -1,0 +1,122 @@
+name: Compilar y publicar libro
+
+# Se activa al crear un tag de versión semántica (ej: v1.0.0, v1.1.0).
+# Zenodo archivará automáticamente el release resultante si el repositorio
+# está conectado en zenodo.org/account/settings/github.
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+
+permissions:
+  contents: write   # necesario para crear GitHub Releases
+
+jobs:
+  build-book:
+    name: Compilar libro PDF y crear release
+    runs-on: ubuntu-latest
+
+    steps:
+      # ── 1. Código fuente ──────────────────────────────────────────────────
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # ── 2. Node.js + Mermaid CLI ──────────────────────────────────────────
+      - name: Instalar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Instalar Mermaid CLI
+        run: npm install -g @mermaid-js/mermaid-cli
+
+      # ── 3. Chrome para Puppeteer (requerido por mmdc) ─────────────────────
+      - name: Instalar Chrome
+        uses: browser-actions/setup-chrome@v1
+        id: setup-chrome
+
+      - name: Configurar Puppeteer para Mermaid CLI
+        run: |
+          cat > /tmp/puppeteer-config.json <<EOF
+          {
+            "executablePath": "${{ steps.setup-chrome.outputs.chrome-path }}",
+            "args": ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"]
+          }
+          EOF
+          echo "MMDC_PUPPETEER_CONFIG=/tmp/puppeteer-config.json" >> "$GITHUB_ENV"
+
+      # ── 4. Quarto ─────────────────────────────────────────────────────────
+      - name: Instalar Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+
+      # ── 5. TinyTeX + paquetes LaTeX (con caché para acelerar reruns) ──────
+      - name: Caché de TinyTeX
+        id: cache-tinytex
+        uses: actions/cache@v4
+        with:
+          path: ~/.TinyTeX
+          key: tinytex-${{ runner.os }}-${{ hashFiles('libro/_quarto.yml') }}
+
+      - name: Instalar TinyTeX y paquetes LaTeX
+        if: steps.cache-tinytex.outputs.cache-hit != 'true'
+        run: |
+          quarto install tinytex --no-prompt
+          # Paquetes que LuaLaTeX necesita y TinyTeX no incluye por defecto
+          tlmgr install \
+            koma-script microtype geometry xcolor hyperref bookmark \
+            babel-spanish hyphen-spanish \
+            fancyvrb listings float fontspec luaotfload \
+            unicode-data selnolig upquote
+
+      # Asegurar que tlmgr está en PATH aunque la caché haya sido restaurada
+      - name: Añadir TinyTeX al PATH
+        run: echo "$HOME/.TinyTeX/bin/$(uname -m)-linux" >> "$GITHUB_PATH"
+
+      # ── 6. Compilar ───────────────────────────────────────────────────────
+      - name: Compilar libro PDF
+        working-directory: libro
+        run: quarto render --to pdf
+
+      - name: Renombrar PDF con la versión del tag
+        run: |
+          TAG="${{ github.ref_name }}"
+          SRC="libro/_output/recurso-educativo-logs.pdf"
+          DST="libro/_output/recurso-educativo-logs-${TAG}.pdf"
+          mv "$SRC" "$DST"
+          echo "PDF_PATH=$DST" >> "$GITHUB_ENV"
+          echo "PDF_NAME=$(basename $DST)" >> "$GITHUB_ENV"
+
+      # ── 7. GitHub Release ─────────────────────────────────────────────────
+      # Zenodo detecta este release automáticamente y archiva un snapshot
+      # con DOI permanente (requiere conexión previa en zenodo.org).
+      - name: Crear GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "Versión ${{ github.ref_name }}"
+          body: |
+            ## Recurso educativo para la centralización de logs y la observabilidad en sistemas distribuidos
+
+            **Versión:** `${{ github.ref_name }}`
+
+            ### Contenido del libro
+            - Marco conceptual de observabilidad y centralización de logs (tecnológicamente neutral)
+            - Guía de estudio con preguntas de comprensión y articulación teoría–práctica
+            - Guía docente con planificación sugerida, rúbricas de evaluación y orientaciones pedagógicas
+            - 9 guías prácticas reproducibles con Docker Compose:
+              ELK · OLO · Fluentd · PLG · GELF/Graylog · OpenTelemetry · Vector · SigNoz · Grafana Alloy
+
+            ### Autores
+            - Ph.D. Christian Andrés Candela Uribe — Profesor Asociado
+            - M.Sc. Paola Andrea Acero Franco — Profesor Asociado
+            - Ph.D. Luis Eduardo Sepúlveda Rodríguez — Profesor Asociado
+
+            **Universidad del Quindío** · Programa de Ingeniería de Sistemas y Computación
+            **Licencia:** [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/deed.es)
+
+            ### Cómo citar
+            > Candela Uribe, C. A., Acero Franco, P. A., & Sepúlveda Rodríguez, L. E. (${{ github.ref_name == 'v1.0.0' && '2026' || '2026' }}). *Recurso educativo para la centralización de logs y la observabilidad en sistemas distribuidos* (Versión ${{ github.ref_name }}) [Recurso educativo abierto]. Universidad del Quindío.
+          files: ${{ env.PDF_PATH }}
+          fail_on_unmatched_files: true
+          generate_release_notes: false
+          draft: false
+          prerelease: false

@@ -184,4 +184,4 @@ Para consultas sobre el uso pedagógico, propuestas de mejora o solicitudes de c
 
 ---
 
-> Este documento forma parte del *Recurso educativo para la centralización de logs y la observabilidad en sistemas distribuidos* (Versión 1.0.0). Licencia CC BY-SA 4.0.
+> Este documento forma parte del *Recurso educativo para el despliegue de ecosistemas de centralización de logs mediante Docker* (Versión 1.0.0). Licencia CC BY-SA 4.0.

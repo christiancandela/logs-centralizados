@@ -1,0 +1,47 @@
+cff-version: 1.2.0
+message: >
+  Si reutiliza, adapta o referencia este recurso educativo, por favor
+  cite usando los metadatos de este archivo.
+title: >
+  Recurso educativo para el despliegue de ecosistemas de centralización
+  de logs mediante Docker
+version: 1.0.0
+date-released: "2026-01-01"
+type: software
+license: CC-BY-SA-4.0
+authors:
+  - family-names: Candela-Uribe
+    given-names: Christian A.
+    orcid: "https://orcid.org/0000-0002-3961-1840"
+    website: "https://scholar.google.es/citations?user=-AHlLE4AAAAJ&hl=es"
+    affiliation: Universidad del Quindío
+  - family-names: Acero-Franco
+    given-names: Paola A.
+    orcid: "https://orcid.org/0000-0002-7058-6137"
+    affiliation: Universidad del Quindío
+  - family-names: Sepúlveda-Rodríguez
+    given-names: Luis E.
+    orcid: "https://orcid.org/0000-0003-2446-0602"
+    website: "https://scholar.google.es/citations?user=fVfGM4EAAAAJ&hl=es"
+    affiliation: Universidad del Quindío
+keywords:
+  - observabilidad
+  - centralización de logs
+  - sistemas distribuidos
+  - Docker
+  - ELK
+  - OpenTelemetry
+  - recurso educativo abierto
+repository-code: "https://github.com/christiancandela/logs-centralizados"
+abstract: >
+  Recurso educativo abierto que desarrolla los fundamentos conceptuales
+  de la observabilidad en sistemas distribuidos, con énfasis en la
+  centralización de logs. Incluye un marco teórico tecnológicamente
+  neutral y un conjunto de guías prácticas para el despliegue de
+  ecosistemas de centralización de logs (ELK, OLO, Fluentd, Loki,
+  Graylog, OpenTelemetry, Vector y SigNoz) mediante Docker Compose,
+  usando aplicaciones Java/Quarkus como fuente de logs.
+institution:
+  name: Universidad del Quindío
+  city: Armenia
+  country: CO

@@ -1,4 +1,4 @@
-# Recurso Educativo para la Centralización de Logs y la Observabilidad en Sistemas Distribuidos
+# Recurso Educativo para el Despliegue de Ecosistemas de Centralización de Logs Mediante Docker
 
 **Autores**
 - Ph.D. Christian Andrés Candela Uribe — Profesor Asociado
@@ -271,17 +271,17 @@ Zhu, J., He, S., Liu, J., He, P., Xie, Q., Zheng, Z., & Lyu, M. R. (2019). Tools
 
 Si reutiliza, adapta o referencia este recurso educativo en publicaciones académicas, materiales docentes o trabajos derivados, se sugiere la siguiente forma de cita en formato APA 7:
 
-> Candela Uribe, C. A., Acero Franco, P. A., & Sepúlveda Rodríguez, L. E. (2026). *Recurso educativo para la centralización de logs y la observabilidad en sistemas distribuidos* (Versión 1.0.0) [Recurso educativo abierto]. Universidad del Quindío.
+> Candela Uribe, C. A., Acero Franco, P. A., & Sepúlveda Rodríguez, L. E. (2026). *Recurso educativo para el despliegue de ecosistemas de centralización de logs mediante Docker* (Versión 1.0.0) [Recurso educativo abierto]. Universidad del Quindío.
 
 **Entrada BibTeX:**
 
 ```bibtex
 @misc{candela2026logs,
-  author       = {Candela Uribe, Christian Andr{\'e}s and
-                  Acero Franco, Paola Andrea and
-                  Sep{\'u}lveda Rodr{\'i}guez, Luis Eduardo},
-  title        = {Recurso educativo para la centralizaci{\'o}n de logs
-                  y la observabilidad en sistemas distribuidos},
+  author       = {Candela-Uribe, Christian A. and
+                  Acero-Franco, Paola A. and
+                  Sep{\'u}lveda-Rodr{\'i}guez, Luis E.},
+  title        = {Recurso educativo para el despliegue de ecosistemas
+                  de centralizaci{\'o}n de logs mediante Docker},
   year         = {2026},
   version      = {1.0.0},
   howpublished = {Recurso educativo abierto},

@@ -42,10 +42,22 @@ local function render_to_pdf(code)
   -- `--pdfFit` shrinks the PDF page bounds to the diagram, eliminating the
   -- large white margins that mmdc otherwise adds around the chart on a
   -- default-sized page.
+  --
+  -- In CI (Linux), Chromium requires --no-sandbox. Set the env variable
+  -- MMDC_PUPPETEER_CONFIG to point to a JSON config file with executablePath
+  -- and args. Locally (macOS/Windows) the variable is usually unset and
+  -- mmdc finds Chromium on its own.
+  local puppeteer_flag = ""
+  local cfg = os.getenv("MMDC_PUPPETEER_CONFIG")
+  if cfg and cfg ~= "" then
+    puppeteer_flag = "--puppeteerConfigFile " .. shell_escape(cfg)
+  end
+
   local cmd = string.format(
-    "mmdc -i %s -o %s -t default --pdfFit 2>&1",
+    "mmdc -i %s -o %s -t default --pdfFit %s 2>&1",
     shell_escape(input),
-    shell_escape(output)
+    shell_escape(output),
+    puppeteer_flag
   )
   local ok = os.execute(cmd)
   if not ok or not file_exists(output) then
