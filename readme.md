@@ -5,10 +5,16 @@
 - M.Sc. Paola Andrea Acero Franco — Profesor Asociado
 - Ph.D. Luis Eduardo Sepúlveda Rodríguez — Profesor Asociado
 
-**Universidad del Quindío** — Programa de Ingeniería de Sistemas y Computación  
-**Asignatura asociada:** Arquitectura Orientada a Microservicios  
-**Versión:** 1.0.0 · **Fecha:** mayo de 2026  
+**Universidad del Quindío** — Programa de Ingeniería de Sistemas y Computación
+**Asignatura asociada:** Arquitectura Orientada a Microservicios
+**Versión:** 1.0.0 · **Fecha:** mayo de 2026
+::: {.content-visible when-format="html"}
 [![CC BY-SA 4.0](https://licensebuttons.net/l/by-sa/4.0/88x31.png)](https://creativecommons.org/licenses/by-sa/4.0/deed.es) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20187576.svg)](https://doi.org/10.5281/zenodo.20187576)
+:::
+
+::: {.content-visible when-format="pdf"}
+**Licencia:** CC BY-SA 4.0 · **DOI:** 10.5281/zenodo.20187576
+:::
 
 > Este recurso educativo abierto consta de: (1) el presente marco conceptual, (2) una guía de estudio con preguntas de comprensión y articulación teoría–práctica ([`guia_estudio.md`](./guia_estudio.md)), (3) una guía para docentes con planificación sugerida y rúbricas ([`guia_docente.md`](./guia_docente.md)), y (4) nueve guías prácticas reproducibles en el directorio [`guias/`](./guias/) con sus respectivas soluciones en [`soluciones/`](./soluciones/).
 
