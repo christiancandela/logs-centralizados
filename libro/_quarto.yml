@@ -1,7 +1,6 @@
 project:
   type: book
   output-dir: _output
-  output-file: "recurso-educativo-logs"
 
 book:
   title: "Recurso Educativo para el Despliegue de Ecosistemas de Centralización de Logs Mediante Docker"
@@ -52,6 +51,7 @@ filters:
 
 format:
   pdf:
+    output-file: "recurso-educativo-logs"
     documentclass: scrbook
     classoption:
       - twoside
