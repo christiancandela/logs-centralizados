@@ -48,6 +48,7 @@ lang: es
 filters:
   - mermaid-filter.lua
   - strip-emojis.lua
+  - strip-svg-images.lua
 
 format:
   pdf:
