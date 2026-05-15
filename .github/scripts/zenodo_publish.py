@@ -108,9 +108,13 @@ def api(method, path, *, data=None, binary=False):
 
 def upload_file(draft_id, path, name):
     print(f"  Subiendo {name}...")
+    # 1. Inicializar entrada del archivo
+    api("POST", f"/records/{draft_id}/draft/files", data=[{"key": name}])
+    # 2. Subir contenido
     with open(path, "rb") as f:
         data = f.read()
     api("PUT", f"/records/{draft_id}/draft/files/{name}/content", data=data, binary=True)
+    # 3. Confirmar
     api("POST", f"/records/{draft_id}/draft/files/{name}/commit")
     print(f"  ✓ {name}")
 

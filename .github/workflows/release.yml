@@ -98,16 +98,7 @@ jobs:
           echo "PDF_PATH=$DST" >> "$GITHUB_ENV"
           echo "PDF_NAME=$(basename $DST)" >> "$GITHUB_ENV"
 
-      # ── 7. Empaquetar fuentes ─────────────────────────────────────────────
-      - name: Crear ZIP del código fuente
-        run: |
-          TAG="${{ github.ref_name }}"
-          ZIP_NAME="logs-centralizados-${TAG}.zip"
-          git archive --format=zip --prefix="logs-centralizados-${TAG}/" HEAD -o "${ZIP_NAME}"
-          echo "ZIP_PATH=${ZIP_NAME}" >> "$GITHUB_ENV"
-          echo "ZIP_NAME=${ZIP_NAME}" >> "$GITHUB_ENV"
-
-      # ── 8. GitHub Release ─────────────────────────────────────────────────
+      # ── 7. GitHub Release ─────────────────────────────────────────────────
       - name: Crear GitHub Release
         uses: softprops/action-gh-release@v2
         with:
@@ -134,13 +125,21 @@ jobs:
 
             ### Cómo citar
             > Candela Uribe, C. A., Acero Franco, P. A., & Sepúlveda Rodríguez, L. E. (${{ github.ref_name == 'v1.0.0' && '2026' || '2026' }}). *Recurso educativo para el despliegue de ecosistemas de centralización de logs mediante Docker* (Versión ${{ github.ref_name }}) [Recurso educativo abierto]. Universidad del Quindío.
-          files: |
-            ${{ env.PDF_PATH }}
-            ${{ env.ZIP_PATH }}
+          files: ${{ env.PDF_PATH }}
           fail_on_unmatched_files: true
           generate_release_notes: false
           draft: false
           prerelease: false
+
+      # ── 8. Descargar ZIP generado por GitHub para subirlo a Zenodo ────────
+      - name: Descargar ZIP de fuentes de GitHub
+        run: |
+          TAG="${{ github.ref_name }}"
+          ZIP_NAME="logs-centralizados-${TAG}.zip"
+          curl -L -o "${ZIP_NAME}" \
+            "https://github.com/${{ github.repository }}/archive/refs/tags/${TAG}.zip"
+          echo "ZIP_PATH=${ZIP_NAME}" >> "$GITHUB_ENV"
+          echo "ZIP_NAME=${ZIP_NAME}" >> "$GITHUB_ENV"
 
       # ── 9. Publicar en Zenodo vía API ─────────────────────────────────────
       - name: Publicar en Zenodo
