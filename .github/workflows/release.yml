@@ -150,14 +150,17 @@ jobs:
         run: python3 .github/scripts/zenodo_publish.py
 
       # ── 10. Actualizar DOI en archivos del repositorio ────────────────────
-      - name: Actualizar DOI en readme.md y CITATION.cff
-        run: python3 .github/scripts/update_doi.py "${{ steps.zenodo.outputs.doi }}"
+      - name: Actualizar DOI y versión en archivos del repositorio
+        run: |
+          python3 .github/scripts/update_doi.py \
+            "${{ steps.zenodo.outputs.doi }}" \
+            "${{ github.ref_name }}"
 
-      - name: Commit y push del DOI actualizado
+      - name: Commit y push de DOI y versión actualizados
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add readme.md CITATION.cff
-          git diff --staged --quiet && echo "Sin cambios de DOI" && exit 0
-          git commit -m "docs: actualizar DOI a ${{ steps.zenodo.outputs.doi }}"
+          git add readme.md CITATION.cff guia_docente.md libro/index.qmd
+          git diff --staged --quiet && echo "Sin cambios" && exit 0
+          git commit -m "docs: actualizar DOI y versión a ${{ github.ref_name }} [skip ci]"
           git push origin HEAD:main
