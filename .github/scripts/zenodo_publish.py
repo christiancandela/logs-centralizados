@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-"""Publica una nueva versión del recurso en Zenodo vía API REST (InvenioRDM)."""
+"""Publica una nueva versión del recurso en Zenodo vía API REST (InvenioRDM).
+
+Los metadatos (autores, título, keywords, licencia, descripción) se leen
+directamente de CITATION.cff para mantener una única fuente de la verdad.
+Solo quedan hardcodeados los campos que CFF no contempla: resource_type y
+languages.
+"""
 
 import json
 import os
@@ -7,6 +13,12 @@ import sys
 import urllib.error
 import urllib.request
 from datetime import date
+
+try:
+    import yaml
+except ImportError:
+    print("ERROR: pyyaml no está disponible. Ejecuta: pip install pyyaml", file=sys.stderr)
+    sys.exit(1)
 
 TOKEN = os.environ["ZENODO_TOKEN"]
 RECORD_ID = "20187576"
@@ -18,73 +30,44 @@ ZIP_PATH = os.environ["ZIP_PATH"]
 ZIP_NAME = os.path.basename(ZIP_PATH)
 BASE_URL = "https://zenodo.org/api"
 
-METADATA = {
-    "metadata": {
-        "resource_type": {"id": "publication-other"},
-        "title": (
-            "Recurso educativo para el despliegue de ecosistemas "
-            "de centralización de logs mediante Docker"
-        ),
-        "version": VERSION,
-        "publication_date": str(date.today()),
-        "creators": [
-            {
-                "person_or_org": {
-                    "type": "personal",
-                    "family_name": "Candela Uribe",
-                    "given_name": "Christian Andrés",
-                    "identifiers": [
-                        {"scheme": "orcid", "identifier": "0000-0002-3961-1840"}
-                    ],
-                },
-                "affiliations": [{"name": "Universidad del Quindío"}],
-            },
-            {
-                "person_or_org": {
-                    "type": "personal",
-                    "family_name": "Acero Franco",
-                    "given_name": "Paola Andrea",
-                    "identifiers": [
-                        {"scheme": "orcid", "identifier": "0000-0002-7058-6137"}
-                    ],
-                },
-                "affiliations": [{"name": "Universidad del Quindío"}],
-            },
-            {
-                "person_or_org": {
-                    "type": "personal",
-                    "family_name": "Sepúlveda Rodríguez",
-                    "given_name": "Luis Eduardo",
-                    "identifiers": [
-                        {"scheme": "orcid", "identifier": "0000-0003-2446-0602"}
-                    ],
-                },
-                "affiliations": [{"name": "Universidad del Quindío"}],
-            },
-        ],
-        "description": (
-            "Recurso educativo abierto que desarrolla los fundamentos conceptuales "
-            "de la observabilidad en sistemas distribuidos, con énfasis en la "
-            "centralización de logs. Incluye un marco teórico tecnológicamente neutral "
-            "y un conjunto de guías prácticas para el despliegue de ecosistemas de "
-            "centralización de logs (ELK, OLO, Fluentd, Loki, Graylog, OpenTelemetry, "
-            "Vector y SigNoz) mediante Docker Compose, usando aplicaciones "
-            "Java/Quarkus como fuente de logs."
-        ),
-        "rights": [{"id": "cc-by-sa-4.0"}],
-        "languages": [{"id": "spa"}],
-        "keywords": [
-            "observabilidad",
-            "centralización de logs",
-            "sistemas distribuidos",
-            "Docker",
-            "ELK",
-            "OpenTelemetry",
-            "recurso educativo abierto",
-        ],
-        "publisher": "Universidad del Quindío",
+
+def load_cff(path="CITATION.cff"):
+    with open(path, encoding="utf-8") as f:
+        return yaml.safe_load(f)
+
+
+def map_author(author):
+    """Convierte una entrada de autor CFF al formato de creador de Zenodo."""
+    # CFF usa guión para separar apellidos compuestos (Candela-Uribe → Candela Uribe)
+    family = author["family-names"].replace("-", " ")
+    given = author["given-names"]
+    person = {"type": "personal", "family_name": family, "given_name": given}
+    if "orcid" in author:
+        orcid_id = author["orcid"].replace("https://orcid.org/", "")
+        person["identifiers"] = [{"scheme": "orcid", "identifier": orcid_id}]
+    result = {"person_or_org": person}
+    if "affiliation" in author:
+        result["affiliations"] = [{"name": author["affiliation"]}]
+    return result
+
+
+def build_metadata(cff):
+    return {
+        "metadata": {
+            # Zenodo-specific: no tiene equivalente directo en CFF
+            "resource_type": {"id": "publication-other"},
+            "languages": [{"id": "spa"}],
+            # Derivados de CITATION.cff
+            "title": cff["title"].strip(),
+            "version": VERSION,
+            "publication_date": str(date.today()),
+            "creators": [map_author(a) for a in cff["authors"]],
+            "description": cff["abstract"].strip(),
+            "rights": [{"id": cff["license"].lower()}],
+            "keywords": cff["keywords"],
+            "publisher": cff["institution"]["name"],
+        }
     }
-}
 
 
 def api(method, path, *, data=None, binary=False):
@@ -108,24 +91,29 @@ def api(method, path, *, data=None, binary=False):
 
 def upload_file(draft_id, path, name):
     print(f"  Subiendo {name}...")
-    # 1. Inicializar entrada del archivo
     api("POST", f"/records/{draft_id}/draft/files", data=[{"key": name}])
-    # 2. Subir contenido
     with open(path, "rb") as f:
         data = f.read()
     api("PUT", f"/records/{draft_id}/draft/files/{name}/content", data=data, binary=True)
-    # 3. Confirmar
     api("POST", f"/records/{draft_id}/draft/files/{name}/commit")
     print(f"  ✓ {name}")
 
 
-# 1. Crear nueva versión
-print(f"→ Creando nueva versión {VERSION} en Zenodo...")
+# ── Leer metadatos desde CITATION.cff ────────────────────────────────────────
+print("→ Leyendo metadatos desde CITATION.cff...")
+cff = load_cff()
+metadata = build_metadata(cff)
+print(f"  Título:  {metadata['metadata']['title']}")
+print(f"  Versión: {VERSION}")
+print(f"  Autores: {len(cff['authors'])}")
+
+# ── 1. Crear nueva versión ────────────────────────────────────────────────────
+print(f"\n→ Creando nueva versión {VERSION} en Zenodo...")
 draft = api("POST", f"/records/{RECORD_ID}/versions")
 draft_id = draft["id"]
 print(f"  Draft ID: {draft_id}")
 
-# 2. Eliminar archivos heredados de la versión anterior
+# ── 2. Eliminar archivos heredados ────────────────────────────────────────────
 print("→ Eliminando archivos heredados...")
 files = api("GET", f"/records/{draft_id}/draft/files")
 for entry in files.get("entries", []):
@@ -133,19 +121,17 @@ for entry in files.get("entries", []):
     api("DELETE", f"/records/{draft_id}/draft/files/{fname}")
     print(f"  Eliminado: {fname}")
 
-# 3. Subir PDF y ZIP de fuentes
+# ── 3. Subir archivos ─────────────────────────────────────────────────────────
 print("→ Subiendo archivos...")
 upload_file(draft_id, PDF_PATH, PDF_NAME)
 upload_file(draft_id, ZIP_PATH, ZIP_NAME)
 
-# 4. Actualizar metadatos
+# ── 4. Actualizar metadatos ───────────────────────────────────────────────────
 print("→ Actualizando metadatos...")
-api("PUT", f"/records/{draft_id}/draft", data=METADATA)
-print("  ✓ Tipo: Publication → Other")
-print("  ✓ ORCID de autores registrados")
-print("  ✓ Licencia CC BY-SA 4.0")
+api("PUT", f"/records/{draft_id}/draft", data=metadata)
+print("  ✓ Metadatos aplicados desde CITATION.cff")
 
-# 5. Publicar
+# ── 5. Publicar ───────────────────────────────────────────────────────────────
 print("→ Publicando...")
 result = api("POST", f"/records/{draft_id}/draft/actions/publish")
 doi = result.get("doi", "N/A")
@@ -154,7 +140,7 @@ print(f"  ✓ Publicado correctamente")
 print(f"  DOI: {doi}")
 print(f"  URL: https://zenodo.org/records/{rec_id}")
 
-# Exportar DOI para pasos siguientes del workflow
+# ── Exportar DOI para pasos siguientes del workflow ───────────────────────────
 github_output = os.environ.get("GITHUB_OUTPUT")
 if github_output:
     with open(github_output, "a") as f:
