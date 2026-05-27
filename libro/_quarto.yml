@@ -8,10 +8,13 @@ book:
   author:
     - name: "Ph.D. Christian Andrés Candela Uribe"
       affiliation: "Profesor Asociado, Universidad del Quindío"
+      orcid: "0000-0002-3961-1840"
     - name: "M.Sc. Paola Andrea Acero Franco"
       affiliation: "Profesor Asociado, Universidad del Quindío"
+      orcid: "0009-0005-6538-5030"
     - name: "Ph.D. Luis Eduardo Sepúlveda Rodríguez"
       affiliation: "Profesor Asociado, Universidad del Quindío"
+      orcid: "0000-0003-2446-0602"
   date: "2026-05-14"
   date-format: "MMMM [de] YYYY"
   language: es
@@ -149,10 +152,16 @@ format:
             % Bloque de autores
             {\sffamily\bfseries\large Autores} \\
             \vspace{0.4cm}
-            \begin{tabular}{c}
-              \textbf{\sffamily Ph.D. Christian Andrés Candela Uribe} \\ \small\sffamily Profesor Asociado \\ \\
-              \textbf{\sffamily M.Sc. Paola Andrea Acero Franco} \\ \small\sffamily Profesor Asociado \\ \\
-              \textbf{\sffamily Ph.D. Luis Eduardo Sepúlveda Rodríguez} \\ \small\sffamily Profesor Asociado
+             \begin{tabular}{c}
+              \textbf{\sffamily Ph.D. Christian Andrés Candela Uribe} \\ 
+              \small\sffamily Profesor Asociado \\ 
+              \href{https://orcid.org/0000-0002-3961-1840}{\small\sffamily\color{gray} ORCID: 0000-0002-3961-1840} \\ \\
+              \textbf{\sffamily M.Sc. Paola Andrea Acero Franco} \\ 
+              \small\sffamily Profesor Asociado \\ 
+              \href{https://orcid.org/0009-0005-6538-5030}{\small\sffamily\color{gray} ORCID: 0009-0005-6538-5030} \\ \\
+              \textbf{\sffamily Ph.D. Luis Eduardo Sepúlveda Rodríguez} \\ 
+              \small\sffamily Profesor Asociado \\ 
+              \href{https://orcid.org/0000-0003-2446-0602}{\small\sffamily\color{gray} ORCID: 0000-0003-2446-0602}
             \end{tabular}
             
             \vfill
