@@ -56,8 +56,8 @@ filters:
 format:
   pdf:
     documentclass: scrbook
-    mainfont: "Georgia"
-    sansfont: "Helvetica"
+    mainfont: "TeX Gyre Schola"
+    sansfont: "TeX Gyre Heros"
     classoption:
       - twoside
       - openright
