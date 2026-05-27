@@ -52,6 +52,8 @@ def map_author(author):
 
 
 def build_metadata(cff):
+    repo_url = f"https://github.com/christiancandela/logs-centralizados/tree/{TAG}"
+    description_html = cff["abstract"].strip() + f"<br><br><strong>Available in:</strong> <a href=\"{repo_url}\">{repo_url}</a>"
     return {
         "metadata": {
             # Zenodo-specific: no tiene equivalente directo en CFF
@@ -62,10 +64,17 @@ def build_metadata(cff):
             "version": VERSION,
             "publication_date": str(date.today()),
             "creators": [map_author(a) for a in cff["authors"]],
-            "description": cff["abstract"].strip(),
+            "description": description_html,
             "rights": [{"id": cff["license"].lower()}],
             "subjects": [{"subject": kw} for kw in cff["keywords"]],
             "publisher": cff["institution"]["name"],
+            "related_identifiers": [
+                {
+                    "identifier": repo_url,
+                    "relation_type": {"id": "issupplementto"},
+                    "scheme": "url"
+                }
+            ],
         }
     }
 
