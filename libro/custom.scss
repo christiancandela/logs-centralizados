@@ -1,0 +1,43 @@
+/*-- scss:defaults --*/
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+// Tipografías
+$font-family-sans-serif: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+$font-family-base: $font-family-sans-serif;
+
+// Paleta de Colores
+$primary: #1F4E79;
+$link-color: #1F4E79;
+$body-color: #2D3748;
+$presentation-title-color: $primary;
+
+// Bloques de código
+$code-block-bg: #F8F9FA;
+$code-block-border-color: #E2E8F0;
+
+/*-- scss:rules --*/
+body {
+  font-size: 1.05rem;
+  line-height: 1.65;
+}
+
+// Estilo moderno para bloques de código
+.sourceCode {
+  border: 1px solid $code-block-border-color;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+// Estilo premium para callouts
+.callout {
+  border-radius: 6px !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+  border-left-width: 4px !important;
+}
+
+// Barra de navegación lateral
+#quarto-sidebar {
+  font-family: $font-family-sans-serif;
+  background-color: #F8FAFC;
+  border-right: 1px solid #E2E8F0;
+}

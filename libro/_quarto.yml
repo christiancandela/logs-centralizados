@@ -19,14 +19,14 @@ book:
 
   chapters:
     - index.qmd
-    - part: "I. Marco conceptual"
+    - part: "Marco conceptual"
       chapters:
         - 01-marco-conceptual.qmd
-    - part: "II. Material de estudio y docencia"
+    - part: "Material de estudio y docencia"
       chapters:
         - 02-guia-estudio.qmd
         - 03-guia-docente.qmd
-    - part: "III. Guías prácticas"
+    - part: "Guías prácticas"
       chapters:
         - guias/01-elk.qmd
         - guias/02-olo.qmd
@@ -50,10 +50,14 @@ filters:
   - strip-emojis.lua
   - strip-svg-images.lua
   - replace-repo-links.lua
+  - clean-headers.lua
+  - hyperlink-citations.lua
 
 format:
   pdf:
     documentclass: scrbook
+    mainfont: "Georgia"
+    sansfont: "Helvetica"
     classoption:
       - twoside
       - openright
@@ -77,7 +81,7 @@ format:
     citecolor: MidnightBlue
     filecolor: MidnightBlue
     pdf-engine: lualatex
-    code-block-bg: "#F7F7F7"
+    code-block-bg: "#F8F9FA"
     code-block-border-left: "#1F4E79"
     fig-pos: "H"
     keep-tex: false
@@ -85,13 +89,111 @@ format:
     include-in-header:
       text: |
         \usepackage{microtype}
+        
         \renewcommand{\partname}{Parte}
         \renewcommand{\chaptername}{Capítulo}
         \renewcommand{\figurename}{Figura}
         \renewcommand{\tablename}{Tabla}
+        
+        % Colores Personalizados
+        \usepackage{xcolor}
+        \definecolor{UniQuindioBlue}{HTML}{1F4E79}
+        \definecolor{SoftGray}{HTML}{F8F9FA}
+        \definecolor{BorderGray}{HTML}{E2E8F0}
+        
+        % Corregir solapamiento de números en la Tabla de Contenido
+        \RedeclareSectionCommand[tocnumwidth=2.8em]{section}
+        \RedeclareSectionCommand[tocnumwidth=3.6em]{subsection}
+        
+        % Estilo de Títulos con KOMA-Script
+        \addtokomafont{part}{\color{UniQuindioBlue}\Huge\sffamily\bfseries}
+        \addtokomafont{partnumber}{\color{UniQuindioBlue}\Huge\sffamily\bfseries}
+        \addtokomafont{chapter}{\color{UniQuindioBlue}\huge\sffamily\bfseries}
+        \addtokomafont{section}{\color{UniQuindioBlue}\large\sffamily\bfseries}
+        \addtokomafont{subsection}{\color{UniQuindioBlue}\normalsize\sffamily\bfseries}
+        
+        % Formato de capítulos con rule decorativa
+        \renewcommand*{\chapterformat}{%
+          \color{UniQuindioBlue}\chapapp~\thechapter\autodot\enskip
+        }
+        
+        % Encabezados y Pies de Página Modernos
+        \usepackage[automark,headsepline,footsepline]{scrlayer-scrpage}
+        \clearpairofpagestyles
+        \ohead{\sffamily\headmark}
+        \ofoot{\sffamily\bfseries\color{UniQuindioBlue}\pagemark}
+        \ifoot{\sffamily\color{gray}CC BY-SA 4.0}
+        \cfoot{}
+        \addtokomafont{pageheadfoot}{\sffamily\small\color{gray}}
+        
+        % Rediseño de Portada (Custom \maketitle)
+        \renewcommand{\maketitle}{%
+          \begin{titlepage}
+            \centering
+            \vspace*{1.5cm}
+            
+            % Línea superior de color
+            {\color{UniQuindioBlue}\rule{\textwidth}{4pt}}
+            \vspace{0.8cm}
+            
+            % Título principal
+            {\sffamily\bfseries\Huge\color{UniQuindioBlue} Recurso Educativo para el Despliegue de Ecosistemas de Centralización de Logs Mediante Docker} \\
+            \vspace{0.6cm}
+            
+            % Subtítulo
+            {\sffamily\Large\color{gray} Marco conceptual, guía de estudio, guía docente y nueve guías prácticas reproducibles} \\
+            \vspace{0.8cm}
+            {\color{UniQuindioBlue}\rule{0.3\textwidth}{0.8pt}}
+            \vspace{2cm}
+            
+            % Bloque de autores
+            {\sffamily\bfseries\large Autores} \\
+            \vspace{0.4cm}
+            \begin{tabular}{c}
+              \textbf{\sffamily Ph.D. Christian Andrés Candela Uribe} \\ \small\sffamily Profesor Asociado \\ \\
+              \textbf{\sffamily M.Sc. Paola Andrea Acero Franco} \\ \small\sffamily Profesor Asociado \\ \\
+              \textbf{\sffamily Ph.D. Luis Eduardo Sepúlveda Rodríguez} \\ \small\sffamily Profesor Asociado
+            \end{tabular}
+            
+            \vfill
+            
+            % Pie de portada (Institución y fecha)
+            {\sffamily\bfseries\large Universidad del Quindío} \\
+            {\sffamily\small Programa de Ingeniería de Sistemas y Computación} \\
+            {\sffamily\small Asignatura: Arquitectura Orientada a Microservicios} \\
+            \vspace{0.6cm}
+            {\sffamily\small Armenia, Colombia --- Mayo de 2026}
+            
+          \end{titlepage}
+          \cleardoublepage
+        }
+        
+        % Rediseño moderno de bloques de código (tcolorbox)
+        \ifdefined\Shaded
+        \renewenvironment{Shaded}{
+          \begin{tcolorbox}[
+            leftrule=3pt,
+            rightrule=0.5pt,
+            toprule=0.5pt,
+            bottomrule=0.5pt,
+            colframe=UniQuindioBlue,
+            colback=SoftGray,
+            colborder=BorderGray,
+            arc=4pt,
+            sharp corners=east,
+            boxrule=0.5pt,
+            breakable,
+            enhanced
+          ]
+        }{
+          \end{tcolorbox}
+        }
+        \fi
 
   html:
-    theme: cosmo
+    theme:
+      - cosmo
+      - custom.scss
     toc: true
     code-copy: true
     mermaid:

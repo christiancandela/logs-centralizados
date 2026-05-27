@@ -17,7 +17,7 @@ authors:
     affiliation: Universidad del Quindío
   - family-names: Acero-Franco
     given-names: Paola A.
-    orcid: "https://orcid.org/0000-0002-7058-6137"
+    orcid: "https://orcid.org/0000-0000-0000-0000"
     affiliation: Universidad del Quindío
   - family-names: Sepúlveda-Rodríguez
     given-names: Luis E.
@@ -34,9 +34,9 @@ keywords:
   - recurso educativo abierto
 identifiers:
   - type: doi
-    value: 10.5281/zenodo.20405245
+    value: 10.5281/zenodo.20187576
     description: DOI permanente asignado por Zenodo (versión 1.0.0)
-url: "https://doi.org/10.5281/zenodo.20405245"
+url: "https://doi.org/10.5281/zenodo.20187576"
 repository-code: "https://github.com/christiancandela/logs-centralizados"
 abstract: >
   Recurso educativo abierto que desarrolla los fundamentos conceptuales

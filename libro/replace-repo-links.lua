@@ -1,6 +1,6 @@
 -- replace-repo-links.lua
--- Filtro Lua de Quarto para traducir enlaces relativos del repositorio 
--- en referencias internas del libro o enlaces absolutos de GitHub.
+-- Filtro Lua de Quarto para traducir enlaces relativos del repositorio a
+-- enlaces absolutos en GitHub o anclajes internos del libro consolidado.
 
 local replacements = {
   -- Cabeceras internas (secciones/capítulos)
@@ -31,53 +31,7 @@ local replacements = {
   ["guias/alloy-guide.md"] = "#sec-guia-alloy"
 }
 
--- Modifica los identificadores de cabeceras de nivel 1 (capítulos)
--- para que coincidan exactamente con las etiquetas usadas en los enlaces internos.
-function Header(el)
-  if el.level == 1 then
-    local title = pandoc.utils.stringify(el)
-    if title:find("Recurso Educativo para el Despliegue") then
-      el.identifier = "sec-marco-conceptual"
-      return el
-    elseif title:find("Guía de Estudio") then
-      el.identifier = "sec-guia-estudio"
-      return el
-    elseif title:find("Guía Docente") then
-      el.identifier = "sec-guia-docente"
-      return el
-    elseif title:find("ELK Stack") then
-      el.identifier = "sec-guia-elk"
-      return el
-    elseif title:find("OLO Stack") then
-      el.identifier = "sec-guia-olo"
-      return el
-    elseif title:find("Fluentd") then
-      el.identifier = "sec-guia-fluentd"
-      return el
-    elseif title:find("Promtail") then
-      el.identifier = "sec-guia-promtail"
-      return el
-    elseif title:find("GELF") then
-      el.identifier = "sec-guia-gelf-graylog"
-      return el
-    elseif title:find("OpenTelemetry") then
-      el.identifier = "sec-guia-otel"
-      return el
-    elseif title:find("Vector") then
-      el.identifier = "sec-guia-vector"
-      return el
-    elseif title:find("SigNoz") then
-      el.identifier = "sec-guia-signoz"
-      return el
-    elseif title:find("Alloy") then
-      el.identifier = "sec-guia-alloy"
-      return el
-    end
-  end
-  return el
-end
-
--- Reemplaza los enlaces
+-- Filtro de Enlaces relativos a absolutos/internos
 function Link(el)
   local target = el.target
   local repl = replacements[target]
@@ -88,8 +42,7 @@ function Link(el)
   return el
 end
 
--- Retornamos los filtros ordenados: primero asignamos cabeceras y luego traducimos enlaces
+-- Exportación ordenada de filtros
 return {
-  { Header = Header },
   { Link = Link }
 }

@@ -26,6 +26,13 @@ local function is_emoji(c)
 end
 
 local function strip(s)
+  -- Si el string no contiene bytes en el rango del primer byte de caracteres
+  -- de 3 o 4 bytes (>= U+0800, que incluye a todos los emojis), lo retornamos intacto.
+  -- Esto evita decodificaciones erróneas de acentos en español y espacios de no separación.
+  if not s:find("[\224-\255]") then
+    return s
+  end
+
   local out = {}
   for _, c in utf8.codes(s) do
     if not is_emoji(c) then
