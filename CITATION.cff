@@ -34,9 +34,9 @@ keywords:
   - recurso educativo abierto
 identifiers:
   - type: doi
-    value: 10.5281/zenodo.20417873
+    value: 10.5281/zenodo.20418035
     description: DOI permanente asignado por Zenodo (versión 1.0.0)
-url: "https://doi.org/10.5281/zenodo.20417873"
+url: "https://doi.org/10.5281/zenodo.20418035"
 repository-code: "https://github.com/christiancandela/logs-centralizados"
 abstract: >
   Recurso educativo abierto que desarrolla los fundamentos conceptuales
