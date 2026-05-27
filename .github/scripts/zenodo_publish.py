@@ -64,7 +64,7 @@ def build_metadata(cff):
             "creators": [map_author(a) for a in cff["authors"]],
             "description": cff["abstract"].strip(),
             "rights": [{"id": cff["license"].lower()}],
-            "keywords": cff["keywords"],
+            "subjects": [{"subject": kw} for kw in cff["keywords"]],
             "publisher": cff["institution"]["name"],
         }
     }
