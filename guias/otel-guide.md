@@ -118,6 +118,7 @@ services:
     container_name: otel-lgtm
     ports:
       - "3000:3000"
+      - "3100:3100"
       - "4317:4317"
       - "4318:4318"
     healthcheck:

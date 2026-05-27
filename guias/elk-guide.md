@@ -103,7 +103,8 @@ services:
     environment:
       LOGSTASH_HOST: logstash
     depends_on:
-      - logstash
+      logstash:
+        condition: service_healthy
 
   elasticsearch:
     image: docker.io/elasticsearch:9.4.1
@@ -134,6 +135,12 @@ services:
         type: bind
     ports:
       - "4560:4560"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:9600/ || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
     depends_on:
       elasticsearch:
         condition: service_healthy
