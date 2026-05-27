@@ -219,13 +219,13 @@ java -javaagent:opentelemetry-javaagent.jar \
 
 Acceda a Grafana en `http://localhost:3000` con usuario `admin` y contraseña `admin`.
 
-### Ruta sugerida para logs
+### 8.1 Ruta sugerida para logs
 
 **Drilldown → Logs**
 
 Desde allí puede filtrar por `service_name`, nivel (`severity_text`) y buscar por contenido.
 
-### Consultas LogQL de ejemplo
+### 8.2 Consultas LogQL de ejemplo
 
 Todos los logs del servicio:
 ```logql
@@ -247,9 +247,58 @@ Ver mensajes formateados:
 {service_name="logs-producer"} | logfmt
 ```
 
-### Correlación logs ↔ trazas
+### 8.3 La Trinidad de la Observabilidad en Acción (Correlación Cruzada)
 
-Los logs generados durante peticiones HTTP llevan automáticamente `trace_id` y `span_id`. En Grafana, al seleccionar un log con `trace_id`, puede navegar directamente a la traza correspondiente en Tempo.
+El protocolo **OTLP (OpenTelemetry Protocol)** permite unificar el envío de logs, métricas y trazas distribuidas. En Grafana, esto habilita el flujo de diagnóstico definitivo: la **correlación cruzada**.
+
+Usted puede rastrear un problema en caliente cruzando las tres señales de la siguiente manera:
+
+```mermaid
+graph TD
+    A["1. LOGS (Loki)"] -- "Click en trace_id" --> B["2. TRAZAS (Tempo)"]
+    B -- "Analizar latencia/operaciones" --> C["3. MÉTRICAS (Prometheus)"]
+    C -- "Correlacionar picos en CPU/RAM" --> A
+    style A fill:#f9f,stroke:#333,stroke-width:2px
+    style B fill:#bbf,stroke:#333,stroke-width:2px
+    style C fill:#fbf,stroke:#333,stroke-width:2px
+```
+
+#### Paso 1: Detección a través de logs (Loki)
+1. Ingrese a **Explore** en Grafana (`http://localhost:3000`) y seleccione el datasource **Loki**.
+2. Ejecute la consulta LogQL `{service_name="logs-producer", severity_text="ERROR"}`.
+3. Localice el log de error generado por el NPE al llamar a `GET http://localhost:8080/api/error`.
+4. Al hacer clic sobre la línea del log para expandir sus metadatos estructurados, observará que OpenTelemetry inyectó automáticamente los campos `trace_id` y `span_id` en el contexto.
+
+#### Paso 2: Navegación contextual a la traza (Tempo)
+1. En el desglose del log expandido, Grafana reconocerá el valor del campo `trace_id` y presentará un botón interactivo llamado **`Tempo`** al lado del hash.
+2. Al hacer clic en este botón, la pantalla se dividirá en dos (*Split View*):
+    * **Panel Izquierdo**: El log de Loki detallando la excepción `NullPointerException`.
+    * **Panel Derecho**: La representación visual del ciclo de vida de la petición HTTP en **Tempo** correspondiente a ese `trace_id` exacto.
+3. En el panel derecho de Tempo podrá observar de forma gráfica:
+    * El *span* raíz de la petición (`GET /api/error`).
+    * El *span* interno del microservicio Quarkus.
+    * La duración exacta de la llamada en milisegundos y el estado de error (marcado en rojo).
+    * Al expandir el span de la traza, verá los logs y los eventos de excepción incrustados en la línea de tiempo exacta donde ocurrieron.
+
+#### Paso 3: Correlación temporal con el comportamiento del sistema (Prometheus)
+1. La observabilidad unificada cobra verdadero sentido cuando cruzamos esta latencia o error con el rendimiento físico del hardware.
+2. Desde la misma interfaz Explore de Grafana, configure un tercer panel con el datasource **Prometheus**.
+3. Ingrese las siguientes consultas PromQL sobre la misma ventana de tiempo del incidente:
+    * **Tasa de errores por segundo**:
+      ```promql
+      sum(rate(http_server_duration_milliseconds_count{status=~"5.."}[1m])) by (uri)
+      ```
+    * **Uso de CPU del proceso**:
+      ```promql
+      process_cpu_usage{service_name="logs-producer"}
+      ```
+    * **Consumo de Memoria Heap de la JVM**:
+      ```promql
+      jvm_memory_used_bytes{area="heap", service_name="logs-producer"}
+      ```
+4. Observe la coincidencia exacta: el pico en la gráfica de errores HTTP en Prometheus se alinea perfectamente a nivel de segundo con el timestamp del log en Loki y la duración anómala registrada en Tempo.
+
+Este nivel de integración elimina la necesidad de adivinar qué causó un pico de CPU o qué petición provocó una fuga de memoria, materializando de forma práctica la arquitectura de observabilidad conceptual del laboratorio.
 
 ---
 
