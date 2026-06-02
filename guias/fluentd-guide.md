@@ -52,6 +52,28 @@ La **centralización de logs** mitiga la dispersión inherente a los sistemas di
   https://docs.docker.com/compose/install/
 - Al menos **8 GB de RAM** libres
 
+### Dimensionamiento de recursos
+
+El **consumo estimado del stack** es de **~4 GB de RAM** en estado estable, distribuidos entre los servicios que componen el pipeline de centralización de logs.
+
+| Servicio | Función en el pipeline | `mem_limit` por defecto |
+|----------|------------------------|-------------------------|
+| `elasticsearch` | Almacenamiento e indexación de eventos | `2g` |
+| `kibana` | Visualización y exploración de logs | `1g` |
+| `fluentd` | Recolección y procesamiento de eventos | `512m` |
+| `logs.producer` | Aplicación productora (Quarkus) | `512m` |
+
+Cada límite de memoria es **parametrizable vía el archivo `.env`**, lo que permite ajustar el dimensionamiento del entorno según los recursos disponibles en la máquina anfitriona:
+
+```bash
+ELASTICSEARCH_MEM_LIMIT=2g
+KIBANA_MEM_LIMIT=1g
+FLUENTD_MEM_LIMIT=512m
+PRODUCER_MEM_LIMIT=512m
+```
+
+> ⚠️ **Advertencia:** En sistemas Linux/WSL, Elasticsearch requiere que la memoria virtual del anfitrión cumpla `vm.max_map_count ≥ 262144`. Consulte la sección de Troubleshooting para el comando de ajuste.
+
 ---
 
 ## 📂 3. Estructura del proyecto
@@ -101,6 +123,7 @@ El uso de **Docker Compose** permite describir y desplegar la arquitectura como 
 ```yaml
 services:
   logs.producer:
+    mem_limit: ${PRODUCER_MEM_LIMIT:-512m}
     build:
       context: logs.producer
       dockerfile: src/main/docker/Dockerfile.compose
@@ -113,6 +136,7 @@ services:
         condition: service_healthy
 
   elasticsearch:
+    mem_limit: ${ELASTICSEARCH_MEM_LIMIT:-2g}
     image: docker.io/elasticsearch:9.4.1
     container_name: elasticsearch
     ports:
@@ -133,6 +157,7 @@ services:
       start_period: 30s
 
   kibana:
+    mem_limit: ${KIBANA_MEM_LIMIT:-1g}
     image: docker.io/kibana:9.4.1
     container_name: kibana
     ports:
@@ -145,6 +170,7 @@ services:
         condition: service_healthy
 
   fluentd:
+    mem_limit: ${FLUENTD_MEM_LIMIT:-512m}
     build: ./fluentd
     container_name: fluentd
     volumes:
@@ -359,7 +385,7 @@ Navegue a **Hamburger menu → Discover**. Cree un data view con el patrón `log
 - Modificar `fluent.conf` para agregar un campo personalizado (ej. `environment: dev`) usando el plugin `record_transformer` y observar cómo se indexa en Elasticsearch.
 - Analizar las implicaciones de usar índices con fecha (`logs-YYYY.MM.dd`) frente a data streams de Elasticsearch 9.x.
 
-### Preguntas de verificación
+### Cuestionario de análisis crítico
 
 1. En la configuración de Fluentd de esta guía, el bloque `<buffer>` usa `@type file` con `flush_interval 5s`. Explique qué papel cumple este buffer en términos de confiabilidad de entrega y qué ocurriría si el contenedor de Fluentd se reinicia antes de que el buffer se vacíe.
 2. Compare el modelo de configuración de Fluentd (`fluent.conf` con directivas `<source>`, `<filter>`, `<match>`) frente al pipeline de Logstash (`input`, `filter`, `output`): ¿qué diferencias de diseño se observan en la forma de enrutar eventos a múltiples destinos?

@@ -62,36 +62,206 @@ Al finalizar el estudio de este documento, el estudiante será capaz de:
 
 ---
 
-## 4. Desarrollo de la temática
+## 4. Metodología de Construcción del Recurso Educativo y Trazabilidad con la Propuesta
+
+La construcción de este recurso educativo se concibe como un proceso aplicado de diseño, desarrollo, verificación y validación de un **artefacto instruccional y tecnológico**. Este trabajo tiene como propósito diseñar un **Recurso Educativo Abierto (REA) portable y modular**.
+
+Por consiguiente, la metodología se enfoca en la articulación sistémica entre directrices curriculares de la Ingeniería de Sistemas, estándares contemporáneos de observabilidad industrial (DevOps/SRE) y la viabilidad instruccional en entornos heterogéneos mediante contenedores Docker.
+
+### 4.1. Enfoque metodológico adoptado
+
+El desarrollo metodológico integra cuatro referentes teóricos de la educación en ingeniería y el diseño de sistemas:
+
+```mermaid
+graph TD
+    A[Metodología de Diseño del Recurso] --> B[Design Science Research - DSR]
+    A --> C[Design-Based Research - DBR]
+    A --> D[Modelo Instruccional ADDIE]
+    A --> E[Alineación Constructiva de Biggs]
+
+    B --> B1["Artefacto: REA Portable (Marco + 9 Stacks Docker)"]
+    C --> C1["Contexto: Aula de Clase (Microservicios)"]
+    D --> D1["Fases: Análisis -> Diseño -> Desarrollo -> Imp. -> Eval."]
+    E --> E1["Alineación: Resultados de Aprendizaje <-> Guías <-> Rúbricas"]
+    
+    classDef root fill:#f9f9f9,stroke:#333,stroke-width:2px;
+    classDef ref fill:#e1f5fe,stroke:#0288d1,stroke-width:2px;
+    class A root;
+    class B,C,D,E ref;
+```
+
+1. **Design Science Research (DSR):** Permite tratar el recurso educativo (compuesto por el marco conceptual, las 9 guías en markdown, las plantillas de configuración y la guía docente) como un **artefacto diseñado** para resolver un problema práctico: la complejidad cognitiva que enfrentan los estudiantes al comprender arquitecturas de observabilidad distribuidas y heterogéneas (Hevner et al., 2004; Peffers et al., 2007). La evaluación del artefacto se realiza bajo criterios de utilidad pedagógica, claridad procedimental y reproducibilidad multiplataforma.
+2. **Design-Based Research (DBR):** Aporta los principios de diseño orientado a contextos reales de aprendizaje y de refinamiento iterativo que guían la construcción del recurso con miras a su puesta en práctica en el aula de la asignatura *Arquitectura Orientada a Microservicios* (Design-Based Research Collective, 2003; McKenney & Reeves, 2018). La validación empírica con estudiantes —análisis de las curvas de aprendizaje y depuración del código Docker ante la heterogeneidad de sus equipos personales— se plantea como fase de **trabajo futuro**, dado que esta versión corresponde a la primera publicación del recurso.
+3. **Modelo ADDIE:** Estructura de forma sistemática el ciclo de vida instruccional del recurso a través de sus fases de Análisis (de necesidades curriculares y de los entornos de ejecución del estudiante), Diseño (de los RAE y la estructura de las guías), Desarrollo (configuración de los entornos Docker Compose y mockups de microservicios), Implementación (preparación del despliegue local para su ejecución por parte de los estudiantes) y Evaluación (diseño de rúbricas cualitativas y cuantitativas) (Branch, 2009).
+4. **Alineación Constructiva (Biggs):** Garantiza que no haya desconexión entre los objetivos de aprendizaje de la asignatura, las actividades técnicas requeridas en las guías y los criterios e instrumentos de evaluación declarados en la guía docente (Biggs & Tang, 2011).
+
+### 4.2. Naturaleza del trabajo y tipo de producto esperado
+
+El trabajo se clasifica como un **desarrollo académico aplicado con orientación instruccional y tecnológica**. El producto final esperado es un **Recurso Educativo Abierto (REA)** compuesto por:
+1. Un marco conceptual neutro respecto a las herramientas.
+2. Una arquitectura conceptual general del flujo de logs (recolección, procesamiento, almacenamiento y visualización).
+3. Nueve (9) guías prácticas e independientes que materializan dicha arquitectura mediante diferentes combinaciones tecnológicas (*stacks*).
+4. Una guía didáctica para docentes y una guía de estudio para estudiantes.
+
+El valor del producto radica en su **portabilidad, modularidad y transferibilidad**, permitiendo que cualquier docente o estudiante de Ingeniería de Sistemas pueda replicar los ecosistemas con el único requisito de contar con un motor de contenedores Docker.
+
+### 4.3. Principios metodológicos
+
+El diseño del recurso se sustenta en los siguientes principios metodológicos:
+* **Interoperabilidad Curricular y Adaptabilidad (Filosofía REA):** Los contenidos didácticos y stacks prácticos deben estar diseñados para ser independientes de los programas de curso de una institución específica. Se estructuran alineándose con las directrices de currículo globales de computación (ACM/IEEE) y se suministran **rutas de aprendizaje flexibles**, facilitando que el recurso pueda ser extrapolado y adoptado en diferentes materias del área de Infraestructura y Desarrollo de TI (ej. Sistemas Distribuidos, DevOps, Arquitectura de Software).
+* **Reproducibilidad multiplataforma:** Los procedimientos técnicos y los contenedores deben estar diseñados para ser agnósticos respecto al sistema operativo del host local (compatibles con Windows/WSL2, macOS y GNU/Linux).
+* **Transparencia y visibilidad de recursos (Capacity Planning):** El recurso exige la **visibilidad, parametrización y dimensionamiento explícito** de los requerimientos de CPU, memoria RAM y dependencias de software de cada una de las prácticas. Esto permite que el REA pueda ser extrapolado y dimensionado de forma adaptativa a contextos educativos con diferentes restricciones de recursos.
+* **Independencia instrumental (Neutralidad):** Las guías prácticas deben funcionar de forma modular, permitiendo al estudiante comprender que las herramientas tecnológicas cambian de un stack a otro, pero las etapas funcionales del pipeline permanecen constantes.
+* **Estructura pedagógica experiencial:** Cada guía debe estructurarse internamente bajo el ciclo de aprendizaje de Kolb (Experiencia, Observación, Conceptualización y Experimentación).
+
+### 4.4. Fases del desarrollo metodológico
+
+Para la consecución de los objetivos propuestos, el proyecto se organizó en siete fases sistemáticas. Cada fase produce insumos o evidencias que estructuran el recurso educativo final. 
+
+```mermaid
+gantt
+    title Fases Metodológicas del Proyecto
+    dateFormat  YYYY-MM
+    section Fases
+    1. Análisis Curricular y del Entorno        :active, f1, 2025-09, 2025-10
+    2. Ingeniería de Requisitos del REA        : f2, 2025-10, 2025-11
+    3. Diseño y Modularización de Pipelines    : f3, 2025-11, 2025-12
+    4. Desarrollo y Configuración Docker       : f4, 2025-12, 2026-02
+    5. Diseño Instruccional y Guías            : f5, 2026-02, 2026-03
+    6. Verificación Técnica (V&V Multi-OS)     : f6, 2026-03, 2026-04
+    7. Sistematización y Cierre                : f7, 2026-04, 2026-05
+```
+
+A continuación, la Tabla 2 detalla las actividades principales, los productos esperados y los criterios de aceptación de cada una de las fases a la luz de los requerimientos de portabilidad y adaptabilidad que definen a un Recurso Educativo Abierto (REA):
+
+**Tabla 1.** Fases metodológicas, productos esperados y criterios de aceptación.
+
+| Fase | Actividades Principales | Producto Esperado | Criterio de Aceptación (Calidad/REA) |
+| :--- | :--- | :--- | :--- |
+| **1. Análisis Curricular y Tecnológico** | * Revisión de literatura sobre observabilidad, DevOps y prácticas instruccionales de SRE.<br>* Análisis del microcurrículo de *Arquitectura Orientada a Microservicios* y las directrices globales ACM/IEEE (CS2023). | Marco conceptual inicial y justificación pedagógica. | El marco conceptual fundamenta la necesidad de la observabilidad, es neutro respecto a herramientas y se alinea con competencias internacionales. |
+| **2. Especificación de Requisitos y Entornos** | * Análisis de la heterogeneidad de entornos locales de ejecución y definición de variables de portabilidad multiplataforma.<br>* Especificación de requisitos funcionales, pedagógicos de interoperabilidad y directrices de dimensionamiento de recursos (CPU/RAM). | Catálogo estructurado de requisitos del REA y especificaciones de dimensionamiento técnico. | Los requisitos detallan de forma medible la portabilidad multi-OS y establecen la transparencia técnica (visibilidad y parametrización de límites de CPU/RAM) como directriz obligatoria para todas las guías. |
+| **3. Diseño de Pipelines** | * Modelado conceptual de los flujos de logs de 4 etapas (Recolección, Procesamiento, Almacenamiento, Visualización).<br>* Planificación y estructuración lógica de los 9 escenarios prácticos. | Arquitectura conceptual y lógica de observabilidad. | El diseño demuestra la independencia de herramientas y define flujos de datos abstractos, modulares y reutilizables. |
+| **4. Desarrollo de los Ecosistemas Docker** | * Escritura de archivos `docker-compose.yml` autocontenidos y parametrizados.<br>* Configuración de colectores, motores de almacenamiento e indexación, y paneles de visualización. | Código y scripts de configuración funcionales en el repositorio. | Los entornos Docker Compose corren de forma modular y portable, con límites de recursos (`mem_limit`) ajustables de manera sencilla. |
+| **5. Diseño Instruccional del REA** | * Redacción de las guías didácticas prácticas, docente y de estudio.<br>* Formulación de Resultados de Aprendizaje Esperados (RAE), preguntas basadas en Kolb y rúbricas. | Guías académicas complementarias e instrumentos de evaluación. | Cada práctica contiene un RAE observable, un fundamento teórico neutral, procedimiento reproducible y rúbricas cualitativas homogéneas. |
+| **6. Verificación Técnica (V&V Multi-OS)** | * Despliegue y pruebas de portabilidad (verificación ejecutada sobre macOS Apple Silicon ARM; Windows 11/WSL2 y Ubuntu Linux como objetivos de verificación en curso).<br>* Monitoreo de consumos con `docker stats`. | Matriz de pruebas y reportes de portabilidad del entorno. | Cada stack se despliega en un host limpio e indica sus prerrequisitos técnicos de forma transparente; la cobertura multi-OS completa se documenta como verificación en curso. |
+| **7. Sistematización y Licenciamiento** | * Empaquetado final de códigos y documentación base.<br>* Configuración de licencia Creative Commons (CC BY-SA 4.0).<br>* Publicación e indexación del recurso en Zenodo (generación de DOI). | Repositorio definitivo publicado, archivo CITATION.cff y DOI. | El recurso cuenta con un DOI válido, licencia abierta compatible con REA y directrices claras de citación estructurada para adopción externa. |
+
+### 4.5. Especificación de requisitos del recurso educativo
+
+El catálogo de requisitos del REA se estructura a partir de criterios técnicos e instruccionales, aplicables en cualquier equipo personal con un motor de contenedores:
+
+**Tabla 2.** Clasificación de requisitos del recurso educativo abierto.
+
+| Categoría de Requisito | Origen del Requisito | Especificación Aplicada | Criterio de Verificación / Evidencia |
+| :--- | :--- | :--- | :--- |
+| **Requisitos Funcionales** | Demandas de la temática de Microservicios. | El ecosistema Docker debe aprovisionar un flujo completo donde una aplicación mock genera logs JSON, un colector los procesa estructuradamente y los ingesta en un indexador para ser consultados en un dashboard. | Visualización de los logs formateados en el panel del stack correspondiente, evidenciada en la sección de capturas de las soluciones. |
+| **Requisitos No Funcionales** | Criterios de calidad, modularidad y portabilidad de software. | Las configuraciones e imágenes de los contenedores Docker deben ser portables y construidas de forma que no tengan dependencias locales del sistema de desarrollo de los autores. | Ejecución exitosa de `docker compose up` en un entorno host limpio y sin preconfiguraciones del sistema de archivos. |
+| **Requisitos Pedagógicos (Interoperabilidad)** | Filosofía REA y adaptabilidad curricular. | El diseño didáctico debe alinearse con estándares de computación internacionales (ACM/IEEE) y estructurarse mediante **Rutas de Aprendizaje Modulares** e instrumentos de evaluación genéricos. Esto facilita que cualquier docente de asignaturas afines (DevOps, Redes, Sistemas Distribuidos, Arquitectura) pueda reusar y adoptar el recurso de forma modular en sus propios LMS (Moodle, Canvas, Classroom). | Estructuración homogénea de la Guía del Docente (`guia_docente.md`) con matrices de mapeo temático multiplan, rúbricas de evaluación genéricas y planeaciones adaptativas según el enfoque del curso. |
+| **Restricción de Entorno (Transparencia)** | Filosofía REA y adaptabilidad de contextos educativos. | El recurso didáctico debe declarar de forma explícita los requisitos mínimos y recomendados de hardware (RAM/CPU) y software de cada práctica, y parametrizar los límites de memoria de Docker (`mem_limit`) para permitir su escalado o atenuación adaptativa. | Sección estructurada "Dimensionamiento y Prerrequisitos de Recursos" al inicio de cada una de las 9 guías prácticas en el repositorio. |
+
+### 4.6. Diseño instruccional y pedagógico de las guías prácticas
+
+El diseño de las prácticas académicas asume el computador personal del estudiante como laboratorio de experimentación activa, reproducible en cualquier equipo que disponga de un motor de contenedores Docker. Cada una de las 9 guías prácticas se diseña bajo la estructura del **Ciclo de Aprendizaje Experiencial de Kolb**, garantizando que el paso a paso sea una oportunidad de reflexión teórica:
+
+```mermaid
+graph TD
+    K1["1. Experiencia Concreta <br> Despliegue de Docker Compose e ingesta básica"] --> K2["2. Observación Reflexiva <br> Análisis del flujo y viaje del log en el pipeline"]
+    K2 --> K3["3. Conceptualización Abstracta <br> Comprensión del protocolo e indexación del stack"]
+    K3 --> K4["4. Experimentación Activa <br> Modificación y personalización de la configuración"]
+    K4 --> K1
+    
+    style K1 fill:#fff8e1,stroke:#f9a825,stroke-width:2px;
+    style K2 fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px;
+    style K3 fill:#e1f5fe,stroke:#0288d1,stroke-width:2px;
+    style K4 fill:#ffebee,stroke:#c62828,stroke-width:2px;
+```
+
+Para asegurar la coherencia sistémica, cada guía didáctica en el repositorio cumple con la siguiente estructura formal:
+1. **Resultados de Aprendizaje Esperados (RAE):** Definición exacta de las habilidades conceptuales y operativas que el estudiante adquirirá.
+2. **Dimensionamiento y Prerrequisitos de Recursos:** Estimación explícita del consumo de memoria RAM y CPU del stack, advertencias de configuración del host (ej. límites del sistema operativo) y parametrización de los límites de memoria de los contenedores (`mem_limit` vía variables de entorno `.env`).
+3. **Diagrama del Pipeline Lógico:** Ilustración de la arquitectura de la guía en función de las 4 etapas del ciclo de logs.
+4. **Procedimiento Técnico Paso a Paso:** Comandos y configuraciones limpias, reproducibles y ordenadas.
+5. **Cuestionario de Análisis Crítico:** Preguntas diseñadas para la conceptualización abstracta y el diagnóstico reflexivo de fallos.
+
+Los **instrumentos de evaluación** —entregables exigibles y rúbrica analítica de niveles de desempeño— se proveen de forma **homogénea y centralizada** en la guía docente (`guia_docente.md` §6), aplicables de manera uniforme a cualquiera de las nueve guías. Esta centralización es una decisión deliberada de diseño REA: garantiza criterios de evaluación consistentes entre stacks, evita la duplicación de rúbricas y facilita que el docente adopte y adapte un único conjunto de instrumentos.
+
+### 4.7. Marco de Verificación y Validación (V&V)
+
+El marco de verificación y validación del recurso se centra en dos dimensiones propias de un artefacto educativo abierto: la **calidad de la portabilidad** (reproducibilidad multiplataforma) y la **claridad didáctica**:
+
+* **Verificación del Artefacto (Calidad Técnica de los Entornos):**
+  * *Verificación de portabilidad multiplataforma:* Los archivos de Docker Compose se diseñaron para ser portables sobre los sistemas operativos y arquitecturas de uso común en los equipos de los estudiantes:
+    1. **Windows 11 Home/Pro** sobre WSL2 (arquitectura x86).
+    2. **macOS** Sequoia/Sonoma (Apple Silicon ARM y x86 Intel).
+    3. **Ubuntu Linux 22.04 LTS** (arquitectura x86).
+
+    La verificación de despliegue se ejecutó sobre **macOS (Apple Silicon ARM)**, entorno disponible para los autores; la verificación sistemática sobre Windows 11/WSL2 y Ubuntu Linux, así como sobre la matriz completa de sistemas operativos y arquitecturas, se contempla como verificación en curso y trabajo futuro.
+  * *Verificación de Parametrización:* Comprobación de que las guías incluyan la parametrización de recursos necesaria para que los límites del contenedor puedan modificarse editando archivos de variables de entorno `.env` o directivas en el archivo Compose.
+  * *Validación de Imágenes Libres:* Empleo exclusivo de imágenes oficiales de Docker Hub o de registros de código abierto para evitar licenciamientos privativos.
+* **Validación del Artefacto (Eficacia Didáctica y Curricular):**
+  * *Validación de Coherencia Pedagógica:* Revisión de que las tareas solicitadas permitan alcanzar y evaluar empíricamente los Resultados de Aprendizaje Esperados (RAE) de la asignatura *Arquitectura Orientada a Microservicios*.
+  * *Evaluación Editorial y Estructura Docente:* Revisión de la portabilidad e inteligibilidad de la guía docente (`guia_docente.md`) para asegurar que el recurso pueda ser fácilmente reutilizado por otros docentes del programa de Ingeniería de Sistemas.
+
+La validación empírica con estudiantes en el aula —analítica de uso, encuestas de percepción y ajuste iterativo del recurso conforme a los principios de la investigación basada en diseño (DBR)— se proyecta como fase de trabajo futuro, dado que esta versión corresponde a la primera publicación del recurso.
+
+#### 4.7.1. Prueba de humo estandarizada
+
+Cada una de las nueve soluciones incorpora un script de prueba de humo (`smoke_test.sh`) que automatiza la verificación de extremo a extremo del pipeline: levanta el ecosistema, espera a que la aplicación productora esté lista, emite un log de prueba con un marcador único y confirma su registro en el motor de almacenamiento correspondiente. Este arnés materializa empíricamente el principio de **independencia instrumental**: la fase de **generación** del log es idéntica en los nueve stacks, mientras que solo la **verificación del registro** varía según la herramienta. La siguiente tabla separa ambas partes:
+
+| Fase del arnés | ¿Estándar entre stacks? | Detalle |
+| :--- | :--- | :--- |
+| Despliegue y ciclo de vida | ✅ Invariante | `docker compose up -d --build` → ejecución → `down -v` con limpieza ante error (`trap`). |
+| Sonda de disponibilidad del productor | ✅ Invariante | `POST /logs` con `{"level":"INFO","message":"PING"}`, reintentos hasta obtener HTTP 200. |
+| Estabilización de la ingesta | ✅ Invariante | Espera fija previa al envío del mensaje de prueba. |
+| **Emisión del log de prueba** | ✅ **Invariante** | `POST /logs` con el esquema `{"level":"WARN","message":"<marcador único>"}` hacia la misma interfaz del productor. |
+| Verificación del registro | ⚙️ Específica de la herramienta | Consulta `_search` en Elasticsearch/OpenSearch, `query_range` (LogQL) en Loki o SQL en ClickHouse, según el motor. |
+
+Las únicas variaciones en la fase de generación responden a restricciones técnicas justificadas: el puerto del productor cambia en el stack que coexiste con servicios que ocupan el puerto por defecto, y dos stacks añaden pasos previos de aprovisionamiento (creación del *input* de ingesta o clonado del repositorio base). Que la interfaz de emisión de logs permanezca constante mientras el conjunto de herramientas cambia por completo constituye evidencia operativa directa de la tesis central del recurso: **las etapas funcionales del pipeline son invariantes; las tecnologías que las implementan, no**.
+
+### 4.8. Matriz de trazabilidad con la propuesta aprobada
+
+La siguiente matriz detalla de forma explícita cómo cada uno de los tres objetivos específicos (OE) comprometidos en la propuesta oficial aprobada de ascenso a Titular se materializa formalmente en los capítulos, guías, configuraciones y criterios del presente recurso educativo:
+
+**Tabla 3.** Trazabilidad entre los objetivos específicos de la propuesta aprobada y los componentes del recurso.
+
+| Objetivo Específico (OE) de la Propuesta Aprobada | Componentes y Archivos de Desarrollo | Evidencias y Artefactos Técnicos y Didácticos | Criterio y Métrica de Cumplimiento del Objetivo |
+| :--- | :--- | :--- | :--- |
+| **OE1:** Establecer los elementos teóricos relacionados con los logs centralizados en microservicios. | * Capítulos 1, 2, 3 y 4 del libro base (`readme.md`).<br>* Cuestionario de estudio conceptual (`guia_estudio.md`). | * Marco conceptual de la observabilidad (recolección, procesamiento, almacenamiento, visualización).<br>* Bibliografía de referencia especializada indexada. | El marco conceptual es agnóstico a las herramientas, fundamenta científicamente la observabilidad en sistemas distribuidos y analiza las implicaciones del esquema semántico y la privacidad. |
+| **OE2:** Elaborar guías prácticas para el despliegue progresivo de soluciones para centralización de logs utilizando Docker. | * Carpeta de guías didácticas (`guias/` de la 1 a la 9).<br>* Rúbricas y planeación sugerida (`guia_docente.md`). | * 9 Guías académicas estructuradas bajo el modelo instruccional de Kolb.<br>* Rúbrica analítica homogénea y entregables exigibles definidos en la guía docente, aplicables a las 9 guías. | Se diseñan 9 guías instruccionales que cubren desde los stacks tradicionales hasta soluciones en el estado del arte, ordenadas por complejidad progresiva. |
+| **OE3:** Implementar cada guía en entornos funcionales y reproducibles para los estudiantes. | * Carpeta de configuraciones y entornos (`soluciones/` de la 1 a la 9).<br>* Repositorio de código con archivos `docker-compose.yml` y configs. | * Archivos YAML de Docker Compose funcionales.<br>* Archivos de configuración de colectores e indexadores.<br>* Aplicaciones mocks generadoras de logs.<br>* Logs e historiales de comandos. | Las 9 soluciones y contenedores de observabilidad son funcionales, portables y reproducibles, estructuradas de forma parametrizada y con guías de dimensionamiento técnico. |
+
+---
+
+## 5. Desarrollo de la temática
 
 Esta sección desarrolla de manera progresiva los fundamentos conceptuales de la observabilidad y la centralización de logs en sistemas distribuidos. El recorrido inicia con la definición y alcance del concepto de observabilidad, avanza hacia el análisis del rol de los logs como fuente primaria de información y culmina con la presentación de una arquitectura conceptual que integra los distintos componentes involucrados. Esta progresión busca facilitar una comprensión gradual y coherente, orientada al aprendizaje y a la posterior aplicación práctica de los conceptos abordados.
 
 
-### 4.1 Observabilidad en sistemas distribuidos
+### 5.1 Observabilidad en sistemas distribuidos
 
 La observabilidad se define como la capacidad de inferir el estado interno de un sistema complejo a partir de las señales externas que este produce durante su ejecución (Majors, Fong-Jones & Miranda, 2022; Beyer et al., 2016; Sridharan, 2018). En sistemas distribuidos, esta capacidad resulta crítica debido a la concurrencia, la comunicación asincrónica y la distribución de responsabilidades entre múltiples componentes autónomos, factores que dificultan la identificación directa de causas y efectos (Usman et al., 2022).
 
 Desde la ingeniería de software, la observabilidad se ha consolidado como un principio complementario a la monitorización tradicional. Mientras esta última se enfoca en indicadores previamente definidos, la observabilidad busca responder preguntas no anticipadas, permitiendo explorar el comportamiento del sistema cuando surgen fallos o degradaciones inesperadas (Turnbull, 2016). Este enfoque resulta particularmente relevante en arquitecturas de microservicios, donde los comportamientos emergentes no pueden ser previstos completamente en tiempo de diseño (Newman, 2015).
 
-### 4.2 Logs como fuente primaria de información
+### 5.2 Logs como fuente primaria de información
 
 Los logs constituyen registros textuales de eventos discretos que ocurren durante la ejecución de un sistema y representan una de las formas más expresivas de instrumentación del software (Turnbull, 2016). A diferencia de las métricas, que capturan valores agregados, y de las trazas, que describen recorridos de solicitudes, los logs preservan el contexto semántico de los eventos, facilitando la comprensión del *qué* y el *por qué* de una situación determinada.
 
 Diversos estudios destacan que los logs no solo cumplen una función operativa, sino que actúan como artefactos de conocimiento que reflejan decisiones de diseño, supuestos implícitos y modelos mentales de los desarrolladores (Xu et al., 2009; Oliner, Ganapathi, & Xu, 2012; He et al., 2021). Desde una perspectiva formativa, esta característica permite a los estudiantes analizar evidencias reales de ejecución y vincular los conceptos teóricos de arquitectura y diseño con su manifestación práctica.
 
-### 4.3 Problemática de la dispersión de logs
+### 5.3 Problemática de la dispersión de logs
 
 En sistemas distribuidos, cada componente genera sus propios registros de manera local, lo que conduce a una dispersión de la información que dificulta su análisis integral. Esta fragmentación incrementa la carga cognitiva requerida para el diagnóstico de fallos y limita la capacidad de correlacionar eventos entre servicios independientes (Cito et al., 2015).
 
 La literatura señala que, a medida que aumenta el número de servicios y nodos, el análisis manual de logs locales se vuelve inviable, generando opacidad operativa y dependencia excesiva de conocimiento tácito (Oliner et al., 2012; Burns et al., 2016). Esta problemática refuerza la necesidad de enfoques sistemáticos para la gestión y análisis de registros en entornos distribuidos.
 
-### 4.4 Centralización de logs
+### 5.4 Centralización de logs
 
 La centralización de logs surge como una estrategia para mitigar la dispersión de información mediante la recolección, consolidación y almacenamiento de los registros generados por los distintos componentes del sistema en un repositorio común (Turnbull, 2016; Majors, Fong-Jones & Miranda, 2022). Este enfoque facilita la consulta unificada, la correlación temporal y el análisis transversal de eventos.
 
 Desde el punto de vista conceptual, la centralización de logs transforma un conjunto fragmentado de mensajes en una fuente coherente de conocimiento operativo, habilitando procesos de diagnóstico distribuido y análisis post-mortem de incidentes complejos (Beyer et al., 2016). Asimismo, permite reconstruir narrativas de ejecución que son fundamentales para comprender fallos en cascada y comportamientos no deterministas.
 
-### 4.5 Beneficios conceptuales de la centralización de logs
+### 5.5 Beneficios conceptuales de la centralización de logs
 
 La centralización de logs aporta beneficios que trascienden el ámbito técnico inmediato. Entre los más relevantes se encuentran:
 
@@ -102,7 +272,7 @@ La centralización de logs aporta beneficios que trascienden el ámbito técnico
 
 Estos beneficios refuerzan el valor de la centralización de logs como herramienta conceptual para la formación en arquitectura de software y sistemas distribuidos (Bosch, 2016).
 
-### 4.6 Desafíos y criterios conceptuales
+### 5.6 Desafíos y criterios conceptuales
 
 El diseño de soluciones de centralización de logs implica enfrentar diversos desafíos técnicos y operativos (Kitchin, 2014; Beyer et al., 2016). Abordarlos adecuadamente requiere la adopción de criterios conceptuales sólidos:
 
@@ -112,7 +282,7 @@ El diseño de soluciones de centralización de logs implica enfrentar diversos d
 
 Desde una perspectiva académica, el análisis de estos desafíos permite a los estudiantes desarrollar criterios transferibles a distintos contextos tecnológicos, fomentando una comprensión crítica de las decisiones de diseño y sus implicaciones operativas y éticas.
 
-### 4.7 Arquitectura conceptual de las soluciones de centralización de logs
+### 5.7 Arquitectura conceptual de las soluciones de centralización de logs
 
 Aunque las implementaciones prácticas de la centralización de logs pueden variar ampliamente en función de las tecnologías empleadas, la literatura y la experiencia industrial coinciden en que dichas soluciones comparten una **arquitectura conceptual común**, compuesta por varios componentes claramente diferenciables (Turnbull, 2016; Newman, 2015).
 
@@ -139,31 +309,31 @@ graph LR
 
 > **Nota sobre el alcance del diagrama:** Los sistemas distribuidos generan tres tipos de señales de observabilidad: **logs** (eventos discretos con contexto semántico), **métricas** (mediciones numéricas agregadas en el tiempo) y **trazas** (recorridos de solicitudes a través de múltiples servicios). La arquitectura conceptual de cuatro etapas —recolección, procesamiento, almacenamiento y visualización— aplica a las tres señales. Este documento centra su desarrollo en los **logs**, por ser la señal de mayor riqueza contextual y la más directamente vinculada a la comprensión del comportamiento interno del sistema (Majors, Fong-Jones & Miranda, 2022). Las guías prácticas complementarias amplían el tratamiento hacia métricas y trazas en los ecosistemas que las integran de forma nativa.
 
-#### 4.7.1 Recolección de logs
+#### 5.7.1 Recolección de logs
 
 El componente de **recolección de logs** es responsable de capturar los registros generados por aplicaciones, servicios y componentes de infraestructura. En términos conceptuales, este componente actúa como el punto de entrada del flujo de observabilidad y debe operar de manera desacoplada, de modo que la captura de eventos no interfiera con la ejecución normal del sistema.
 
 Desde una perspectiva formativa, resulta relevante comprender que la recolección de logs involucra decisiones relacionadas con la ubicación de los agentes de captura, la frecuencia de recolección y el tipo de información registrada. Estas decisiones influyen directamente en la calidad, utilidad y confiabilidad de la observabilidad obtenida, y condicionan los análisis posteriores que pueden realizarse sobre los datos recolectados (Xu et al., 2009).
 
-#### 4.7.2 Procesamiento y enriquecimiento de logs
+#### 5.7.2 Procesamiento y enriquecimiento de logs
 
 El **procesamiento de logs** comprende el conjunto de actividades orientadas a transformar los registros crudos en información estructurada y significativa. Entre estas actividades se incluyen el filtrado de eventos irrelevantes, la normalización de formatos, el enriquecimiento semántico y la correlación básica de eventos.
 
 Desde el punto de vista conceptual, este procesamiento permite reducir el ruido inherente a grandes volúmenes de datos operativos y preparar los logs para su almacenamiento y análisis posterior. En el ámbito educativo, este componente introduce a los estudiantes en la noción de que los datos generados por los sistemas requieren un tratamiento previo para convertirse en información útil y accionable (Oliner et al., 2012; He et al., 2017; Zhu et al., 2019).
 
-#### 4.7.3 Almacenamiento y búsqueda
+#### 5.7.3 Almacenamiento y búsqueda
 
 El **almacenamiento y motor de búsqueda** constituye el núcleo analítico de una solución de centralización de logs. Su función principal es conservar los registros de manera eficiente y habilitar mecanismos de consulta flexibles que faciliten el análisis exploratorio y el diagnóstico de incidentes.
 
 A nivel conceptual, este componente introduce nociones fundamentales relacionadas con la indexación de datos, la gestión de la retención de información y la ejecución de consultas temporales. Estos aspectos resultan esenciales para comprender cómo se construye la visibilidad del sistema a lo largo del tiempo y cómo se posibilita el análisis retrospectivo de eventos (Kitchin, 2014; Kleppmann, 2017).
 
-#### 4.7.4 Visualización y análisis
+#### 5.7.4 Visualización y análisis
 
 El componente de **visualización** tiene como propósito presentar la información contenida en los logs de manera comprensible para los usuarios humanos. Mediante representaciones gráficas, tablas y paneles, se facilita la identificación de patrones, tendencias y posibles anomalías en el comportamiento del sistema.
 
 Desde una perspectiva formativa, la visualización cumple un rol clave al reducir la carga cognitiva asociada al análisis de grandes volúmenes de información y al permitir que los estudiantes desarrollen habilidades de interpretación y análisis de datos operativos. De este modo, se establece un vínculo directo entre los registros técnicos y los procesos de toma de decisiones informadas (Bosch, 2016).
 
-#### 4.7.5 Integración conceptual de los componentes
+#### 5.7.5 Integración conceptual de los componentes
 
 Los componentes de recolección, procesamiento, almacenamiento y visualización no deben entenderse como elementos aislados, sino como partes interdependientes de un flujo continuo de información. Cada uno cumple una función específica dentro de la arquitectura, pero su valor emerge plenamente cuando se articulan de manera coherente.
 
@@ -173,13 +343,13 @@ De este modo, la arquitectura conceptual presentada establece un puente entre lo
 
 ---
 
-## 5. Alcance del documento
+## 6. Alcance del documento
 
-Este trabajo se centra en el desarrollo teórico y conceptual de la centralización de logs como pilar de la observabilidad. Los aspectos prácticos, estudios de caso y guías de implementación se abordan en documentos complementarios, con el fin de preservar la neutralidad tecnológica y facilitar la reutilización del marco conceptual en distintos contextos académicos.
+Este **marco conceptual** se centra en el desarrollo teórico de la centralización de logs como pilar de la observabilidad y se mantiene deliberadamente neutral en términos tecnológicos. Su instanciación práctica se desarrolla en las guías complementarias que forman parte del mismo recurso educativo abierto (REA), de modo que el componente conceptual y el práctico se articulan como partes de un único producto académico, sin que la neutralidad del primero se vea comprometida por las decisiones tecnológicas del segundo.
 
 ---
 
-Este documento se limita intencionalmente a la **fundamentación teórica y conceptual** de la centralización de logs y su rol en la observabilidad. Las guías prácticas, laboratorios y escenarios de despliegue progresivo se desarrollan en documentos independientes, con el objetivo de:
+Este capítulo conceptual se limita intencionalmente a la **fundamentación teórica** de la centralización de logs y su rol en la observabilidad. Las guías prácticas, laboratorios y escenarios de despliegue progresivo se desarrollan como guías complementarias del mismo REA, con el objetivo de:
 
 - Mantener la neutralidad tecnológica del contenido central.
 - Facilitar su reutilización en distintos cursos y programas académicos.
@@ -187,7 +357,7 @@ Este documento se limita intencionalmente a la **fundamentación teórica y conc
 
 ---
 
-## 6. Articulación con las actividades prácticas
+## 7. Articulación con las actividades prácticas
 
 Con el propósito de afianzar los fundamentos teóricos desarrollados a lo largo de este trabajo escrito, se han diseñado y documentado un conjunto de **guías prácticas** orientadas a la implementación de soluciones de centralización de logs mediante diferentes *stacks* tecnológicos. Estas guías permiten a los estudiantes materializar los conceptos de observabilidad y arquitectura conceptual estudiados, favoreciendo un aprendizaje activo y progresivo.
 
@@ -211,7 +381,7 @@ Aunque las guías son independientes, se sugiere el siguiente orden de consumo p
 
 ---
 
-## 7. Conclusiones
+## 8. Conclusiones
 
 La observabilidad se consolida como un principio fundamental para la comprensión, análisis y gestión de sistemas distribuidos, al permitir inferir su comportamiento interno a partir de las señales externas generadas durante su ejecución. En arquitecturas basadas en microservicios, donde la complejidad operativa y los comportamientos emergentes son inherentes, este principio resulta indispensable para el diagnóstico, la toma de decisiones y la mejora continua de los sistemas (Majors, Fong-Jones & Miranda, 2022; Beyer et al., 2016).
 
@@ -223,21 +393,29 @@ En conjunto, el trabajo escrito ofrece una base teórica robusta y coherente que
 
 ---
 
-## 8. Referencias bibliográficas
+## 9. Referencias bibliográficas
 
 Aghili, R., Li, H., & Khomh, F. (2025). Protecting privacy in software logs: What should be anonymized? *Proceedings of the ACM on Software Engineering, 2*(FSE). https://doi.org/10.1145/3715779
 
 Beyer, B., Jones, C., Petoff, J., & Murphy, N. R. (2016). *Site reliability engineering: How Google runs production systems*. O’Reilly Media.
 
+Biggs, J., & Tang, C. (2011). *Teaching for quality learning at university* (4th ed.). Open University Press.
+
 Bosch, J. (2016). Speed, data, and ecosystems: The future of software engineering. *IEEE Software, 33*(1), 82–88. https://doi.org/10.1109/MS.2016.14
+
+Branch, R. M. (2009). *Instructional design: The ADDIE approach*. Springer. https://doi.org/10.1007/978-0-387-09506-6
 
 Burns, B., Grant, B., Oppenheimer, D., Brewer, E., & Wilkes, J. (2016). Borg, Omega, and Kubernetes: Lessons learned from three container-management systems over a decade. *ACM Queue, 14*(1), 70–93. https://doi.org/10.1145/2898442.2898444
 
 Cito, J., Leitner, P., Fritz, T., & Gall, H. C. (2015). The making of cloud applications: An empirical study on software development for the cloud. In *Proceedings of the 10th Joint Meeting on Foundations of Software Engineering* (pp. 393–403). Association for Computing Machinery. https://doi.org/10.1145/2786805.2786826
 
+Design-Based Research Collective. (2003). Design-based research: An emerging paradigm for educational inquiry. *Educational Researcher, 32*(1), 5–8. https://doi.org/10.3102/0013189X032001005
+
 He, P., Zhu, J., Zheng, Z., & Lyu, M. R. (2017). Drain: An online log parsing approach with fixed depth tree. In *2017 IEEE International Conference on Web Services* (pp. 33–40). IEEE. https://doi.org/10.1109/ICWS.2017.13
 
 He, S., He, P., Chen, Z., Yang, T., Su, Y., & Lyu, M. R. (2021). A survey on automated log analysis for reliability engineering. *ACM Computing Surveys, 54*(6), Article 130, 1–37. https://doi.org/10.1145/3460345
+
+Hevner, A. R., March, S. T., Park, J., & Ram, S. (2004). Design science in information systems research. *MIS Quarterly, 28*(1), 75–105. https://doi.org/10.2307/25148625
 
 Kitchin, R. (2014). *The data revolution: Big data, open data, data infrastructures and their consequences*. Sage Publications.
 
@@ -247,9 +425,13 @@ Kleppmann, M. (2017). *Designing data-intensive applications: The big ideas behi
 
 Majors, C., Fong-Jones, L., & Miranda, G. (2022). *Observability engineering: Achieving production excellence*. O’Reilly Media.
 
+McKenney, S., & Reeves, T. C. (2018). *Conducting educational design research* (2nd ed.). Routledge. https://doi.org/10.4324/9781315105642
+
 Newman, S. (2015). *Building microservices: Designing fine-grained systems*. O’Reilly Media.
 
 Oliner, A. J., Ganapathi, A., & Xu, W. (2012). Advances and challenges in log analysis. *Communications of the ACM, 55*(2), 55–61. https://doi.org/10.1145/2076450.2076466
+
+Peffers, K., Tuunanen, T., Rothenberg, M. A., & Chatterjee, S. (2007). A design science research methodology for information systems research. *Journal of Management Information Systems, 24*(3), 45–77. https://doi.org/10.2753/MIS0742-1222240302
 
 Richardson, C. (2018). *Microservices patterns: With examples in Java*. Manning Publications.
 
@@ -267,7 +449,7 @@ Zhu, J., He, S., Liu, J., He, P., Xie, Q., Zheng, Z., & Lyu, M. R. (2019). Tools
 
 ---
 
-## 9. Cómo citar este trabajo
+## 10. Cómo citar este trabajo
 
 Si reutiliza, adapta o referencia este recurso educativo en publicaciones académicas, materiales docentes o trabajos derivados, se sugiere la siguiente forma de cita en formato APA 7:
 
@@ -294,7 +476,7 @@ Si reutiliza, adapta o referencia este recurso educativo en publicaciones acadé
 
 ---
 
-## 10. Licencia
+## 11. Licencia
 
 Este obra está licenciada bajo una [Licencia Creative Commons Atribución-CompartirIgual 4.0 Internacional (CC BY-SA 4.0)](https://creativecommons.org/licenses/by-sa/4.0/deed.es). Vea el archivo [`LICENSE`](./LICENSE) para los términos completos.
 

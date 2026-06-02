@@ -3,6 +3,7 @@ services:
     build:
       context: logs.producer
       dockerfile: src/main/docker/Dockerfile.compose
+    mem_limit: ${PRODUCER_MEM_LIMIT:-512m}
     ports:
       - "8080:8080"
     volumes:
@@ -11,6 +12,7 @@ services:
   loki:
     image: grafana/loki:3.0.0
     container_name: loki
+    mem_limit: ${LOKI_MEM_LIMIT:-512m}
     ports:
       - "3100:3100"
     command: -config.file=/etc/loki/local-config.yaml
@@ -24,6 +26,7 @@ services:
   promtail:
     image: grafana/promtail:3.0.0
     container_name: promtail
+    mem_limit: ${PROMTAIL_MEM_LIMIT:-256m}
     volumes:
       - ./logs:/var/log/app_logs:ro
       - source: ./promtail/promtail-config.yaml
@@ -37,6 +40,7 @@ services:
   grafana:
     image: grafana/grafana:13.0.1
     container_name: grafana
+    mem_limit: ${GRAFANA_MEM_LIMIT:-512m}
     environment:
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin

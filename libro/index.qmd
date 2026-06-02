@@ -1,4 +1,4 @@
-# Prefacio 
+# Prefacio {.unnumbered}
 
 Este libro recoge en un único volumen el **Recurso Educativo para el Despliegue de Ecosistemas de Centralización de Logs Mediante Docker**, producto resultante del trabajo académico de los tres profesores autores adscritos al Programa de Ingeniería de Sistemas y Computación de la Universidad del Quindío.
 

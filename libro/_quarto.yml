@@ -22,9 +22,12 @@ book:
 
   chapters:
     - index.qmd
-    - part: "Marco conceptual"
+    - part: "Documento base"
       chapters:
-        - 01-marco-conceptual.qmd
+        - _generated/01-introduccion-objetivos.qmd
+        - _generated/02-metodologia.qmd
+        - _generated/03-marco-conceptual.qmd
+        - _generated/04-alcance-conclusiones.qmd
     - part: "Material de estudio y docencia"
       chapters:
         - 02-guia-estudio.qmd
@@ -40,6 +43,8 @@ book:
         - guias/07-vector.qmd
         - guias/08-signoz.qmd
         - guias/09-alloy.qmd
+  appendices:
+    - _generated/99-referencias.qmd
 
   page-footer:
     left: "© 2026 Universidad del Quindío"

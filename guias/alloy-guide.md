@@ -60,6 +60,28 @@ Esta guía se limita al caso de uso equivalente a Promtail: *file tailing* de lo
   https://docs.docker.com/compose/install/
 - Al menos **4 GB de RAM** libres (este stack no incluye Elasticsearch ni OpenSearch; Alloy, Loki y Grafana tienen un huella de memoria significativamente menor que los stacks ELK/OLO — este requisito reducido es en sí mismo un punto de comparación pedagógico con las guías anteriores)
 
+### Dimensionamiento de recursos
+
+**Consumo estimado del stack:** ~2.5 GB de RAM en estado estable. Se trata de un stack ligero, apto para equipos con tan solo 4 GB de RAM disponibles.
+
+Cada servicio declara un `mem_limit` que acota su consumo de memoria. La siguiente tabla resume el rol de cada contenedor en el pipeline y su límite por defecto:
+
+| Servicio | Función en el pipeline | `mem_limit` por defecto |
+|----------|------------------------|-------------------------|
+| `logs.producer` | Aplicación Quarkus que genera los logs (fuente de datos) | `512m` |
+| `alloy` | Recolector y procesador del pipeline (lee, transforma y envía) | `512m` |
+| `loki` | Almacenamiento e indexación por etiquetas de los logs | `512m` |
+| `grafana` | Visualización y consulta de los logs | `512m` |
+
+Los límites son parametrizables mediante variables de entorno definidas en un archivo `.env` junto al `docker-compose.yml`, lo que permite ajustarlos sin editar el compose:
+
+```bash
+PRODUCER_MEM_LIMIT=512m
+ALLOY_MEM_LIMIT=512m
+LOKI_MEM_LIMIT=512m
+GRAFANA_MEM_LIMIT=512m
+```
+
 ---
 
 ## 📂 3. Estructura del proyecto
@@ -114,6 +136,7 @@ services:
     build:
       context: logs.producer
       dockerfile: src/main/docker/Dockerfile.compose
+    mem_limit: ${PRODUCER_MEM_LIMIT:-512m}
     ports:
       - "8080:8080"
     volumes:
@@ -125,6 +148,7 @@ services:
   alloy:
     image: grafana/alloy:v1.16.1
     container_name: alloy
+    mem_limit: ${ALLOY_MEM_LIMIT:-512m}
     command:
       - run
       - --server.http.listen-addr=0.0.0.0:12345
@@ -151,6 +175,7 @@ services:
   loki:
     image: grafana/loki:3.0.0
     container_name: loki
+    mem_limit: ${LOKI_MEM_LIMIT:-512m}
     ports:
       - "3100:3100"
     command: -config.file=/etc/loki/local-config.yaml
@@ -164,6 +189,7 @@ services:
   grafana:
     image: grafana/grafana:13.0.1
     container_name: grafana
+    mem_limit: ${GRAFANA_MEM_LIMIT:-512m}
     environment:
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
@@ -368,7 +394,7 @@ Parsear el JSON y mostrar solo el mensaje:
 - **Inspeccionar el *live debugging*:** Desde la UI de Alloy (`http://localhost:12345`), active la depuración en vivo del componente `loki.process.enrich` y observe los eventos que atraviesan el pipeline mientras genera carga.
 - **Evaluar el estado de mantenimiento:** Investigue qué funcionalidades tiene Grafana Alloy que Promtail no tendrá jamás (soporte OTLP, Pyroscope, integración con Kubernetes, etc.) y analice las implicaciones para la decisión de migración en un proyecto real.
 
-### Preguntas de verificación
+### Cuestionario de análisis crítico
 
 1. ¿Por qué no es posible usar `stage.json` con la expresión `"log.level"` para extraer el nivel de los logs ECS de Quarkus en Alloy, y cuál es la diferencia entre un campo con punto en el nombre y un campo anidado?
 2. El healthcheck de Alloy usa `/proc/net/tcp6` en lugar de `wget` o `curl`. Explique qué limitación de la imagen impone esta solución y proponga una alternativa basada en un Dockerfile personalizado.

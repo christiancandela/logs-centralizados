@@ -2,6 +2,7 @@ _output/
 _book/
 .quarto/
 _mermaid/
+_generated/
 *.aux
 *.log
 *.out

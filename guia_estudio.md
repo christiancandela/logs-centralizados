@@ -3,6 +3,7 @@
 ## 1. ¿Cómo se define la observabilidad en el contexto de los sistemas distribuidos? 
 
 La observabilidad se define como la capacidad de inferir el estado interno de un sistema complejo utilizando las señales externas que este produce mientras se encuentra en ejecución. Esta capacidad es crítica en los sistemas distribuidos debido a que la concurrencia y la distribución de responsabilidades complican la identificación directa de causas y efectos.
+
 ## 2. ¿Cuál es la diferencia clave entre la monitorización tradicional y la observabilidad? 
 
 La monitorización tradicional se centra en vigilar indicadores que han sido previamente definidos, mientras que la observabilidad tiene como objetivo responder preguntas no anticipadas. Esto permite explorar el comportamiento del sistema ante degradaciones o fallos inesperados, lo cual es vital en microservicios donde surgen comportamientos emergentes.
@@ -10,9 +11,11 @@ La monitorización tradicional se centra en vigilar indicadores que han sido pre
 ## 3. ¿Por qué se considera a los logs como una fuente primaria de información por encima de las métricas o las trazas? 
 
 A diferencia de las métricas (que son valores agregados) y las trazas (que describen recorridos), los logs son registros textuales de eventos discretos que logran preservar el contexto semántico de dichos eventos. Esto facilita comprender exactamente el qué y el por qué de una situación determinada.
+
 ## 4. ¿En qué consiste la problemática de la "dispersión de logs" en arquitecturas de microservicios? 
 
 En sistemas distribuidos, cada componente o microservicio genera de manera local sus propios registros, fragmentando la información. Esta dispersión aumenta considerablemente la carga cognitiva necesaria para diagnosticar fallos, limita la correlación de eventos entre servicios autónomos y puede volver inviable el análisis manual a medida que escalan los nodos.
+
 ## 5. ¿Qué beneficios conceptuales aporta la centralización de logs a un sistema distribuido? 
 
 Consolidar los logs en un repositorio común mitiga el problema de la dispersión y proporciona múltiples beneficios: mejora la visibilidad global de las interacciones internas, reduce la complejidad cognitiva al diagnosticar incidentes distribuidos y permite correlacionar eventos por tiempo y contexto. Además, facilita la reconstrucción de narrativas de ejecución esenciales para entender fallos en cascada.

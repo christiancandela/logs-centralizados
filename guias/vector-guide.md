@@ -56,6 +56,28 @@ En arquitecturas donde el volumen de logs es masivo, el componente de recolecci�
   https://docs.docker.com/compose/install/
 - Al menos **8 GB de RAM** libres (Vector es muy ligero; Loki y Grafana son los principales consumidores)
 
+### Dimensionamiento de recursos
+
+**Consumo estimado del stack:** ~2.5 GB de RAM en estado estable. Se trata de un stack ligero, apto para equipos con 4 GB de RAM.
+
+Cada servicio declara un `mem_limit` que acota su consumo máximo de memoria:
+
+| Servicio | Función en el pipeline | `mem_limit` por defecto |
+|----------|------------------------|-------------------------|
+| Vector | Recolección y transformación de eventos (Rust) | 512m |
+| Loki | Almacenamiento e indexación por etiquetas | 512m |
+| Grafana | Visualización y exploración (LogQL) | 512m |
+| logs.producer (Quarkus) | Aplicación productora de logs | 512m |
+
+Los límites son parametrizables vía variables de entorno definidas en el archivo `.env` (junto al `docker-compose.yml`):
+
+```bash
+VECTOR_MEM_LIMIT=512m
+LOKI_MEM_LIMIT=512m
+GRAFANA_MEM_LIMIT=512m
+PRODUCER_MEM_LIMIT=512m
+```
+
 ---
 
 ## 📂 3. Estructura del proyecto
@@ -110,6 +132,7 @@ services:
     build:
       context: logs.producer
       dockerfile: src/main/docker/Dockerfile.compose
+    mem_limit: ${PRODUCER_MEM_LIMIT:-512m}
     ports:
       - "8080:8080"
     environment:
@@ -121,6 +144,7 @@ services:
   vector:
     image: timberio/vector:0.55.0-alpine
     container_name: vector
+    mem_limit: ${VECTOR_MEM_LIMIT:-512m}
     command: ["--config", "/etc/vector/vector.toml"]
     volumes:
       - source: ./vector/vector.toml
@@ -142,6 +166,7 @@ services:
   loki:
     image: grafana/loki:3.0.0
     container_name: loki
+    mem_limit: ${LOKI_MEM_LIMIT:-512m}
     ports:
       - "3100:3100"
     command: -config.file=/etc/loki/local-config.yaml
@@ -155,6 +180,7 @@ services:
   grafana:
     image: grafana/grafana:13.0.1
     container_name: grafana
+    mem_limit: ${GRAFANA_MEM_LIMIT:-512m}
     environment:
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
@@ -362,7 +388,7 @@ Parsear campos ECS y mostrar solo el mensaje:
 - **Múltiples destinos:** Configure un segundo sink en `vector.toml` que además de Loki escriba los eventos en un archivo local (type = "file"). Esto ilustra el enrutamiento a múltiples backends simultáneamente.
 - **Comparar recursos:** Ejecute `docker stats` con el stack Vector activo y compare el consumo de memoria del contenedor `vector` frente al de `fluentd` o `logstash` en las guías anteriores.
 
-### Preguntas de verificación
+### Cuestionario de análisis crítico
 
 1. En el pipeline de Vector de esta guía, la transformación VRL accede al campo `"log.level"` con la sintaxis `."log.level"` (entre comillas). Explique por qué es necesaria esa sintaxis y qué diferencia introduce respecto a acceder a un campo ordinario como `.message`.
 2. El modelo de pipeline de Vector (Source → Transform → Sink) es declarativo y tipado. Analice cómo este diseño facilita o dificulta la implementación de enrutamiento condicional (enviar logs de nivel ERROR a un destino distinto que los de nivel INFO) en comparación con el modelo de Fluentd o Logstash.

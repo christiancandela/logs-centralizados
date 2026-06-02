@@ -19,3 +19,4 @@ services:
     networks:
       - signoz-net
     restart: unless-stopped
+    mem_limit: ${PRODUCER_MEM_LIMIT:-512m}

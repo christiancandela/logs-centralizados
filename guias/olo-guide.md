@@ -56,6 +56,30 @@ La **centralización de logs** mitiga la dispersión inherente a los sistemas di
 
 > ℹ️ **Nota sobre versiones:** Esta guía usa **OpenSearch 3.0**, la versión más reciente de la línea principal. La guía GELF/Graylog utiliza OpenSearch 2.12 porque Graylog 7.1 requiere compatibilidad con la API de Elasticsearch 7.x que solo mantiene la rama 2.x. Ambas elecciones son intencionadas y correctas para cada contexto.
 
+### Dimensionamiento de recursos
+
+El stack OLO es intensivo en memoria, ya que combina un motor de indexación distribuida (OpenSearch), un procesador de logs sobre la JVM (Logstash) y una capa de visualización (OpenSearch Dashboards). El **consumo estimado del stack es de ~5 GB de RAM en estado estable**, por lo que se recomienda disponer de al menos 8 GB libres para operar con holgura.
+
+Cada servicio del `docker-compose.yml` declara un límite de memoria (`mem_limit`) que acota su consumo y previene que un único contenedor agote la memoria del anfitrión:
+
+| Servicio | Función en el pipeline | `mem_limit` por defecto |
+|----------|------------------------|-------------------------|
+| `opensearch` | Almacenamiento e indexación de eventos | `2g` |
+| `logstash` | Ingestión, procesamiento y transformación de logs | `1g` |
+| `dashboards` | Visualización y exploración (OpenSearch Dashboards) | `1g` |
+| `logs.producer` | Aplicación productora de logs (Quarkus) | `512m` |
+
+Estos límites están **parametrizados mediante variables de entorno**, de modo que pueden ajustarse sin modificar el `docker-compose.yml`. Defina los valores en un archivo `.env` ubicado junto al `docker-compose.yml`:
+
+```bash
+OPENSEARCH_MEM_LIMIT=2g
+LOGSTASH_MEM_LIMIT=1g
+DASHBOARDS_MEM_LIMIT=1g
+PRODUCER_MEM_LIMIT=512m
+```
+
+> ⚠️ **Importante:** En sistemas **Linux o entornos WSL**, OpenSearch requiere que la memoria virtual del anfitrión cumpla `vm.max_map_count ≥ 262144`. Configúrelo antes de iniciar el entorno (véase la sección de *Troubleshooting*).
+
 ---
 
 ## 📂 3. Estructura del proyecto
@@ -108,6 +132,7 @@ services:
     build:
       context: logs.producer
       dockerfile: src/main/docker/Dockerfile.compose
+    mem_limit: ${PRODUCER_MEM_LIMIT:-512m}
     ports:
       - "8080:8080"
     environment:
@@ -118,6 +143,7 @@ services:
 
   opensearch:
     image: opensearchproject/opensearch:3.0.0
+    mem_limit: ${OPENSEARCH_MEM_LIMIT:-2g}
     container_name: opensearch
     environment:
       - discovery.type=single-node
@@ -141,6 +167,7 @@ services:
 
   dashboards:
     image: opensearchproject/opensearch-dashboards:3.0.0
+    mem_limit: ${DASHBOARDS_MEM_LIMIT:-1g}
     container_name: dashboards
     ports:
       - "5601:5601"
@@ -153,6 +180,7 @@ services:
 
   logstash:
     build: ./logstash
+    mem_limit: ${LOGSTASH_MEM_LIMIT:-1g}
     container_name: logstash
     volumes:
       - source: ./logstash/pipelines
@@ -371,7 +399,7 @@ source = logs-producer-*
 - Desplegar dos instancias de `logs.producer` y distinguirlas en Discover por el campo `service.name`.
 - Identificar las implicaciones de seguridad del envío TCP sin autenticación ni cifrado.
 
-### Preguntas de verificación
+### Cuestionario de análisis crítico
 
 1. OpenSearch es un fork de Elasticsearch. Explique qué es el campo `manage_template => false` en el pipeline de Logstash de esta guía y por qué es necesario específicamente con el plugin `logstash-output-opensearch` 2.x sobre Logstash 9.x.
 2. Compare el modelo de índices con fecha (`logs-producer-YYYY.MM.dd`) que usa este stack frente a los data streams de Elasticsearch 9.x de la guía ELK: ¿qué implicaciones tiene cada enfoque para la gestión del ciclo de vida de los datos (ILM)?

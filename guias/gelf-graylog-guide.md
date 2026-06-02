@@ -55,6 +55,28 @@ La **centralización de logs** mitiga la dispersión inherente a los sistemas di
 
 > ℹ️ **Nota sobre versiones:** Esta guía usa **OpenSearch 2.12**, no la versión 3.x empleada en la guía OLO. Graylog 7.1 requiere compatibilidad con la API de Elasticsearch 7.x, que OpenSearch 2.x mantiene; la rama 3.x introdujo cambios de API que Graylog aún no soporta. Ambas elecciones son intencionadas y correctas para cada contexto.
 
+### Dimensionamiento de recursos
+
+El **consumo estimado del stack** es de **~5 GB de RAM en estado estable**. Para evitar que un contenedor agote la memoria del anfitrión, cada servicio del `docker-compose.yml` declara un límite de memoria (`mem_limit`):
+
+| Servicio | Función en el pipeline | `mem_limit` por defecto |
+|----------|------------------------|-------------------------|
+| `graylog` | Ingestión, búsqueda y visualización de logs | `1g` |
+| `opensearch` | Almacenamiento e indexación de eventos (backend de búsqueda) | `2g` |
+| `mongo` | Configuración y metadatos de Graylog | `512m` |
+| `logs.producer` | Aplicación productora de logs (Quarkus) | `512m` |
+
+Estos límites se **parametrizan vía `.env`**, de modo que puede ajustarlos sin editar el `docker-compose.yml`:
+
+```bash
+GRAYLOG_MEM_LIMIT=1g
+OPENSEARCH_MEM_LIMIT=2g
+MONGODB_MEM_LIMIT=512m
+PRODUCER_MEM_LIMIT=512m
+```
+
+> ⚠️ **Advertencia:** el backend de búsqueda (Elasticsearch/OpenSearch) requiere `vm.max_map_count ≥ 262144` en Linux/WSL. De lo contrario, el contenedor `opensearch` no arrancará.
+
 ---
 
 ## 📂 3. Estructura del proyecto
@@ -104,6 +126,7 @@ services:
     build:
       context: logs.producer
       dockerfile: src/main/docker/Dockerfile.compose
+    mem_limit: ${PRODUCER_MEM_LIMIT:-512m}
     ports:
       - "8080:8080"
     environment:
@@ -115,12 +138,14 @@ services:
   mongo:
     image: mongo:7.0
     container_name: mongo
+    mem_limit: ${MONGODB_MEM_LIMIT:-512m}
     volumes:
       - mongo_data:/data/db
 
   opensearch:
     image: opensearchproject/opensearch:2.12.0
     container_name: opensearch
+    mem_limit: ${OPENSEARCH_MEM_LIMIT:-2g}
     environment:
       - discovery.type=single-node
       - DISABLE_SECURITY_PLUGIN=true
@@ -142,6 +167,7 @@ services:
   graylog:
     image: graylog/graylog:7.1.1-1
     container_name: graylog
+    mem_limit: ${GRAYLOG_MEM_LIMIT:-1g}
     ports:
       - "9000:9000"
       - "12201:12201/udp"
@@ -322,7 +348,7 @@ Desde allí puede:
   3. Verifique que Graylog arranque correctamente con las nuevas credenciales.
   4. Analice por qué estos valores **nunca deben almacenarse en texto claro en un repositorio de código** y explore cómo Docker Compose soporta archivos `.env` y secretos como alternativa.
 
-### Preguntas de verificación
+### Cuestionario de análisis crítico
 
 1. GELF en esta guía utiliza transporte UDP (puerto 12201). Explique qué ocurre con los mensajes de log cuando la red experimenta congestión o pérdida de paquetes, y por qué este comportamiento puede ser aceptable o no según el contexto de uso.
 2. La fragmentación de mensajes GELF (parámetro `maxChunkSize`) es necesaria cuando el payload supera el MTU de la red. Analice cómo un stacktrace de Java de 50 líneas podría afectar la entrega de mensajes GELF y qué estrategia de configuración mitigaría el riesgo de pérdida de fragmentos.

@@ -1,8 +1,9 @@
-.PHONY: help pdf html all clean check
+.PHONY: help pdf pdf2 html all clean check generate
 
 help:
 	@echo "Comandos disponibles:"
 	@echo "  make pdf      - Compila el libro a PDF (formato principal)"
+	@echo "  make pdf2     - Compila el libro a PDF (formato alternativo)"
 	@echo "  make html     - Compila la versión web (HTML navegable)"
 	@echo "  make all      - Compila ambos formatos"
 	@echo "  make clean    - Elimina los artefactos de compilación"
@@ -16,10 +17,16 @@ check:
 	@command -v lualatex >/dev/null 2>&1 || { echo "  ❌ lualatex no encontrado. Ejecute: quarto install tinytex"; exit 1; }
 	@echo "  ✅ Entorno listo"
 
-pdf: check
+generate:
+	python3 scripts/split_readme.py
+
+pdf: check generate
 	quarto render --to pdf
 
-html: check
+pdf2: check generate
+	quarto render --to typst
+
+html: check generate
 	quarto render --to html
 
 all: pdf html

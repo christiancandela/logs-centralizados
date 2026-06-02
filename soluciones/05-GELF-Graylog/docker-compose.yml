@@ -3,6 +3,7 @@ services:
     build:
       context: logs.producer
       dockerfile: src/main/docker/Dockerfile.compose
+    mem_limit: ${PRODUCER_MEM_LIMIT:-512m}
     ports:
       - "8080:8080"
     environment:
@@ -14,12 +15,14 @@ services:
   mongo:
     image: mongo:7.0
     container_name: mongo
+    mem_limit: ${MONGODB_MEM_LIMIT:-512m}
     volumes:
       - mongo_data:/data/db
 
   opensearch:
     image: opensearchproject/opensearch:2.12.0
     container_name: opensearch
+    mem_limit: ${OPENSEARCH_MEM_LIMIT:-2g}
     environment:
       - discovery.type=single-node
       - DISABLE_SECURITY_PLUGIN=true
@@ -41,6 +44,7 @@ services:
   graylog:
     image: graylog/graylog:7.1.1-1
     container_name: graylog
+    mem_limit: ${GRAYLOG_MEM_LIMIT:-1g}
     ports:
       - "9000:9000"
       - "12201:12201/udp"

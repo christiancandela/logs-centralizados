@@ -54,22 +54,26 @@ fi
 echo -e "${YELLOW}⏳ Esperando 15 segundos adicionales para la estabilización de los canales de ingesta...${NC}"
 sleep 15
 
-# Paso 3: Enviar mensaje de prueba estructurado
+# Paso 3: Definir el marcador único de prueba.
+# A diferencia de los demás stacks, el envío se realiza de forma repetida dentro del
+# bucle de verificación (Paso 4): el colector OTLP de SigNoz puede tardar ~45-60 s en
+# estar listo para ingerir, por lo que un único envío temprano se perdería. Reenviar
+# en cada iteración garantiza que el marcador llegue una vez el pipeline esté operativo.
 TEST_MSG="SMOKETEST_SIGNOZ_$(date +%s)_$RANDOM"
-echo -e "${YELLOW}✉️  Enviando log de prueba: '$TEST_MSG'...${NC}"
-curl -s -X POST -H "Content-Type: application/json" -d "{\"level\":\"WARN\",\"message\":\"$TEST_MSG\"}" http://localhost:$PRODUCER_PORT/logs > /dev/null
+echo -e "${YELLOW}✉️  Marcador de prueba: '$TEST_MSG' (se reenviará hasta confirmar la ingesta)...${NC}"
 
-# Paso 4: Esperar a que se indexe en ClickHouse
+# Paso 4: Reenviar el marcador y esperar a que se indexe en ClickHouse
 echo -e "${YELLOW}⏳ Buscando el log en la base de datos columnar ClickHouse de SigNoz...${NC}"
 INDEXED=false
-for i in {1..20}; do
+for i in {1..30}; do
+  curl -s -X POST -H "Content-Type: application/json" -d "{\"level\":\"WARN\",\"message\":\"$TEST_MSG\"}" http://localhost:$PRODUCER_PORT/logs > /dev/null || true
   RESULT=$(docker compose -f signoz/deploy/docker/docker-compose.yaml -f docker-compose.yml exec -T clickhouse clickhouse-client --query "SELECT body FROM signoz_logs.distributed_logs_v2 WHERE body LIKE '%$TEST_MSG%'" || true)
   if echo "$RESULT" | grep -q "$TEST_MSG"; then
     INDEXED=true
     echo -e "${GREEN}🎉 ¡ÉXITO! Log encontrado indexado en ClickHouse de SigNoz!${NC}"
     break
   fi
-  echo "   [Intento $i/20] Aún no indexado, esperando 4 segundos..."
+  echo "   [Intento $i/30] Aún no indexado, reenviando y esperando 4 segundos..."
   sleep 4
 done
 

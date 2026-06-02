@@ -8,7 +8,11 @@ local replacements = {
   ["guia_estudio.md"] = "#sec-guia-estudio",
   ["./guia_docente.md"] = "#sec-guia-docente",
   ["guia_docente.md"] = "#sec-guia-docente",
-  
+
+  -- Documento base (readme): apunta al capítulo de Marco conceptual
+  ["./readme.md"] = "#sec-marco-conceptual",
+  ["readme.md"] = "#sec-marco-conceptual",
+
   -- Directorio de guías (enlaza al primer capítulo de la parte III)
   ["./guias/"] = "#sec-guia-elk",
   ["guias/"] = "#sec-guia-elk",

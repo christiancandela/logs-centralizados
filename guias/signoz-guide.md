@@ -56,6 +56,27 @@ SigNoz es la plataforma que integra ClickHouse como motor de almacenamiento con 
 - Al menos **8 GB de RAM** libres.
 - Conexión a Internet (el primer arranque descarga binarios UDF de ClickHouse).
 
+### Dimensionamiento de recursos
+
+**Consumo estimado del stack:** ~5 GB de RAM en estado estable, incluyendo ClickHouse y los servicios del core de SigNoz (colector, query-service y frontend).
+
+Este recurso se despliega como un *override* sobre el `docker-compose.yaml` oficial de SigNoz, por lo que **solo controla los componentes propios** del laboratorio. La siguiente tabla muestra los servicios definidos por este override y su `mem_limit`:
+
+| Servicio | `mem_limit` | Variable |
+|---|---|---|
+| `logs.producer` (aplicación Quarkus) | `512m` | `PRODUCER_MEM_LIMIT` |
+
+> ℹ️ **Nota honesta:** Los límites de memoria de los servicios del **core de SigNoz** (ClickHouse, colector, query-service y frontend) los gobierna el `docker-compose.yaml` oficial del repositorio de SigNoz. El override de esta guía no los redefine: parametriza únicamente los componentes propios del recurso. El servicio `otel-collector` que aparece en el override solo ajusta el `command` del colector oficial, no su límite de memoria.
+
+Las variables están centralizadas en el archivo `.env` del override:
+
+```bash
+# Límite de memoria del único componente propio de este override.
+# Los servicios del core de SigNoz (ClickHouse, otel-collector, query-service,
+# frontend) los gobierna el docker-compose.yaml oficial del repositorio de SigNoz.
+PRODUCER_MEM_LIMIT=512m
+```
+
 ---
 
 ## 📂 3. Estructura del proyecto
@@ -154,6 +175,7 @@ services:
     networks:
       - signoz-net
     restart: unless-stopped
+    mem_limit: ${PRODUCER_MEM_LIMIT:-512m}   # único componente propio que limitamos
 ```
 
 > ℹ️ **Nota:** El `context` del build usa una ruta relativa desde el directorio del primer `-f` (`signoz/deploy/docker/`), por eso el path `../../../logs.producer` apunta al directorio correcto.
@@ -303,7 +325,7 @@ curl http://localhost:8090/api/error
 - **Explorar el protocolo opAMP:** Investigue qué es el protocolo opAMP (*Open Agent Management Protocol*) y por qué SigNoz lo usa para la configuración dinámica del colector en producción.
 - **Desplegar una segunda aplicación:** Agregue un segundo servicio al override, asígnele un `quarkus.application.name` diferente y filtre por él en el Logs Explorer.
 
-### Preguntas de verificación
+### Cuestionario de análisis crítico
 
 1. ClickHouse almacena datos en formato columnar (OLAP), mientras que Elasticsearch usa índices invertidos orientados a búsqueda de texto. Explique por qué el almacenamiento columnar ofrece ventajas de compresión y velocidad de ingesta para logs de alta frecuencia, y qué tipo de consultas se vuelven más eficientes con cada motor.
 2. El override de Docker Compose de esta guía solo redefine el campo `command` del servicio `otel-collector` sin duplicar el resto de su definición. Analice el mecanismo de fusión de archivos que usa Docker Compose para entender cómo se combinan las claves del compose oficial con las del override, y qué ocurriría si se omitiera el override al levantar el stack.

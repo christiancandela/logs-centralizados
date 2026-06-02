@@ -52,6 +52,28 @@ El ecosistema de Grafana aborda la centralización con un enfoque muy eficiente:
 - Docker Compose (https://docs.docker.com/compose/install/)
 - Al menos **8 GB de RAM** libres.
 
+### Dimensionamiento de recursos
+
+**Consumo estimado del stack:** ~2.5 GB de RAM en estado estable. Se trata de un stack ligero (la indexación de Loki se basa solo en etiquetas), apto incluso para equipos con 4 GB de RAM.
+
+Cada servicio declara un `mem_limit` en el `docker-compose.yml` para acotar su consumo de memoria:
+
+| Servicio | Función en el pipeline | `mem_limit` por defecto |
+|----------|------------------------|-------------------------|
+| `logs.producer` | Aplicación Quarkus productora de logs | `512m` |
+| `loki` | Motor de indexación (solo labels) y almacenamiento | `512m` |
+| `promtail` | Agente recolector (*file tailing*) | `256m` |
+| `grafana` | Visualización y consulta (LogQL) | `512m` |
+
+Estos valores son parametrizables mediante variables de entorno definidas en un archivo `.env` junto al `docker-compose.yml`, lo que permite ajustarlos sin modificar el compose:
+
+```bash
+LOKI_MEM_LIMIT=512m
+PROMTAIL_MEM_LIMIT=256m
+GRAFANA_MEM_LIMIT=512m
+PRODUCER_MEM_LIMIT=512m
+```
+
 ---
 
 ## 📂 3. Estructura del proyecto
@@ -109,6 +131,7 @@ services:
     build:
       context: logs.producer
       dockerfile: src/main/docker/Dockerfile.compose
+    mem_limit: ${PRODUCER_MEM_LIMIT:-512m}
     ports:
       - "8080:8080"
     volumes:
@@ -117,6 +140,7 @@ services:
   loki:
     image: grafana/loki:3.0.0
     container_name: loki
+    mem_limit: ${LOKI_MEM_LIMIT:-512m}
     ports:
       - "3100:3100"
     command: -config.file=/etc/loki/local-config.yaml
@@ -130,6 +154,7 @@ services:
   promtail:
     image: grafana/promtail:3.0.0
     container_name: promtail
+    mem_limit: ${PROMTAIL_MEM_LIMIT:-256m}
     volumes:
       - ./logs:/var/log/app_logs:ro
       - source: ./promtail/promtail-config.yaml
@@ -143,6 +168,7 @@ services:
   grafana:
     image: grafana/grafana:13.0.1
     container_name: grafana
+    mem_limit: ${GRAFANA_MEM_LIMIT:-512m}
     environment:
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
@@ -345,7 +371,7 @@ Parsear campos del JSON y mostrar solo el mensaje:
 - Desplegar dos instancias de `logs.producer` escribiendo en archivos distintos y distinguirlas mediante labels de Promtail.
 - Analizar las implicaciones del modelo de indexación de Loki (solo labels) frente a la indexación completa de Elasticsearch.
 
-### Preguntas de verificación
+### Cuestionario de análisis crítico
 
 1. La configuración de Promtail usa una etapa `regex` para extraer `log.level` como label de Loki. Explique por qué no se puede usar la etapa `json` estándar para esta tarea con el formato ECS de Quarkus.
 2. Analice el mecanismo de *file tailing* de Promtail y el archivo `positions.yaml`: ¿qué garantías de entrega ofrece este enfoque si el contenedor de Promtail se reinicia inesperadamente? ¿Es equivalente al buffer de Fluentd o al TCP de Logstash?

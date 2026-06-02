@@ -54,6 +54,28 @@ La **centralización de logs** mitiga la dispersión inherente a los sistemas di
   https://docs.docker.com/compose/install/
 - Al menos **8 GB de RAM** libres
 
+### Dimensionamiento de recursos
+
+**Consumo estimado del stack:** ~5 GB de RAM en estado estable.
+
+| Servicio | Función en el pipeline | `mem_limit` por defecto |
+|---|---|---|
+| `elasticsearch` | Almacenamiento e indexación de los logs | 2g |
+| `logstash` | Recolección y procesamiento (parsing, transformación) | 1g |
+| `kibana` | Visualización y exploración de los datos | 1g |
+| `logs.producer` | Aplicación Quarkus productora de logs | 512m |
+
+Los límites están parametrizados vía `.env` y pueden ajustarse sin editar el `docker-compose.yml`:
+
+```bash
+ELASTICSEARCH_MEM_LIMIT=2g
+LOGSTASH_MEM_LIMIT=1g
+KIBANA_MEM_LIMIT=1g
+PRODUCER_MEM_LIMIT=512m
+```
+
+> ⚠️ En Linux/WSL, Elasticsearch requiere que el host tenga `vm.max_map_count ≥ 262144`.
+
 ---
 
 ## 📂 3. Estructura del proyecto
@@ -98,6 +120,7 @@ services:
     build:
       context: logs.producer
       dockerfile: src/main/docker/Dockerfile.compose
+    mem_limit: ${PRODUCER_MEM_LIMIT:-512m}
     ports:
       - "8080:8080"
     environment:
@@ -109,6 +132,7 @@ services:
   elasticsearch:
     image: docker.io/elasticsearch:9.4.1
     container_name: elasticsearch
+    mem_limit: ${ELASTICSEARCH_MEM_LIMIT:-2g}
     ports:
       - "9200:9200"
       - "9300:9300"
@@ -129,6 +153,7 @@ services:
   logstash:
     image: docker.io/logstash:9.4.1
     container_name: logstash
+    mem_limit: ${LOGSTASH_MEM_LIMIT:-1g}
     volumes:
       - source: ./logstash/pipelines
         target: /usr/share/logstash/pipeline
@@ -148,6 +173,7 @@ services:
   kibana:
     image: docker.io/kibana:9.4.1
     container_name: kibana
+    mem_limit: ${KIBANA_MEM_LIMIT:-1g}
     ports:
       - "5601:5601"
     environment:
@@ -341,7 +367,7 @@ Crea o selecciona el data view `logs-*` con campo de tiempo `@timestamp`. Esta v
 - Desplegar dos instancias de `logs.producer` en puertos distintos y correlacionar sus eventos en Kibana mediante el campo `service.name`.
 - Identificar las implicaciones de seguridad del envío TCP sin autenticación ni cifrado.
 
-### Preguntas de verificación
+### Cuestionario de análisis crítico
 
 1. ¿Qué ventaja concreta ofrece el Elastic Common Schema (ECS) frente a un esquema de logs personalizado cuando se correlacionan eventos de múltiples servicios en Kibana Discover?
 2. El pipeline de Logstash de esta guía usa un appender TCP sin TLS. Analice qué riesgos de seguridad introduce este diseño y qué cambios de configuración serían necesarios para mitigarlos en un entorno productivo.

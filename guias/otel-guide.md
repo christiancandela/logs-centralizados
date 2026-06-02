@@ -54,6 +54,22 @@ Una ventaja clave de OpenTelemetry frente a otros enfoques de logging es la **co
   https://docs.docker.com/compose/install/
 - Al menos **8 GB de RAM** libres
 
+### Dimensionamiento de recursos
+
+El stack tiene un **consumo estimado de ~3 GB de RAM en estado estable**. Para evitar que un contenedor agote la memoria del host, cada servicio define un límite explícito mediante `mem_limit`:
+
+| Servicio | Función en el pipeline | `mem_limit` por defecto |
+|----------|------------------------|-------------------------|
+| `otel-lgtm` | Imagen todo-en-uno: OTel Collector + Loki + Prometheus + Tempo + Grafana | `2g` |
+| `logs.producer` | Aplicación Quarkus que genera y exporta logs vía OTLP | `512m` |
+
+Estos límites son **parametrizables mediante un archivo `.env`** ubicado junto al `docker-compose.yml`, lo que permite ajustarlos según los recursos disponibles del host:
+
+```bash
+OTEL_LGTM_MEM_LIMIT=2g
+PRODUCER_MEM_LIMIT=512m
+```
+
 ---
 
 ## 📂 3. Estructura del proyecto
@@ -109,6 +125,7 @@ services:
       - "8080:8080"
     environment:
       OTEL_HOST: otel-lgtm
+    mem_limit: ${PRODUCER_MEM_LIMIT:-512m}
     depends_on:
       otel-lgtm:
         condition: service_healthy
@@ -116,6 +133,7 @@ services:
   otel-lgtm:
     image: grafana/otel-lgtm:0.27.1
     container_name: otel-lgtm
+    mem_limit: ${OTEL_LGTM_MEM_LIMIT:-2g}
     ports:
       - "3000:3000"
       - "3100:3100"
@@ -310,7 +328,7 @@ Este nivel de integración elimina la necesidad de adivinar qué causó un pico 
 - Desplegar dos instancias de `logs.producer` con distintos `quarkus.application.name` y distinguirlas por `service_name` en LogQL.
 - Analizar la diferencia entre `severity_text` (nivel semántico OTel) y el nivel de log tradicional de Java.
 
-### Preguntas de verificación
+### Cuestionario de análisis crítico
 
 1. OpenTelemetry enriquece automáticamente los logs con `trace_id` y `span_id` cuando se generan dentro de una petición HTTP activa. Explique el mecanismo por el cual Quarkus propaga este contexto de traza al logger sin que el desarrollador lo haga explícitamente.
 2. La imagen `grafana/otel-lgtm` empaqueta en un solo contenedor el OTel Collector, Loki, Prometheus, Tempo y Grafana. Analice las ventajas y limitaciones de esta decisión de diseño para entornos de laboratorio frente a un despliegue de componentes separados como en la guía PLG.

@@ -3,6 +3,7 @@ services:
     build:
       context: logs.producer
       dockerfile: src/main/docker/Dockerfile.compose
+    mem_limit: ${PRODUCER_MEM_LIMIT:-512m}
     ports:
       - "8080:8080"
     environment:
@@ -13,6 +14,7 @@ services:
 
   opensearch:
     image: opensearchproject/opensearch:3.0.0
+    mem_limit: ${OPENSEARCH_MEM_LIMIT:-2g}
     container_name: opensearch
     environment:
       - discovery.type=single-node
@@ -36,6 +38,7 @@ services:
 
   dashboards:
     image: opensearchproject/opensearch-dashboards:3.0.0
+    mem_limit: ${DASHBOARDS_MEM_LIMIT:-1g}
     container_name: dashboards
     ports:
       - "5601:5601"
@@ -48,6 +51,7 @@ services:
 
   logstash:
     build: ./logstash
+    mem_limit: ${LOGSTASH_MEM_LIMIT:-1g}
     container_name: logstash
     volumes:
       - source: ./logstash/pipelines

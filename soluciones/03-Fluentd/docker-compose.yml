@@ -1,5 +1,6 @@
 services:
   logs.producer:
+    mem_limit: ${PRODUCER_MEM_LIMIT:-512m}
     build:
       context: logs.producer
       dockerfile: src/main/docker/Dockerfile.compose
@@ -11,6 +12,7 @@ services:
       fluentd:
         condition: service_healthy
   elasticsearch:
+    mem_limit: ${ELASTICSEARCH_MEM_LIMIT:-2g}
     image: docker.io/elasticsearch:9.4.1
     container_name: elasticsearch
     ports:
@@ -31,6 +33,7 @@ services:
       start_period: 30s
 
   kibana:
+    mem_limit: ${KIBANA_MEM_LIMIT:-1g}
     image: docker.io/kibana:9.4.1
     container_name: kibana
     ports:
@@ -43,6 +46,7 @@ services:
         condition: service_healthy
 
   fluentd:
+    mem_limit: ${FLUENTD_MEM_LIMIT:-512m}
     build: ./fluentd
     container_name: fluentd
     volumes:

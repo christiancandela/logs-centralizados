@@ -54,10 +54,10 @@ Es la ruta recomendada para la unidad estándar. Cubre teoría completa y dos gu
 
 | Sesión | Duración | Contenido | Material |
 |--------|----------|-----------|----------|
-| **1** | 2 h | Observabilidad, logs como pilar, dispersión y centralización. Arquitectura conceptual de cuatro etapas. | `readme.md` §1–§4.5 |
-| **2** | 2 h | Desafíos de diseño (estandarización, retención, sanitización). Modelos de almacenamiento. Presentación de los stacks disponibles. | `readme.md` §4.6–§5 + recorrido del menú de guías |
-| **3** | 2 h | **Laboratorio 1** — Stack base: ELK *o* PLG. Despliegue, ingreso de logs y consultas básicas. | `guias/elk-guide.md` *o* `guias/promtail-guide.md` |
-| **4** | 2 h | **Laboratorio 2 + Cierre** — Stack contrastante: OpenTelemetry *o* Vector. Discusión comparada y evaluación. | `guias/otel-guide.md` *o* `guias/vector-guide.md` |
+| **1** | 2 h | Observabilidad, logs como pilar, dispersión y centralización. Beneficios de la centralización. | [Marco conceptual](readme.md): observabilidad → beneficios |
+| **2** | 2 h | Arquitectura conceptual de cuatro etapas. Desafíos de diseño (estandarización, retención, sanitización). Presentación de los stacks disponibles. | [Marco conceptual](readme.md): desafíos y arquitectura · recorrido de las [guías prácticas](guias/) |
+| **3** | 2 h | **Laboratorio 1** — Stack base: ELK *o* PLG. Despliegue, ingreso de logs y consultas básicas. | [Guía ELK](guias/elk-guide.md) *o* [Guía PLG](guias/promtail-guide.md) |
+| **4** | 2 h | **Laboratorio 2 + Cierre** — Stack contrastante: OpenTelemetry *o* Vector. Discusión comparada y evaluación. | [Guía OpenTelemetry](guias/otel-guide.md) *o* [Guía Vector](guias/vector-guide.md) |
 
 **Recomendación de pares contrastantes:**
 
@@ -67,7 +67,7 @@ Es la ruta recomendada para la unidad estándar. Cubre teoría completa y dos gu
 
 ### 5.2 Ruta extendida (electiva o trabajo final)
 
-Para estudiantes que desarrollarán un trabajo final, electiva especializada o semillero de investigación, se propone la ruta progresiva descrita en `readme.md` §6: ELK → OLO → Fluentd → PLG → GELF/Graylog → OpenTelemetry → Vector → SigNoz → Alloy. Esta ruta puede cubrirse en un semestre completo de electiva o como guion de un módulo de profundización.
+Para estudiantes que desarrollarán un trabajo final, electiva especializada o semillero de investigación, se propone la ruta progresiva descrita en el documento base: ELK → OLO → Fluentd → PLG → GELF/Graylog → OpenTelemetry → Vector → SigNoz → Alloy. Esta ruta puede cubrirse en un semestre completo de electiva o como guion de un módulo de profundización.
 
 ### 5.3 Ruta corta (1 semana, 2 sesiones)
 
@@ -75,20 +75,20 @@ Si la unidad debe condensarse en una sola semana:
 
 | Sesión | Contenido |
 |--------|-----------|
-| **1** | Toda la teoría (`readme.md` §1–§5), centrándose en los conceptos esenciales y delegando lecturas a casa. |
+| **1** | Toda la teoría conceptual del [documento base](readme.md), centrándose en los conceptos esenciales y delegando lecturas a casa. |
 | **2** | Un único laboratorio con la guía de **OpenTelemetry**, por ser la más representativa del estado del arte y cubrir los tres pilares en una sola implementación. |
 
 ---
 
 ## 6. Estrategia de evaluación
 
-Se propone una evaluación de **tres componentes** con peso ponderado, alineada con los resultados de aprendizaje. Los porcentajes son sugerencias; el docente debe ajustarlos a la ponderación general del curso.
+Se propone una evaluación de **tres componentes** con peso ponderado, alineada con los resultados de aprendizaje siguiendo el principio de **alineación constructiva** (coherencia explícita entre resultados de aprendizaje, actividades y criterios de evaluación). Los porcentajes son sugerencias; el docente debe ajustarlos a la ponderación general del curso. La rúbrica y los entregables definidos en esta sección constituyen los **instrumentos de evaluación homogéneos** del recurso, aplicables de forma uniforme a cualquiera de las nueve guías prácticas.
 
 ### 6.1 Componente conceptual (30 %)
 
-**Instrumento:** Cuestionario corto con preguntas seleccionadas de `guia_estudio.md`.
+**Instrumento:** Cuestionario corto con preguntas seleccionadas de la [guía de estudio](guia_estudio.md).
 
-**Recomendación:** seleccionar 5 preguntas mezclando los bloques teórico (§1–§10) y de articulación teoría–práctica (§11–§15). Las preguntas de articulación son las que mejor discriminan entre estudiantes que leyeron y estudiantes que comprendieron.
+**Recomendación:** seleccionar 5 preguntas mezclando el bloque teórico (preguntas conceptuales y glosario) y el bloque de articulación teoría–práctica. Las preguntas de articulación son las que mejor discriminan entre estudiantes que leyeron y estudiantes que comprendieron.
 
 ### 6.2 Componente práctico (40 %)
 
@@ -99,6 +99,8 @@ Se propone una evaluación de **tres componentes** con peso ponderado, alineada 
 - Repositorio o carpeta con el `docker-compose.yml` y archivos de configuración funcionales.
 - Capturas del estado de validación (contenedores arriba, logs visibles, consulta efectiva en el visualizador).
 - Reflexión escrita (máx. 500 palabras) que responda explícitamente: *¿qué etapas de la arquitectura conceptual identifica en su despliegue y qué componente concreto cumple cada una?*
+
+> **Ayuda de validación:** cada solución del repositorio incluye un script `smoke_test.sh` que despliega el stack, emite un log de prueba y verifica su registro de extremo a extremo. El estudiante puede ejecutarlo para comprobar objetivamente que su entorno funciona antes de capturar las evidencias.
 
 **Rúbrica sugerida:**
 
@@ -125,7 +127,7 @@ A continuación se enumeran las fricciones más comunes que experimentan los est
 
 Los stacks ELK, OLO, GELF/Graylog y SigNoz consumen entre 4 y 6 GB en estado estable. En equipos con 8 GB totales o menos, el sistema entra en *swapping* y los contenedores fallan con `OOMKilled` o tiempos de arranque muy largos.
 
-**Recomendación docente:** Antes de iniciar el laboratorio, validar que cada equipo tenga al menos 8 GB de RAM libres. Para estudiantes con equipos limitados, redirigir hacia las guías de **PLG, Vector o Alloy**, que funcionan cómodamente con 4 GB.
+**Recomendación docente:** Antes de iniciar el laboratorio, validar que cada equipo tenga al menos 8 GB de RAM libres. Para estudiantes con equipos limitados, redirigir hacia las guías de **PLG, Vector o Alloy**, que funcionan cómodamente con 4 GB. Como alternativa, los límites de memoria de cada contenedor están parametrizados mediante variables `*_MEM_LIMIT` en el archivo `.env` de cada solución, por lo que pueden reducirse para ajustar un stack a equipos con menos memoria (a costa de un arranque más lento).
 
 ### 7.2 `vm.max_map_count` en Linux/WSL
 

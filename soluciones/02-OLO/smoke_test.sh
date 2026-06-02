@@ -51,7 +51,7 @@ sleep 15
 # Paso 3: Enviar mensaje de prueba estructurado
 TEST_MSG="SMOKETEST_OLO_$(date +%s)_$RANDOM"
 echo -e "${YELLOW}✉️  Enviando log de prueba: '$TEST_MSG'...${NC}"
-curl -s -X POST -H "Content-Type: application/json" -d "{\"level\":\"INFO\",\"message\":\"$TEST_MSG\"}" http://localhost:$PRODUCER_PORT/logs > /dev/null
+curl -s -X POST -H "Content-Type: application/json" -d "{\"level\":\"WARN\",\"message\":\"$TEST_MSG\"}" http://localhost:$PRODUCER_PORT/logs > /dev/null
 
 # Paso 4: Esperar a que se indexe en OpenSearch
 echo -e "${YELLOW}⏳ Buscando el log en OpenSearch (puerto 9200)...${NC}"
