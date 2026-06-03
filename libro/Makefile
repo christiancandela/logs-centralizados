@@ -18,7 +18,7 @@ check:
 	@echo "  ✅ Entorno listo"
 
 generate:
-	python3 scripts/split_readme.py
+	python3 scripts/prepare_book.py
 
 pdf: check generate
 	quarto render --to pdf

@@ -8,9 +8,9 @@
 **Universidad del Quindío** — Programa de Ingeniería de Sistemas y Computación  
 **Asignatura asociada:** Arquitectura Orientada a Microservicios  
 **Versión:** 1.0.0 | **Fecha:** mayo de 2026  
-[![CC BY-SA 4.0](https://licensebuttons.net/l/by-sa/4.0/88x31.png)](https://creativecommons.org/licenses/by-sa/4.0/deed.es) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20504545.svg)](https://doi.org/10.5281/zenodo.20504545)
+[![CC BY-SA 4.0](https://licensebuttons.net/l/by-sa/4.0/88x31.png)](https://creativecommons.org/licenses/by-sa/4.0/deed.es) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20187576.svg)](https://doi.org/10.5281/zenodo.20187576)
 
-> Este recurso educativo abierto consta de: (1) el presente marco conceptual, (2) una guía de estudio con preguntas de comprensión y articulación teoría–práctica ([`guia_estudio.md`](./guia_estudio.md)), (3) una guía para docentes con planificación sugerida y rúbricas ([`guia_docente.md`](./guia_docente.md)), y (4) nueve guías prácticas reproducibles en el directorio [`guias/`](./guias/) con sus respectivas soluciones en [`soluciones/`](./soluciones/).
+> Este recurso educativo abierto consta de: (a) el presente marco conceptual, (b) una guía de estudio con preguntas de comprensión y articulación teoría–práctica ([`guia_estudio.md`](./guia_estudio.md)), (c) una guía para docentes con planificación sugerida y rúbricas ([`guia_docente.md`](./guia_docente.md)), y (d) nueve guías prácticas reproducibles en el directorio [`guias/`](./guias/) con sus respectivas soluciones en [`soluciones/`](./soluciones/).
 
 ---
 
@@ -22,7 +22,7 @@ En este escenario, comprender el comportamiento interno de los sistemas en ejecu
 
 El presente trabajo escrito tiene como propósito desarrollar, desde un enfoque académico y formativo, los fundamentos conceptuales de la observabilidad en sistemas distribuidos, con énfasis en la **centralización de logs** como uno de sus pilares principales. El documento se concibe como un recurso educativo orientado a facilitar el aprendizaje progresivo de estos conceptos, priorizando los principios y la arquitectura conceptual sobre el uso de herramientas o tecnologías específicas. Esta separación entre el marco teórico y las guías prácticas es una decisión metodológica deliberada: mantener el documento conceptual neutral en términos tecnológicos permite que los fundamentos presentados conserven validez con independencia de la evolución del ecosistema de herramientas, mientras que las guías prácticas ofrecen la experiencia concreta necesaria para anclar el aprendizaje en contextos reales (Kolb, 1984).
 
-Las guías prácticas complementarias cubren un espectro tecnológico más amplio que el enunciado originalmente en la propuesta de trabajo. Esta ampliación es una decisión deliberada: el estado del arte de la observabilidad ha evolucionado de forma acelerada durante el período de desarrollo del recurso, incorporando estándares de protocolo unificado y plataformas de nueva generación que ofrecen un valor pedagógico significativo y mejoran la transferibilidad del conocimiento. Las guías adicionales se diseñaron con el mismo rigor y estructura que las originalmente propuestas, manteniendo coherencia con el marco conceptual presentado en este documento.
+Las guías prácticas complementarias cubren un espectro tecnológico más amplio que el enunciado originalmente en la propuesta de trabajo. Esta ampliación es una decisión consciente: el estado del arte de la observabilidad ha evolucionado de forma acelerada durante el período de desarrollo del recurso, incorporando estándares de protocolo unificado y plataformas de nueva generación que ofrecen un valor pedagógico significativo y mejoran la transferibilidad del conocimiento. Las guías adicionales se diseñaron con el mismo rigor y estructura que las originalmente propuestas, manteniendo coherencia con el marco conceptual presentado en este documento.
 
 ---
 
@@ -132,7 +132,7 @@ gantt
     7. Sistematización y Cierre                : f7, 2026-04, 2026-05
 ```
 
-A continuación, la Tabla 2 detalla las actividades principales, los productos esperados y los criterios de aceptación de cada una de las fases a la luz de los requerimientos de portabilidad y adaptabilidad que definen a un Recurso Educativo Abierto (REA):
+A continuación, la Tabla 1 detalla las actividades principales, los productos esperados y los criterios de aceptación de cada una de las fases a la luz de los requerimientos de portabilidad y adaptabilidad que definen a un Recurso Educativo Abierto (REA):
 
 **Tabla 1.** Fases metodológicas, productos esperados y criterios de aceptación.
 
@@ -202,19 +202,21 @@ El marco de verificación y validación del recurso se centra en dos dimensiones
   * *Validación de Coherencia Pedagógica:* Revisión de que las tareas solicitadas permitan alcanzar y evaluar empíricamente los Resultados de Aprendizaje Esperados (RAE) de la asignatura *Arquitectura Orientada a Microservicios*.
   * *Evaluación Editorial y Estructura Docente:* Revisión de la portabilidad e inteligibilidad de la guía docente (`guia_docente.md`) para asegurar que el recurso pueda ser fácilmente reutilizado por otros docentes del programa de Ingeniería de Sistemas.
 
-La validación empírica con estudiantes en el aula —analítica de uso, encuestas de percepción y ajuste iterativo del recurso conforme a los principios de la investigación basada en diseño (DBR)— se proyecta como fase de trabajo futuro, dado que esta versión corresponde a la primera publicación del recurso.
+**Delimitación del alcance evaluativo.** Los **Resultados de Aprendizaje Esperados (RAE)** declarados en el recurso son objetivos de diseño instruccional, no mediciones empíricas. Los objetivos comprometidos en la propuesta aprobada se circunscriben al **diseño, desarrollo y verificación técnica** del REA —fundamentación teórica, guías prácticas y entornos reproducibles—; la **medición del impacto pedagógico** (la evaluación empírica de los resultados de aprendizaje al aplicar el recurso con estudiantes) excede dichos objetivos y se proyecta como una **fase posterior** de validación en aula —analítica de uso, encuestas de percepción y ajuste iterativo conforme a los principios de la investigación basada en diseño (DBR)—, dado que esta versión corresponde a la primera publicación del recurso.
 
 #### 4.7.1. Prueba de humo estandarizada
 
-Cada una de las nueve soluciones incorpora un script de prueba de humo (`smoke_test.sh`) que automatiza la verificación de extremo a extremo del pipeline: levanta el ecosistema, espera a que la aplicación productora esté lista, emite un log de prueba con un marcador único y confirma su registro en el motor de almacenamiento correspondiente. Este arnés materializa empíricamente el principio de **independencia instrumental**: la fase de **generación** del log es idéntica en los nueve stacks, mientras que solo la **verificación del registro** varía según la herramienta. La siguiente tabla separa ambas partes:
+Cada una de las nueve soluciones incorpora un script de prueba de humo (`smoke_test.sh`) que automatiza la verificación de extremo a extremo del pipeline: levanta el ecosistema, espera a que la aplicación productora esté lista, emite un log de prueba con un marcador único y confirma su registro en el motor de almacenamiento correspondiente. Este procedimiento de prueba materializa empíricamente el principio de **independencia instrumental**: la fase de **generación** del log es idéntica en los nueve stacks, mientras que solo la **verificación del registro** varía según la herramienta. La siguiente tabla separa ambas partes:
 
-| Fase del arnés | ¿Estándar entre stacks? | Detalle |
+**Tabla 3.** Estandarización de la prueba de humo: fase de generación (invariante) frente a verificación del registro (específica de la herramienta).
+
+| Fase del procedimiento | ¿Estándar entre stacks? | Detalle |
 | :--- | :--- | :--- |
-| Despliegue y ciclo de vida | ✅ Invariante | `docker compose up -d --build` → ejecución → `down -v` con limpieza ante error (`trap`). |
-| Sonda de disponibilidad del productor | ✅ Invariante | `POST /logs` con `{"level":"INFO","message":"PING"}`, reintentos hasta obtener HTTP 200. |
-| Estabilización de la ingesta | ✅ Invariante | Espera fija previa al envío del mensaje de prueba. |
-| **Emisión del log de prueba** | ✅ **Invariante** | `POST /logs` con el esquema `{"level":"WARN","message":"<marcador único>"}` hacia la misma interfaz del productor. |
-| Verificación del registro | ⚙️ Específica de la herramienta | Consulta `_search` en Elasticsearch/OpenSearch, `query_range` (LogQL) en Loki o SQL en ClickHouse, según el motor. |
+| Despliegue y ciclo de vida | Invariante | `docker compose up -d --build` → ejecución → `down -v` con limpieza ante error (`trap`). |
+| Sonda de disponibilidad del productor | Invariante | `POST /logs` con `{"level":"INFO","message":"PING"}`, reintentos hasta obtener HTTP 200. |
+| Estabilización de la ingesta | Invariante | Espera fija previa al envío del mensaje de prueba. |
+| **Emisión del log de prueba** | **Invariante** | `POST /logs` con el esquema `{"level":"WARN","message":"<marcador único>"}` hacia la misma interfaz del productor. |
+| Verificación del registro | Específica de la herramienta | Consulta `_search` en Elasticsearch/OpenSearch, `query_range` (LogQL) en Loki o SQL en ClickHouse, según el motor. |
 
 Las únicas variaciones en la fase de generación responden a restricciones técnicas justificadas: el puerto del productor cambia en el stack que coexiste con servicios que ocupan el puerto por defecto, y dos stacks añaden pasos previos de aprovisionamiento (creación del *input* de ingesta o clonado del repositorio base). Que la interfaz de emisión de logs permanezca constante mientras el conjunto de herramientas cambia por completo constituye evidencia operativa directa de la tesis central del recurso: **las etapas funcionales del pipeline son invariantes; las tecnologías que las implementan, no**.
 
@@ -222,7 +224,7 @@ Las únicas variaciones en la fase de generación responden a restricciones téc
 
 La siguiente matriz detalla de forma explícita cómo cada uno de los tres objetivos específicos (OE) comprometidos en la propuesta oficial aprobada de ascenso a Titular se materializa formalmente en los capítulos, guías, configuraciones y criterios del presente recurso educativo:
 
-**Tabla 3.** Trazabilidad entre los objetivos específicos de la propuesta aprobada y los componentes del recurso.
+**Tabla 4.** Trazabilidad entre los objetivos específicos de la propuesta aprobada y los componentes del recurso.
 
 | Objetivo Específico (OE) de la Propuesta Aprobada | Componentes y Archivos de Desarrollo | Evidencias y Artefactos Técnicos y Didácticos | Criterio y Métrica de Cumplimiento del Objetivo |
 | :--- | :--- | :--- | :--- |
@@ -347,6 +349,8 @@ De este modo, la arquitectura conceptual presentada establece un puente entre lo
 
 Este **marco conceptual** se centra en el desarrollo teórico de la centralización de logs como pilar de la observabilidad y se mantiene deliberadamente neutral en términos tecnológicos. Su instanciación práctica se desarrolla en las guías complementarias que forman parte del mismo recurso educativo abierto (REA), de modo que el componente conceptual y el práctico se articulan como partes de un único producto académico, sin que la neutralidad del primero se vea comprometida por las decisiones tecnológicas del segundo.
 
+El trabajo abarca el **diseño, desarrollo y verificación técnica** del recurso; la **medición empírica del impacto pedagógico** al aplicarlo con estudiantes no forma parte de los objetivos comprometidos y se proyecta como una fase posterior de validación en aula (véase la delimitación del alcance evaluativo en el Marco de Verificación y Validación).
+
 ---
 
 Este capítulo conceptual se limita intencionalmente a la **fundamentación teórica** de la centralización de logs y su rol en la observabilidad. Las guías prácticas, laboratorios y escenarios de despliegue progresivo se desarrollan como guías complementarias del mismo REA, con el objetivo de:
@@ -453,7 +457,7 @@ Zhu, J., He, S., Liu, J., He, P., Xie, Q., Zheng, Z., & Lyu, M. R. (2019). Tools
 
 Si reutiliza, adapta o referencia este recurso educativo en publicaciones académicas, materiales docentes o trabajos derivados, se sugiere la siguiente forma de cita en formato APA 7:
 
-> Candela Uribe, C. A., Acero Franco, P. A., & Sepúlveda Rodríguez, L. E. (2026). *Recurso educativo para el despliegue de ecosistemas de centralización de logs mediante Docker* (Versión 1.0.0) [Recurso educativo abierto]. Universidad del Quindío. https://doi.org/10.5281/zenodo.20504545
+> Candela Uribe, C. A., Acero Franco, P. A., & Sepúlveda Rodríguez, L. E. (2026). *Recurso educativo para el despliegue de ecosistemas de centralización de logs mediante Docker* (Versión 1.0.0) [Recurso educativo abierto]. Universidad del Quindío. https://doi.org/10.5281/zenodo.20187576
 
 **Entrada BibTeX:**
 
@@ -469,8 +473,8 @@ Si reutiliza, adapta o referencia este recurso educativo en publicaciones acadé
   howpublished = {Recurso educativo abierto},
   institution  = {Universidad del Quind{\'i}o},
   note         = {Licencia CC BY-SA 4.0},
-  doi          = {10.5281/zenodo.20504545},
-  url          = {https://doi.org/10.5281/zenodo.20504545}
+  doi          = {10.5281/zenodo.20187576},
+  url          = {https://doi.org/10.5281/zenodo.20187576}
 }
 ```
 

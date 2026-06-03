@@ -1,18 +1,19 @@
-# 🧠 Centralización de Logs con OLO Stack (OpenSearch + Logstash)
+# Centralización de Logs con OLO Stack (OpenSearch + Logstash)
 
 > *Guía práctica para implementar una solución básica de centralización de logs utilizando Docker Compose y el stack OLO, como instanciación concreta de la arquitectura conceptual de observabilidad presentada en el documento central.*
 
 ---
 
-## 🌟 Objetivo de la guía
+## Objetivo de la guía
 
 Implementar y validar una arquitectura básica de centralización de logs mediante Docker Compose y el stack **OLO (OpenSearch, Logstash y OpenSearch Dashboards)**, como ejercicio aplicado de los conceptos de observabilidad estudiados previamente.
 
-> ℹ️ **Nota sobre la denominación "OLO":** Este acrónimo es una convención adoptada en este recurso educativo para nombrar el stack OpenSearch + Logstash + OpenSearch Dashboards, de manera análoga a como la industria denomina "ELK" al stack Elasticsearch + Logstash + Kibana. No es un término estándar de la industria; al buscar referencias externas sobre este stack conviene usar los nombres individuales de los componentes o buscar documentación de OpenSearch directamente.
+> [!NOTE]
+> **La denominación "OLO":** Este acrónimo es una convención adoptada en este recurso educativo para nombrar el stack OpenSearch + Logstash + OpenSearch Dashboards, de manera análoga a como la industria denomina "ELK" al stack Elasticsearch + Logstash + Kibana. No es un término estándar de la industria; al buscar referencias externas sobre este stack conviene usar los nombres individuales de los componentes o buscar documentación de OpenSearch directamente.
 
 ---
 
-## 🎯 Resultados de aprendizaje esperados
+## Resultados de aprendizaje esperados
 
 Al finalizar esta guía, el estudiante será capaz de:
 
@@ -24,7 +25,7 @@ Al finalizar esta guía, el estudiante será capaz de:
 
 ---
 
-## 🧭 Propósito y alcance del recurso
+## Propósito y alcance del recurso
 
 El propósito principal de este recurso es guiar el diseño, despliegue y uso de una **arquitectura básica de centralización de logs** utilizando OpenSearch, Logstash y OpenSearch Dashboards.
 
@@ -38,7 +39,7 @@ El alcance del recurso se limita a la **centralización y visualización de logs
 
 ---
 
-## 🧩 1. Observabilidad y centralización de logs
+## 1. Observabilidad y centralización de logs
 
 En arquitecturas basadas en microservicios, la observabilidad permite comprender el comportamiento interno del sistema a partir de las señales externas que este produce durante su ejecución. Los **logs** constituyen una fuente primaria de información debido a su riqueza semántica y contextual.
 
@@ -46,7 +47,7 @@ La **centralización de logs** mitiga la dispersión inherente a los sistemas di
 
 ---
 
-## ⚙️ 2. Requisitos previos
+## 2. Requisitos previos
 
 - Docker instalado  
   https://docs.docker.com/engine/install/
@@ -54,7 +55,8 @@ La **centralización de logs** mitiga la dispersión inherente a los sistemas di
   https://docs.docker.com/compose/install/
 - Al menos **8 GB de RAM** libres
 
-> ℹ️ **Nota sobre versiones:** Esta guía usa **OpenSearch 3.0**, la versión más reciente de la línea principal. La guía GELF/Graylog utiliza OpenSearch 2.12 porque Graylog 7.1 requiere compatibilidad con la API de Elasticsearch 7.x que solo mantiene la rama 2.x. Ambas elecciones son intencionadas y correctas para cada contexto.
+> [!NOTE]
+> **Versiones:** Esta guía usa **OpenSearch 3.0**, la versión más reciente de la línea principal. La guía GELF/Graylog utiliza OpenSearch 2.12 porque Graylog 7.1 requiere compatibilidad con la API de Elasticsearch 7.x que solo mantiene la rama 2.x. Ambas elecciones son intencionadas y correctas para cada contexto.
 
 ### Dimensionamiento de recursos
 
@@ -78,11 +80,12 @@ DASHBOARDS_MEM_LIMIT=1g
 PRODUCER_MEM_LIMIT=512m
 ```
 
-> ⚠️ **Importante:** En sistemas **Linux o entornos WSL**, OpenSearch requiere que la memoria virtual del anfitrión cumpla `vm.max_map_count ≥ 262144`. Configúrelo antes de iniciar el entorno (véase la sección de *Troubleshooting*).
+> [!IMPORTANT]
+> En sistemas **Linux o entornos WSL**, OpenSearch requiere que la memoria virtual del anfitrión cumpla `vm.max_map_count ≥ 262144`. Configúrelo antes de iniciar el entorno (véase la sección de *Troubleshooting*).
 
 ---
 
-## 📂 3. Estructura del proyecto
+## 3. Estructura del proyecto
 
 ```bash
 logs-centralizados/
@@ -99,7 +102,7 @@ logs-centralizados/
 
 ---
 
-## 📊 4. Arquitectura de la solución
+## 4. Arquitectura de la solución
 
 ```text
 [Aplicaciones Java / Quarkus]
@@ -122,7 +125,7 @@ El uso de **Docker Compose** permite describir y desplegar la arquitectura como 
 
 ---
 
-## 🛠️ 5. Implementación de la arquitectura conceptual con OLO
+## 5. Implementación de la arquitectura conceptual con OLO
 
 ### 5.1 docker-compose.yml
 
@@ -244,11 +247,12 @@ FROM docker.io/logstash:9.4.1
 RUN logstash-plugin install logstash-output-opensearch
 ```
 
-> ℹ️ **Nota:** La versión 2.x del plugin `logstash-output-opensearch` tiene un bug de compatibilidad con JRuby 10 (incluido en Logstash 9.x) que impide la instalación de templates. Por eso el pipeline incluye `manage_template => false`, lo que hace que Logstash cree los índices dinámicamente sin plantilla previa. En producción se recomienda definir un index template explícito en OpenSearch.
+> [!NOTE]
+> La versión 2.x del plugin `logstash-output-opensearch` tiene un bug de compatibilidad con JRuby 10 (incluido en Logstash 9.x) que impide la instalación de templates. Por eso el pipeline incluye `manage_template => false`, lo que hace que Logstash cree los índices dinámicamente sin plantilla previa. En producción se recomienda definir un index template explícito en OpenSearch.
 
 ---
 
-## ▶️ 6. Despliegue y validación
+## 6. Despliegue y validación
 
 ### Inicialización de los servicios
 
@@ -276,7 +280,8 @@ Se emplean **volúmenes Docker** para garantizar la persistencia de los datos al
 
 Opensearch-dashboards requiere una configuración adicional para facilitar la visualización de logs. El siguiente comando pretende crear un index-pattern en el Dashboard con el fin de poder visualizar los logs generados por logstash.
 
-> ⚠️ **Importante:** Antes de ejecutar el siguiente comando, asegúrese de que OpenSearch Dashboards haya finalizado su inicialización y sea accesible desde el navegador.
+> [!IMPORTANT]
+> Antes de ejecutar el siguiente comando, asegúrese de que OpenSearch Dashboards haya finalizado su inicialización y sea accesible desde el navegador.
 
 ```shell
 curl -XPOST "http://localhost:5601/api/saved_objects/index-pattern" \
@@ -292,7 +297,7 @@ curl -XPOST "http://localhost:5601/api/saved_objects/index-pattern" \
 
 ---
 
-## 🔌 7. Emisión de logs desde aplicaciones
+## 7. Emisión de logs desde aplicaciones
 
 ### 7.1 Aplicaciones Quarkus
 
@@ -367,7 +372,7 @@ Configura `logback.xml` para enviar logs a Logstash:
 
 ---
 
-## 📊 8. Visualización en OpenSearch Dashboards
+## 8. Visualización en OpenSearch Dashboards
 
 Una vez centralizados, los logs pueden ser explorados mediante OpenSearch Dashboards, permitiendo:
 
@@ -392,7 +397,7 @@ source = logs-producer-*
 
 ---
 
-## 🧪 9. Actividades de profundización
+## 9. Actividades de profundización
 
 - **Simular fallos y rastrear su origen:** El endpoint `GET /api/error` de la aplicación de ejemplo genera intencionalmente una `NullPointerException`. Ejecútelo y utilice OpenSearch Dashboards para localizar el evento de error e inspeccionar el stacktrace estructurado.
 - Comparar el modelo de índices con fecha (`logs-producer-YYYY.MM.dd`) de este stack frente a los data streams de Elasticsearch 9.x de la guía anterior.
@@ -407,7 +412,7 @@ source = logs-producer-*
 
 ---
 
-## 🛠️ 10. Troubleshooting
+## 10. Troubleshooting
 
 **Error común:** El contenedor `opensearch` se detiene inesperadamente o marca estado `Exit 78` / `Exit 137`.
 
@@ -424,7 +429,7 @@ sudo sysctl -w vm.max_map_count=262144
 
 ---
 
-## 📚 Referencias
+## Referencias
 
 - OpenSearch – https://opensearch.org
 - OpenSearch (Docker) – https://docs.opensearch.org/docs/latest/install-and-configure/install-opensearch/docker/
@@ -434,4 +439,4 @@ sudo sysctl -w vm.max_map_count=262144
 
 ---
 
-ℹ️ *Esta guía complementa el marco teórico de observabilidad y centralización de logs desarrollado en el documento central.*
+*Esta guía complementa el marco teórico de observabilidad y centralización de logs desarrollado en el documento central.*

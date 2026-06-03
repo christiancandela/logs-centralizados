@@ -1,1 +1,1 @@
-{{< include ../guia_docente.md >}}
+{{< include _generated/guia_docente.md >}}

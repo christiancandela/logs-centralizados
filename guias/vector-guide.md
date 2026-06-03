@@ -1,16 +1,16 @@
-# 🧠 Pipeline de Observabilidad con Vector, Loki y Grafana
+# Pipeline de Observabilidad con Vector, Loki y Grafana
 
 > *Guía práctica para implementar una solución de centralización de logs de alto rendimiento utilizando Vector como enrutador y transformador, conectado a Loki y Grafana, como instanciación concreta de la arquitectura conceptual de observabilidad presentada en el documento central.*
 
 ---
 
-## 🌟 Objetivo de la guía
+## Objetivo de la guía
 
 Implementar y validar una arquitectura moderna de enrutamiento y centralización de logs mediante **Docker Compose**, usando **Vector** (escrito en Rust) como recolector y transformador ligero, **Loki** para el almacenamiento eficiente por etiquetas, y **Grafana** para la exploración y análisis.
 
 ---
 
-## 🎯 Resultados de aprendizaje esperados
+## Resultados de aprendizaje esperados
 
 Al finalizar esta guía, el estudiante será capaz de:
 
@@ -23,7 +23,7 @@ Al finalizar esta guía, el estudiante será capaz de:
 
 ---
 
-## 🧭 Propósito y alcance del recurso
+## Propósito y alcance del recurso
 
 Esta guía representa el estado del arte en enrutamiento y procesamiento de telemetría. **Vector** está diseñado para ser significativamente más eficiente que alternativas basadas en JVM (Logstash) o Ruby (Fluentd), al ser un ejecutable nativo compilado en Rust.
 
@@ -37,7 +37,7 @@ El alcance del recurso se limita a la centralización y visualización de logs v
 
 ---
 
-## 🧩 1. Observabilidad y rendimiento con Vector
+## 1. Observabilidad y rendimiento con Vector
 
 En arquitecturas donde el volumen de logs es masivo, el componente de recolección y procesamiento puede convertirse en el cuello de botella. **Vector** soluciona esto al ser un ejecutable nativo (Rust) que:
 
@@ -48,7 +48,7 @@ En arquitecturas donde el volumen de logs es masivo, el componente de recolecci�
 
 ---
 
-## ⚙️ 2. Requisitos previos
+## 2. Requisitos previos
 
 - Docker instalado  
   https://docs.docker.com/engine/install/
@@ -80,7 +80,7 @@ PRODUCER_MEM_LIMIT=512m
 
 ---
 
-## 📂 3. Estructura del proyecto
+## 3. Estructura del proyecto
 
 ```bash
 logs-centralizados/
@@ -98,7 +98,7 @@ logs-centralizados/
 
 ---
 
-## 📊 4. Arquitectura de la solución
+## 4. Arquitectura de la solución
 
 ```text
 [Aplicaciones Java / Quarkus]
@@ -122,7 +122,7 @@ La arquitectura implementada se fundamenta en cuatro componentes:
 
 ---
 
-## 🛠️ 5. Implementación de la arquitectura conceptual
+## 5. Implementación de la arquitectura conceptual
 
 ### 5.1 docker-compose.yml
 
@@ -196,9 +196,11 @@ services:
         condition: service_healthy
 ```
 
-> ℹ️ **Nota sobre el comando de Vector:** La imagen `timberio/vector` carga por defecto `/etc/vector/vector.yaml`. Al usar un archivo `.toml`, es necesario especificarlo explícitamente con `command: ["--config", "/etc/vector/vector.toml"]`.
+> [!NOTE]
+> **El comando de Vector:** La imagen `timberio/vector` carga por defecto `/etc/vector/vector.yaml`. Al usar un archivo `.toml`, es necesario especificarlo explícitamente con `command: ["--config", "/etc/vector/vector.toml"]`.
 
-> ℹ️ **Nota sobre el healthcheck de Vector:** La imagen Alpine de Vector usa busybox `wget`, que no soporta la opción `--spider`. Se usa `-O /dev/null` en su lugar. Además, se usa `127.0.0.1` en vez de `localhost` para evitar inconsistencias con la resolución de la interfaz de loopback en busybox.
+> [!NOTE]
+> **El healthcheck de Vector:** La imagen Alpine de Vector usa busybox `wget`, que no soporta la opción `--spider`. Se usa `-O /dev/null` en su lugar. Además, se usa `127.0.0.1` en vez de `localhost` para evitar inconsistencias con la resolución de la interfaz de loopback en busybox.
 
 ---
 
@@ -238,7 +240,8 @@ encoding.codec = "json"
   level = "{{ level }}"
 ```
 
-> ℹ️ **Nota sobre VRL y claves con punto:** En el formato ECS, el nivel de log se serializa como la clave plana `"log.level"` (no como objeto anidado). En VRL, para acceder a esta clave sin que sea interpretada como ruta anidada, se usa la sintaxis `."log.level"` (entre comillas). El operador `||` realiza null-coalescing: si el campo no existe o es nulo, usa el valor por defecto `"unknown"`. No se usa el operador `??` (que es para error-coalescing, no para null).
+> [!NOTE]
+> **VRL y claves con punto:** En el formato ECS, el nivel de log se serializa como la clave plana `"log.level"` (no como objeto anidado). En VRL, para acceder a esta clave sin que sea interpretada como ruta anidada, se usa la sintaxis `."log.level"` (entre comillas). El operador `||` realiza null-coalescing: si el campo no existe o es nulo, usa el valor por defecto `"unknown"`. No se usa el operador `??` (que es para error-coalescing, no para null).
 
 ---
 
@@ -257,7 +260,7 @@ datasources:
 
 ---
 
-## ▶️ 6. Despliegue y validación
+## 6. Despliegue y validación
 
 ### Inicialización de los servicios
 
@@ -283,7 +286,7 @@ logs.producer-1     Up
 
 ---
 
-## 🔌 7. Emisión de logs desde aplicaciones
+## 7. Emisión de logs desde aplicaciones
 
 ### 7.1 Aplicaciones Quarkus
 
@@ -350,7 +353,7 @@ Para aplicaciones Java que no utilizan Quarkus, se puede usar el `LogstashTcpSoc
 
 ---
 
-## 📊 8. Visualización en Grafana
+## 8. Visualización en Grafana
 
 Acceda a Grafana en `http://localhost:3000`. La fuente de datos Loki ya está preconfigurada.
 
@@ -373,14 +376,14 @@ Buscar excepciones por contenido:
 {job="vector_app_logs"} |= "NullPointerException"
 ```
 
-Parsear campos ECS y mostrar solo el mensaje:
+Analizar los campos ECS y mostrar solo el mensaje:
 ```logql
 {job="vector_app_logs"} | json | line_format "{{.message}}"
 ```
 
 ---
 
-## 🧪 9. Actividades de profundización
+## 9. Actividades de profundización
 
 - **Simular fallos y rastrear su origen:** El endpoint `GET /api/error` genera intencionalmente una `NullPointerException`. Ejecútelo y use la consulta `{job="vector_app_logs"} |= "NullPointerException"` en Grafana para localizarlo.
 - **Enriquecimiento con VRL:** Modifique la sección `[transforms.enrich]` en `vector.toml` para agregar un campo estático al evento (ej. `.environment = "dev"`). Verifique que el campo aparece en los logs de Loki.
@@ -396,7 +399,7 @@ Parsear campos ECS y mostrar solo el mensaje:
 
 ---
 
-## 🛠️ 10. Troubleshooting
+## 10. Troubleshooting
 
 **Error común:** Vector no arranca — `no such file or directory: /etc/vector/vector.yaml`.
 
@@ -424,7 +427,7 @@ Parsear campos ECS y mostrar solo el mensaje:
 
 ---
 
-## 📚 Referencias
+## Referencias
 
 - Vector – https://vector.dev/docs/
 - Vector Remap Language (VRL) – https://vrl.dev
@@ -433,4 +436,4 @@ Parsear campos ECS y mostrar solo el mensaje:
 
 ---
 
-ℹ️ *Esta guía complementa el marco teórico de observabilidad y centralización de logs desarrollado en el documento central.*
+*Esta guía complementa el marco teórico de observabilidad y centralización de logs desarrollado en el documento central.*

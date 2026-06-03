@@ -100,6 +100,7 @@ Se propone una evaluación de **tres componentes** con peso ponderado, alineada 
 - Capturas del estado de validación (contenedores arriba, logs visibles, consulta efectiva en el visualizador).
 - Reflexión escrita (máx. 500 palabras) que responda explícitamente: *¿qué etapas de la arquitectura conceptual identifica en su despliegue y qué componente concreto cumple cada una?*
 
+> [!TIP]
 > **Ayuda de validación:** cada solución del repositorio incluye un script `smoke_test.sh` que despliega el stack, emite un log de prueba y verifica su registro de extremo a extremo. El estudiante puede ejecutarlo para comprobar objetivamente que su entorno funciona antes de capturar las evidencias.
 
 **Rúbrica sugerida:**

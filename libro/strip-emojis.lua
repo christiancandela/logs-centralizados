@@ -20,6 +20,17 @@ local function is_emoji(c)
   if c >= 0xFE00 and c <= 0xFE0F then return true end
   -- Zero-width joiner (used in compound emojis)
   if c == 0x200D then return true end
+  -- Information source (U+2139, usado en notas "ℹ️ …")
+  if c == 0x2139 then return true end
+  -- Miscellaneous Technical con presentación emoji (⌚ ⌛ ⏩..⏳ …) — U+2300..U+23FF
+  if c >= 0x2300 and c <= 0x23FF then return true end
+  -- Misc. Symbols and Arrows (estrellas ⭐, etc.) — U+2B00..U+2BFF
+  if c >= 0x2B00 and c <= 0x2BFF then return true end
+  -- Geometric play/triangle markers (▶ ◀) — U+25B6 / U+25C0
+  if c == 0x25B6 or c == 0x25C0 then return true end
+  -- NOTA: NO se incluyen las Flechas (U+2190..U+21FF) para preservar "→" (U+2192),
+  -- ni los caracteres de dibujo de cajas (U+2500..U+257F) usados en los árboles
+  -- de "Estructura del proyecto".
   -- Enclosed alphanumerics (some have emoji presentations)
   if c >= 0x2460 and c <= 0x24FF then return false end
   return false

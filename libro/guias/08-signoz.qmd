@@ -1,1 +1,1 @@
-{{< include ../../guias/signoz-guide.md >}}
+{{< include ../_generated/guias/signoz-guide.md >}}

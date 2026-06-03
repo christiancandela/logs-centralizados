@@ -1,16 +1,16 @@
-# 🧠 Plataforma Unificada de Observabilidad con SigNoz y ClickHouse
+# Plataforma Unificada de Observabilidad con SigNoz y ClickHouse
 
 > *Guía práctica para desplegar y configurar SigNoz, una plataforma moderna "Todo en Uno" basada nativamente en OpenTelemetry y soportada por la base de datos columnar ClickHouse, como instanciación concreta de la arquitectura conceptual de observabilidad presentada en el documento central.*
 
 ---
 
-## 🌟 Objetivo de la guía
+## Objetivo de la guía
 
 Implementar y validar una plataforma unificada de observabilidad mediante **Docker Compose**, usando **SigNoz** como solución integral que integra colector (OTel Collector), almacenamiento analítico (ClickHouse) e interfaz de exploración en un único despliegue.
 
 ---
 
-## 🎯 Resultados de aprendizaje esperados
+## Resultados de aprendizaje esperados
 
 Al finalizar esta guía, el estudiante será capaz de:
 
@@ -22,7 +22,7 @@ Al finalizar esta guía, el estudiante será capaz de:
 
 ---
 
-## 🧭 Propósito y alcance del recurso
+## Propósito y alcance del recurso
 
 **SigNoz** se posiciona como el "estado del arte" de la observabilidad open source: una alternativa libre a plataformas comerciales como DataDog o New Relic. A diferencia de los stacks ensamblados de guías anteriores (ELK, PLG, Vector+Loki), SigNoz integra en un único despliegue:
 
@@ -40,7 +40,7 @@ El alcance del recurso cubre logs, métricas y trazas distribuidas (los tres pil
 
 ---
 
-## 🧩 1. Observabilidad Nativa y Almacenamiento Columnar
+## 1. Observabilidad Nativa y Almacenamiento Columnar
 
 **ClickHouse** es una base de datos analítica orientada a columnas (OLAP). A diferencia de Elasticsearch, que crea índices invertidos para búsqueda de texto, ClickHouse almacena datos por columnas y comprime bloques enteros. Esto permite ingestar millones de logs por segundo usando una fracción del disco y RAM, revolucionando la manera en que la industria maneja la observabilidad a escala.
 
@@ -48,7 +48,7 @@ SigNoz es la plataforma que integra ClickHouse como motor de almacenamiento con 
 
 ---
 
-## ⚙️ 2. Requisitos previos
+## 2. Requisitos previos
 
 - Docker instalado (https://docs.docker.com/engine/install/)
 - Docker Compose (https://docs.docker.com/compose/install/)
@@ -66,7 +66,8 @@ Este recurso se despliega como un *override* sobre el `docker-compose.yaml` ofic
 |---|---|---|
 | `logs.producer` (aplicación Quarkus) | `512m` | `PRODUCER_MEM_LIMIT` |
 
-> ℹ️ **Nota honesta:** Los límites de memoria de los servicios del **core de SigNoz** (ClickHouse, colector, query-service y frontend) los gobierna el `docker-compose.yaml` oficial del repositorio de SigNoz. El override de esta guía no los redefine: parametriza únicamente los componentes propios del recurso. El servicio `otel-collector` que aparece en el override solo ajusta el `command` del colector oficial, no su límite de memoria.
+> [!NOTE]
+> Los límites de memoria de los servicios del **core de SigNoz** (ClickHouse, colector, query-service y frontend) los gobierna el `docker-compose.yaml` oficial del repositorio de SigNoz. El override de esta guía no los redefine: parametriza únicamente los componentes propios del recurso. El servicio `otel-collector` que aparece en el override solo ajusta el `command` del colector oficial, no su límite de memoria.
 
 Las variables están centralizadas en el archivo `.env` del override:
 
@@ -79,7 +80,7 @@ PRODUCER_MEM_LIMIT=512m
 
 ---
 
-## 📂 3. Estructura del proyecto
+## 3. Estructura del proyecto
 
 ```bash
 08-SigNoz/
@@ -97,7 +98,7 @@ El directorio `signoz/` se obtiene clonando el repositorio oficial a una versió
 
 ---
 
-## 📊 4. Arquitectura de la solución
+## 4. Arquitectura de la solución
 
 ```text
 [Aplicación Quarkus / logs.producer]
@@ -125,7 +126,7 @@ Los componentes internos del stack SigNoz son:
 
 ---
 
-## 🛠️ 5. Implementación de la arquitectura
+## 5. Implementación de la arquitectura
 
 ### 5.1 Paso 1: Descargar el repositorio de SigNoz
 
@@ -141,7 +142,8 @@ El script equivale a:
 git clone --depth 1 --branch v0.122.0 https://github.com/SigNoz/signoz.git
 ```
 
-> ℹ️ **Nota:** `--depth 1` descarga solo el último commit (sin historia), reduciendo el tamaño. `--branch v0.122.0` fija la versión para reproducibilidad. El directorio `signoz/` está en `.gitignore` y no se versiona.
+> [!NOTE]
+> `--depth 1` descarga solo el último commit (sin historia), reduciendo el tamaño. `--branch v0.122.0` fija la versión para reproducibilidad. El directorio `signoz/` está en `.gitignore` y no se versiona.
 
 ---
 
@@ -178,7 +180,8 @@ services:
     mem_limit: ${PRODUCER_MEM_LIMIT:-512m}   # único componente propio que limitamos
 ```
 
-> ℹ️ **Nota:** El `context` del build usa una ruta relativa desde el directorio del primer `-f` (`signoz/deploy/docker/`), por eso el path `../../../logs.producer` apunta al directorio correcto.
+> [!NOTE]
+> El `context` del build usa una ruta relativa desde el directorio del primer `-f` (`signoz/deploy/docker/`), por eso el path `../../../logs.producer` apunta al directorio correcto.
 
 ---
 
@@ -197,7 +200,7 @@ La extensión `quarkus-opentelemetry` envía logs, trazas y métricas automátic
 
 ---
 
-## ▶️ 6. Despliegue y validación
+## 6. Despliegue y validación
 
 ### 6.1 Levantar el stack
 
@@ -232,11 +235,12 @@ docker compose \
   down
 ```
 
-> ⚠️ **Nota:** Para eliminar también los volúmenes (ClickHouse, Zookeeper, SQLite), agregue `--volumes`. Esto borra todos los datos almacenados.
+> [!NOTE]
+> Para eliminar también los volúmenes (ClickHouse, Zookeeper, SQLite), agregue `--volumes`. Esto borra todos los datos almacenados.
 
 ---
 
-## 🔌 7. Emisión de logs desde aplicaciones
+## 7. Emisión de logs desde aplicaciones
 
 ### 7.1 Aplicaciones Quarkus
 
@@ -264,15 +268,16 @@ quarkus.otel.exporter.otlp.endpoint=http://${SIGNOZ_HOST:localhost}:4317
 private static final Logger LOG = Logger.getLogger(MiClase.class);
 ```
 
-> ℹ️ **Nota:** A diferencia de otras guías, aquí no se escribe en archivos ni se configura un socket. El OTel SDK envía los logs directamente al colector por red en formato OTLP. Las trazas HTTP se correlacionan automáticamente con los logs mediante `trace_id` y `span_id`.
+> [!NOTE]
+> A diferencia de otras guías, aquí no se escribe en archivos ni se configura un socket. El OTel SDK envía los logs directamente al colector por red en formato OTLP. Las trazas HTTP se correlacionan automáticamente con los logs mediante `trace_id` y `span_id`.
 
 ---
 
-## 📊 8. Visualización en SigNoz
+## 8. Visualización en SigNoz
 
 Acceda a SigNoz en `http://localhost:8080`.
 
-> ℹ️ **Primer acceso:** SigNoz le pedirá crear una cuenta de administrador (correo y contraseña). Esto es local, no requiere ningún servicio externo.
+> **Primer acceso:** SigNoz le pedirá crear una cuenta de administrador (correo y contraseña). Esto es local, no requiere ningún servicio externo.
 
 ### 8.1 Explorar logs
 
@@ -317,7 +322,7 @@ curl http://localhost:8090/api/error
 
 ---
 
-## 🧪 9. Actividades de profundización
+## 9. Actividades de profundización
 
 - **Correlación logs–trazas:** Genere errores con `GET /api/error` y siga el enlace `trace_id` desde el log hasta la traza completa en SigNoz Traces.
 - **Comparar modelos de indexación:** Contraste el enfoque columnar de ClickHouse (sin índice de texto completo) con la indexación invertida de Elasticsearch. ¿Cómo afecta esto al costo de almacenamiento y a la velocidad de ingesta?
@@ -333,7 +338,7 @@ curl http://localhost:8090/api/error
 
 ---
 
-## 🛠️ 10. Troubleshooting
+## 10. Troubleshooting
 
 **El puerto 4317 no responde (conexión rechazada desde `logs.producer`).**
 
@@ -367,7 +372,7 @@ curl http://localhost:8090/api/error
 
 ---
 
-## 📚 Referencias
+## Referencias
 
 - SigNoz Documentation: https://signoz.io/docs/
 - SigNoz GitHub: https://github.com/SigNoz/signoz
@@ -378,4 +383,4 @@ curl http://localhost:8090/api/error
 
 ---
 
-ℹ️ *Esta guía complementa el marco teórico de observabilidad y centralización de logs desarrollado en el documento central.*
+*Esta guía complementa el marco teórico de observabilidad y centralización de logs desarrollado en el documento central.*

@@ -80,9 +80,9 @@ jobs:
           echo "$TINYTEX_BIN" >> "$GITHUB_PATH"
 
       # ── 6. Compilar ───────────────────────────────────────────────────────
-      - name: Generar capítulos del libro desde readme.md
+      - name: Preparar fuentes del libro (troceo + alerts→callouts)
         working-directory: libro
-        run: python3 scripts/split_readme.py
+        run: python3 scripts/prepare_book.py
 
       - name: Compilar libro PDF
         working-directory: libro

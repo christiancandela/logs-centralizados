@@ -1,1 +1,1 @@
-{{< include ../../guias/fluentd-guide.md >}}
+{{< include ../_generated/guias/fluentd-guide.md >}}

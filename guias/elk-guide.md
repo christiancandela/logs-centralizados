@@ -1,16 +1,16 @@
-# 🧠 Centralización de Logs con ELK Stack
+# Centralización de Logs con ELK Stack
 
 > *Guía práctica para implementar una solución básica de centralización de logs usando Docker Compose y el stack ELK, como instanciación concreta de la arquitectura conceptual de observabilidad presentada en el documento central.*
 
 ---
 
-## 🌟 Objetivo de la guía
+## Objetivo de la guía
 
 Implementar y validar una arquitectura básica de centralización de logs mediante Docker Compose y el stack ELK, como ejercicio aplicado de los conceptos de observabilidad estudiados previamente.
 
 ---
 
-## 🎯 Resultados de aprendizaje esperados
+## Resultados de aprendizaje esperados
 
 Al finalizar esta guía, el estudiante será capaz de:
 
@@ -22,7 +22,7 @@ Al finalizar esta guía, el estudiante será capaz de:
 
 ---
 
-## 🧭 Propósito y alcance del recurso
+## Propósito y alcance del recurso
 
 El propósito principal de este recurso es guiar el diseño, despliegue y uso de una **arquitectura básica de centralización de logs** utilizando contenedores Docker y el stack ELK (Elasticsearch, Logstash y Kibana).
 
@@ -38,7 +38,7 @@ Aunque la implementación se apoya en el stack ELK, los principios abordados son
 
 ---
 
-## 🧩 1. Observabilidad y centralización de logs
+## 1. Observabilidad y centralización de logs
 
 En arquitecturas basadas en microservicios, la observabilidad permite comprender el comportamiento interno del sistema a partir de señales externas. Los **logs** constituyen una fuente primaria de información debido a su riqueza semántica y contextual.
 
@@ -46,7 +46,7 @@ La **centralización de logs** mitiga la dispersión inherente a los sistemas di
 
 ---
 
-## ⚙️ 2. Requisitos previos
+## 2. Requisitos previos
 
 - Docker instalado  
   https://docs.docker.com/engine/install/
@@ -74,11 +74,12 @@ KIBANA_MEM_LIMIT=1g
 PRODUCER_MEM_LIMIT=512m
 ```
 
-> ⚠️ En Linux/WSL, Elasticsearch requiere que el host tenga `vm.max_map_count ≥ 262144`.
+> [!WARNING]
+> En Linux/WSL, Elasticsearch requiere que el host tenga `vm.max_map_count ≥ 262144`.
 
 ---
 
-## 📂 3. Estructura del proyecto
+## 3. Estructura del proyecto
 
 ```bash
 logs-centralizados/
@@ -94,7 +95,7 @@ logs-centralizados/
 
 ---
 
-## 📊 4. Arquitectura de la solución
+## 4. Arquitectura de la solución
 
 ```
 [Aplicaciones Java/Quarkus] --- (TCP JSON) ---> [Logstash] ---> [Elasticsearch] ---> [Kibana]
@@ -110,7 +111,7 @@ El uso de **Docker Compose** permite describir y desplegar la arquitectura como 
 
 ---
 
-## 🛠️ 5. Implementación de la arquitectura conceptual con ELK
+## 5. Implementación de la arquitectura conceptual con ELK
 
 ### 5.1 docker-compose.yml
 
@@ -221,11 +222,12 @@ output {
 }
 ```
 
-> ℹ️ **Nota (Elasticsearch 9.x):** A partir de la versión 9, el output de Logstash utiliza *data streams* en lugar de índices con fecha (`logstash-YYYY.MM.dd`). La configuración anterior crea el data stream `logs-producer-default`, que sigue la convención `{type}-{dataset}-{namespace}` definida por ECS. Esto es transparente para la visualización en Kibana.
+> [!NOTE]
+> **Elasticsearch 9.x:** A partir de la versión 9, el output de Logstash utiliza *data streams* en lugar de índices con fecha (`logstash-YYYY.MM.dd`). La configuración anterior crea el data stream `logs-producer-default`, que sigue la convención `{type}-{dataset}-{namespace}` definida por ECS. Esto es transparente para la visualización en Kibana.
 
 ---
 
-## ▶️ 6. Despliegue y validación
+## 6. Despliegue y validación
 
 ### Inicialización de los servicios
 
@@ -253,7 +255,7 @@ Se emplean **volúmenes Docker** para garantizar la persistencia de los datos al
 
 ---
 
-## 🔌 7. Emisión de logs desde aplicaciones
+## 7. Emisión de logs desde aplicaciones
 
 ### 7.1 Aplicaciones Quarkus
 
@@ -330,7 +332,7 @@ Configura `logback.xml` para enviar logs a Logstash:
 
 ---
 
-## 📊 8. Visualización en Kibana
+## 8. Visualización en Kibana
 
 Una vez centralizados, los logs pueden ser explorados mediante Kibana, permitiendo:
 
@@ -360,7 +362,7 @@ Crea o selecciona el data view `logs-*` con campo de tiempo `@timestamp`. Esta v
 
 ---
 
-## 🧪 9. Actividades de profundización
+## 9. Actividades de profundización
 
 - **Simular fallos y rastrear su origen:** El endpoint `GET /api/error` de la aplicación de ejemplo genera intencionalmente una `NullPointerException`. Ejecútelo y utilice Kibana para localizar el *stacktrace* del error, validando la ventaja del campo `exception` en formato ECS estructurado.
 - Comparar ECS con esquemas personalizados: modifique el pipeline de Logstash para agregar un campo personalizado y observe cómo se indexa en Elasticsearch.
@@ -375,7 +377,7 @@ Crea o selecciona el data view `logs-*` con campo de tiempo `@timestamp`. Esta v
 
 ---
 
-## 🛠️ 10. Troubleshooting
+## 10. Troubleshooting
 
 **Error común:** El contenedor `elasticsearch` se detiene inesperadamente o marca estado `Exit 78` / `Exit 137`.
 
@@ -394,7 +396,7 @@ sudo sysctl -w vm.max_map_count=262144
 
 ---
 
-## 📚 Referencias
+## Referencias
 
 - Logstash – https://www.elastic.co/docs/reference/logstash
 - Elasticsearch – https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html
@@ -403,4 +405,4 @@ sudo sysctl -w vm.max_map_count=262144
 
 ---
 
-ℹ️ *Esta guía complementa el marco teórico de observabilidad y centralización de logs desarrollado en el documento central.*
+*Esta guía complementa el marco teórico de observabilidad y centralización de logs desarrollado en el documento central.*

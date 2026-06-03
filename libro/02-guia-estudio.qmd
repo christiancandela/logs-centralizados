@@ -1,1 +1,1 @@
-{{< include ../guia_estudio.md >}}
+{{< include _generated/guia_estudio.md >}}

@@ -1,1 +1,1 @@
-{{< include ../../guias/alloy-guide.md >}}
+{{< include ../_generated/guias/alloy-guide.md >}}

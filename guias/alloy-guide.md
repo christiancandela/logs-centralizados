@@ -1,18 +1,18 @@
-# 🧠 Centralización de Logs con Grafana Alloy y Loki
+# Centralización de Logs con Grafana Alloy y Loki
 
 > *Guía práctica complementaria a la guía Promtail. Implementa la misma arquitectura de centralización por archivo (*file tailing*) utilizando **Grafana Alloy**, el sucesor oficial de Promtail, como instanciación concreta de la arquitectura conceptual de observabilidad presentada en el documento central.*
 
-> ℹ️ **Prerequisito recomendado:** Completar primero la guía Promtail. Esta guía asume familiaridad con Loki, LogQL y el modelo de indexación por etiquetas. El foco está en las diferencias de configuración entre Promtail y Alloy, no en los conceptos base.
+> **Prerequisito recomendado:** Completar primero la guía Promtail. Esta guía asume familiaridad con Loki, LogQL y el modelo de indexación por etiquetas. El foco está en las diferencias de configuración entre Promtail y Alloy, no en los conceptos base.
 
 ---
 
-## 🌟 Objetivo de la guía
+## Objetivo de la guía
 
 Implementar y validar una arquitectura de centralización de logs mediante **Docker Compose**, migrando el agente de recolección de **Promtail** a **Grafana Alloy**, y comprendiendo el nuevo modelo de configuración orientado a componentes (*dataflow*) que introduce Alloy.
 
 ---
 
-## 🎯 Resultados de aprendizaje esperados
+## Resultados de aprendizaje esperados
 
 Al finalizar esta guía, el estudiante será capaz de:
 
@@ -24,7 +24,7 @@ Al finalizar esta guía, el estudiante será capaz de:
 
 ---
 
-## 🧭 Propósito y alcance del recurso
+## Propósito y alcance del recurso
 
 **Grafana Alloy** (v1.x) es el sucesor unificado de Promtail y del Grafana Agent. A diferencia de Promtail, que es un agente especializado en *file tailing* hacia Loki, Alloy es una plataforma de telemetría genérica que puede recolectar logs, métricas y trazas desde múltiples fuentes y enviarlos a múltiples destinos.
 
@@ -34,7 +34,7 @@ Esta guía se limita al caso de uso equivalente a Promtail: *file tailing* de lo
 
 ---
 
-## 🧩 1. Promtail vs Grafana Alloy
+## 1. Promtail vs Grafana Alloy
 
 | Concepto | Promtail (YAML) | Grafana Alloy (Alloy syntax) |
 |---|---|---|
@@ -52,7 +52,7 @@ Esta guía se limita al caso de uso equivalente a Promtail: *file tailing* de lo
 
 ---
 
-## ⚙️ 2. Requisitos previos
+## 2. Requisitos previos
 
 - Docker instalado
   https://docs.docker.com/engine/install/
@@ -84,7 +84,7 @@ GRAFANA_MEM_LIMIT=512m
 
 ---
 
-## 📂 3. Estructura del proyecto
+## 3. Estructura del proyecto
 
 ```bash
 09-Alloy/
@@ -103,7 +103,7 @@ GRAFANA_MEM_LIMIT=512m
 
 ---
 
-## 📊 4. Arquitectura de la solución
+## 4. Arquitectura de la solución
 
 ```text
 [Aplicación Quarkus / logs.producer]
@@ -126,7 +126,7 @@ La arquitectura es funcionalmente idéntica a la de la guía Promtail. La difere
 
 ---
 
-## 🛠️ 5. Implementación
+## 5. Implementación
 
 ### 5.1 `docker-compose.yml`
 
@@ -208,9 +208,11 @@ volumes:
   alloy_data:
 ```
 
-> ℹ️ **Nota sobre el comando de Alloy:** A diferencia de Promtail, que usa `--config.file=`, Alloy recibe la ruta del archivo de configuración como **argumento posicional** al final del comando `alloy run`. El flag `--server.http.listen-addr` es obligatorio para exponer la UI y los endpoints de salud.
+> [!NOTE]
+> **El comando de Alloy:** A diferencia de Promtail, que usa `--config.file=`, Alloy recibe la ruta del archivo de configuración como **argumento posicional** al final del comando `alloy run`. El flag `--server.http.listen-addr` es obligatorio para exponer la UI y los endpoints de salud.
 
-> ℹ️ **Nota sobre el healthcheck:** La imagen de Alloy no incluye `wget` ni `curl`. El puerto 12345 en hexadecimal es `0x3039`; verificamos su presencia en `/proc/net/tcp6` como alternativa portable.
+> [!NOTE]
+> **El healthcheck:** La imagen de Alloy no incluye `wget` ni `curl`. El puerto 12345 en hexadecimal es `0x3039`; verificamos su presencia en `/proc/net/tcp6` como alternativa portable.
 
 ---
 
@@ -261,9 +263,11 @@ loki.write "loki_backend" {
 }
 ```
 
-> ℹ️ **Nota sobre `log.level` en ECS:** El formato ECS de Quarkus produce la clave con el punto como parte del nombre (`"log.level"`), no como estructura anidada. `stage.json` de Alloy interpreta el punto como separador de ruta (igual que Promtail), por lo que se usa `stage.regex` con la expresión `"log\\.level"` — la misma estrategia validada en la guía Promtail.
+> [!NOTE]
+> **`log.level` en ECS:** El formato ECS de Quarkus produce la clave con el punto como parte del nombre (`"log.level"`), no como estructura anidada. `stage.json` de Alloy interpreta el punto como separador de ruta (igual que Promtail), por lo que se usa `stage.regex` con la expresión `"log\\.level"` — la misma estrategia validada en la guía Promtail.
 
-> ℹ️ **Nota sobre `forward_to`:** El wiring explícito es la diferencia conceptual central de Alloy. `loki.source.file.quarkus_tail` envía a `loki.process.enrich.receiver`; este a su vez envía a `loki.write.loki_backend.receiver`. Este grafo es visible en la UI de Alloy en `http://localhost:12345`.
+> [!NOTE]
+> **`forward_to`:** El wiring explícito es la diferencia conceptual central de Alloy. `loki.source.file.quarkus_tail` envía a `loki.process.enrich.receiver`; este a su vez envía a `loki.write.loki_backend.receiver`. Este grafo es visible en la UI de Alloy en `http://localhost:12345`.
 
 ---
 
@@ -284,7 +288,7 @@ quarkus.log.file.json.log-format=ECS
 
 ---
 
-## ▶️ 6. Despliegue y validación
+## 6. Despliegue y validación
 
 Antes de levantar el stack, cree el directorio compartido para los logs:
 
@@ -306,7 +310,7 @@ docker compose ps
 
 ---
 
-## 🔭 7. Interfaz de Alloy
+## 7. Interfaz de Alloy
 
 Acceda a `http://localhost:12345` para ver la **UI de Alloy**. Desde allí puede:
 
@@ -319,9 +323,9 @@ Esta interfaz no existe en Promtail y es una de las ventajas operativas más imp
 
 ---
 
-## 🔌 8. Emisión de logs desde la aplicación
+## 8. Emisión de logs desde la aplicación
 
-> ℹ️ **Reutilización de la aplicación:** Si ya completó la guía Promtail, puede reutilizar la misma aplicación `logs.producer` — la configuración de escritura a archivo JSON (`application.properties`) es idéntica. Si aún no la tiene, créela con el siguiente comando:
+> **Reutilización de la aplicación:** Si ya completó la guía Promtail, puede reutilizar la misma aplicación `logs.producer` — la configuración de escritura a archivo JSON (`application.properties`) es idéntica. Si aún no la tiene, créela con el siguiente comando:
 
 ```shell
 mvn io.quarkus.platform:quarkus-maven-plugin:3.18.4:create \
@@ -363,7 +367,7 @@ curl http://localhost:8080/api/error
 
 ---
 
-## 📊 9. Visualización en Grafana
+## 9. Visualización en Grafana
 
 Acceda a Grafana en `http://localhost:3000`. La fuente de datos Loki está preconfigurada.
 
@@ -379,14 +383,14 @@ Filtrar por nivel:
 {job="alloy_app_logs", level="ERROR"}
 ```
 
-Parsear el JSON y mostrar solo el mensaje:
+Analizar el JSON y mostrar solo el mensaje:
 ```logql
 {job="alloy_app_logs"} | json | line_format "{{.message}}"
 ```
 
 ---
 
-## 🧪 10. Actividades de profundización
+## 10. Actividades de profundización
 
 - **Comparar el grafo de componentes con la guía Promtail:** Dibuje o esquematice el pipeline equivalente en Promtail y compare la verbosidad y claridad de ambas configuraciones. ¿Cuándo es preferible cada modelo?
 - **Usar la migración automática:** Ejecute `alloy convert --source-format=promtail --config.file=promtail-config.yaml` con la configuración de la guía anterior. Compare la salida con `config.alloy` de esta guía.
@@ -402,7 +406,7 @@ Parsear el JSON y mostrar solo el mensaje:
 
 ---
 
-## 🛠️ 11. Troubleshooting
+## 11. Troubleshooting
 
 **Alloy queda en estado `unhealthy` al arrancar.**
 
@@ -440,7 +444,7 @@ Si hay errores de sintaxis, el comando los reporta con la línea exacta.
 
 ---
 
-## 📚 Referencias
+## Referencias
 
 - Grafana Alloy Documentation: https://grafana.com/docs/alloy/latest/
 - Migrate from Promtail to Alloy: https://grafana.com/docs/alloy/latest/set-up/migrate/from-promtail/
@@ -452,4 +456,4 @@ Si hay errores de sintaxis, el comando los reporta con la línea exacta.
 
 ---
 
-ℹ️ *Esta guía complementa la guía Promtail y el marco teórico de observabilidad y centralización de logs desarrollado en el documento central.*
+*Esta guía complementa la guía Promtail y el marco teórico de observabilidad y centralización de logs desarrollado en el documento central.*

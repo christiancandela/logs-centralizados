@@ -1,16 +1,16 @@
-# 🧠 Centralización de Logs con GELF y Graylog
+# Centralización de Logs con GELF y Graylog
 
 > *Guía práctica para implementar una solución básica de centralización de logs utilizando Docker Compose y GELF/Graylog, como instanciación concreta de la arquitectura conceptual de observabilidad presentada en el documento central.*
 
 ---
 
-## 🌟 Objetivo de la guía
+## Objetivo de la guía
 
 Implementar y validar una arquitectura básica de centralización de logs mediante Docker Compose, utilizando **GELF** como protocolo de transporte y **Graylog** como plataforma de ingestión y visualización, como ejercicio aplicado de los conceptos de observabilidad estudiados previamente.
 
 ---
 
-## 🎯 Resultados de aprendizaje esperados
+## Resultados de aprendizaje esperados
 
 Al finalizar esta guía, el estudiante será capaz de:
 
@@ -23,7 +23,7 @@ Al finalizar esta guía, el estudiante será capaz de:
 
 ---
 
-## 🧭 Propósito y alcance del recurso
+## Propósito y alcance del recurso
 
 El propósito principal de este recurso es guiar el despliegue y uso de una **arquitectura básica de centralización de logs** basada en Graylog, en un entorno local y reproducible mediante Docker Compose.
 
@@ -37,7 +37,7 @@ El alcance del recurso se limita a la **centralización y visualización de logs
 
 ---
 
-## 🧩 1. Observabilidad y centralización de logs
+## 1. Observabilidad y centralización de logs
 
 En arquitecturas basadas en microservicios, la observabilidad permite comprender el comportamiento interno del sistema a partir de señales externas que este produce durante su ejecución. Los **logs** constituyen una fuente primaria de información por su riqueza semántica y contextual.
 
@@ -45,7 +45,7 @@ La **centralización de logs** mitiga la dispersión inherente a los sistemas di
 
 ---
 
-## ⚙️ 2. Requisitos previos
+## 2. Requisitos previos
 
 - Docker instalado  
   https://docs.docker.com/engine/install/
@@ -53,7 +53,8 @@ La **centralización de logs** mitiga la dispersión inherente a los sistemas di
   https://docs.docker.com/compose/install/
 - Al menos **8 GB de RAM** libres
 
-> ℹ️ **Nota sobre versiones:** Esta guía usa **OpenSearch 2.12**, no la versión 3.x empleada en la guía OLO. Graylog 7.1 requiere compatibilidad con la API de Elasticsearch 7.x, que OpenSearch 2.x mantiene; la rama 3.x introdujo cambios de API que Graylog aún no soporta. Ambas elecciones son intencionadas y correctas para cada contexto.
+> [!NOTE]
+> **Versiones:** Esta guía usa **OpenSearch 2.12**, no la versión 3.x empleada en la guía OLO. Graylog 7.1 requiere compatibilidad con la API de Elasticsearch 7.x, que OpenSearch 2.x mantiene; la rama 3.x introdujo cambios de API que Graylog aún no soporta. Ambas elecciones son intencionadas y correctas para cada contexto.
 
 ### Dimensionamiento de recursos
 
@@ -75,11 +76,12 @@ MONGODB_MEM_LIMIT=512m
 PRODUCER_MEM_LIMIT=512m
 ```
 
-> ⚠️ **Advertencia:** el backend de búsqueda (Elasticsearch/OpenSearch) requiere `vm.max_map_count ≥ 262144` en Linux/WSL. De lo contrario, el contenedor `opensearch` no arrancará.
+> [!WARNING]
+> el backend de búsqueda (Elasticsearch/OpenSearch) requiere `vm.max_map_count ≥ 262144` en Linux/WSL. De lo contrario, el contenedor `opensearch` no arrancará.
 
 ---
 
-## 📂 3. Estructura del proyecto
+## 3. Estructura del proyecto
 
 ```bash
 logs-centralizados/
@@ -91,7 +93,7 @@ logs-centralizados/
 
 ---
 
-## 📊 4. Arquitectura de la solución
+## 4. Arquitectura de la solución
 
 ```text
 [Aplicaciones Java / Quarkus]
@@ -116,7 +118,7 @@ El uso de **Docker Compose** permite describir y desplegar la arquitectura como 
 
 ---
 
-## 🛠️ 5. Implementación de la arquitectura conceptual con GELF y Graylog
+## 5. Implementación de la arquitectura conceptual con GELF y Graylog
 
 ### 5.1 docker-compose.yml
 
@@ -206,7 +208,7 @@ volumes:
 
 ---
 
-## ▶️ 6. Despliegue y validación
+## 6. Despliegue y validación
 
 ### Inicialización de los servicios
 
@@ -245,11 +247,11 @@ curl -H "Content-Type: application/json" \
      http://localhost:9000/api/system/inputs
 ```
 
-> ℹ️ La cabecera `Authorization: Basic YWRtaW46YWRtaW4=` corresponde a `admin:admin` en Base64. Alternativamente, puede crear el input desde la interfaz web: **System → Inputs → GELF UDP → Launch new input**.
+> La cabecera `Authorization: Basic YWRtaW46YWRtaW4=` corresponde a `admin:admin` en Base64. Alternativamente, puede crear el input desde la interfaz web: **System → Inputs → GELF UDP → Launch new input**.
 
 ---
 
-## 🔌 7. Emisión de logs desde aplicaciones
+## 7. Emisión de logs desde aplicaciones
 
 ### 7.1 Aplicaciones Quarkus
 
@@ -274,7 +276,8 @@ quarkus.log.handler.gelf.host=${GRAYLOG_HOST:localhost}
 quarkus.log.handler.gelf.port=12201
 ```
 
-> ℹ️ **Nota:** Al usar `logging-gelf`, no se requiere la extensión `logging-json`. La consola mostrará logs en formato estándar (texto plano) y los eventos estructurados se enviarán por UDP a Graylog.
+> [!NOTE]
+> Al usar `logging-gelf`, no se requiere la extensión `logging-json`. La consola mostrará logs en formato estándar (texto plano) y los eventos estructurados se enviarán por UDP a Graylog.
 
 **Uso del logger:**
 
@@ -320,7 +323,7 @@ Configuración de `logback.xml`:
 
 ---
 
-## 📊 8. Visualización en Graylog
+## 8. Visualización en Graylog
 
 Acceda a Graylog en `http://localhost:9000` con usuario `admin` y contraseña `admin`.
 
@@ -335,7 +338,7 @@ Desde allí puede:
 
 ---
 
-## 🧪 9. Actividades de profundización
+## 9. Actividades de profundización
 
 - **Simular fallos y rastrear su origen:** El endpoint `GET /api/error` de la aplicación de ejemplo genera intencionalmente una `NullPointerException`. Ejecútelo y utilice Graylog para localizar el evento de error, inspeccionando el stacktrace y los campos de origen.
 - Comparar GELF UDP frente a envíos basados en TCP/JSON (en términos de confiabilidad y pérdida de mensajes).
@@ -356,7 +359,7 @@ Desde allí puede:
 
 ---
 
-## 🛠️ 10. Troubleshooting
+## 10. Troubleshooting
 
 **Error común:** Graylog falla al iniciar con `PreflightCheckException: Journal directory has not enough free space`.
 
@@ -381,7 +384,7 @@ sudo sysctl -w vm.max_map_count=262144
 
 ---
 
-## 📚 Referencias
+## Referencias
 
 - Graylog – https://graylog.org
 - Graylog Docs (Docker) – https://docs.graylog.org/docs/docker
@@ -390,4 +393,4 @@ sudo sysctl -w vm.max_map_count=262144
 
 ---
 
-ℹ️ *Esta guía complementa el marco teórico de observabilidad y centralización de logs desarrollado en el documento central.*
+*Esta guía complementa el marco teórico de observabilidad y centralización de logs desarrollado en el documento central.*

@@ -1,16 +1,16 @@
-# 🧠 Centralización de Logs con Fluentd
+# Centralización de Logs con Fluentd
 
 > *Guía práctica para implementar una solución básica de centralización de logs utilizando Docker Compose y Fluentd, como instanciación concreta de la arquitectura conceptual de observabilidad presentada en el documento central.*
 
 ---
 
-## 🌟 Objetivo de la guía
+## Objetivo de la guía
 
 Implementar y validar una arquitectura básica de centralización de logs mediante Docker Compose y Fluentd, como ejercicio aplicado de los conceptos de observabilidad estudiados previamente.
 
 ---
 
-## 🎯 Resultados de aprendizaje esperados
+## Resultados de aprendizaje esperados
 
 Al finalizar esta guía, el estudiante será capaz de:
 
@@ -22,7 +22,7 @@ Al finalizar esta guía, el estudiante será capaz de:
 
 ---
 
-## 🧭 Propósito y alcance del recurso
+## Propósito y alcance del recurso
 
 El propósito principal de este recurso es guiar el diseño, despliegue y uso de una **arquitectura básica de centralización de logs** utilizando Fluentd, Elasticsearch y Kibana.
 
@@ -36,7 +36,7 @@ El alcance del recurso se limita a la **centralización y visualización de logs
 
 ---
 
-## 🧩 1. Observabilidad y centralización de logs
+## 1. Observabilidad y centralización de logs
 
 En arquitecturas basadas en microservicios, la observabilidad permite comprender el comportamiento interno del sistema a partir de las señales externas que este produce durante su ejecución. Los **logs** constituyen una fuente primaria de información debido a su riqueza semántica y contextual.
 
@@ -44,7 +44,7 @@ La **centralización de logs** mitiga la dispersión inherente a los sistemas di
 
 ---
 
-## ⚙️ 2. Requisitos previos
+## 2. Requisitos previos
 
 - Docker instalado  
   https://docs.docker.com/engine/install/
@@ -72,11 +72,12 @@ FLUENTD_MEM_LIMIT=512m
 PRODUCER_MEM_LIMIT=512m
 ```
 
-> ⚠️ **Advertencia:** En sistemas Linux/WSL, Elasticsearch requiere que la memoria virtual del anfitrión cumpla `vm.max_map_count ≥ 262144`. Consulte la sección de Troubleshooting para el comando de ajuste.
+> [!WARNING]
+> En sistemas Linux/WSL, Elasticsearch requiere que la memoria virtual del anfitrión cumpla `vm.max_map_count ≥ 262144`. Consulte la sección de Troubleshooting para el comando de ajuste.
 
 ---
 
-## 📂 3. Estructura del proyecto
+## 3. Estructura del proyecto
 
 ```bash
 logs-centralizados/
@@ -93,7 +94,7 @@ logs-centralizados/
 
 ---
 
-## 📊 4. Arquitectura de la solución
+## 4. Arquitectura de la solución
 
 ```text
 [Aplicaciones Java / Quarkus]
@@ -116,7 +117,7 @@ El uso de **Docker Compose** permite describir y desplegar la arquitectura como 
 
 ---
 
-## 🛠️ 5. Implementación de la arquitectura conceptual con Fluentd
+## 5. Implementación de la arquitectura conceptual con Fluentd
 
 ### 5.1 docker-compose.yml
 
@@ -225,7 +226,8 @@ volumes:
 </match>
 ```
 
-> ℹ️ **Nota:** A diferencia de Logstash, la imagen oficial de Fluentd **no incluye** el plugin de Elasticsearch. El plugin `fluent-plugin-elasticsearch` debe instalarse al construir la imagen personalizada (ver Dockerfile en la siguiente sección). El archivo de configuración debe llamarse `fluent.conf`, que es el nombre esperado por el entrypoint del contenedor.
+> [!NOTE]
+> A diferencia de Logstash, la imagen oficial de Fluentd **no incluye** el plugin de Elasticsearch. El plugin `fluent-plugin-elasticsearch` debe instalarse al construir la imagen personalizada (ver Dockerfile en la siguiente sección). El archivo de configuración debe llamarse `fluent.conf`, que es el nombre esperado por el entrypoint del contenedor.
 
 ---
 
@@ -238,11 +240,12 @@ RUN gem install fluent-plugin-elasticsearch --no-document
 USER fluent
 ```
 
-> ℹ️ **Nota:** La imagen base de Fluentd corre como usuario no privilegiado `fluent`. La instalación de gems requiere cambiar temporalmente al usuario `root` y volver a `fluent` al finalizar.
+> [!NOTE]
+> La imagen base de Fluentd corre como usuario no privilegiado `fluent`. La instalación de gems requiere cambiar temporalmente al usuario `root` y volver a `fluent` al finalizar.
 
 ---
 
-## ▶️ 6. Despliegue y validación
+## 6. Despliegue y validación
 
 ### Inicialización de los servicios
 
@@ -268,7 +271,7 @@ Se emplean **volúmenes Docker** para garantizar la persistencia de los datos al
 
 ---
 
-## 🔌 7. Emisión de logs desde aplicaciones
+## 7. Emisión de logs desde aplicaciones
 
 ### 7.1 Aplicaciones Quarkus
 
@@ -307,7 +310,7 @@ private static final Logger LOG = Logger.getLogger(MiClase.class);
 
 ### 7.2 Otras aplicaciones Java (Logback con Syslog)
 
-> ⚠️ **SECCIÓN DE REFERENCIA — NO EJECUTABLE TAL COMO ESTÁ**
+> **SECCIÓN DE REFERENCIA — NO EJECUTABLE TAL COMO ESTÁ**
 >
 > Esta sección ilustra un patrón de integración alternativo (Syslog UDP) con fines pedagógicos. **No forma parte del `docker-compose.yml` del recurso** y no puede ejecutarse directamente sin modificaciones. Para experimentar con ella deberá: (1) agregar el source `in_syslog` a `fluent.conf`, y (2) exponer el puerto `5140:5140/udp` en el servicio `fluentd` del compose. Se incluye aquí para ampliar la comprensión de la versatilidad de Fluentd como colector multi-protocolo.
 
@@ -351,11 +354,12 @@ Configuración de Fluentd para recibir Syslog:
 </source>
 ```
 
-> ℹ️ **Nota:** A diferencia del transporte TCP JSON (sección 7.1), el protocolo Syslog no transporta campos estructurados: el cuerpo del mensaje es texto plano. Esta diferencia es pedagógicamente relevante al comparar el nivel de observabilidad obtenido con cada protocolo.
+> [!NOTE]
+> A diferencia del transporte TCP JSON (sección 7.1), el protocolo Syslog no transporta campos estructurados: el cuerpo del mensaje es texto plano. Esta diferencia es pedagógicamente relevante al comparar el nivel de observabilidad obtenido con cada protocolo.
 
 ---
 
-## 📊 8. Visualización en Kibana
+## 8. Visualización en Kibana
 
 Una vez centralizados, los logs pueden ser explorados mediante Kibana, permitiendo:
 
@@ -377,7 +381,7 @@ Navegue a **Hamburger menu → Discover**. Cree un data view con el patrón `log
 
 ---
 
-## 🧪 9. Actividades de profundización
+## 9. Actividades de profundización
 
 - **Simular fallos y rastrear su origen:** El endpoint `GET /api/error` de la aplicación de ejemplo genera intencionalmente una `NullPointerException`. Ejecútelo y utilice Kibana para localizar el evento de error e inspeccionar el stacktrace estructurado.
 - Comparar Fluentd y Logstash como componentes de procesamiento: ¿qué diferencias existen en su modelo de configuración y su ecosistema de plugins?
@@ -393,7 +397,7 @@ Navegue a **Hamburger menu → Discover**. Cree un data view con el patrón `log
 
 ---
 
-## 🛠️ 10. Troubleshooting
+## 10. Troubleshooting
 
 **Error común:** El contenedor `elasticsearch` se detiene inesperadamente o marca estado `Exit 78` / `Exit 137`.
 
@@ -420,7 +424,7 @@ sudo sysctl -w vm.max_map_count=262144
 
 ---
 
-## 📚 Referencias
+## Referencias
 
 - Fluentd - https://docs.fluentd.org
 - Fluentd (plugins) - https://www.fluentd.org/plugins
@@ -430,4 +434,4 @@ sudo sysctl -w vm.max_map_count=262144
 
 ---
 
-ℹ️ *Esta guía complementa el marco teórico de observabilidad y centralización de logs desarrollado en el documento central.*
+*Esta guía complementa el marco teórico de observabilidad y centralización de logs desarrollado en el documento central.*

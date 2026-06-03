@@ -1,1 +1,1 @@
-{{< include ../../guias/promtail-guide.md >}}
+{{< include ../_generated/guias/promtail-guide.md >}}

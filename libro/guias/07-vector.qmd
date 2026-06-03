@@ -1,1 +1,1 @@
-{{< include ../../guias/vector-guide.md >}}
+{{< include ../_generated/guias/vector-guide.md >}}

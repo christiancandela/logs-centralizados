@@ -1,16 +1,16 @@
-# 🧠 Centralización de Logs con OpenTelemetry (LGTM)
+# Centralización de Logs con OpenTelemetry (LGTM)
 
 > *Guía práctica para implementar una solución de centralización de logs utilizando Docker Compose y OpenTelemetry, como instanciación concreta de la arquitectura conceptual de observabilidad presentada en el documento central.*
 
 ---
 
-## 🌟 Objetivo de la guía
+## Objetivo de la guía
 
 Implementar y validar una arquitectura de centralización de logs mediante **Docker Compose**, usando **OpenTelemetry** para la recolección y exportación de logs vía el protocolo **OTLP**, y **Grafana** (integrado en el stack `grafana/otel-lgtm`) como herramienta de exploración.
 
 ---
 
-## 🎯 Resultados de aprendizaje esperados
+## Resultados de aprendizaje esperados
 
 Al finalizar esta guía, el estudiante será capaz de:
 
@@ -22,7 +22,7 @@ Al finalizar esta guía, el estudiante será capaz de:
 
 ---
 
-## 🧭 Propósito y alcance del recurso
+## Propósito y alcance del recurso
 
 El propósito principal de este recurso es guiar el despliegue y uso de una **arquitectura de centralización de logs** basada en el estándar OpenTelemetry, en un entorno local y reproducible mediante Docker Compose.
 
@@ -36,7 +36,7 @@ El alcance del recurso se limita a la **centralización y visualización de logs
 
 ---
 
-## 🧩 1. Observabilidad y centralización de logs con OpenTelemetry
+## 1. Observabilidad y centralización de logs con OpenTelemetry
 
 En arquitecturas basadas en microservicios, la observabilidad permite comprender el comportamiento interno del sistema a partir de señales externas. Los **logs** constituyen una fuente primaria de información debido a su riqueza semántica y contextual.
 
@@ -46,7 +46,7 @@ Una ventaja clave de OpenTelemetry frente a otros enfoques de logging es la **co
 
 ---
 
-## ⚙️ 2. Requisitos previos
+## 2. Requisitos previos
 
 - Docker instalado  
   https://docs.docker.com/engine/install/
@@ -72,7 +72,7 @@ PRODUCER_MEM_LIMIT=512m
 
 ---
 
-## 📂 3. Estructura del proyecto
+## 3. Estructura del proyecto
 
 ```bash
 logs-centralizados/
@@ -84,7 +84,7 @@ logs-centralizados/
 
 ---
 
-## 📊 4. Arquitectura de la solución
+## 4. Arquitectura de la solución
 
 ```text
 [Aplicaciones Java / Quarkus]
@@ -111,7 +111,7 @@ La arquitectura implementada se fundamenta en:
 
 ---
 
-## 🛠️ 5. Implementación de la arquitectura conceptual con OpenTelemetry
+## 5. Implementación de la arquitectura conceptual con OpenTelemetry
 
 ### 5.1 docker-compose.yml
 
@@ -147,11 +147,12 @@ services:
       start_period: 15s
 ```
 
-> ℹ️ **Nota sobre el healthcheck:** La imagen `grafana/otel-lgtm` no incluye `curl` ni `wget`. Internamente crea el archivo `/tmp/ready` cuando todos sus servicios están listos. El healthcheck verifica ese archivo.
+> [!NOTE]
+> **El healthcheck:** La imagen `grafana/otel-lgtm` no incluye `curl` ni `wget`. Internamente crea el archivo `/tmp/ready` cuando todos sus servicios están listos. El healthcheck verifica ese archivo.
 
 ---
 
-## ▶️ 6. Despliegue y validación
+## 6. Despliegue y validación
 
 ### Inicialización de los servicios
 
@@ -175,7 +176,7 @@ logs.producer-1           Up
 
 ---
 
-## 🔌 7. Emisión de logs desde aplicaciones
+## 7. Emisión de logs desde aplicaciones
 
 ### 7.1 Aplicaciones Quarkus
 
@@ -202,7 +203,8 @@ quarkus.otel.logs.enabled=true
 quarkus.otel.exporter.otlp.endpoint=http://${OTEL_HOST:localhost}:4317
 ```
 
-> ℹ️ **Nota:** La propiedad `quarkus.otel.exporter.otlp.endpoint` configura el endpoint para todas las señales (logs, métricas, trazas). Al habilitar `quarkus.otel.logs.enabled=true`, los logs del JBoss LogManager son interceptados y exportados vía OTLP. No se requiere ninguna otra extensión de logging.
+> [!NOTE]
+> La propiedad `quarkus.otel.exporter.otlp.endpoint` configura el endpoint para todas las señales (logs, métricas, trazas). Al habilitar `quarkus.otel.logs.enabled=true`, los logs del JBoss LogManager son interceptados y exportados vía OTLP. No se requiere ninguna otra extensión de logging.
 
 **Uso del logger:**
 
@@ -229,11 +231,11 @@ java -javaagent:opentelemetry-javaagent.jar \
      -jar myapp.jar
 ```
 
-> ℹ️ El agente intercepta automáticamente Logback, Log4j2, JUL y JBoss Logging, sin necesidad de modificar `logback.xml` ni el código de la aplicación.
+> El agente intercepta automáticamente Logback, Log4j2, JUL y JBoss Logging, sin necesidad de modificar `logback.xml` ni el código de la aplicación.
 
 ---
 
-## 📊 8. Visualización en Grafana
+## 8. Visualización en Grafana
 
 Acceda a Grafana en `http://localhost:3000` con usuario `admin` y contraseña `admin`.
 
@@ -320,7 +322,7 @@ Este nivel de integración elimina la necesidad de adivinar qué causó un pico 
 
 ---
 
-## 🧪 9. Actividades de profundización
+## 9. Actividades de profundización
 
 - **Simular fallos y rastrear su origen:** El endpoint `GET /api/error` genera intencionalmente una `NullPointerException`. Ejecútelo y localice en Grafana el evento de error. Observe el campo `exception_stacktrace` exportado como atributo estructurado, así como el `trace_id` que correlaciona el log con la traza HTTP.
 - Comparar la riqueza semántica de los logs OTel (con `trace_id`, `span_id`, `code_namespace`) frente a los enfoques basados en texto plano o GELF.
@@ -336,7 +338,7 @@ Este nivel de integración elimina la necesidad de adivinar qué causó un pico 
 
 ---
 
-## 🛠️ 10. Troubleshooting
+## 10. Troubleshooting
 
 **El contenedor `otel-lgtm` queda en estado `unhealthy`.**
 
@@ -365,7 +367,7 @@ healthcheck:
 
 ---
 
-## 📚 Referencias
+## Referencias
 
 - OpenTelemetry – https://opentelemetry.io/docs/
 - Grafana otel-lgtm – https://github.com/grafana/docker-otel-lgtm
@@ -375,4 +377,4 @@ healthcheck:
 
 ---
 
-ℹ️ *Esta guía complementa el marco teórico de observabilidad y centralización de logs desarrollado en el documento central.*
+*Esta guía complementa el marco teórico de observabilidad y centralización de logs desarrollado en el documento central.*

@@ -53,6 +53,10 @@ book:
 
 lang: es
 
+# Localización de etiquetas de callout no traducidas por Quarto al español
+language:
+  callout-tip-title: "Sugerencia"
+
 filters:
   - mermaid-filter.lua
   - strip-emojis.lua
