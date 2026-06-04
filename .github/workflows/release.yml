@@ -49,35 +49,18 @@ jobs:
       - name: Instalar Quarto
         uses: quarto-dev/quarto-actions/setup@v2
 
-      # ── 5. TinyTeX + paquetes LaTeX (con caché para acelerar reruns) ──────
-      - name: Caché de TinyTeX
-        id: cache-tinytex
-        uses: actions/cache@v4
-        with:
-          path: ~/.TinyTeX
-          key: tinytex-${{ runner.os }}-${{ hashFiles('libro/_quarto.yml') }}
-
-      - name: Instalar TinyTeX y paquetes LaTeX
-        if: steps.cache-tinytex.outputs.cache-hit != 'true'
+      - name: Instalar Typst
         run: |
-          quarto install tinytex --no-prompt
-          TLMGR=$(find ~/.TinyTeX -name tlmgr | head -1)
-          if [ -z "$TLMGR" ]; then
-            echo "tlmgr no encontrado en ~/.TinyTeX — estructura actual:"
-            find ~/.TinyTeX -maxdepth 4 | head -30
-            exit 1
-          fi
-          "$TLMGR" install \
-            koma-script microtype geometry xcolor hyperref bookmark \
-            babel-spanish hyphen-spanish \
-            fancyvrb listings float fontspec luaotfload \
-            unicode-data selnolig upquote
+          curl -L https://github.com/typst/typst/releases/download/v0.13.1/typst-x86_64-unknown-linux-musl.tar.xz \
+            -o typst.tar.xz
+          tar -xf typst.tar.xz
+          sudo mv typst-*/typst /usr/local/bin/
+          typst --version
 
-      # Asegurar que tlmgr está en PATH aunque la caché haya sido restaurada
-      - name: Añadir TinyTeX al PATH
+      - name: Verificar Typst
         run: |
-          TINYTEX_BIN=$(find ~/.TinyTeX -name tlmgr | head -1 | xargs dirname)
-          echo "$TINYTEX_BIN" >> "$GITHUB_PATH"
+          which typst
+          typst --version
 
       # ── 6. Compilar ───────────────────────────────────────────────────────
       - name: Preparar fuentes del libro (troceo + alerts→callouts)
@@ -86,8 +69,8 @@ jobs:
 
       - name: Compilar libro PDF
         working-directory: libro
-        run: quarto render --to typst
-
+        run: |
+          timeout 20m quarto render --to typst --verbose
       - name: Renombrar PDF con la versión del tag
         run: |
           TAG="${{ github.ref_name }}"
