@@ -112,32 +112,122 @@ def build_chapter(title, nums, mode, anchor, sections):
     return convert_alerts(content).rstrip() + "\n"
 
 
+def load_bib_keys():
+    """Carga las claves de citación desde references.bib."""
+    bib_path = os.path.normpath(os.path.join(SCRIPT_DIR, "..", "references.bib"))
+    if not os.path.exists(bib_path):
+        sys.exit(f"ERROR: no se encontró el archivo de bibliografía en {bib_path}")
+    keys = set()
+    with open(bib_path, encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if line.startswith("@"):
+                m = re.match(r"@\w+\s*\{\s*([^,\s]+),", line)
+                if m:
+                    keys.add(m.group(1).lower())
+    return keys
+
+
+def convert_citations(text, bib_keys):
+    """Busca citas parentéticas del tipo (Autor, Año) y las reemplaza por claves de Pandoc [@clave]."""
+    def replacer(match):
+        inside = match.group(1)
+        
+        # Si no hay un año de 4 dígitos (19XX o 20XX), no es una cita
+        years = re.findall(r'\b(19\d{2}|20\d{2})\b', inside)
+        if not years:
+            return match.group(0)
+            
+        parts = inside.split(';')
+        converted_parts = []
+        for part in parts:
+            part_clean = part.strip()
+            year_match = re.search(r'\b(19\d{2}|20\d{2})\b', part_clean)
+            if not year_match:
+                converted_parts.append(part_clean)
+                continue
+            year = year_match.group(1)
+            
+            # Buscar palabras alfabéticas
+            words = re.findall(r'[a-zA-ZáéíóúÁÉÍÓÚñÑ]+', part_clean)
+            found_key = None
+            accents = {
+                'á': 'a', 'é': 'e', 'í': 'i', 'ó': 'o', 'ú': 'u',
+                'ñ': 'n', 'Á': 'a', 'É': 'e', 'Í': 'i', 'Ó': 'o', 'Ú': 'u', 'Ñ': 'n'
+            }
+            for word in words:
+                key_candidate = f"{word.lower()}-{year}"
+                for char, replacement in accents.items():
+                    key_candidate = key_candidate.replace(char, replacement)
+                if key_candidate in bib_keys:
+                    found_key = key_candidate
+                    break
+                    
+            if found_key:
+                converted_parts.append(f"@{found_key}")
+            else:
+                # Alerta si parece una cita pero no está en la base de datos de referencias
+                is_likely_citation = re.search(r'[A-Z][a-zA-Z]*.*,\s*\d{4}', part_clean)
+                if is_likely_citation:
+                    print(f"WARNING: Cita no resuelta en references.bib: '{part_clean}'", file=sys.stderr)
+                converted_parts.append(part_clean)
+                
+        has_any_key = any(p.startswith('@') for p in converted_parts)
+        if has_any_key:
+            return "[" + "; ".join(converted_parts) + "]"
+        else:
+            return match.group(0)
+    return re.sub(r'\(([^)]+)\)', replacer, text)
+
+
+def convert_mermaid(text):
+    """Convierte bloques '```mermaid' en '```{mermaid}' para que Quarto los procese nativamente."""
+    return re.sub(r'^\s*```\s*mermaid\b', '```{mermaid}', text, flags=re.MULTILINE)
+
+
 def main():
     os.makedirs(os.path.join(OUTDIR, "guias"), exist_ok=True)
+    bib_keys = load_bib_keys()
 
-    # 1. Trocear readme en capítulos (con conversión de alerts)
+    # 1. Trocear readme en capítulos (con conversión de alerts, citas y mermaid)
     with open(README, encoding="utf-8") as f:
         sections = parse_sections(f.read().splitlines())
     for fname, title, nums, mode, anchor in CHAPTERS:
+        if fname == "99-referencias.qmd":
+            # Output nativo de referencias para Quarto
+            with open(os.path.join(OUTDIR, fname), "w", encoding="utf-8") as f:
+                f.write("# Referencias bibliográficas {.unnumbered}\n\n::: {#refs}\n:::\n")
+            print(f"  ✓ {fname}  (native refs placeholder)")
+            continue
+
         missing = [n for n in nums if n not in sections]
         if missing:
             sys.exit(f"ERROR: faltan secciones {missing} para {fname}")
+        
+        chapter_content = build_chapter(title, nums, mode, anchor, sections)
+        converted_content = convert_citations(chapter_content, bib_keys)
+        converted_content = convert_mermaid(converted_content)
+        
         with open(os.path.join(OUTDIR, fname), "w", encoding="utf-8") as f:
-            f.write(build_chapter(title, nums, mode, anchor, sections))
+            f.write(converted_content)
         print(f"  ✓ {fname}  (§{','.join(map(str, nums))})")
 
-    # 2. Copiar guías y material docente con conversión de alerts
+    # 2. Copiar guías y material docente con conversión de alerts, citas y mermaid
     for g in GUIDES:
         src = os.path.join(ROOT, "guias", f"{g}.md")
         dst = os.path.join(OUTDIR, "guias", f"{g}.md")
         with open(src, encoding="utf-8") as fi, open(dst, "w", encoding="utf-8") as fo:
-            fo.write(convert_alerts(fi.read()))
+            content = convert_alerts(fi.read())
+            content = convert_citations(content, bib_keys)
+            fo.write(convert_mermaid(content))
     for d in DOCS:
         src = os.path.join(ROOT, f"{d}.md")
         dst = os.path.join(OUTDIR, f"{d}.md")
         with open(src, encoding="utf-8") as fi, open(dst, "w", encoding="utf-8") as fo:
-            fo.write(convert_alerts(fi.read()))
-    print(f"  ✓ {len(GUIDES)} guías + {len(DOCS)} documentos copiados a _generated/ (alerts→callouts)")
+            content = convert_alerts(fi.read())
+            content = convert_citations(content, bib_keys)
+            fo.write(convert_mermaid(content))
+    print(f"  ✓ {len(GUIDES)} guías + {len(DOCS)} documentos copiados a _generated/ (alerts→callouts, citations, mermaid)")
     print(f"Listo. Salida en {OUTDIR}")
 
 

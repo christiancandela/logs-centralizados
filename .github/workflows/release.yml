@@ -86,7 +86,7 @@ jobs:
 
       - name: Compilar libro PDF
         working-directory: libro
-        run: quarto render --to pdf
+        run: quarto render --to typst
 
       - name: Renombrar PDF con la versión del tag
         run: |

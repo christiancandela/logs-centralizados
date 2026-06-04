@@ -8,7 +8,7 @@
 **Universidad del Quindío** — Programa de Ingeniería de Sistemas y Computación  
 **Asignatura asociada:** Arquitectura Orientada a Microservicios  
 **Versión:** 1.0.0 | **Fecha:** mayo de 2026  
-[![CC BY-SA 4.0](https://licensebuttons.net/l/by-sa/4.0/88x31.png)](https://creativecommons.org/licenses/by-sa/4.0/deed.es) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20519514.svg)](https://doi.org/10.5281/zenodo.20519514)
+[![CC BY-SA 4.0](https://licensebuttons.net/l/by-sa/4.0/88x31.png)](https://creativecommons.org/licenses/by-sa/4.0/deed.es) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20187576.svg)](https://doi.org/10.5281/zenodo.20187576)
 
 > Este recurso educativo abierto consta de: (a) el presente marco conceptual, (b) una guía de estudio con preguntas de comprensión y articulación teoría–práctica ([`guia_estudio.md`](./guia_estudio.md)), (c) una guía para docentes con planificación sugerida y rúbricas ([`guia_docente.md`](./guia_docente.md)), y (d) nueve guías prácticas reproducibles en el directorio [`guias/`](./guias/) con sus respectivas soluciones en [`soluciones/`](./soluciones/).
 
@@ -73,6 +73,9 @@ Por consiguiente, la metodología se enfoca en la articulación sistémica entre
 El desarrollo metodológico integra cuatro referentes teóricos de la educación en ingeniería y el diseño de sistemas:
 
 ```mermaid
+%%| label: fig-enfoque-metodologico
+%%| fig-align: center
+%%| fig-width: 6.5in
 graph TD
     A[Metodología de Diseño del Recurso] --> B[Design Science Research - DSR]
     A --> C[Design-Based Research - DBR]
@@ -119,6 +122,9 @@ El diseño del recurso se sustenta en los siguientes principios metodológicos:
 Para la consecución de los objetivos propuestos, el proyecto se organizó en siete fases sistemáticas. Cada fase produce insumos o evidencias que estructuran el recurso educativo final. 
 
 ```mermaid
+%%| label: fig-fases-metodologicas
+%%| fig-align: center
+%%| fig-width: 6.5in
 gantt
     title Fases Metodológicas del Proyecto
     dateFormat  YYYY-MM
@@ -164,6 +170,9 @@ El catálogo de requisitos del REA se estructura a partir de criterios técnicos
 El diseño de las prácticas académicas asume el computador personal del estudiante como laboratorio de experimentación activa, reproducible en cualquier equipo que disponga de un motor de contenedores Docker. Cada una de las 9 guías prácticas se diseña bajo la estructura del **Ciclo de Aprendizaje Experiencial de Kolb**, garantizando que el paso a paso sea una oportunidad de reflexión teórica:
 
 ```mermaid
+%%| label: fig-ciclo-kolb
+%%| fig-align: center
+%%| fig-height: 3.5in
 graph TD
     K1["1. Experiencia Concreta <br> Despliegue de Docker Compose e ingesta básica"] --> K2["2. Observación Reflexiva <br> Análisis del flujo y viaje del log en el pipeline"]
     K2 --> K3["3. Conceptualización Abstracta <br> Comprensión del protocolo e indexación del stack"]
@@ -213,9 +222,9 @@ Cada una de las nueve soluciones incorpora un script de prueba de humo (`smoke_t
 | Fase del procedimiento | ¿Estándar entre stacks? | Detalle |
 | :--- | :--- | :--- |
 | Despliegue y ciclo de vida | Invariante | `docker compose up -d --build` → ejecución → `down -v` con limpieza ante error (`trap`). |
-| Sonda de disponibilidad del productor | Invariante | `POST /logs` con `{"level":"INFO","message":"PING"}`, reintentos hasta obtener HTTP 200. |
+| Sonda de disponibilidad del productor | Invariante | `POST /logs` con `{"level": "INFO", "message": "PING"}`, reintentos hasta obtener HTTP 200. |
 | Estabilización de la ingesta | Invariante | Espera fija previa al envío del mensaje de prueba. |
-| **Emisión del log de prueba** | **Invariante** | `POST /logs` con el esquema `{"level":"WARN","message":"<marcador único>"}` hacia la misma interfaz del productor. |
+| **Emisión del log de prueba** | **Invariante** | `POST /logs` con el esquema `{"level": "WARN", "message": "<marcador único>"}` hacia la misma interfaz del productor. |
 | Verificación del registro | Específica de la herramienta | Consulta `_search` en Elasticsearch/OpenSearch, `query_range` (LogQL) en Loki o SQL en ClickHouse, según el motor. |
 
 Las únicas variaciones en la fase de generación responden a restricciones técnicas justificadas: el puerto del productor cambia en el stack que coexiste con servicios que ocupan el puerto por defecto, y dos stacks añaden pasos previos de aprovisionamiento (creación del *input* de ingesta o clonado del repositorio base). Que la interfaz de emisión de logs permanezca constante mientras el conjunto de herramientas cambia por completo constituye evidencia operativa directa de la tesis central del recurso: **las etapas funcionales del pipeline son invariantes; las tecnologías que las implementan, no**.
@@ -291,6 +300,9 @@ Aunque las implementaciones prácticas de la centralización de logs pueden vari
 Introducir esta arquitectura a nivel conceptual resulta pertinente desde el punto de vista formativo, ya que permite a los estudiantes comprender la lógica subyacente de las soluciones antes de enfrentarse a su implementación práctica, facilitando la transferencia de conocimiento entre distintos ecosistemas tecnológicos.
 
 ```mermaid
+%%| label: fig-arquitectura-conceptual
+%%| fig-align: center
+%%| fig-width: 6.5in
 graph LR
     A[Recolección] --> B[Procesamiento]
     B --> C[Almacenamiento]
@@ -457,7 +469,7 @@ Zhu, J., He, S., Liu, J., He, P., Xie, Q., Zheng, Z., & Lyu, M. R. (2019). Tools
 
 Si reutiliza, adapta o referencia este recurso educativo en publicaciones académicas, materiales docentes o trabajos derivados, se sugiere la siguiente forma de cita en formato APA 7:
 
-> Candela Uribe, C. A., Acero Franco, P. A., & Sepúlveda Rodríguez, L. E. (2026). *Recurso educativo para el despliegue de ecosistemas de centralización de logs mediante Docker* (Versión 1.0.0) [Recurso educativo abierto]. Universidad del Quindío. https://doi.org/10.5281/zenodo.20519514
+> Candela Uribe, C. A., Acero Franco, P. A., & Sepúlveda Rodríguez, L. E. (2026). *Recurso educativo para el despliegue de ecosistemas de centralización de logs mediante Docker* (Versión 1.0.0) [Recurso educativo abierto]. Universidad del Quindío. https://doi.org/10.5281/zenodo.20187576
 
 **Entrada BibTeX:**
 
@@ -473,8 +485,8 @@ Si reutiliza, adapta o referencia este recurso educativo en publicaciones acadé
   howpublished = {Recurso educativo abierto},
   institution  = {Universidad del Quind{\'i}o},
   note         = {Licencia CC BY-SA 4.0},
-  doi          = {10.5281/zenodo.20519514},
-  url          = {https://doi.org/10.5281/zenodo.20519514}
+  doi          = {10.5281/zenodo.20187576},
+  url          = {https://doi.org/10.5281/zenodo.20187576}
 }
 ```
 
