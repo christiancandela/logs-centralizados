@@ -5,10 +5,10 @@ name: Compilar y publicar libro
 # está conectado en zenodo.org/account/settings/github.
 on:
   push:
-    branches:
-      - main
-#    tags:
-#      - 'v[0-9]+.[0-9]+.[0-9]+'
+#    branches:
+#      - main
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
 
 permissions:
   contents: write   # necesario para crear GitHub Releases
@@ -97,69 +97,69 @@ jobs:
           echo "PDF_PATH=$DST" >> "$GITHUB_ENV"
           echo "PDF_NAME=$(basename $DST)" >> "$GITHUB_ENV"
 
-#      # ── 7. GitHub Release ─────────────────────────────────────────────────
-#      - name: Crear GitHub Release
-#        uses: softprops/action-gh-release@v2
-#        with:
-#          name: "Versión ${{ github.ref_name }}"
-#          body: |
-#            ## Recurso educativo para el despliegue de ecosistemas de centralización de logs mediante Docker
-#
-#            **Versión:** `${{ github.ref_name }}`
-#
-#            ### Contenido del libro
-#            - Marco conceptual de observabilidad y centralización de logs (tecnológicamente neutral)
-#            - Guía de estudio con preguntas de comprensión y articulación teoría–práctica
-#            - Guía docente con planificación sugerida, rúbricas de evaluación y orientaciones pedagógicas
-#            - 9 guías prácticas reproducibles con Docker Compose:
-#              ELK · OLO · Fluentd · PLG · GELF/Graylog · OpenTelemetry · Vector · SigNoz · Grafana Alloy
-#
-#            ### Autores
-#            - Ph.D. Christian Andrés Candela Uribe — Profesor Asociado
-#            - M.Sc. Paola Andrea Acero Franco — Profesor Asociado
-#            - Ph.D. Luis Eduardo Sepúlveda Rodríguez — Profesor Asociado
-#
-#            **Universidad del Quindío** · Programa de Ingeniería de Sistemas y Computación
-#            **Licencia:** [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/deed.es)
-#
-#            ### Cómo citar
-#            > Candela Uribe, C. A., Acero Franco, P. A., & Sepúlveda Rodríguez, L. E. (${{ github.ref_name == 'v1.0.0' && '2026' || '2026' }}). *Recurso educativo para el despliegue de ecosistemas de centralización de logs mediante Docker* (Versión ${{ github.ref_name }}) [Recurso educativo abierto]. Universidad del Quindío.
-#          files: ${{ env.PDF_PATH }}
-#          fail_on_unmatched_files: true
-#          generate_release_notes: false
-#          draft: false
-#          prerelease: false
-#
-#      # ── 8. Descargar ZIP generado por GitHub para subirlo a Zenodo ────────
-#      - name: Descargar ZIP de fuentes de GitHub
-#        run: |
-#          TAG="${{ github.ref_name }}"
-#          ZIP_NAME="logs-centralizados-${TAG}.zip"
-#          curl -L -o "${ZIP_NAME}" \
-#            "https://github.com/${{ github.repository }}/archive/refs/tags/${TAG}.zip"
-#          echo "ZIP_PATH=${ZIP_NAME}" >> "$GITHUB_ENV"
-#          echo "ZIP_NAME=${ZIP_NAME}" >> "$GITHUB_ENV"
+      # ── 7. GitHub Release ─────────────────────────────────────────────────
+      - name: Crear GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "Versión ${{ github.ref_name }}"
+          body: |
+            ## Recurso educativo para el despliegue de ecosistemas de centralización de logs mediante Docker
 
-#      # ── 9. Publicar en Zenodo vía API ─────────────────────────────────────
-#      - name: Publicar en Zenodo
-#        id: zenodo
-#        env:
-#          ZENODO_TOKEN: ${{ secrets.ZENODO_TOKEN }}
-#          TAG: ${{ github.ref_name }}
-#        run: python3 .github/scripts/zenodo_publish.py
-#
-#      # ── 10. Actualizar DOI en archivos del repositorio ────────────────────
-#      - name: Actualizar DOI y versión en archivos del repositorio
-#        run: |
-#          python3 .github/scripts/update_doi.py \
-#            "${{ steps.zenodo.outputs.doi }}" \
-#            "${{ github.ref_name }}"
-#
-#      - name: Commit y push de DOI y versión actualizados
-#        run: |
-#          git config user.name "github-actions[bot]"
-#          git config user.email "github-actions[bot]@users.noreply.github.com"
-#          git add readme.md CITATION.cff guia_docente.md libro/index.qmd
-#          git diff --staged --quiet && echo "Sin cambios" && exit 0
-#          git commit -m "docs: actualizar DOI y versión a ${{ github.ref_name }} [skip ci]"
-#          git push origin HEAD:main
+            **Versión:** `${{ github.ref_name }}`
+
+            ### Contenido del libro
+            - Marco conceptual de observabilidad y centralización de logs (tecnológicamente neutral)
+            - Guía de estudio con preguntas de comprensión y articulación teoría–práctica
+            - Guía docente con planificación sugerida, rúbricas de evaluación y orientaciones pedagógicas
+            - 9 guías prácticas reproducibles con Docker Compose:
+              ELK · OLO · Fluentd · PLG · GELF/Graylog · OpenTelemetry · Vector · SigNoz · Grafana Alloy
+
+            ### Autores
+            - Ph.D. Christian Andrés Candela Uribe — Profesor Asociado
+            - M.Sc. Paola Andrea Acero Franco — Profesor Asociado
+            - Ph.D. Luis Eduardo Sepúlveda Rodríguez — Profesor Asociado
+
+            **Universidad del Quindío** · Programa de Ingeniería de Sistemas y Computación
+            **Licencia:** [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/deed.es)
+
+            ### Cómo citar
+            > Candela Uribe, C. A., Acero Franco, P. A., & Sepúlveda Rodríguez, L. E. (${{ github.ref_name == 'v1.0.0' && '2026' || '2026' }}). *Recurso educativo para el despliegue de ecosistemas de centralización de logs mediante Docker* (Versión ${{ github.ref_name }}) [Recurso educativo abierto]. Universidad del Quindío.
+          files: ${{ env.PDF_PATH }}
+          fail_on_unmatched_files: true
+          generate_release_notes: false
+          draft: false
+          prerelease: false
+
+      # ── 8. Descargar ZIP generado por GitHub para subirlo a Zenodo ────────
+      - name: Descargar ZIP de fuentes de GitHub
+        run: |
+          TAG="${{ github.ref_name }}"
+          ZIP_NAME="logs-centralizados-${TAG}.zip"
+          curl -L -o "${ZIP_NAME}" \
+            "https://github.com/${{ github.repository }}/archive/refs/tags/${TAG}.zip"
+          echo "ZIP_PATH=${ZIP_NAME}" >> "$GITHUB_ENV"
+          echo "ZIP_NAME=${ZIP_NAME}" >> "$GITHUB_ENV"
+
+      # ── 9. Publicar en Zenodo vía API ─────────────────────────────────────
+      - name: Publicar en Zenodo
+        id: zenodo
+        env:
+          ZENODO_TOKEN: ${{ secrets.ZENODO_TOKEN }}
+          TAG: ${{ github.ref_name }}
+        run: python3 .github/scripts/zenodo_publish.py
+
+      # ── 10. Actualizar DOI en archivos del repositorio ────────────────────
+      - name: Actualizar DOI y versión en archivos del repositorio
+        run: |
+          python3 .github/scripts/update_doi.py \
+            "${{ steps.zenodo.outputs.doi }}" \
+            "${{ github.ref_name }}"
+
+      - name: Commit y push de DOI y versión actualizados
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add readme.md CITATION.cff guia_docente.md libro/index.qmd
+          git diff --staged --quiet && echo "Sin cambios" && exit 0
+          git commit -m "docs: actualizar DOI y versión a ${{ github.ref_name }} [skip ci]"
+          git push origin HEAD:main
