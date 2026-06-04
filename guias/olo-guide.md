@@ -2,16 +2,12 @@
 
 > *Guía práctica para implementar una solución básica de centralización de logs utilizando Docker Compose y el stack OLO, como instanciación concreta de la arquitectura conceptual de observabilidad presentada en el documento central.*
 
----
-
 ## Objetivo de la guía
 
 Implementar y validar una arquitectura básica de centralización de logs mediante Docker Compose y el stack **OLO (OpenSearch, Logstash y OpenSearch Dashboards)**, como ejercicio aplicado de los conceptos de observabilidad estudiados previamente.
 
 > [!NOTE]
 > **La denominación "OLO":** Este acrónimo es una convención adoptada en este recurso educativo para nombrar el stack OpenSearch + Logstash + OpenSearch Dashboards, de manera análoga a como la industria denomina "ELK" al stack Elasticsearch + Logstash + Kibana. No es un término estándar de la industria; al buscar referencias externas sobre este stack conviene usar los nombres individuales de los componentes o buscar documentación de OpenSearch directamente.
-
----
 
 ## Resultados de aprendizaje esperados
 
@@ -22,8 +18,6 @@ Al finalizar esta guía, el estudiante será capaz de:
 - Configurar aplicaciones para emitir logs estructurados.
 - Analizar y correlacionar eventos centralizados.
 - Reconocer desafíos y limitaciones de una solución básica de logging.
-
----
 
 ## Propósito y alcance del recurso
 
@@ -37,15 +31,27 @@ El material está concebido como:
 
 El alcance del recurso se limita a la **centralización y visualización de logs**. No se abordan métricas ni trazas distribuidas, aunque se dejan sentadas las bases conceptuales para su integración futura.
 
----
-
 ## 1. Observabilidad y centralización de logs
 
-En arquitecturas basadas en microservicios, la observabilidad permite comprender el comportamiento interno del sistema a partir de las señales externas que este produce durante su ejecución. Los **logs** constituyen una fuente primaria de información debido a su riqueza semántica y contextual.
+En arquitecturas basadas en microservicios, la observabilidad permite comprender el comportamiento interno del sistema a partir de las señales externas que este produce durante su ejecución. Los **logs** constituyen una fuente primaria de información debido a su riqueza semántica y contextual, y la **centralización de logs** mitiga la dispersión inherente a los sistemas distribuidos consolidando los registros de múltiples componentes en un repositorio común.
 
-La **centralización de logs** mitiga la dispersión inherente a los sistemas distribuidos, consolidando los registros generados por múltiples componentes en un repositorio común que facilita su análisis, correlación temporal y visualización.
+Si ya recorriste la guía de ELK, buena parte de esta te resultará familiar (y eso es precisamente lo interesante). El stack **OLO** (OpenSearch + Logstash + OpenSearch Dashboards) comparte exactamente el mismo paradigma de almacenamiento que ELK: el **índice invertido** (marco conceptual, §5.7.3). La diferencia entre ambos no es, en el fondo, técnica, sino de gobernanza del software libre.
 
----
+### ¿Por qué existe OpenSearch si ya existía Elasticsearch?
+
+En 2021, Elastic (la empresa detrás de Elasticsearch) cambió la licencia de su producto, abandonando la licencia open source Apache 2.0 por una licencia más restrictiva (SSPL). En respuesta, Amazon y la comunidad crearon un *fork* (una bifurcación) a partir de la última versión Apache 2.0 de Elasticsearch y Kibana, dando origen a **OpenSearch** y **OpenSearch Dashboards**.
+
+Observa la lección de fondo: la elección de una tecnología no depende únicamente de sus capacidades técnicas, sino también del modelo de licenciamiento y de la gobernanza del proyecto que la sostiene. Para un ingeniero, anticipar estas implicaciones es tan importante como dominar la herramienta misma.
+
+En lo conceptual, OLO se mapea a la arquitectura de cuatro etapas igual que ELK, componente por componente:
+
+| Componente | Etapa conceptual | Equivalente en ELK |
+|---|---|---|
+| **Logstash** | Recolección + Procesamiento | Logstash |
+| **OpenSearch** | Almacenamiento + Búsqueda (índice invertido) | Elasticsearch |
+| **OpenSearch Dashboards** | Visualización | Kibana |
+
+Esta correspondencia casi exacta no es casual: ambos stacks descienden del mismo código base. Comprenderla te permite transferir de inmediato a OLO todo lo aprendido sobre el paradigma de índice invertido en la guía de ELK.
 
 ## 2. Requisitos previos
 
@@ -83,8 +89,6 @@ PRODUCER_MEM_LIMIT=512m
 > [!IMPORTANT]
 > En sistemas **Linux o entornos WSL**, OpenSearch requiere que la memoria virtual del anfitrión cumpla `vm.max_map_count ≥ 262144`. Configúrelo antes de iniciar el entorno (véase la sección de *Troubleshooting*).
 
----
-
 ## 3. Estructura del proyecto
 
 ```bash
@@ -99,8 +103,6 @@ logs-centralizados/
 │       └── logstash.conf
 └── .env
 ```
-
----
 
 ## 4. Arquitectura de la solución
 
@@ -122,8 +124,6 @@ La arquitectura implementada en este recurso se fundamenta en tres componentes p
 - **OpenSearch Dashboards**: capa de visualización y exploración de los datos centralizados.
 
 El uso de **Docker Compose** permite describir y desplegar la arquitectura como código, garantizando la **portabilidad, reproducibilidad y facilidad de experimentación** del entorno, características fundamentales en un contexto formativo.
-
----
 
 ## 5. Implementación de la arquitectura conceptual con OLO
 
@@ -207,8 +207,6 @@ volumes:
   opensearch_data:
 ```
 
----
-
 ### 5.2 Pipeline de Logstash (`logstash.conf`)
 
 ```text
@@ -238,8 +236,6 @@ output {
 }
 ```
 
----
-
 ### 5.3 Dockerfile de Logstash
 
 ```dockerfile
@@ -249,8 +245,6 @@ RUN logstash-plugin install logstash-output-opensearch
 
 > [!NOTE]
 > La versión 2.x del plugin `logstash-output-opensearch` tiene un bug de compatibilidad con JRuby 10 (incluido en Logstash 9.x) que impide la instalación de templates. Por eso el pipeline incluye `manage_template => false`, lo que hace que Logstash cree los índices dinámicamente sin plantilla previa. En producción se recomienda definir un index template explícito en OpenSearch.
-
----
 
 ## 6. Despliegue y validación
 
@@ -262,8 +256,6 @@ El despliegue del entorno se realiza mediante un único comando, el cual levanta
 docker compose up -d
 ```
 
----
-
 ### Validación de los servicios
 
 La validación del entorno permite comprobar que los contenedores asociados a OpenSearch, Logstash y OpenSearch Dashboards se encuentran en ejecución y disponibles.
@@ -271,8 +263,6 @@ La validación del entorno permite comprobar que los contenedores asociados a Op
 ```bash
 docker compose ps
 ```
-
----
 
 ### Persistencia y configuración del entorno
 
@@ -294,8 +284,6 @@ curl -XPOST "http://localhost:5601/api/saved_objects/index-pattern" \
     }
   }'
 ```
-
----
 
 ## 7. Emisión de logs desde aplicaciones
 
@@ -331,8 +319,6 @@ quarkus.log.socket.json.log-format=ECS
 ```java
 private static final Logger LOG = Logger.getLogger(MiClase.class);
 ```
-
----
 
 ### 7.2 Otras aplicaciones Java (Logback)
 
@@ -370,8 +356,6 @@ Configura `logback.xml` para enviar logs a Logstash:
 </configuration>
 ```
 
----
-
 ## 8. Visualización en OpenSearch Dashboards
 
 Una vez centralizados, los logs pueden ser explorados mediante OpenSearch Dashboards, permitiendo:
@@ -395,8 +379,6 @@ Alternativamente, acceda a **Observability → Logs** y en el campo PPL ingrese:
 source = logs-producer-*
 ```
 
----
-
 ## 9. Actividades de profundización
 
 - **Simular fallos y rastrear su origen:** El endpoint `GET /api/error` de la aplicación de ejemplo genera intencionalmente una `NullPointerException`. Ejecútelo y utilice OpenSearch Dashboards para localizar el evento de error e inspeccionar el stacktrace estructurado.
@@ -409,8 +391,6 @@ source = logs-producer-*
 1. OpenSearch es un fork de Elasticsearch. Explique qué es el campo `manage_template => false` en el pipeline de Logstash de esta guía y por qué es necesario específicamente con el plugin `logstash-output-opensearch` 2.x sobre Logstash 9.x.
 2. Compare el modelo de índices con fecha (`logs-producer-YYYY.MM.dd`) que usa este stack frente a los data streams de Elasticsearch 9.x de la guía ELK: ¿qué implicaciones tiene cada enfoque para la gestión del ciclo de vida de los datos (ILM)?
 3. Evalúe las razones técnicas y de gobernanza que llevaron a la bifurcación de OpenSearch desde Elasticsearch 7.10. ¿Cómo afecta esa historia a la elección de versión en esta guía (OpenSearch 3.0) frente a la guía GELF (OpenSearch 2.12)?
-
----
 
 ## 10. Troubleshooting
 
@@ -426,8 +406,6 @@ sudo sysctl -w vm.max_map_count=262144
 **Error común:** Logstash arranca pero no indexa documentos; en sus logs aparece `undefined method 'exists?' for class File`.
 
 **Explicación:** El plugin `logstash-output-opensearch` 2.x tiene un bug de compatibilidad con JRuby 10 (Logstash 9.x) al intentar instalar templates de índice. El pipeline de esta guía ya incluye `manage_template => false` para evitarlo. Si crea su propio pipeline, asegúrese de incluir esa opción.
-
----
 
 ## Referencias
 

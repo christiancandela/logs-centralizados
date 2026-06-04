@@ -2,13 +2,9 @@
 
 > *Guía práctica para implementar una solución de centralización de logs utilizando Docker Compose y OpenTelemetry, como instanciación concreta de la arquitectura conceptual de observabilidad presentada en el documento central.*
 
----
-
 ## Objetivo de la guía
 
 Implementar y validar una arquitectura de centralización de logs mediante **Docker Compose**, usando **OpenTelemetry** para la recolección y exportación de logs vía el protocolo **OTLP**, y **Grafana** (integrado en el stack `grafana/otel-lgtm`) como herramienta de exploración.
-
----
 
 ## Resultados de aprendizaje esperados
 
@@ -19,8 +15,6 @@ Al finalizar esta guía, el estudiante será capaz de:
 - Configurar aplicaciones Quarkus para exportar logs mediante OTLP/gRPC.
 - Configurar aplicaciones Java (Logback) para enviar logs usando el agente de OpenTelemetry.
 - Explorar y correlacionar logs centralizados desde Grafana, aprovechando campos como `trace_id`, `span_id` y `exception_stacktrace`.
-
----
 
 ## Propósito y alcance del recurso
 
@@ -34,17 +28,24 @@ El material está concebido como:
 
 El alcance del recurso se limita a la **centralización y visualización de logs**. El stack LGTM también soporta métricas y trazas distribuidas, lo cual sienta bases para integraciones futuras.
 
----
-
 ## 1. Observabilidad y centralización de logs con OpenTelemetry
 
 En arquitecturas basadas en microservicios, la observabilidad permite comprender el comportamiento interno del sistema a partir de señales externas. Los **logs** constituyen una fuente primaria de información debido a su riqueza semántica y contextual.
 
-OpenTelemetry define un conjunto de APIs, SDKs y herramientas que permiten capturar y exportar señales de observabilidad (logs, métricas y trazas) hacia un backend común mediante el protocolo **OTLP (OpenTelemetry Protocol)**.
+Todas las guías anteriores resolvían la observabilidad con herramientas concretas, cada una con su propio formato y su propio protocolo. Esto plantea un problema de fondo: si mañana quieres cambiar de herramienta de almacenamiento, tendrías que reinstrumentar tus aplicaciones. OpenTelemetry (OTel) nace precisamente para romper ese acoplamiento.
 
-Una ventaja clave de OpenTelemetry frente a otros enfoques de logging es la **correlación automática**: los logs generados durante una petición HTTP llevan automáticamente el `trace_id` y `span_id` de la traza activa, lo que permite navegar desde un log hacia la traza distribuida correspondiente y viceversa.
+### OpenTelemetry: el estándar que desacopla la instrumentación del backend
 
----
+OpenTelemetry no es una herramienta de almacenamiento ni un visualizador: es un **estándar abierto y neutral respecto al proveedor** (*vendor-neutral*). Define un conjunto de APIs, SDKs y herramientas para capturar y exportar las señales de observabilidad —**logs, métricas y trazas**, los tres pilares del marco conceptual (§5.1)— y transmitirlas mediante un protocolo común, el **OTLP (OpenTelemetry Protocol)**.
+
+¿Por qué es esto importante? Porque separa dos responsabilidades que antes estaban entrelazadas:
+
+- *cómo se instrumenta* una aplicación (responsabilidad de OTel, una sola vez);
+- *a dónde se envían* los datos (un simple detalle de configuración del backend).
+
+Instrumentas una vez con OpenTelemetry y puedes cambiar de backend de almacenamiento sin tocar el código de tus servicios. Es el mismo principio de neutralidad tecnológica que defiende el marco conceptual de este recurso, llevado al plano de la instrumentación.
+
+Una ventaja concreta de este enfoque es la **correlación automática** entre señales: los logs generados durante una petición HTTP llevan automáticamente el `trace_id` y el `span_id` de la traza activa, lo que permite navegar desde un log hacia la traza distribuida correspondiente y viceversa. Recordarás del marco conceptual (§5.3) que la correlación de eventos era uno de los grandes problemas de la dispersión; OpenTelemetry lo resuelve de raíz, propagando el contexto de traza de forma transparente.
 
 ## 2. Requisitos previos
 
@@ -70,8 +71,6 @@ OTEL_LGTM_MEM_LIMIT=2g
 PRODUCER_MEM_LIMIT=512m
 ```
 
----
-
 ## 3. Estructura del proyecto
 
 ```bash
@@ -81,8 +80,6 @@ logs-centralizados/
     ├── src/
     └── pom.xml
 ```
-
----
 
 ## 4. Arquitectura de la solución
 
@@ -108,8 +105,6 @@ La arquitectura implementada se fundamenta en:
 - **Tempo**: almacena trazas distribuidas.
 - **Grafana**: capa de visualización unificada para las tres señales.
 - **`grafana/otel-lgtm`**: imagen todo-en-uno que empaqueta el Collector y el stack LGTM completo, pensada para entornos de desarrollo y laboratorio.
-
----
 
 ## 5. Implementación de la arquitectura conceptual con OpenTelemetry
 
@@ -150,8 +145,6 @@ services:
 > [!NOTE]
 > **El healthcheck:** La imagen `grafana/otel-lgtm` no incluye `curl` ni `wget`. Internamente crea el archivo `/tmp/ready` cuando todos sus servicios están listos. El healthcheck verifica ese archivo.
 
----
-
 ## 6. Despliegue y validación
 
 ### Inicialización de los servicios
@@ -173,8 +166,6 @@ NAME                      STATUS
 otel-lgtm                 Up (healthy)
 logs.producer-1           Up
 ```
-
----
 
 ## 7. Emisión de logs desde aplicaciones
 
@@ -212,8 +203,6 @@ quarkus.otel.exporter.otlp.endpoint=http://${OTEL_HOST:localhost}:4317
 private static final Logger LOG = Logger.getLogger(MiClase.class);
 ```
 
----
-
 ### 7.2 Otras aplicaciones Java (agente OpenTelemetry)
 
 Para aplicaciones Java que no utilizan Quarkus, la forma más simple de integrar OpenTelemetry es mediante el **agente de instrumentación automática**, que intercepta los logs de Logback/Log4j2 sin modificar el código:
@@ -232,8 +221,6 @@ java -javaagent:opentelemetry-javaagent.jar \
 ```
 
 > El agente intercepta automáticamente Logback, Log4j2, JUL y JBoss Logging, sin necesidad de modificar `logback.xml` ni el código de la aplicación.
-
----
 
 ## 8. Visualización en Grafana
 
@@ -320,8 +307,6 @@ graph TD
 
 Este nivel de integración elimina la necesidad de adivinar qué causó un pico de CPU o qué petición provocó una fuga de memoria, materializando de forma práctica la arquitectura de observabilidad conceptual del laboratorio.
 
----
-
 ## 9. Actividades de profundización
 
 - **Simular fallos y rastrear su origen:** El endpoint `GET /api/error` genera intencionalmente una `NullPointerException`. Ejecútelo y localice en Grafana el evento de error. Observe el campo `exception_stacktrace` exportado como atributo estructurado, así como el `trace_id` que correlaciona el log con la traza HTTP.
@@ -335,8 +320,6 @@ Este nivel de integración elimina la necesidad de adivinar qué causó un pico 
 1. OpenTelemetry enriquece automáticamente los logs con `trace_id` y `span_id` cuando se generan dentro de una petición HTTP activa. Explique el mecanismo por el cual Quarkus propaga este contexto de traza al logger sin que el desarrollador lo haga explícitamente.
 2. La imagen `grafana/otel-lgtm` empaqueta en un solo contenedor el OTel Collector, Loki, Prometheus, Tempo y Grafana. Analice las ventajas y limitaciones de esta decisión de diseño para entornos de laboratorio frente a un despliegue de componentes separados como en la guía PLG.
 3. Evalúe la diferencia arquitectónica entre exportar logs mediante OTLP/gRPC (esta guía) y los enfoques basados en TCP JSON (ELK/OLO/Vector) o file tailing (PLG): ¿qué pilares de la observabilidad se habilitan o quedan incompletos con cada enfoque?
-
----
 
 ## 10. Troubleshooting
 
@@ -364,8 +347,6 @@ healthcheck:
 **La aplicación falla al iniciar con `Unable to export logs`.**
 
 **Solución:** Si `logs.producer` arranca antes de que `otel-lgtm` esté listo, el exportador OTLP intentará reconectarse automáticamente. El `depends_on` con `condition: service_healthy` previene este escenario garantizando que `otel-lgtm` esté completamente listo antes de iniciar la aplicación.
-
----
 
 ## Referencias
 

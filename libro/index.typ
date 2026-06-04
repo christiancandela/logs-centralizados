@@ -517,8 +517,6 @@ El presente trabajo escrito tiene como propósito desarrollar, desde un enfoque 
 
 Las guías prácticas complementarias cubren un espectro tecnológico más amplio que el enunciado originalmente en la propuesta de trabajo. Esta ampliación es una decisión consciente: el estado del arte de la observabilidad ha evolucionado de forma acelerada durante el período de desarrollo del recurso, incorporando estándares de protocolo unificado y plataformas de nueva generación que ofrecen un valor pedagógico significativo y mejoran la transferibilidad del conocimiento. Las guías adicionales se diseñaron con el mismo rigor y estructura que las originalmente propuestas, manteniendo coherencia con el marco conceptual presentado en este documento.
 
-#horizontalrule
-
 == Justificación
 <justificación>
 La formación en ingeniería de sistemas enfrenta el desafío de preparar a los estudiantes para comprender y gestionar sistemas de software cada vez más complejos y distribuidos. Si bien los programas académicos suelen abordar con profundidad los aspectos relacionados con el diseño y la construcción de software, los elementos asociados a su operación, análisis y diagnóstico suelen recibir una atención limitada o fragmentada.
@@ -526,8 +524,6 @@ La formación en ingeniería de sistemas enfrenta el desafío de preparar a los 
 En particular, la observabilidad y la centralización de logs suelen introducirse desde enfoques predominantemente instrumentales, centrados en el uso de herramientas específicas. Esta aproximación dificulta la transferencia del conocimiento a contextos tecnológicos diversos y limita la comprensión de los principios conceptuales que subyacen a dichas prácticas @cito-2015.
 
 En este contexto, se justifica el desarrollo de un trabajo académico que aborde la observabilidad y la centralización de logs desde una perspectiva teórica y estructurada, orientada al aprendizaje. Al priorizar un enfoque neutral en términos tecnológicos, el documento busca fortalecer el pensamiento sistémico, la capacidad analítica y la comprensión profunda de arquitecturas distribuidas, aportando así a la formación integral de los estudiantes.
-
-#horizontalrule
 
 == Objetivos
 <objetivos>
@@ -552,8 +548,6 @@ Al finalizar el estudio de este documento, el estudiante será capaz de:
 - #strong[Identificar] los componentes de la arquitectura conceptual de centralización de logs (recolección, procesamiento, almacenamiento y visualización) y el rol de cada uno dentro del flujo de información.
 - #strong[Analizar] los desafíos de diseño asociados a la estandarización semántica, el ciclo de vida de los datos y la protección de información sensible.
 - #strong[Relacionar] los conceptos teóricos desarrollados en este documento con las implementaciones prácticas abordadas en las guías complementarias.
-
-#horizontalrule
 
 = Metodología de Construcción del Recurso Educativo y Trazabilidad con la Propuesta
 <metodología-de-construcción-del-recurso-educativo-y-trazabilidad-con-la-propuesta>
@@ -582,19 +576,30 @@ supplement: "Figura",
 
 
 + #strong[Design Science Research (DSR):] Permite tratar el recurso educativo (compuesto por el marco conceptual, las 9 guías en markdown, las plantillas de configuración y la guía docente) como un #strong[artefacto diseñado] para resolver un problema práctico: la complejidad cognitiva que enfrentan los estudiantes al comprender arquitecturas de observabilidad distribuidas y heterogéneas @hevner-2004@peffers-2007. La evaluación del artefacto se realiza bajo criterios de utilidad pedagógica, claridad procedimental y reproducibilidad multiplataforma.
-+ #strong[Design-Based Research (DBR):] Aporta los principios de diseño orientado a contextos reales de aprendizaje y de refinamiento iterativo que guían la construcción del recurso con miras a su puesta en práctica en el aula de la asignatura #emph[Arquitectura Orientada a Microservicios] @design-2003@mckenney-2018. La validación empírica con estudiantes ---análisis de las curvas de aprendizaje y depuración del código Docker ante la heterogeneidad de sus equipos personales--- se plantea como fase de #strong[trabajo futuro], dado que esta versión corresponde a la primera publicación del recurso.
++ #strong[Design-Based Research (DBR):] Aporta los principios de diseño orientado a contextos reales de aprendizaje y de refinamiento iterativo que guían la construcción del recurso con miras a su puesta en práctica en el aula de la asignatura #emph[Arquitectura Orientada a Microservicios] @design-2003@mckenney-2018. La validación empírica con estudiantes (análisis de las curvas de aprendizaje y depuración del código Docker ante la heterogeneidad de sus equipos personales) se plantea como fase de #strong[trabajo futuro], dado que esta versión corresponde a la primera publicación del recurso.
 + #strong[Modelo ADDIE:] Estructura de forma sistemática el ciclo de vida instruccional del recurso a través de sus fases de Análisis (de necesidades curriculares y de los entornos de ejecución del estudiante), Diseño (de los RAE y la estructura de las guías), Desarrollo (configuración de los entornos Docker Compose y mockups de microservicios), Implementación (preparación del despliegue local para su ejecución por parte de los estudiantes) y Evaluación (diseño de rúbricas cualitativas y cuantitativas) @branch-2009.
 + #strong[Alineación Constructiva (Biggs):] Garantiza que no haya desconexión entre los objetivos de aprendizaje de la asignatura, las actividades técnicas requeridas en las guías y los criterios e instrumentos de evaluación declarados en la guía docente @biggs-2011.
 
 == Naturaleza del trabajo y tipo de producto esperado
 <naturaleza-del-trabajo-y-tipo-de-producto-esperado>
-El trabajo se clasifica como un #strong[desarrollo académico aplicado con orientación instruccional y tecnológica]. El producto final esperado es un #strong[Recurso Educativo Abierto (REA)] compuesto por: 1. Un marco conceptual neutro respecto a las herramientas. 2. Una arquitectura conceptual general del flujo de logs (recolección, procesamiento, almacenamiento y visualización). 3. Nueve (9) guías prácticas e independientes que materializan dicha arquitectura mediante diferentes combinaciones tecnológicas (#emph[stacks]). 4. Una guía didáctica para docentes y una guía de estudio para estudiantes.
+El trabajo se clasifica como un #strong[desarrollo académico aplicado con orientación instruccional y tecnológica]. El producto final esperado es un #strong[Recurso Educativo Abierto (REA)] compuesto por:
+
++ Un marco conceptual neutro respecto a las herramientas.
++ Una arquitectura conceptual general del flujo de logs (recolección, procesamiento, almacenamiento y visualización).
++ Nueve (9) guías prácticas e independientes que materializan dicha arquitectura mediante diferentes combinaciones tecnológicas (#emph[stacks]).
++ Una guía didáctica para docentes y una guía de estudio para estudiantes.
 
 El valor del producto radica en su #strong[portabilidad, modularidad y transferibilidad], permitiendo que cualquier docente o estudiante de Ingeniería de Sistemas pueda replicar los ecosistemas con el único requisito de contar con un motor de contenedores Docker.
 
 == Principios metodológicos
 <principios-metodológicos>
-El diseño del recurso se sustenta en los siguientes principios metodológicos: \* #strong[Interoperabilidad Curricular y Adaptabilidad (Filosofía REA):] Los contenidos didácticos y stacks prácticos deben estar diseñados para ser independientes de los programas de curso de una institución específica. Se estructuran alineándose con las directrices de currículo globales de computación (ACM/IEEE) y se suministran #strong[rutas de aprendizaje flexibles], facilitando que el recurso pueda ser extrapolado y adoptado en diferentes materias del área de Infraestructura y Desarrollo de TI (ej. Sistemas Distribuidos, DevOps, Arquitectura de Software). \* #strong[Reproducibilidad multiplataforma:] Los procedimientos técnicos y los contenedores deben estar diseñados para ser agnósticos respecto al sistema operativo del host local (compatibles con Windows/WSL2, macOS y GNU/Linux). \* #strong[Transparencia y visibilidad de recursos (Capacity Planning):] El recurso exige la #strong[visibilidad, parametrización y dimensionamiento explícito] de los requerimientos de CPU, memoria RAM y dependencias de software de cada una de las prácticas. Esto permite que el REA pueda ser extrapolado y dimensionado de forma adaptativa a contextos educativos con diferentes restricciones de recursos. \* #strong[Independencia instrumental (Neutralidad):] Las guías prácticas deben funcionar de forma modular, permitiendo al estudiante comprender que las herramientas tecnológicas cambian de un stack a otro, pero las etapas funcionales del pipeline permanecen constantes. \* #strong[Estructura pedagógica experiencial:] Cada guía debe estructurarse internamente bajo el ciclo de aprendizaje de Kolb (Experiencia, Observación, Conceptualización y Experimentación).
+El diseño del recurso se sustenta en los siguientes principios metodológicos:
+
+- #strong[Interoperabilidad Curricular y Adaptabilidad (Filosofía REA):] Los contenidos didácticos y stacks prácticos deben estar diseñados para ser independientes de los programas de curso de una institución específica. Se estructuran alineándose con las directrices de currículo globales de computación (ACM/IEEE) y se suministran #strong[rutas de aprendizaje flexibles], facilitando que el recurso pueda ser extrapolado y adoptado en diferentes materias del área de Infraestructura y Desarrollo de TI (ej. Sistemas Distribuidos, DevOps, Arquitectura de Software).
+- #strong[Reproducibilidad multiplataforma:] Los procedimientos técnicos y los contenedores deben estar diseñados para ser agnósticos respecto al sistema operativo del host local (compatibles con Windows/WSL2, macOS y GNU/Linux).
+- #strong[Transparencia y visibilidad de recursos (Capacity Planning):] El recurso exige la #strong[visibilidad, parametrización y dimensionamiento explícito] de los requerimientos de CPU, memoria RAM y dependencias de software de cada una de las prácticas. Esto permite que el REA pueda ser extrapolado y dimensionado de forma adaptativa a contextos educativos con diferentes restricciones de recursos.
+- #strong[Independencia instrumental (Neutralidad):] Las guías prácticas deben funcionar de forma modular, permitiendo al estudiante comprender que las herramientas tecnológicas cambian de un stack a otro, pero las etapas funcionales del pipeline permanecen constantes.
+- #strong[Estructura pedagógica experiencial:] Cada guía debe estructurarse internamente bajo el ciclo de aprendizaje de Kolb (Experiencia, Observación, Conceptualización y Experimentación).
 
 == Fases del desarrollo metodológico
 <fases-del-desarrollo-metodológico>
@@ -669,9 +674,15 @@ supplement: "Figura",
 <fig-ciclo-kolb>
 
 
-Para asegurar la coherencia sistémica, cada guía didáctica en el repositorio cumple con la siguiente estructura formal: 1. #strong[Resultados de Aprendizaje Esperados (RAE):] Definición exacta de las habilidades conceptuales y operativas que el estudiante adquirirá. 2. #strong[Dimensionamiento y Prerrequisitos de Recursos:] Estimación explícita del consumo de memoria RAM y CPU del stack, advertencias de configuración del host (ej. límites del sistema operativo) y parametrización de los límites de memoria de los contenedores (#NormalTok("mem_limit"); vía variables de entorno #NormalTok(".env");). 3. #strong[Diagrama del Pipeline Lógico:] Ilustración de la arquitectura de la guía en función de las 4 etapas del ciclo de logs. 4. #strong[Procedimiento Técnico Paso a Paso:] Comandos y configuraciones limpias, reproducibles y ordenadas. 5. #strong[Cuestionario de Análisis Crítico:] Preguntas diseñadas para la conceptualización abstracta y el diagnóstico reflexivo de fallos.
+Para asegurar la coherencia sistémica, cada guía didáctica en el repositorio cumple con la siguiente estructura formal:
 
-Los #strong[instrumentos de evaluación] ---entregables exigibles y rúbrica analítica de niveles de desempeño--- se proveen de forma #strong[homogénea y centralizada] en la guía docente (#NormalTok("guia_docente.md"); §6), aplicables de manera uniforme a cualquiera de las nueve guías. Esta centralización es una decisión deliberada de diseño REA: garantiza criterios de evaluación consistentes entre stacks, evita la duplicación de rúbricas y facilita que el docente adopte y adapte un único conjunto de instrumentos.
++ #strong[Resultados de Aprendizaje Esperados (RAE):] Definición exacta de las habilidades conceptuales y operativas que el estudiante adquirirá.
++ #strong[Dimensionamiento y Prerrequisitos de Recursos:] Estimación explícita del consumo de memoria RAM y CPU del stack, advertencias de configuración del host (ej. límites del sistema operativo) y parametrización de los límites de memoria de los contenedores (#NormalTok("mem_limit"); vía variables de entorno #NormalTok(".env");).
++ #strong[Diagrama del Pipeline Lógico:] Ilustración de la arquitectura de la guía en función de las 4 etapas del ciclo de logs.
++ #strong[Procedimiento Técnico Paso a Paso:] Comandos y configuraciones limpias, reproducibles y ordenadas.
++ #strong[Cuestionario de Análisis Crítico:] Preguntas diseñadas para la conceptualización abstracta y el diagnóstico reflexivo de fallos.
+
+Los #strong[instrumentos de evaluación] (entregables exigibles y rúbrica analítica de niveles de desempeño) se proveen de forma #strong[homogénea y centralizada] en la guía docente (#NormalTok("guia_docente.md"); §6), aplicables de manera uniforme a cualquiera de las nueve guías. Esta centralización es una decisión deliberada de diseño REA: garantiza criterios de evaluación consistentes entre stacks, evita la duplicación de rúbricas y facilita que el docente adopte y adapte un único conjunto de instrumentos.
 
 == Marco de Verificación y Validación (V&V)
 <marco-de-verificación-y-validación-vv>
@@ -690,7 +701,7 @@ El marco de verificación y validación del recurso se centra en dos dimensiones
   - #emph[Validación de Coherencia Pedagógica:] Revisión de que las tareas solicitadas permitan alcanzar y evaluar empíricamente los Resultados de Aprendizaje Esperados (RAE) de la asignatura #emph[Arquitectura Orientada a Microservicios].
   - #emph[Evaluación Editorial y Estructura Docente:] Revisión de la portabilidad e inteligibilidad de la guía docente (#NormalTok("guia_docente.md");) para asegurar que el recurso pueda ser fácilmente reutilizado por otros docentes del programa de Ingeniería de Sistemas.
 
-#strong[Delimitación del alcance evaluativo.] Los #strong[Resultados de Aprendizaje Esperados (RAE)] declarados en el recurso son objetivos de diseño instruccional, no mediciones empíricas. Los objetivos comprometidos en la propuesta aprobada se circunscriben al #strong[diseño, desarrollo y verificación técnica] del REA ---fundamentación teórica, guías prácticas y entornos reproducibles---; la #strong[medición del impacto pedagógico] (la evaluación empírica de los resultados de aprendizaje al aplicar el recurso con estudiantes) excede dichos objetivos y se proyecta como una #strong[fase posterior] de validación en aula ---analítica de uso, encuestas de percepción y ajuste iterativo conforme a los principios de la investigación basada en diseño (DBR)---, dado que esta versión corresponde a la primera publicación del recurso.
+#strong[Delimitación del alcance evaluativo.] Los #strong[Resultados de Aprendizaje Esperados (RAE)] declarados en el recurso son objetivos de diseño instruccional, no mediciones empíricas. Los objetivos comprometidos en la propuesta aprobada se circunscriben al #strong[diseño, desarrollo y verificación técnica] del REA (fundamentación teórica, guías prácticas y entornos reproducibles); la #strong[medición del impacto pedagógico] (la evaluación empírica de los resultados de aprendizaje al aplicar el recurso con estudiantes) excede dichos objetivos y se proyecta como una #strong[fase posterior] de validación en aula ---analítica de uso, encuestas de percepción y ajuste iterativo conforme a los principios de la investigación basada en diseño (DBR)---, dado que esta versión corresponde a la primera publicación del recurso.
 
 === Prueba de humo estandarizada
 <prueba-de-humo-estandarizada>
@@ -726,39 +737,73 @@ La siguiente matriz detalla de forma explícita cómo cada uno de los tres objet
   [#strong[OE2:] Elaborar guías prácticas para el despliegue progresivo de soluciones para centralización de logs utilizando Docker.], [\* Carpeta de guías didácticas (#NormalTok("guias/"); de la 1 a la 9).\* Rúbricas y planeación sugerida (#NormalTok("guia_docente.md");).], [\* 9 Guías académicas estructuradas bajo el modelo instruccional de Kolb.\* Rúbrica analítica homogénea y entregables exigibles definidos en la guía docente, aplicables a las 9 guías.], [Se diseñan 9 guías instruccionales que cubren desde los stacks tradicionales hasta soluciones en el estado del arte, ordenadas por complejidad progresiva.],
   [#strong[OE3:] Implementar cada guía en entornos funcionales y reproducibles para los estudiantes.], [\* Carpeta de configuraciones y entornos (#NormalTok("soluciones/"); de la 1 a la 9).\* Repositorio de código con archivos #NormalTok("docker-compose.yml"); y configs.], [\* Archivos YAML de Docker Compose funcionales.\* Archivos de configuración de colectores e indexadores.\* Aplicaciones mocks generadoras de logs.\* Logs e historiales de comandos.], [Las 9 soluciones y contenedores de observabilidad son funcionales, portables y reproducibles, estructuradas de forma parametrizada y con guías de dimensionamiento técnico.],
 )
-
-#horizontalrule
-
 = Marco conceptual
 <sec-marco-conceptual>
 Esta sección desarrolla de manera progresiva los fundamentos conceptuales de la observabilidad y la centralización de logs en sistemas distribuidos. El recorrido inicia con la definición y alcance del concepto de observabilidad, avanza hacia el análisis del rol de los logs como fuente primaria de información y culmina con la presentación de una arquitectura conceptual que integra los distintos componentes involucrados. Esta progresión busca facilitar una comprensión gradual y coherente, orientada al aprendizaje y a la posterior aplicación práctica de los conceptos abordados.
 
 == Observabilidad en sistemas distribuidos
-<observabilidad-en-sistemas-distribuidos>
+<sec-5-1>
 La observabilidad se define como la capacidad de inferir el estado interno de un sistema complejo a partir de las señales externas que este produce durante su ejecución @majors-2022@beyer-2016@sridharan-2018. En sistemas distribuidos, esta capacidad resulta crítica debido a la concurrencia, la comunicación asincrónica y la distribución de responsabilidades entre múltiples componentes autónomos, factores que dificultan la identificación directa de causas y efectos @usman-2022.
 
 Desde la ingeniería de software, la observabilidad se ha consolidado como un principio complementario a la monitorización tradicional. Mientras esta última se enfoca en indicadores previamente definidos, la observabilidad busca responder preguntas no anticipadas, permitiendo explorar el comportamiento del sistema cuando surgen fallos o degradaciones inesperadas @turnbull-2016. Este enfoque resulta particularmente relevante en arquitecturas de microservicios, donde los comportamientos emergentes no pueden ser previstos completamente en tiempo de diseño @newman-2015.
 
+Conviene precisar que el término #emph[observabilidad] no se originó en la ingeniería de software, sino en la teoría de control, donde #cite(<kalman-1960>, form: "prose") lo definió formalmente como la propiedad que permite reconstruir el estado interno de un sistema dinámico a partir del conocimiento de sus salidas externas. Esta raíz conceptual resulta esclarecedora: un sistema es observable no por la cantidad de datos que emite, sino por la posibilidad de inferir su estado interno a partir de ellos. Trasladada al software, la observabilidad no se reduce, por tanto, a "generar abundantes registros", sino a disponer de señales suficientes y bien estructuradas para responder preguntas sobre el comportamiento del sistema.
+
+En la práctica, la observabilidad de un sistema de software se construye sobre tres tipos de señales complementarias, conocidas como los #strong[tres pilares de la observabilidad] @sridharan-2018@majors-2022:
+
+#table(
+  columns: (25%, 25%, 25%, 25%),
+  align: (auto,auto,auto,auto,),
+  table.header([Señal], [Naturaleza], [Pregunta que ayuda a responder], [Ejemplo conceptual],),
+  table.hline(),
+  [#strong[Logs]], [Registros textuales de eventos discretos], [¿Qué ocurrió exactamente y por qué?], [#NormalTok("ERROR pago rechazado: saldo insuficiente, usuario=4827");],
+  [#strong[Métricas]], [Valores numéricos agregados en el tiempo], [¿Cuánto, con qué frecuencia, con qué tendencia?], [#NormalTok("solicitudes_por_segundo = 1450");],
+  [#strong[Trazas]], [Recorrido de una solicitud a través de varios servicios], [¿Por dónde pasó la solicitud y dónde se demoró?], [#NormalTok("petición #abc: API (2 ms) → pagos (310 ms) → BD (15 ms)");],
+)
+Aunque los tres pilares se complementan, presentan diferencias importantes en su costo de almacenamiento y en su riqueza contextual. Las métricas son altamente compactas, pero pierden el detalle de los eventos individuales; las trazas revelan la topología de las interacciones, pero requieren instrumentación explícita; los logs, en cambio, preservan el contexto semántico completo de cada evento, razón por la cual constituyen el foco de este documento. Un concepto transversal a los tres pilares es el de #strong[cardinalidad] (el número de valores distintos que puede tomar un atributo), cuya gestión inadecuada constituye uno de los principales retos de costo y rendimiento de los sistemas de observabilidad, como se discute en la #ref(<sec-5-6>, supplement: [Sección]).
+
 == Logs como fuente primaria de información
-<logs-como-fuente-primaria-de-información>
+<sec-5-2>
 Los logs constituyen registros textuales de eventos discretos que ocurren durante la ejecución de un sistema y representan una de las formas más expresivas de instrumentación del software @turnbull-2016. A diferencia de las métricas, que capturan valores agregados, y de las trazas, que describen recorridos de solicitudes, los logs preservan el contexto semántico de los eventos, facilitando la comprensión del #emph[qué] y el #emph[por qué] de una situación determinada.
 
 Diversos estudios destacan que los logs no solo cumplen una función operativa, sino que actúan como artefactos de conocimiento que reflejan decisiones de diseño, supuestos implícitos y modelos mentales de los desarrolladores @xu-2009@oliner-2012@he-2021. Desde una perspectiva formativa, esta característica permite a los estudiantes analizar evidencias reales de ejecución y vincular los conceptos teóricos de arquitectura y diseño con su manifestación práctica.
 
+Para comprender el valor de los logs conviene examinar su anatomía. Un registro típico se compone de, al menos, una #strong[marca temporal] (cuándo ocurrió el evento), un #strong[nivel de severidad] (qué tan importante es), un #strong[mensaje] descriptivo y, idealmente, un conjunto de #strong[campos de contexto] (qué servicio, qué usuario, qué operación). La forma en que estos elementos se representan determina la facilidad con que pueden analizarse de manera automatizada. Históricamente, los logs se escribían como texto libre no estructurado, legible para las personas pero difícil de procesar por las máquinas:
+
+#Skylighting(([#NormalTok("2026-05-14 10:32:01 ERROR El pago del usuario 4827 fue rechazado por saldo insuficiente");],));
+El #strong[logging estructurado] propone, en cambio, representar cada evento como un objeto con campos explícitos (habitualmente en formato JSON), de modo que cada dato sea identificable y consultable sin necesidad de interpretar la cadena de texto @chuvakin-2012:
+
+#Skylighting(([#FunctionTok("{");],
+[#NormalTok("  ");#DataTypeTok("\"timestamp\"");#FunctionTok(":");#NormalTok(" ");#StringTok("\"2026-05-14T10:32:01Z\"");#FunctionTok(",");],
+[#NormalTok("  ");#DataTypeTok("\"level\"");#FunctionTok(":");#NormalTok(" ");#StringTok("\"ERROR\"");#FunctionTok(",");],
+[#NormalTok("  ");#DataTypeTok("\"event\"");#FunctionTok(":");#NormalTok(" ");#StringTok("\"pago_rechazado\"");#FunctionTok(",");],
+[#NormalTok("  ");#DataTypeTok("\"usuario_id\"");#FunctionTok(":");#NormalTok(" ");#DecValTok("4827");#FunctionTok(",");],
+[#NormalTok("  ");#DataTypeTok("\"motivo\"");#FunctionTok(":");#NormalTok(" ");#StringTok("\"saldo_insuficiente\"");],
+[#FunctionTok("}");],));
+Esta diferencia es determinante para la centralización: los logs estructurados pueden filtrarse, agregarse y correlacionarse de forma sistemática, mientras que el texto libre exige un procesamiento adicional (y frecuentemente frágil) para extraer su significado, como se detalla en la #ref(<sec-5-7-2>, supplement: [Sección]).
+
+Los niveles de severidad constituyen otra convención fundamental. La mayoría de los marcos de registro adoptan una jerarquía estándar (comúnmente TRACE, DEBUG, INFO, WARN, ERROR y FATAL) que expresa la importancia relativa de cada evento y permite regular el volumen de información según el contexto: un registro detallado durante el desarrollo y la depuración, y un registro selectivo de advertencias y errores en producción. Comprender la semántica de estos niveles es esencial para equilibrar la riqueza informativa con el costo de almacenamiento y el ruido analítico que un exceso de registros de bajo nivel puede introducir.
+
 == Problemática de la dispersión de logs
-<problemática-de-la-dispersión-de-logs>
+<sec-5-3>
 En sistemas distribuidos, cada componente genera sus propios registros de manera local, lo que conduce a una dispersión de la información que dificulta su análisis integral. Esta fragmentación incrementa la carga cognitiva requerida para el diagnóstico de fallos y limita la capacidad de correlacionar eventos entre servicios independientes @cito-2015.
 
 La literatura señala que, a medida que aumenta el número de servicios y nodos, el análisis manual de logs locales se vuelve inviable, generando opacidad operativa y dependencia excesiva de conocimiento tácito @oliner-2012@burns-2016. Esta problemática refuerza la necesidad de enfoques sistemáticos para la gestión y análisis de registros en entornos distribuidos.
 
+Más allá del volumen, la dispersión plantea dos problemas conceptualmente profundos. El primero es el de la #strong[correlación de eventos]: cuando una sola solicitud de usuario atraviesa varios servicios, cada uno genera registros de forma independiente, y sin un mecanismo que los vincule resulta imposible reconstruir la secuencia completa. La solución conceptual a este problema es la propagación de un #strong[identificador de correlación] (#emph[correlation ID] o #emph[trace ID]) que acompaña a la solicitud a lo largo de todos los servicios que la procesan, permitiendo agrupar a posteriori todos los eventos que pertenecen a la misma operación @sigelman-2010.
+
+El segundo problema es el del #strong[orden temporal]. En un sistema distribuido, cada nodo posee su propio reloj físico, y estos relojes nunca están perfectamente sincronizados. En consecuencia, ordenar eventos provenientes de máquinas distintas únicamente por su marca temporal puede producir secuencias incorrectas. #cite(<lamport-1978>, form: "prose") demostró que, en ausencia de un reloj global, lo determinante no es el tiempo absoluto sino la relación de causalidad entre eventos (la relación #emph[happened-before]), y propuso los relojes lógicos como mecanismo para establecer un orden coherente. Esta noción es fundamental para comprender por qué la correlación y el ordenamiento de logs distribuidos constituyen un problema no trivial, y no una simple cuestión de comparar fechas.
+
 == Centralización de logs
-<centralización-de-logs>
+<sec-5-4>
 La centralización de logs surge como una estrategia para mitigar la dispersión de información mediante la recolección, consolidación y almacenamiento de los registros generados por los distintos componentes del sistema en un repositorio común @turnbull-2016@majors-2022. Este enfoque facilita la consulta unificada, la correlación temporal y el análisis transversal de eventos.
 
 Desde el punto de vista conceptual, la centralización de logs transforma un conjunto fragmentado de mensajes en una fuente coherente de conocimiento operativo, habilitando procesos de diagnóstico distribuido y análisis post-mortem de incidentes complejos @beyer-2016. Asimismo, permite reconstruir narrativas de ejecución que son fundamentales para comprender fallos en cascada y comportamientos no deterministas.
 
+Desde el punto de vista de su materialización, la centralización admite distintos #strong[modelos de recolección]. En el modelo de #emph[envío] (#emph[push]), cada componente (o un agente asociado a él) transmite activamente sus registros hacia el sistema central. En el modelo de #emph[extracción] (#emph[pull]), el sistema central consulta periódicamente a las fuentes para obtener los registros disponibles. La captura, a su vez, puede realizarse mediante distintos patrones: un agente recolector instalado en cada host, un componente acompañante dedicado a un único servicio (#emph[sidecar]) o el envío directo desde la propia aplicación mediante una biblioteca de instrumentación. La elección entre estos modelos afecta el acoplamiento, la resiliencia y la sobrecarga operativa de la solución, y constituye una de las primeras decisiones de diseño que el estudiante debe aprender a razonar de forma crítica.
+
 == Beneficios conceptuales de la centralización de logs
-<beneficios-conceptuales-de-la-centralización-de-logs>
+<sec-5-5>
 La centralización de logs aporta beneficios que trascienden el ámbito técnico inmediato. Entre los más relevantes se encuentran:
 
 - Mejora de la visibilidad global del sistema y de sus interacciones internas.
@@ -769,17 +814,20 @@ La centralización de logs aporta beneficios que trascienden el ámbito técnico
 Estos beneficios refuerzan el valor de la centralización de logs como herramienta conceptual para la formación en arquitectura de software y sistemas distribuidos @bosch-2016.
 
 == Desafíos y criterios conceptuales
-<desafíos-y-criterios-conceptuales>
+<sec-5-6>
 El diseño de soluciones de centralización de logs implica enfrentar diversos desafíos técnicos y operativos @kitchin-2014@beyer-2016. Abordarlos adecuadamente requiere la adopción de criterios conceptuales sólidos:
 
-- #strong[Estandarización Semántica:] En arquitecturas heterogéneas, consolidar logs carece de valor si no comparten un esquema común. La adopción de estándares de esquema semántico ampliamente reconocidos en la industria ---que definen convenciones uniformes para nombres de campos, tipos de datos y niveles de severidad--- es fundamental para garantizar que los eventos de distintos servicios puedan correlacionarse correctamente @he-2021, facilitando así la reconstrucción de flujos de ejecución distribuidos que atraviesan múltiples microservicios @sigelman-2010. Las guías prácticas complementarias ilustran la aplicación concreta de varios de estos estándares en diferentes ecosistemas tecnológicos.
+- #strong[Estandarización Semántica:] En arquitecturas heterogéneas, consolidar logs carece de valor si no comparten un esquema común. La adopción de estándares de esquema semántico ampliamente reconocidos en la industria (que definen convenciones uniformes para nombres de campos, tipos de datos y niveles de severidad) es fundamental para garantizar que los eventos de distintos servicios puedan correlacionarse correctamente @he-2021, facilitando así la reconstrucción de flujos de ejecución distribuidos que atraviesan múltiples microservicios @sigelman-2010. Las guías prácticas complementarias ilustran la aplicación concreta de varios de estos estándares en diferentes ecosistemas tecnológicos.
 - #strong[Ciclo de Vida y Retención de Datos:] Dado el inmenso volumen de información operativa, los sistemas de centralización deben implementar políticas de retención, rotación y almacenamiento por niveles (#emph[Hot/Cold storage]) para gestionar el impacto en la infraestructura sin perder capacidades de auditoría a largo plazo.
 - #strong[Seguridad y Privacidad (Sanitización):] Los logs suelen capturar inadvertidamente información sensible (contraseñas, tokens, datos de usuarios PII). Es imperativo que las arquitecturas incluyan mecanismos de censura o enmascaramiento de datos durante la fase de procesamiento antes de su indexación @aghili-2025.
+- #strong[Volumen, Cardinalidad y Costo:] El valor analítico de un sistema de centralización depende de su capacidad de indexar los datos para consultarlos con rapidez, pero indexar tiene un costo. Los atributos de alta #emph[cardinalidad] (aquellos con un número muy elevado de valores distintos, como los identificadores de usuario o de petición) pueden provocar un crecimiento desproporcionado de los índices y degradar el rendimiento. Diseñar una solución de centralización implica, por tanto, decidir conscientemente qué campos justifican el costo de ser indexados y cuáles no, decisión que se relaciona directamente con el paradigma de almacenamiento elegido (#ref(<sec-5-7-3>, supplement: [Sección])).
+- #strong[Orden Temporal y Relojes Distribuidos:] Como se discutió en la #ref(<sec-5-3>, supplement: [Sección]), los relojes de los distintos nodos no están perfectamente sincronizados, lo que dificulta establecer el orden real de los eventos a partir de sus marcas temporales @lamport-1978. Las soluciones de centralización deben asumir esta limitación y apoyarse en identificadores de correlación y en marcas temporales coherentes para reconstruir las secuencias de ejecución.
+- #strong[Confiabilidad de la Entrega y Contrapresión:] El transporte de logs desde su origen hasta el repositorio central no está exento de fallos. Las soluciones deben definir garantías de entrega ---desde #emph[at-most-once] (se prioriza no duplicar, a riesgo de perder eventos) hasta #emph[at-least-once] (se prioriza no perder, a riesgo de duplicar)--- así como mecanismos de amortiguación (#emph[buffering]) y contrapresión (#emph[backpressure]) que eviten que un pico en la generación de logs sature o derribe los componentes intermedios.
 
 Desde una perspectiva académica, el análisis de estos desafíos permite a los estudiantes desarrollar criterios transferibles a distintos contextos tecnológicos, fomentando una comprensión crítica de las decisiones de diseño y sus implicaciones operativas y éticas.
 
 == Arquitectura conceptual de las soluciones de centralización de logs
-<arquitectura-conceptual-de-las-soluciones-de-centralización-de-logs>
+<sec-5-7>
 Aunque las implementaciones prácticas de la centralización de logs pueden variar ampliamente en función de las tecnologías empleadas, la literatura y la experiencia industrial coinciden en que dichas soluciones comparten una #strong[arquitectura conceptual común], compuesta por varios componentes claramente diferenciables @turnbull-2016@newman-2015.
 
 Introducir esta arquitectura a nivel conceptual resulta pertinente desde el punto de vista formativo, ya que permite a los estudiantes comprender la lógica subyacente de las soluciones antes de enfrentarse a su implementación práctica, facilitando la transferencia de conocimiento entre distintos ecosistemas tecnológicos.
@@ -801,42 +849,59 @@ supplement: "Figura",
 
 
 #quote(block: true)[
-#strong[Nota sobre el alcance del diagrama:] Los sistemas distribuidos generan tres tipos de señales de observabilidad: #strong[logs] (eventos discretos con contexto semántico), #strong[métricas] (mediciones numéricas agregadas en el tiempo) y #strong[trazas] (recorridos de solicitudes a través de múltiples servicios). La arquitectura conceptual de cuatro etapas ---recolección, procesamiento, almacenamiento y visualización--- aplica a las tres señales. Este documento centra su desarrollo en los #strong[logs], por ser la señal de mayor riqueza contextual y la más directamente vinculada a la comprensión del comportamiento interno del sistema @majors-2022. Las guías prácticas complementarias amplían el tratamiento hacia métricas y trazas en los ecosistemas que las integran de forma nativa.
+#strong[Nota sobre el alcance del diagrama:] Los sistemas distribuidos generan tres tipos de señales de observabilidad: #strong[logs] (eventos discretos con contexto semántico), #strong[métricas] (mediciones numéricas agregadas en el tiempo) y #strong[trazas] (recorridos de solicitudes a través de múltiples servicios). La arquitectura conceptual de cuatro etapas (recolección, procesamiento, almacenamiento y visualización) aplica a las tres señales. Este documento centra su desarrollo en los #strong[logs], por ser la señal de mayor riqueza contextual y la más directamente vinculada a la comprensión del comportamiento interno del sistema @majors-2022. Las guías prácticas complementarias amplían el tratamiento hacia métricas y trazas en los ecosistemas que las integran de forma nativa.
 ]
 
 === Recolección de logs
-<recolección-de-logs>
+<sec-5-7-1>
 El componente de #strong[recolección de logs] es responsable de capturar los registros generados por aplicaciones, servicios y componentes de infraestructura. En términos conceptuales, este componente actúa como el punto de entrada del flujo de observabilidad y debe operar de manera desacoplada, de modo que la captura de eventos no interfiera con la ejecución normal del sistema.
 
 Desde una perspectiva formativa, resulta relevante comprender que la recolección de logs involucra decisiones relacionadas con la ubicación de los agentes de captura, la frecuencia de recolección y el tipo de información registrada. Estas decisiones influyen directamente en la calidad, utilidad y confiabilidad de la observabilidad obtenida, y condicionan los análisis posteriores que pueden realizarse sobre los datos recolectados @xu-2009.
 
+Una propiedad conceptual central de esta etapa es el desacoplamiento temporal entre la generación y el consumo de los registros. Para que la captura no interfiera con la aplicación cuando el sistema central se ralentiza o deja de responder, los recolectores suelen incorporar mecanismos de amortiguación (#emph[buffering]) que almacenan temporalmente los eventos. Comprender este principio permite razonar sobre las garantías de entrega y la contrapresión introducidas en la #ref(<sec-5-6>, supplement: [Sección]), y entender por qué un buen recolector debe ser, ante todo, robusto frente a la indisponibilidad de los componentes que lo suceden.
+
 === Procesamiento y enriquecimiento de logs
-<procesamiento-y-enriquecimiento-de-logs>
+<sec-5-7-2>
 El #strong[procesamiento de logs] comprende el conjunto de actividades orientadas a transformar los registros crudos en información estructurada y significativa. Entre estas actividades se incluyen el filtrado de eventos irrelevantes, la normalización de formatos, el enriquecimiento semántico y la correlación básica de eventos.
 
 Desde el punto de vista conceptual, este procesamiento permite reducir el ruido inherente a grandes volúmenes de datos operativos y preparar los logs para su almacenamiento y análisis posterior. En el ámbito educativo, este componente introduce a los estudiantes en la noción de que los datos generados por los sistemas requieren un tratamiento previo para convertirse en información útil y accionable @oliner-2012@he-2017@zhu-2019.
 
+La viabilidad y el costo de esta etapa dependen en gran medida de la estructura de los datos de entrada. Cuando los logs llegan ya estructurados (#ref(<sec-5-2>, supplement: [Sección])), el procesamiento se reduce a operaciones directas sobre campos identificados; cuando llegan como texto libre, es necesario aplicar técnicas de análisis sintáctico (expresiones regulares o gramáticas de extracción) que resultan más frágiles y costosas de mantener @he-2017@zhu-2019. El procesamiento es también el punto natural donde se aplican dos operaciones críticas: el #emph[muestreo] (#emph[sampling]), que descarta deliberadamente parte de los eventos para controlar el volumen, y la #emph[sanitización] o enmascaramiento de información sensible antes de su almacenamiento (#ref(<sec-5-6>, supplement: [Sección])), lo que convierte a esta etapa en un punto de decisión tanto técnico como ético.
+
 === Almacenamiento y búsqueda
-<almacenamiento-y-búsqueda>
+<sec-5-7-3>
 El #strong[almacenamiento y motor de búsqueda] constituye el núcleo analítico de una solución de centralización de logs. Su función principal es conservar los registros de manera eficiente y habilitar mecanismos de consulta flexibles que faciliten el análisis exploratorio y el diagnóstico de incidentes.
 
 A nivel conceptual, este componente introduce nociones fundamentales relacionadas con la indexación de datos, la gestión de la retención de información y la ejecución de consultas temporales. Estos aspectos resultan esenciales para comprender cómo se construye la visibilidad del sistema a lo largo del tiempo y cómo se posibilita el análisis retrospectivo de eventos @kitchin-2014@kleppmann-2017.
 
+Desde una perspectiva más avanzada, no existe un único modelo de almacenamiento óptimo: las soluciones adoptan distintos #strong[paradigmas de indexación], cada uno con compromisos diferentes entre velocidad de consulta, flexibilidad y costo. Comprender estos paradigmas permite entender por qué soluciones distintas resultan más adecuadas para necesidades distintas, y constituye uno de los criterios de diseño más transferibles del área:
+
+#table(
+  columns: (20%, 20%, 20%, 20%, 20%),
+  align: (auto,auto,auto,auto,auto,),
+  table.header([Paradigma], [Qué indexa], [Fortaleza de consulta], [Perfil de costo], [Orientación típica],),
+  table.hline(),
+  [#strong[Índice invertido] (búsqueda de texto completo)], [Cada término de cada mensaje], [Búsqueda libre y flexible sobre cualquier palabra del contenido], [Alto costo de indexación y almacenamiento], [Exploración y búsqueda ad hoc],
+  [#strong[Almacén columnar] (analítico / OLAP)], [Columnas completas de atributos estructurados], [Agregaciones y análisis sobre grandes volúmenes], [Eficiente en compresión; menos flexible para texto libre], [Análisis cuantitativo a gran escala],
+  [#strong[Índice de solo etiquetas]], [Únicamente un conjunto reducido de etiquetas (metadatos)], [Filtrado rápido por etiquetas; el contenido se examina al consultar], [Muy bajo costo de indexación y almacenamiento], [Grandes volúmenes con consultas acotadas por etiquetas],
+)
+El #strong[índice invertido], heredado de la disciplina de recuperación de información, asocia cada término al conjunto de registros que lo contienen, lo que habilita búsquedas de texto completo muy flexibles a cambio de un alto costo de indexación y almacenamiento @manning-2008. El #strong[almacenamiento columnar], propio de los sistemas analíticos, organiza los datos por columnas en lugar de por filas, lo que permite comprimir y agregar grandes volúmenes de datos estructurados con notable eficiencia, aunque resulta menos apto para la búsqueda libre de texto @abadi-2008. Finalmente, el #strong[índice de solo etiquetas] minimiza deliberadamente lo que se indexa (apenas un conjunto reducido de metadatos), reduciendo de forma drástica el costo a cambio de exigir que el contenido se examine en el momento de la consulta. Estas tres aproximaciones no son excluyentes, y las guías prácticas complementarias permiten contrastar empíricamente sus implicaciones en ecosistemas tecnológicos concretos.
+
 === Visualización y análisis
-<visualización-y-análisis>
+<sec-5-7-4>
 El componente de #strong[visualización] tiene como propósito presentar la información contenida en los logs de manera comprensible para los usuarios humanos. Mediante representaciones gráficas, tablas y paneles, se facilita la identificación de patrones, tendencias y posibles anomalías en el comportamiento del sistema.
 
 Desde una perspectiva formativa, la visualización cumple un rol clave al reducir la carga cognitiva asociada al análisis de grandes volúmenes de información y al permitir que los estudiantes desarrollen habilidades de interpretación y análisis de datos operativos. De este modo, se establece un vínculo directo entre los registros técnicos y los procesos de toma de decisiones informadas @bosch-2016.
 
+A un nivel más avanzado, la visualización se apoya en #strong[lenguajes de consulta] especializados que permiten filtrar, agregar y transformar los registros almacenados, y cuya expresividad está condicionada por el paradigma de almacenamiento subyacente (#ref(<sec-5-7-3>, supplement: [Sección])). Sobre esta capacidad de consulta se construye, además, la noción de #strong[alertamiento]: la definición de condiciones que, al cumplirse sobre el flujo de logs, notifican automáticamente a los responsables del sistema. De este modo, la visualización no es únicamente un mecanismo de exploración retrospectiva, sino también un soporte para la detección proactiva de anomalías.
+
 === Integración conceptual de los componentes
-<integración-conceptual-de-los-componentes>
+<sec-5-7-5>
 Los componentes de recolección, procesamiento, almacenamiento y visualización no deben entenderse como elementos aislados, sino como partes interdependientes de un flujo continuo de información. Cada uno cumple una función específica dentro de la arquitectura, pero su valor emerge plenamente cuando se articulan de manera coherente.
 
 Desde el punto de vista conceptual, esta integración permite comprender cómo los eventos generados durante la ejecución de un sistema se transforman progresivamente en información significativa para el análisis y la toma de decisiones. Para los estudiantes, esta visión integrada facilita el tránsito desde la comprensión teórica hacia la implementación práctica, al proporcionar un modelo mental claro que puede ser instanciado mediante distintas tecnologías en los ejercicios aplicados.
 
 De este modo, la arquitectura conceptual presentada establece un puente entre los fundamentos teóricos desarrollados en este trabajo escrito y las actividades prácticas abordadas en los materiales complementarios, manteniendo la neutralidad tecnológica del documento.
-
-#horizontalrule
 
 = Alcance, articulación y conclusiones
 <alcance-articulación-y-conclusiones>
@@ -853,8 +918,6 @@ Este capítulo conceptual se limita intencionalmente a la #strong[fundamentació
 - Mantener la neutralidad tecnológica del contenido central.
 - Facilitar su reutilización en distintos cursos y programas académicos.
 - Permitir la actualización incremental de las guías prácticas sin afectar el marco teórico.
-
-#horizontalrule
 
 == Articulación con las actividades prácticas
 <articulación-con-las-actividades-prácticas>
@@ -878,8 +941,6 @@ Aunque las guías son independientes, se sugiere el siguiente orden de consumo p
 + #strong[#link(<sec-guia-signoz>)[SigNoz (ClickHouse)]:] (#emph[Estado del Arte]) Plataforma "Todo en Uno" que utiliza OpenTelemetry nativamente y almacenamiento analítico columnar, representando la alternativa libre a plataformas comerciales.
 + #strong[#link(<sec-guia-alloy>)[Grafana Alloy]:] (#emph[Guía complementaria]) Migración de Promtail al sucesor oficial. Introduce el modelo de configuración orientado al flujo de datos (#emph[dataflow]) con componentes explícitamente conectados.
 
-#horizontalrule
-
 == Conclusiones
 <conclusiones>
 La observabilidad se consolida como un principio fundamental para la comprensión, análisis y gestión de sistemas distribuidos, al permitir inferir su comportamiento interno a partir de las señales externas generadas durante su ejecución. En arquitecturas basadas en microservicios, donde la complejidad operativa y los comportamientos emergentes son inherentes, este principio resulta indispensable para el diagnóstico, la toma de decisiones y la mejora continua de los sistemas @majors-2022@beyer-2016.
@@ -889,8 +950,6 @@ Dentro de este marco, la centralización de logs se presenta como un pilar esenc
 Este enfoque arquitectónico y conceptual proporciona a los estudiantes un modelo mental transferible que facilita la comprensión de distintas implementaciones prácticas, independientemente de las tecnologías específicas empleadas. Al priorizar los principios y la arquitectura sobre las herramientas, el documento contribuye a una formación más sólida, crítica y adaptable a la evolución constante del ecosistema tecnológico.
 
 En conjunto, el trabajo escrito ofrece una base teórica robusta y coherente que apoya los procesos formativos en ingeniería de sistemas y disciplinas afines, fortaleciendo la articulación entre fundamentos conceptuales y escenarios reales de operación, y sentando las bases para un aprendizaje significativo en torno a la observabilidad y la centralización de logs.
-
-#horizontalrule
 
 #part[Material de estudio y docencia]
 = Guía de Estudio: Observabilidad y Centralización de Logs en Sistemas Distribuidos
@@ -935,7 +994,28 @@ Este componente se orienta a transformar registros crudos mediante actividades c
 <de-qué-manera-ayuda-el-componente-de-visualización-y-análisis-a-la-resolución-de-incidentes>
 La visualización presenta la información contenida en los registros de manera gráfica y comprensible para humanos mediante paneles y tablas. Esto reduce la carga cognitiva requerida para el análisis masivo, permitiendo identificar rápidamente patrones, tendencias y anomalías en el sistema, conectando así los datos operativos con la toma de decisiones informadas.
 
-#horizontalrule
+== ¿Cuáles son los tres pilares de la observabilidad y en qué se diferencian?
+<cuáles-son-los-tres-pilares-de-la-observabilidad-y-en-qué-se-diferencian>
+Los tres pilares son los #strong[logs], las #strong[métricas] y las #strong[trazas]. Los logs son registros textuales de eventos discretos que preservan el contexto semántico (el #emph[qué] y el #emph[porqué]). Las métricas son valores numéricos agregados en el tiempo, muy compactos pero sin detalle de los eventos individuales. Las trazas describen el recorrido de una solicitud a través de varios servicios, revelando dónde se invierte el tiempo. Se complementan: las métricas suelen detectar que #emph[algo] va mal, las trazas localizan #emph[dónde] ocurre, y los logs explican #emph[por qué].
+
+== ¿Qué distingue al logging estructurado del texto libre, y por qué importa para la centralización?
+<qué-distingue-al-logging-estructurado-del-texto-libre-y-por-qué-importa-para-la-centralización>
+El logging no estructurado escribe los eventos como texto libre, legible para las personas pero difícil de procesar por las máquinas. El #strong[logging estructurado] representa cada evento como un objeto con campos explícitos (típicamente en JSON), de modo que cada dato es identificable y consultable directamente. Importa porque los logs estructurados pueden filtrarse, agregarse y correlacionarse de forma sistemática, mientras que el texto libre exige un análisis sintáctico posterior y frágil (expresiones regulares) para extraer su significado.
+
+== El marco conceptual describe tres paradigmas de almacenamiento e indexación. ¿Cuáles son y qué compromiso ofrece cada uno?
+<el-marco-conceptual-describe-tres-paradigmas-de-almacenamiento-e-indexación.-cuáles-son-y-qué-compromiso-ofrece-cada-uno>
+#block[
+#set enum(numbering: "(1)", start: 1)
++ El #strong[índice invertido] (búsqueda de texto completo) indexa cada término de cada mensaje, habilitando búsquedas libres muy flexibles a un alto costo de indexación y almacenamiento. (2) El #strong[almacén columnar] (OLAP) organiza los datos por columnas, optimizado para comprimir y agregar grandes volúmenes de datos estructurados, aunque resulta menos apto para el texto libre. (3) El #strong[índice de solo etiquetas] indexa apenas un conjunto reducido de metadatos, con un costo mínimo, a cambio de escanear el contenido en el momento de la consulta. No existe un paradigma óptimo: cada uno responde a necesidades distintas.
+]
+
+== ¿Por qué el orden temporal de los eventos es un problema no trivial en sistemas distribuidos?
+<por-qué-el-orden-temporal-de-los-eventos-es-un-problema-no-trivial-en-sistemas-distribuidos>
+Porque cada nodo posee su propio reloj físico y estos nunca están perfectamente sincronizados (#emph[clock skew]); ordenar eventos provenientes de máquinas distintas únicamente por su marca temporal puede producir secuencias incorrectas. Lamport demostró que, en ausencia de un reloj global, lo determinante es la relación de causalidad entre eventos (la relación #emph[happened-before]), y no el tiempo absoluto. Por ello, la correlación de logs distribuidos se apoya en identificadores de correlación, y no únicamente en las marcas temporales.
+
+== ¿Qué se entiende por cardinalidad y por qué constituye un reto de costo en la centralización?
+<qué-se-entiende-por-cardinalidad-y-por-qué-constituye-un-reto-de-costo-en-la-centralización>
+La #strong[cardinalidad] es el número de valores distintos que puede tomar un atributo. Indexar atributos de alta cardinalidad (como un identificador de usuario o de petición) provoca un crecimiento desproporcionado de los índices y degrada el rendimiento. Por eso, diseñar una solución de centralización implica decidir conscientemente qué campos justifican el costo de ser indexados, decisión directamente ligada al paradigma de almacenamiento elegido.
 
 == Glosario
 <glosario>
@@ -965,7 +1045,25 @@ La visualización presenta la información contenida en los registros de manera 
 
 #strong[Procesamiento y enriquecimiento de logs:] Etapa intermedia del #emph[pipeline] orientada a transformar los datos crudos en información útil, realizando el #strong[filtrado de eventos irrelevantes, normalización de formatos, enriquecimiento semántico] y la estructuración de la información.
 
-#horizontalrule
+#strong[Tres pilares de la observabilidad:] Los tres tipos de señales complementarias sobre los que se construye la observabilidad: #strong[logs] (eventos discretos con contexto semántico), #strong[métricas] (valores numéricos agregados en el tiempo) y #strong[trazas] (recorridos de una solicitud a través de varios servicios).
+
+#strong[Logging estructurado:] Práctica de emitir cada evento como un #strong[objeto con campos explícitos] (típicamente JSON), en lugar de como texto libre, de modo que pueda filtrarse, agregarse y correlacionarse de forma automatizada sin necesidad de un análisis sintáctico posterior.
+
+#strong[Niveles de severidad:] Jerarquía estándar (comúnmente TRACE, DEBUG, INFO, WARN, ERROR y FATAL) que expresa la #strong[importancia relativa] de cada evento y permite regular el volumen de registro según el contexto (depuración vs.~producción).
+
+#strong[Identificador de correlación (correlation ID / trace ID):] Identificador que #strong[acompaña a una solicitud] a lo largo de todos los servicios que la procesan, permitiendo agrupar a posteriori todos los eventos que pertenecen a la misma operación y resolver así el problema de correlación inherente a la dispersión.
+
+#strong[Cardinalidad:] Número de #strong[valores distintos] que puede tomar un atributo. La alta cardinalidad (p.~ej., identificadores de usuario) encarece la indexación y degrada el rendimiento, por lo que condiciona qué campos conviene indexar.
+
+#strong[Índice invertido:] Paradigma de almacenamiento que #strong[indexa cada término] de cada mensaje, asociándolo a la lista de registros que lo contienen. Habilita búsquedas de texto completo muy flexibles a un alto costo de indexación y almacenamiento.
+
+#strong[Almacenamiento columnar (OLAP):] Paradigma que organiza los datos #strong[por columnas] en lugar de por filas, optimizado para comprimir y #strong[agregar/analizar] grandes volúmenes de datos estructurados; menos apto para la búsqueda libre de texto.
+
+#strong[Índice de solo etiquetas:] Paradigma que indexa #strong[únicamente un conjunto reducido de metadatos] (etiquetas), minimizando el costo de almacenamiento a cambio de escanear el contenido en el momento de la consulta.
+
+#strong[Modelos de recolección (push / pull):] Estrategias de captura de logs. En el modelo #emph[push] (envío), la fuente transmite activamente sus registros al sistema central; en el modelo #emph[pull] (extracción), el sistema central consulta periódicamente a las fuentes.
+
+#strong[Contrapresión (backpressure):] Mecanismo que evita que un #strong[pico en la generación de logs] sature o derribe los componentes intermedios, típicamente combinado con amortiguación (#emph[buffering]) y con una garantía de entrega definida (#emph[at-least-once] / #emph[at-most-once]).
 
 == Articulación teoría--práctica
 <articulación-teoríapráctica>
@@ -973,14 +1071,14 @@ Las siguientes preguntas proponen un puente entre los conceptos del documento ce
 
 === La arquitectura de cuatro etapas describe la "Recolección" como un componente idealmente desacoplado del sistema productor. ¿Qué guías del recurso instancian ese desacoplamiento con un agente independiente? ¿Cuál es su ventaja operativa frente a enviar los logs directamente desde la aplicación?
 <la-arquitectura-de-cuatro-etapas-describe-la-recolección-como-un-componente-idealmente-desacoplado-del-sistema-productor.-qué-guías-del-recurso-instancian-ese-desacoplamiento-con-un-agente-independiente-cuál-es-su-ventaja-operativa-frente-a-enviar-los-logs-directamente-desde-la-aplicación>
-Las guías ELK, OLO, Fluentd, Promtail, Vector y Alloy utilizan un agente o recolector externo (Logstash, Fluentd, Promtail, Vector, Alloy) separado de la aplicación. Las guías GELF/Graylog, OpenTelemetry y SigNoz trasladan la responsabilidad del transporte al protocolo (GELF UDP) o al SDK de instrumentación (OTLP). El desacoplamiento mediante agente evita que los fallos o la latencia del sistema centralizado afecten la disponibilidad de la aplicación productora, cumpliendo el principio de no interferencia descrito en §4.7.1 del documento central.
+Las guías ELK, OLO, Fluentd, Promtail, Vector y Alloy utilizan un agente o recolector externo (Logstash, Fluentd, Promtail, Vector, Alloy) separado de la aplicación. Las guías GELF/Graylog, OpenTelemetry y SigNoz trasladan la responsabilidad del transporte al protocolo (GELF UDP) o al SDK de instrumentación (OTLP). El desacoplamiento mediante agente evita que los fallos o la latencia del sistema centralizado afecten la disponibilidad de la aplicación productora, cumpliendo el principio de no interferencia descrito en #ref(<sec-5-7-1>, supplement: [Sección]) del documento central.
 
-=== El documento teórico distingue entre indexación completa de texto y almacenamiento por etiquetas como dos modelos de almacenamiento con compromisos diferentes. ¿Qué guías implementan cada modelo? ¿Qué consecuencia tiene esa elección sobre el tipo de consultas posibles?
-<el-documento-teórico-distingue-entre-indexación-completa-de-texto-y-almacenamiento-por-etiquetas-como-dos-modelos-de-almacenamiento-con-compromisos-diferentes.-qué-guías-implementan-cada-modelo-qué-consecuencia-tiene-esa-elección-sobre-el-tipo-de-consultas-posibles>
-Las guías ELK, OLO, GELF/Graylog y SigNoz emplean indexación completa (Elasticsearch, OpenSearch o ClickHouse), que permite búsquedas de texto libre sobre cualquier campo. Las guías Promtail, Vector y Alloy usan Loki, cuyo modelo indexa únicamente etiquetas (#emph[labels]), lo que reduce drásticamente el almacenamiento pero limita las consultas a los campos indexados como etiquetas; el resto del contenido se recupera mediante expresiones regulares sobre el texto crudo. La guía OpenTelemetry (LGTM) también usa Loki para logs, combinando ambos modelos según la señal (logs vs.~métricas vs.~trazas).
+=== El marco conceptual describe tres paradigmas de almacenamiento e indexación con compromisos diferentes. ¿Qué guías implementan cada uno? ¿Qué consecuencia tiene esa elección sobre el tipo de consultas posibles?
+<el-marco-conceptual-describe-tres-paradigmas-de-almacenamiento-e-indexación-con-compromisos-diferentes.-qué-guías-implementan-cada-uno-qué-consecuencia-tiene-esa-elección-sobre-el-tipo-de-consultas-posibles>
+Las guías ELK, OLO y GELF/Graylog emplean el #strong[índice invertido] (Elasticsearch u OpenSearch), que permite búsquedas de texto libre sobre cualquier campo a un alto costo de almacenamiento. La guía SigNoz usa un #strong[almacén columnar] (ClickHouse), optimizado para comprimir y agregar grandes volúmenes de datos estructurados a gran escala. Las guías Promtail, Vector y Alloy usan Loki, cuyo #strong[índice de solo etiquetas] reduce drásticamente el almacenamiento pero limita el filtrado rápido a los campos promovidos a etiquetas; el resto del contenido se escanea en el momento de la consulta. La guía OpenTelemetry (LGTM) también usa Loki para los logs. De este modo, el recurso permite contrastar empíricamente los tres paradigmas descritos en el marco conceptual (#ref(<sec-5-7-3>, supplement: [Sección])).
 
-=== El desafío de "sanitización" (§4.6) establece que la información sensible debe enmascararse antes de ser almacenada. ¿En qué guía práctica se propone explícitamente una actividad de censura de campos sensibles? ¿Qué mecanismo técnico lo implementa?
-<el-desafío-de-sanitización-4.6-establece-que-la-información-sensible-debe-enmascararse-antes-de-ser-almacenada.-en-qué-guía-práctica-se-propone-explícitamente-una-actividad-de-censura-de-campos-sensibles-qué-mecanismo-técnico-lo-implementa>
+=== El desafío de "sanitización" (#ref(<sec-5-6>, supplement: [Sección])) establece que la información sensible debe enmascararse antes de ser almacenada. ¿En qué guía práctica se propone explícitamente una actividad de censura de campos sensibles? ¿Qué mecanismo técnico lo implementa?
+<el-desafío-de-sanitización-sec-5-6-establece-que-la-información-sensible-debe-enmascararse-antes-de-ser-almacenada.-en-qué-guía-práctica-se-propone-explícitamente-una-actividad-de-censura-de-campos-sensibles-qué-mecanismo-técnico-lo-implementa>
 La guía Vector (§9, actividades de profundización) propone usar #strong[VRL (Vector Remap Language)] para enmascarar campos como contraseñas o tokens antes de enviarlos a Loki. VRL permite expresiones del tipo #NormalTok("redact!(.message, filters: [r'\\bpassword=\\S+'i])");, operando en la etapa de transformación del pipeline, antes de que el dato llegue al almacenamiento. Este es el mecanismo más directo del recurso para ilustrar la sanitización como práctica operativa concreta.
 
 === El documento teórico menciona que los tres pilares de la observabilidad son logs, métricas y trazas, pero el recurso se enfoca en logs. ¿Cuál de las guías prácticas es la única que aborda los tres pilares de forma integrada? ¿Qué diferencia conceptual introduce respecto a las demás guías?
@@ -995,15 +1093,11 @@ Promtail es un agente de propósito único diseñado exclusivamente para enviar 
 <sec-guia-docente>
 #emph[Planificación pedagógica, rúbricas y orientaciones para la incorporación del recurso educativo en la asignatura #strong[Arquitectura Orientada a Microservicios].]
 
-#horizontalrule
-
 == Propósito de esta guía
 <propósito-de-esta-guía>
 Este documento está dirigido al #strong[docente] que utilizará el recurso en su curso. Su objetivo es facilitar la integración del material en una planificación realista, sugerir rutas de aprendizaje según el tiempo disponible, proponer instrumentos de evaluación y anticipar las dificultades más frecuentes que enfrentan los estudiantes.
 
-El recurso completo está pensado para una unidad temática de #strong[dos semanas] dentro de un curso semestral de 16 semanas. No se espera ---ni es deseable--- cubrir las nueve guías prácticas en ese tiempo; el diseño asume que el docente seleccionará dos o tres guías para trabajo en aula y dejará el resto como material de profundización para estudiantes interesados o como base para trabajos finales.
-
-#horizontalrule
+El recurso completo está pensado para una unidad temática de #strong[dos semanas] dentro de un curso semestral de 16 semanas. No se espera (ni es deseable) cubrir las nueve guías prácticas en ese tiempo; el diseño asume que el docente seleccionará dos o tres guías para trabajo en aula y dejará el resto como material de profundización para estudiantes interesados o como base para trabajos finales.
 
 == Ubicación pedagógica dentro del curso
 <ubicación-pedagógica-dentro-del-curso>
@@ -1014,8 +1108,6 @@ La unidad sobre #strong[observabilidad y centralización de logs] se inserta de 
 
 Una ubicación común y efectiva es entre #strong[las semanas 9 y 11] del curso, una vez los estudiantes tienen aplicaciones distribuidas funcionales sobre las cuales aplicar el material.
 
-#horizontalrule
-
 == Prerrequisitos del estudiante
 <prerrequisitos-del-estudiante>
 Antes de iniciar la unidad, el estudiante debería ser capaz de:
@@ -1025,19 +1117,15 @@ Antes de iniciar la unidad, el estudiante debería ser capaz de:
 - Tener nociones básicas de formatos estructurados como JSON.
 - Haber escrito al menos una aplicación Java/Quarkus simple, ya que todas las guías usan este #emph[stack] como productor de logs.
 
-#horizontalrule
-
 == Resultados de aprendizaje de la unidad
 <resultados-de-aprendizaje-de-la-unidad>
 Al finalizar las dos semanas, el estudiante debe ser capaz de:
 
-+ #strong[Explicar] qué es la observabilidad y por qué es un requisito de diseño ---no un complemento operativo--- en arquitecturas distribuidas.
++ #strong[Explicar] qué es la observabilidad y por qué es un requisito de diseño (no un complemento operativo) en arquitecturas distribuidas.
 + #strong[Describir] la arquitectura conceptual de cuatro etapas (recolección, procesamiento, almacenamiento, visualización) y reconocerla en al menos dos implementaciones tecnológicamente distintas.
 + #strong[Justificar] los desafíos transversales de estandarización semántica, ciclo de vida del dato y sanitización de información sensible.
 + #strong[Desplegar y validar] al menos un stack completo de centralización de logs sobre un entorno reproducible con Docker Compose.
 + #strong[Contrastar] decisiones arquitectónicas entre stacks (por ejemplo: indexación completa vs.~solo etiquetas; protocolo específico vs.~estándar unificado).
-
-#horizontalrule
 
 == Rutas sugeridas
 <rutas-sugeridas>
@@ -1077,9 +1165,6 @@ Si la unidad debe condensarse en una sola semana:
   [#strong[1]], [Toda la teoría conceptual del #link(<sec-marco-conceptual>)[documento base], centrándose en los conceptos esenciales y delegando lecturas a casa.],
   [#strong[2]], [Un único laboratorio con la guía de #strong[OpenTelemetry], por ser la más representativa del estado del arte y cubrir los tres pilares en una sola implementación.],
 )
-
-#horizontalrule
-
 == Estrategia de evaluación
 <estrategia-de-evaluación>
 Se propone una evaluación de #strong[tres componentes] con peso ponderado, alineada con los resultados de aprendizaje siguiendo el principio de #strong[alineación constructiva] (coherencia explícita entre resultados de aprendizaje, actividades y criterios de evaluación). Los porcentajes son sugerencias; el docente debe ajustarlos a la ponderación general del curso. La rúbrica y los entregables definidos en esta sección constituyen los #strong[instrumentos de evaluación homogéneos] del recurso, aplicables de forma uniforme a cualquiera de las nueve guías prácticas.
@@ -1144,8 +1229,6 @@ white
 
 Este componente evalúa el resultado de aprendizaje 5 (capacidad de contrastar decisiones arquitectónicas), que es el de mayor nivel cognitivo y el que distingue una formación conceptual de una meramente operativa.
 
-#horizontalrule
-
 == Dificultades frecuentes y cómo anticiparlas
 <dificultades-frecuentes-y-cómo-anticiparlas>
 A continuación se enumeran las fricciones más comunes que experimentan los estudiantes al trabajar con el recurso, junto con orientaciones para anticiparlas en clase.
@@ -1180,8 +1263,6 @@ Cada herramienta introduce su propio lenguaje de configuración: YAML (Promtail,
 
 #strong[Recomendación docente:] Enfatizar desde la sesión 2 que cada herramienta tiene su propio lenguaje y que la habilidad transferible es leer la documentación del producto, no memorizar sintaxis.
 
-#horizontalrule
-
 == Recomendaciones de articulación con otras unidades del curso
 <recomendaciones-de-articulación-con-otras-unidades-del-curso>
 #table(
@@ -1194,9 +1275,6 @@ Cada herramienta introduce su propio lenguaje de configuración: YAML (Promtail,
   [Seguridad], [Usar el ejercicio de sanitización con VRL (guía Vector) para discutir manejo de credenciales en logs],
   [Despliegue continuo], [El recurso completo se despliega con #NormalTok("docker compose");\; puede extenderse a Kubernetes en una unidad posterior],
 )
-
-#horizontalrule
-
 == Mantenimiento y evolución del recurso
 <mantenimiento-y-evolución-del-recurso>
 El ecosistema de observabilidad evoluciona rápidamente; las versiones de las imágenes Docker quedan obsoletas en plazos de 12 a 18 meses. Se recomienda al docente que reutilice este material:
@@ -1204,8 +1282,6 @@ El ecosistema de observabilidad evoluciona rápidamente; las versiones de las im
 - Verificar las versiones de las imágenes en las guías al inicio de cada semestre.
 - Reportar errores o sugerencias al equipo autor a través del repositorio del recurso.
 - Considerar contribuciones de los propios estudiantes (actualización de versiones, nuevas guías) como actividad complementaria de aprendizaje.
-
-#horizontalrule
 
 == Contacto
 <contacto>
@@ -1228,13 +1304,9 @@ Este documento forma parte del #emph[Recurso educativo para el despliegue de eco
 #emph[Guía práctica para implementar una solución básica de centralización de logs usando Docker Compose y el stack ELK, como instanciación concreta de la arquitectura conceptual de observabilidad presentada en el documento central.]
 ]
 
-#horizontalrule
-
 == Objetivo de la guía
 <objetivo-de-la-guía>
 Implementar y validar una arquitectura básica de centralización de logs mediante Docker Compose y el stack ELK, como ejercicio aplicado de los conceptos de observabilidad estudiados previamente.
-
-#horizontalrule
 
 == Resultados de aprendizaje esperados
 <resultados-de-aprendizaje-esperados-1>
@@ -1245,8 +1317,6 @@ Al finalizar esta guía, el estudiante será capaz de:
 - Configurar aplicaciones para emitir logs estructurados.
 - Analizar y correlacionar eventos centralizados.
 - Reconocer desafíos y limitaciones de una solución básica de logging.
-
-#horizontalrule
 
 == Propósito y alcance del recurso
 <propósito-y-alcance-del-recurso>
@@ -1262,16 +1332,59 @@ El alcance del recurso se limita a la #strong[centralización y visualización d
 
 Aunque la implementación se apoya en el stack ELK, los principios abordados son #strong[transferibles a otros ecosistemas de observabilidad].
 
-#horizontalrule
-
 == Observabilidad y centralización de logs
 <observabilidad-y-centralización-de-logs>
-En arquitecturas basadas en microservicios, la observabilidad permite comprender el comportamiento interno del sistema a partir de señales externas. Los #strong[logs] constituyen una fuente primaria de información debido a su riqueza semántica y contextual.
+En arquitecturas basadas en microservicios, la observabilidad permite comprender el comportamiento interno del sistema a partir de señales externas. Los #strong[logs] constituyen una fuente primaria de información debido a su riqueza semántica y contextual, y la #strong[centralización de logs] mitiga la dispersión inherente a los sistemas distribuidos, consolidando los registros de múltiples componentes en un repositorio común.
 
-La #strong[centralización de logs] mitiga la dispersión inherente a los sistemas distribuidos, consolidando los registros generados por múltiples componentes en un repositorio común que facilita su análisis, correlación temporal y visualización.
+Hasta aquí, nada nuevo respecto al marco conceptual. La pregunta que esta guía busca responder es más concreta: una vez centralizado un log, #emph[¿cómo se almacena y cómo se busca entre millones de registros?] El stack ELK responde con un paradigma específico (el #strong[índice invertido]), y entenderlo es la clave para comprender por qué ELK es tan potente para la búsqueda y, al mismo tiempo, tan exigente en recursos.
 
-#horizontalrule
+=== El paradigma de ELK: el índice invertido
+<el-paradigma-de-elk-el-índice-invertido>
+En el documento conceptual se presentaron tres paradigmas de almacenamiento (marco conceptual, #ref(<sec-5-7-3>, supplement: [Sección])). ELK encarna el primero, heredado de los motores de búsqueda. La idea es sencilla pero poderosa: en lugar de guardar los logs como simples líneas de texto, #strong[Elasticsearch] descompone cada mensaje en sus términos individuales y construye un diccionario que asocia cada término con la lista de registros que lo contienen:
 
+#Skylighting(([#NormalTok("término \"saldo\"        → [log#42, log#118, log#349, ...]");],
+[#NormalTok("término \"insuficiente\" → [log#42, log#349, ...]");],));
+¿Por qué importa esto? Porque cuando buscas "saldo insuficiente", el motor no recorre millones de logs uno por uno: consulta directamente el diccionario y obtiene la respuesta de forma casi instantánea. Es la misma técnica que emplean los buscadores web, y es lo que convierte a Elasticsearch en una herramienta de búsqueda de texto completo extraordinariamente flexible.
+
+Observa que esta potencia tiene un precio: construir y mantener el índice invertido consume CPU, memoria y disco. Por eso ELK es el stack más demandante en recursos de todo el recurso (ver la sección 2), y por eso otros paradigmas (como el de #emph[solo etiquetas] que estudiarás en la guía de Promtail/Loki) renuncian deliberadamente a parte de esta flexibilidad para ganar eficiencia. No hay un paradigma "mejor": hay compromisos distintos para necesidades distintas.
+
+ELK está compuesto por tres piezas que mapean directamente a la arquitectura conceptual de cuatro etapas:
+
+#table(
+  columns: (33.33%, 33.33%, 33.33%),
+  align: (auto,auto,auto,),
+  table.header([Componente], [Etapa conceptual], [Rol],),
+  table.hline(),
+  [#strong[Logstash]], [Recolección + Procesamiento], [Recibe, parsea y transforma los logs antes de almacenarlos],
+  [#strong[Elasticsearch]], [Almacenamiento + Búsqueda], [Indexa (índice invertido) y responde las consultas],
+  [#strong[Kibana]], [Visualización], [Explora y grafica los logs centralizados],
+)
+#block[
+#callout(
+body: 
+[
+El nombre "ELK" corresponde a las iniciales de sus tres componentes: #strong[E]lasticsearch, #strong[L]ogstash y #strong[K]ibana. Es la denominación de industria más extendida para este stack.
+
+]
+, 
+title: 
+[
+Nota
+]
+, 
+background_color: 
+rgb("#dae6fb")
+, 
+icon_color: 
+rgb("#0758E5")
+, 
+icon: 
+fa-info()
+, 
+body_background_color: 
+white
+)
+]
 == Requisitos previos
 <requisitos-previos>
 - Docker instalado \
@@ -1326,9 +1439,6 @@ body_background_color:
 white
 )
 ]
-
-#horizontalrule
-
 == Estructura del proyecto
 <estructura-del-proyecto>
 #Skylighting(([#ExtensionTok("logs-centralizados/");],
@@ -1340,9 +1450,6 @@ white
 [#ExtensionTok("│");#NormalTok("   └── pipelines/");],
 [#ExtensionTok("│");#NormalTok("       └── ecs.conf");],
 [#ExtensionTok("└──");#NormalTok(" .env");],));
-
-#horizontalrule
-
 == Arquitectura de la solución
 <arquitectura-de-la-solución>
 #Skylighting(([#NormalTok("[Aplicaciones Java/Quarkus] --- (TCP JSON) ---> [Logstash] ---> [Elasticsearch] ---> [Kibana]");],));
@@ -1353,8 +1460,6 @@ La arquitectura implementada en este recurso se fundamenta en tres componentes p
 - #strong[Kibana]: capa de visualización y exploración de los datos centralizados.
 
 El uso de #strong[Docker Compose] permite describir y desplegar la arquitectura como código, garantizando la #strong[portabilidad, reproducibilidad y facilidad de experimentación] del entorno, características fundamentales en un contexto formativo.
-
-#horizontalrule
 
 == Implementación de la arquitectura conceptual con ELK
 <implementación-de-la-arquitectura-conceptual-con-elk>
@@ -1430,9 +1535,6 @@ El uso de #strong[Docker Compose] permite describir y desplegar la arquitectura 
 [],
 [#FunctionTok("volumes");#KeywordTok(":");],
 [#AttributeTok("  ");#FunctionTok("es_data");#KeywordTok(":");],));
-
-#horizontalrule
-
 === Pipeline de Logstash (#NormalTok("ecs.conf");)
 <pipeline-de-logstash-ecs.conf>
 #Skylighting(([#NormalTok("input {");],
@@ -1488,9 +1590,6 @@ body_background_color:
 white
 )
 ]
-
-#horizontalrule
-
 == Despliegue y validación
 <despliegue-y-validación>
 === Inicialización de los servicios
@@ -1498,22 +1597,14 @@ white
 El despliegue del entorno se realiza mediante un único comando, el cual levanta de forma coordinada todos los componentes definidos en el archivo #NormalTok("docker-compose.yml");.
 
 #Skylighting(([#ExtensionTok("docker");#NormalTok(" compose up ");#AttributeTok("-d");],));
-
-#horizontalrule
-
 === Validación de los servicios
 <validación-de-los-servicios>
 La validación del entorno permite comprobar que los contenedores asociados a Elasticsearch, Logstash y Kibana se encuentran en ejecución y disponibles.
 
 #Skylighting(([#ExtensionTok("docker");#NormalTok(" compose ps");],));
-
-#horizontalrule
-
 === Persistencia y configuración del entorno
 <persistencia-y-configuración-del-entorno>
 Se emplean #strong[volúmenes Docker] para garantizar la persistencia de los datos almacenados en #strong[Elasticsearch], incluso ante reinicios del entorno.
-
-#horizontalrule
 
 == Emisión de logs desde aplicaciones
 <emisión-de-logs-desde-aplicaciones>
@@ -1541,9 +1632,6 @@ Esta aproximación favorece la #strong[normalización semántica de los eventos]
 #strong[Uso del logger:]
 
 #Skylighting(([#KeywordTok("private");#NormalTok(" ");#DataTypeTok("static");#NormalTok(" ");#DataTypeTok("final");#NormalTok(" ");#BuiltInTok("Logger");#NormalTok(" LOG ");#OperatorTok("=");#NormalTok(" ");#BuiltInTok("Logger");#OperatorTok(".");#FunctionTok("getLogger");#OperatorTok("(");#NormalTok("MiClase");#OperatorTok(".");#FunctionTok("class");#OperatorTok(");");],));
-
-#horizontalrule
-
 === Otras aplicaciones Java (Logback)
 <otras-aplicaciones-java-logback>
 Para otras aplicaciones Java que no utilizan Quarkus, el recurso presenta un ejemplo basado en #strong[Logback], empleando un #emph[encoder] compatible con Logstash para la generación de logs estructurados en formato JSON.
@@ -1576,9 +1664,6 @@ Configura #NormalTok("logback.xml"); para enviar logs a Logstash:
 [#NormalTok("    <");#KeywordTok("appender-ref");#NormalTok(" ");#OtherTok("ref=");#StringTok("\"logstash\"");#NormalTok(" />");],
 [#NormalTok("  </");#KeywordTok("root");#NormalTok(">");],
 [#NormalTok("</");#KeywordTok("configuration");#NormalTok(">");],));
-
-#horizontalrule
-
 == Visualización en Kibana
 <visualización-en-kibana>
 Una vez centralizados, los logs pueden ser explorados mediante Kibana, permitiendo:
@@ -1604,8 +1689,6 @@ Selecciona la fuente #NormalTok("logs-producer-default"); para ver únicamente l
 
 Crea o selecciona el data view #NormalTok("logs-*"); con campo de tiempo #NormalTok("@timestamp");. Esta vista muestra todos los data streams que coinciden con el patrón.
 
-#horizontalrule
-
 == Actividades de profundización
 <actividades-de-profundización>
 - #strong[Simular fallos y rastrear su origen:] El endpoint #NormalTok("GET /api/error"); de la aplicación de ejemplo genera intencionalmente una #NormalTok("NullPointerException");. Ejecútelo y utilice Kibana para localizar el #emph[stacktrace] del error, validando la ventaja del campo #NormalTok("exception"); en formato ECS estructurado.
@@ -1618,8 +1701,6 @@ Crea o selecciona el data view #NormalTok("logs-*"); con campo de tiempo #Normal
 + ¿Qué ventaja concreta ofrece el Elastic Common Schema (ECS) frente a un esquema de logs personalizado cuando se correlacionan eventos de múltiples servicios en Kibana Discover?
 + El pipeline de Logstash de esta guía usa un appender TCP sin TLS. Analice qué riesgos de seguridad introduce este diseño y qué cambios de configuración serían necesarios para mitigarlos en un entorno productivo.
 + Evalúe las diferencias arquitectónicas entre los data streams de Elasticsearch 9.x (usados en esta guía) y los índices con fecha (#NormalTok("logs-YYYY.MM.dd");): ¿en qué escenarios concretos justificaría elegir uno sobre el otro?
-
-#horizontalrule
 
 == Troubleshooting
 <troubleshooting>
@@ -1637,8 +1718,6 @@ Crea o selecciona el data view #NormalTok("logs-*"); con campo de tiempo #Normal
 
 #strong[Solución:] El archivo #NormalTok("docker-compose.yml"); de esta guía ya incluye #NormalTok("xpack.fleet.enabled: \"false\""); en el servicio Kibana, lo que elimina el aviso. Si crea su propio #NormalTok("docker-compose.yml");, asegúrese de incluir esa variable de entorno.
 
-#horizontalrule
-
 == Referencias
 <referencias>
 - Logstash -- https:\/\/www.elastic.co/docs/reference/logstash
@@ -1655,8 +1734,6 @@ Crea o selecciona el data view #NormalTok("logs-*"); con campo de tiempo #Normal
 #quote(block: true)[
 #emph[Guía práctica para implementar una solución básica de centralización de logs utilizando Docker Compose y el stack OLO, como instanciación concreta de la arquitectura conceptual de observabilidad presentada en el documento central.]
 ]
-
-#horizontalrule
 
 == Objetivo de la guía
 <objetivo-de-la-guía-1>
@@ -1688,9 +1765,6 @@ body_background_color:
 white
 )
 ]
-
-#horizontalrule
-
 == Resultados de aprendizaje esperados
 <resultados-de-aprendizaje-esperados-2>
 Al finalizar esta guía, el estudiante será capaz de:
@@ -1700,8 +1774,6 @@ Al finalizar esta guía, el estudiante será capaz de:
 - Configurar aplicaciones para emitir logs estructurados.
 - Analizar y correlacionar eventos centralizados.
 - Reconocer desafíos y limitaciones de una solución básica de logging.
-
-#horizontalrule
 
 == Propósito y alcance del recurso
 <propósito-y-alcance-del-recurso-1>
@@ -1715,15 +1787,30 @@ El material está concebido como:
 
 El alcance del recurso se limita a la #strong[centralización y visualización de logs]. No se abordan métricas ni trazas distribuidas, aunque se dejan sentadas las bases conceptuales para su integración futura.
 
-#horizontalrule
-
 == Observabilidad y centralización de logs
 <observabilidad-y-centralización-de-logs-1>
-En arquitecturas basadas en microservicios, la observabilidad permite comprender el comportamiento interno del sistema a partir de las señales externas que este produce durante su ejecución. Los #strong[logs] constituyen una fuente primaria de información debido a su riqueza semántica y contextual.
+En arquitecturas basadas en microservicios, la observabilidad permite comprender el comportamiento interno del sistema a partir de las señales externas que este produce durante su ejecución. Los #strong[logs] constituyen una fuente primaria de información debido a su riqueza semántica y contextual, y la #strong[centralización de logs] mitiga la dispersión inherente a los sistemas distribuidos consolidando los registros de múltiples componentes en un repositorio común.
 
-La #strong[centralización de logs] mitiga la dispersión inherente a los sistemas distribuidos, consolidando los registros generados por múltiples componentes en un repositorio común que facilita su análisis, correlación temporal y visualización.
+Si ya recorriste la guía de ELK, buena parte de esta te resultará familiar (y eso es precisamente lo interesante). El stack #strong[OLO] (OpenSearch + Logstash + OpenSearch Dashboards) comparte exactamente el mismo paradigma de almacenamiento que ELK: el #strong[índice invertido] (marco conceptual, #ref(<sec-5-7-3>, supplement: [Sección])). La diferencia entre ambos no es, en el fondo, técnica, sino de gobernanza del software libre.
 
-#horizontalrule
+=== ¿Por qué existe OpenSearch si ya existía Elasticsearch?
+<por-qué-existe-opensearch-si-ya-existía-elasticsearch>
+En 2021, Elastic (la empresa detrás de Elasticsearch) cambió la licencia de su producto, abandonando la licencia open source Apache 2.0 por una licencia más restrictiva (SSPL). En respuesta, Amazon y la comunidad crearon un #emph[fork] (una bifurcación) a partir de la última versión Apache 2.0 de Elasticsearch y Kibana, dando origen a #strong[OpenSearch] y #strong[OpenSearch Dashboards].
+
+Observa la lección de fondo: la elección de una tecnología no depende únicamente de sus capacidades técnicas, sino también del modelo de licenciamiento y de la gobernanza del proyecto que la sostiene. Para un ingeniero, anticipar estas implicaciones es tan importante como dominar la herramienta misma.
+
+En lo conceptual, OLO se mapea a la arquitectura de cuatro etapas igual que ELK, componente por componente:
+
+#table(
+  columns: (33.33%, 33.33%, 33.33%),
+  align: (auto,auto,auto,),
+  table.header([Componente], [Etapa conceptual], [Equivalente en ELK],),
+  table.hline(),
+  [#strong[Logstash]], [Recolección + Procesamiento], [Logstash],
+  [#strong[OpenSearch]], [Almacenamiento + Búsqueda (índice invertido)], [Elasticsearch],
+  [#strong[OpenSearch Dashboards]], [Visualización], [Kibana],
+)
+Esta correspondencia casi exacta no es casual: ambos stacks descienden del mismo código base. Comprenderla te permite transferir de inmediato a OLO todo lo aprendido sobre el paradigma de índice invertido en la guía de ELK.
 
 == Requisitos previos
 <requisitos-previos-1>
@@ -1807,9 +1894,6 @@ body_background_color:
 white
 )
 ]
-
-#horizontalrule
-
 == Estructura del proyecto
 <estructura-del-proyecto-1>
 #Skylighting(([#ExtensionTok("logs-centralizados/");],
@@ -1822,9 +1906,6 @@ white
 [#ExtensionTok("│");#NormalTok("   └── pipelines/");],
 [#ExtensionTok("│");#NormalTok("       └── logstash.conf");],
 [#ExtensionTok("└──");#NormalTok(" .env");],));
-
-#horizontalrule
-
 == Arquitectura de la solución
 <arquitectura-de-la-solución-1>
 #Skylighting(([#NormalTok("[Aplicaciones Java / Quarkus]");],
@@ -1842,8 +1923,6 @@ La arquitectura implementada en este recurso se fundamenta en tres componentes p
 - #strong[OpenSearch Dashboards]: capa de visualización y exploración de los datos centralizados.
 
 El uso de #strong[Docker Compose] permite describir y desplegar la arquitectura como código, garantizando la #strong[portabilidad, reproducibilidad y facilidad de experimentación] del entorno, características fundamentales en un contexto formativo.
-
-#horizontalrule
 
 == Implementación de la arquitectura conceptual con OLO
 <implementación-de-la-arquitectura-conceptual-con-olo>
@@ -1924,9 +2003,6 @@ El uso de #strong[Docker Compose] permite describir y desplegar la arquitectura 
 [],
 [#FunctionTok("volumes");#KeywordTok(":");],
 [#AttributeTok("  ");#FunctionTok("opensearch_data");#KeywordTok(":");],));
-
-#horizontalrule
-
 === Pipeline de Logstash (#NormalTok("logstash.conf");)
 <pipeline-de-logstash-logstash.conf>
 #Skylighting(([#NormalTok("input {");],
@@ -1953,9 +2029,6 @@ El uso de #strong[Docker Compose] permite describir y desplegar la arquitectura 
 [#NormalTok("    manage_template => false");],
 [#NormalTok("  }");],
 [#NormalTok("}");],));
-
-#horizontalrule
-
 === Dockerfile de Logstash
 <dockerfile-de-logstash>
 #Skylighting(([#KeywordTok("FROM");#NormalTok(" docker.io/logstash:9.4.1");],
@@ -1986,9 +2059,6 @@ body_background_color:
 white
 )
 ]
-
-#horizontalrule
-
 == Despliegue y validación
 <despliegue-y-validación-1>
 === Inicialización de los servicios
@@ -1996,17 +2066,11 @@ white
 El despliegue del entorno se realiza mediante un único comando, el cual levanta de forma coordinada todos los componentes definidos en el archivo #NormalTok("docker-compose.yml");.
 
 #Skylighting(([#ExtensionTok("docker");#NormalTok(" compose up ");#AttributeTok("-d");],));
-
-#horizontalrule
-
 === Validación de los servicios
 <validación-de-los-servicios-1>
 La validación del entorno permite comprobar que los contenedores asociados a OpenSearch, Logstash y OpenSearch Dashboards se encuentran en ejecución y disponibles.
 
 #Skylighting(([#ExtensionTok("docker");#NormalTok(" compose ps");],));
-
-#horizontalrule
-
 === Persistencia y configuración del entorno
 <persistencia-y-configuración-del-entorno-1>
 Se emplean #strong[volúmenes Docker] para garantizar la persistencia de los datos almacenados en #strong[OpenSearch], incluso ante reinicios del entorno.
@@ -2048,9 +2112,6 @@ white
 [#NormalTok("      \"timeFieldName\": \"@timestamp\"");],
 [#NormalTok("    }");],
 [#NormalTok("  }'");],));
-
-#horizontalrule
-
 == Emisión de logs desde aplicaciones
 <emisión-de-logs-desde-aplicaciones-1>
 === Aplicaciones Quarkus
@@ -2077,9 +2138,6 @@ Esta aproximación favorece la #strong[normalización semántica de los eventos]
 #strong[Uso del logger:]
 
 #Skylighting(([#KeywordTok("private");#NormalTok(" ");#DataTypeTok("static");#NormalTok(" ");#DataTypeTok("final");#NormalTok(" ");#BuiltInTok("Logger");#NormalTok(" LOG ");#OperatorTok("=");#NormalTok(" ");#BuiltInTok("Logger");#OperatorTok(".");#FunctionTok("getLogger");#OperatorTok("(");#NormalTok("MiClase");#OperatorTok(".");#FunctionTok("class");#OperatorTok(");");],));
-
-#horizontalrule
-
 === Otras aplicaciones Java (Logback)
 <otras-aplicaciones-java-logback-1>
 Para otras aplicaciones Java que no utilizan Quarkus, el recurso presenta un ejemplo basado en #strong[Logback], empleando un #emph[encoder] compatible con Logstash para la generación de logs estructurados en formato JSON.
@@ -2110,9 +2168,6 @@ Configura #NormalTok("logback.xml"); para enviar logs a Logstash:
 [#NormalTok("    <");#KeywordTok("appender-ref");#NormalTok(" ");#OtherTok("ref=");#StringTok("\"logstash\"");#NormalTok(" />");],
 [#NormalTok("  </");#KeywordTok("root");#NormalTok(">");],
 [#NormalTok("</");#KeywordTok("configuration");#NormalTok(">");],));
-
-#horizontalrule
-
 == Visualización en OpenSearch Dashboards
 <visualización-en-opensearch-dashboards>
 Una vez centralizados, los logs pueden ser explorados mediante OpenSearch Dashboards, permitiendo:
@@ -2131,9 +2186,6 @@ Ingrese a #strong[OpenSearch Dashboards → Discover]: una vez creado el index p
 Alternativamente, acceda a #strong[Observability → Logs] y en el campo PPL ingrese:
 
 #Skylighting(([#NormalTok("source = logs-producer-*");],));
-
-#horizontalrule
-
 == Actividades de profundización
 <actividades-de-profundización-1>
 - #strong[Simular fallos y rastrear su origen:] El endpoint #NormalTok("GET /api/error"); de la aplicación de ejemplo genera intencionalmente una #NormalTok("NullPointerException");. Ejecútelo y utilice OpenSearch Dashboards para localizar el evento de error e inspeccionar el stacktrace estructurado.
@@ -2146,8 +2198,6 @@ Alternativamente, acceda a #strong[Observability → Logs] y en el campo PPL ing
 + OpenSearch es un fork de Elasticsearch. Explique qué es el campo #NormalTok("manage_template => false"); en el pipeline de Logstash de esta guía y por qué es necesario específicamente con el plugin #NormalTok("logstash-output-opensearch"); 2.x sobre Logstash 9.x.
 + Compare el modelo de índices con fecha (#NormalTok("logs-producer-YYYY.MM.dd");) que usa este stack frente a los data streams de Elasticsearch 9.x de la guía ELK: ¿qué implicaciones tiene cada enfoque para la gestión del ciclo de vida de los datos (ILM)?
 + Evalúe las razones técnicas y de gobernanza que llevaron a la bifurcación de OpenSearch desde Elasticsearch 7.10. ¿Cómo afecta esa historia a la elección de versión en esta guía (OpenSearch 3.0) frente a la guía GELF (OpenSearch 2.12)?
-
-#horizontalrule
 
 == Troubleshooting
 <troubleshooting-1>
@@ -2162,8 +2212,6 @@ Alternativamente, acceda a #strong[Observability → Logs] y en el campo PPL ing
 #strong[Error común:] Logstash arranca pero no indexa documentos; en sus logs aparece #NormalTok("undefined method 'exists?' for class File");.
 
 #strong[Explicación:] El plugin #NormalTok("logstash-output-opensearch"); 2.x tiene un bug de compatibilidad con JRuby 10 (Logstash 9.x) al intentar instalar templates de índice. El pipeline de esta guía ya incluye #NormalTok("manage_template => false"); para evitarlo. Si crea su propio pipeline, asegúrese de incluir esa opción.
-
-#horizontalrule
 
 == Referencias
 <referencias-1>
@@ -2183,13 +2231,9 @@ Alternativamente, acceda a #strong[Observability → Logs] y en el campo PPL ing
 #emph[Guía práctica para implementar una solución básica de centralización de logs utilizando Docker Compose y Fluentd, como instanciación concreta de la arquitectura conceptual de observabilidad presentada en el documento central.]
 ]
 
-#horizontalrule
-
 == Objetivo de la guía
 <objetivo-de-la-guía-2>
 Implementar y validar una arquitectura básica de centralización de logs mediante Docker Compose y Fluentd, como ejercicio aplicado de los conceptos de observabilidad estudiados previamente.
-
-#horizontalrule
 
 == Resultados de aprendizaje esperados
 <resultados-de-aprendizaje-esperados-3>
@@ -2200,8 +2244,6 @@ Al finalizar esta guía, el estudiante será capaz de:
 - Configurar aplicaciones para emitir logs hacia Fluentd.
 - Analizar y correlacionar eventos centralizados.
 - Reconocer desafíos y limitaciones de una solución básica de logging.
-
-#horizontalrule
 
 == Propósito y alcance del recurso
 <propósito-y-alcance-del-recurso-2>
@@ -2215,16 +2257,46 @@ El material está concebido como:
 
 El alcance del recurso se limita a la #strong[centralización y visualización de logs]. No se abordan métricas ni trazas distribuidas, aunque se dejan sentadas las bases conceptuales para su integración futura.
 
-#horizontalrule
-
 == Observabilidad y centralización de logs
 <observabilidad-y-centralización-de-logs-2>
-En arquitecturas basadas en microservicios, la observabilidad permite comprender el comportamiento interno del sistema a partir de las señales externas que este produce durante su ejecución. Los #strong[logs] constituyen una fuente primaria de información debido a su riqueza semántica y contextual.
+En arquitecturas basadas en microservicios, la observabilidad permite comprender el comportamiento interno del sistema a partir de las señales externas que este produce durante su ejecución. Los #strong[logs] constituyen una fuente primaria de información debido a su riqueza semántica y contextual, y la #strong[centralización de logs] mitiga la dispersión inherente a los sistemas distribuidos consolidando los registros de múltiples componentes en un repositorio común.
 
-La #strong[centralización de logs] mitiga la dispersión inherente a los sistemas distribuidos, consolidando los registros generados por múltiples componentes en un repositorio común que facilita su análisis, correlación temporal y visualización.
+Las guías de ELK y OLO presentaban stacks "verticales", en los que el recolector (Logstash) venía estrechamente atado a un motor de almacenamiento concreto. Fluentd propone una idea distinta y muy influyente: #strong[desacoplar por completo la recolección del almacenamiento].
 
-#horizontalrule
+=== Fluentd como "capa de logging unificada"
+<fluentd-como-capa-de-logging-unificada>
+Fluentd se sitúa en las etapas de #strong[recolección y procesamiento] de la arquitectura conceptual (marco conceptual, #ref(<sec-5-7-1>, supplement: [Sección]) y #ref(<sec-5-7-2>, supplement: [Sección])), pero no impone ningún destino. Su filosofía es actuar como una #emph[capa de logging unificada] (#emph[unified logging layer]): un punto central que recibe logs desde cualquier fuente, los normaliza a un formato común y los reenvía hacia cualquier destino.
 
+¿Cómo logra esta flexibilidad? Mediante un modelo de #strong[plugins]: entradas (#emph[inputs]), filtros (#emph[filters]) y salidas (#emph[outputs]) que se combinan como piezas de un mecano. Una misma instancia de Fluentd puede recibir logs por TCP, desde archivos y vía syslog, y enviarlos simultáneamente a un motor de búsqueda, a un archivo de respaldo y a un servicio en la nube, sin recompilar nada.
+
+Observa una propiedad clave que conecta directamente con el marco conceptual: Fluentd implementa #emph[buffering] (amortiguación) configurable para no perder eventos cuando el destino se ralentiza o cae, materializando el principio de desacoplamiento temporal y las garantías de entrega discutidos en el marco conceptual (#ref(<sec-5-7-1>, supplement: [Sección]) y #ref(<sec-5-6>, supplement: [Sección])).
+
+#block[
+#callout(
+body: 
+[
+Fluentd es un proyecto graduado de la #strong[CNCF] (Cloud Native Computing Foundation), la misma fundación que alberga a Kubernetes. Esto refleja su adopción como uno de los estándares de facto para la recolección de logs en entornos nativos de la nube.
+
+]
+, 
+title: 
+[
+Nota
+]
+, 
+background_color: 
+rgb("#dae6fb")
+, 
+icon_color: 
+rgb("#0758E5")
+, 
+icon: 
+fa-info()
+, 
+body_background_color: 
+white
+)
+]
 == Requisitos previos
 <requisitos-previos-2>
 - Docker instalado \
@@ -2279,9 +2351,6 @@ body_background_color:
 white
 )
 ]
-
-#horizontalrule
-
 == Estructura del proyecto
 <estructura-del-proyecto-2>
 #Skylighting(([#ExtensionTok("logs-centralizados/");],
@@ -2294,9 +2363,6 @@ white
 [#ExtensionTok("│");#NormalTok("   └── conf/");],
 [#ExtensionTok("│");#NormalTok("       └── fluent.conf");],
 [#ExtensionTok("└──");#NormalTok(" .env");],));
-
-#horizontalrule
-
 == Arquitectura de la solución
 <arquitectura-de-la-solución-2>
 #Skylighting(([#NormalTok("[Aplicaciones Java / Quarkus]");],
@@ -2314,8 +2380,6 @@ La arquitectura implementada en este recurso se fundamenta en tres componentes p
 - #strong[Kibana]: capa de visualización y exploración de los datos centralizados.
 
 El uso de #strong[Docker Compose] permite describir y desplegar la arquitectura como código, garantizando la #strong[portabilidad, reproducibilidad y facilidad de experimentación] del entorno, características fundamentales en un contexto formativo.
-
-#horizontalrule
 
 == Implementación de la arquitectura conceptual con Fluentd
 <implementación-de-la-arquitectura-conceptual-con-fluentd>
@@ -2394,9 +2458,6 @@ El uso de #strong[Docker Compose] permite describir y desplegar la arquitectura 
 [],
 [#FunctionTok("volumes");#KeywordTok(":");],
 [#AttributeTok("  ");#FunctionTok("es_data");#KeywordTok(":");],));
-
-#horizontalrule
-
 === Configuración de Fluentd (#NormalTok("fluent.conf");)
 <configuración-de-fluentd-fluent.conf>
 #Skylighting(([#NormalTok("<");#KeywordTok("source");#NormalTok(">");],
@@ -2447,9 +2508,6 @@ body_background_color:
 white
 )
 ]
-
-#horizontalrule
-
 === Dockerfile de Fluentd
 <dockerfile-de-fluentd>
 #Skylighting(([#KeywordTok("FROM");#NormalTok(" fluent/fluentd:v1.18.0-debian");],
@@ -2482,9 +2540,6 @@ body_background_color:
 white
 )
 ]
-
-#horizontalrule
-
 == Despliegue y validación
 <despliegue-y-validación-2>
 === Inicialización de los servicios
@@ -2497,14 +2552,9 @@ El despliegue del entorno se realiza mediante un único comando, el cual levanta
 La validación del entorno permite comprobar que los contenedores asociados a Elasticsearch, Fluentd y Kibana se encuentran en ejecución y disponibles.
 
 #Skylighting(([#ExtensionTok("docker");#NormalTok(" compose ps");],));
-
-#horizontalrule
-
 === Persistencia y configuración del entorno
 <persistencia-y-configuración-del-entorno-2>
 Se emplean #strong[volúmenes Docker] para garantizar la persistencia de los datos almacenados en #strong[Elasticsearch], incluso ante reinicios del entorno.
-
-#horizontalrule
 
 == Emisión de logs desde aplicaciones
 <emisión-de-logs-desde-aplicaciones-2>
@@ -2532,9 +2582,6 @@ Fluentd recibe estos eventos a través de su plugin #NormalTok("in_tcp"); config
 #strong[Uso del logger:]
 
 #Skylighting(([#KeywordTok("private");#NormalTok(" ");#DataTypeTok("static");#NormalTok(" ");#DataTypeTok("final");#NormalTok(" ");#BuiltInTok("Logger");#NormalTok(" LOG ");#OperatorTok("=");#NormalTok(" ");#BuiltInTok("Logger");#OperatorTok(".");#FunctionTok("getLogger");#OperatorTok("(");#NormalTok("MiClase");#OperatorTok(".");#FunctionTok("class");#OperatorTok(");");],));
-
-#horizontalrule
-
 === Otras aplicaciones Java (Logback con Syslog)
 <otras-aplicaciones-java-logback-con-syslog>
 #quote(block: true)[
@@ -2600,9 +2647,6 @@ body_background_color:
 white
 )
 ]
-
-#horizontalrule
-
 == Visualización en Kibana
 <visualización-en-kibana-1>
 Una vez centralizados, los logs pueden ser explorados mediante Kibana, permitiendo:
@@ -2620,8 +2664,6 @@ Accede a:
 
 Navegue a #strong[Hamburger menu → Discover]. Cree un data view con el patrón #NormalTok("logs-*"); y campo de tiempo #NormalTok("@timestamp");. Esta vista muestra todos los índices generados por Fluentd con el prefijo #NormalTok("logs-YYYY.MM.dd");.
 
-#horizontalrule
-
 == Actividades de profundización
 <actividades-de-profundización-2>
 - #strong[Simular fallos y rastrear su origen:] El endpoint #NormalTok("GET /api/error"); de la aplicación de ejemplo genera intencionalmente una #NormalTok("NullPointerException");. Ejecútelo y utilice Kibana para localizar el evento de error e inspeccionar el stacktrace estructurado.
@@ -2635,8 +2677,6 @@ Navegue a #strong[Hamburger menu → Discover]. Cree un data view con el patrón
 + En la configuración de Fluentd de esta guía, el bloque #NormalTok("<buffer>"); usa #NormalTok("@type file"); con #NormalTok("flush_interval 5s");. Explique qué papel cumple este buffer en términos de confiabilidad de entrega y qué ocurriría si el contenedor de Fluentd se reinicia antes de que el buffer se vacíe.
 + Compare el modelo de configuración de Fluentd (#NormalTok("fluent.conf"); con directivas #NormalTok("<source>");, #NormalTok("<filter>");, #NormalTok("<match>");) frente al pipeline de Logstash (#NormalTok("input");, #NormalTok("filter");, #NormalTok("output");): ¿qué diferencias de diseño se observan en la forma de enrutar eventos a múltiples destinos?
 + La sección 7.2 describe el transporte Syslog UDP como alternativa al TCP JSON. Evalúe las implicaciones de observabilidad de cada protocolo: ¿cuál ofrece mayor fidelidad semántica y por qué el enfoque TCP JSON es preferible para sistemas modernos?
-
-#horizontalrule
 
 == Troubleshooting
 <troubleshooting-2>
@@ -2662,8 +2702,6 @@ Navegue a #strong[Hamburger menu → Discover]. Cree un data view con el patrón
 
 #strong[Solución:] Asegúrese de que el archivo de configuración se llame #NormalTok("fluent.conf");.
 
-#horizontalrule
-
 == Referencias
 <referencias-2>
 - Fluentd - https:\/\/docs.fluentd.org
@@ -2683,16 +2721,12 @@ Navegue a #strong[Hamburger menu → Discover]. Cree un data view con el patrón
 ]
 
 #quote(block: true)[
-#strong[Estado de Promtail:] A partir de 2023, Grafana Labs ha puesto Promtail en #strong[modo mantenimiento]. Se siguen publicando correcciones de seguridad, pero no se añaden nuevas funcionalidades. La versión #NormalTok("3.0.0"); es la última de la rama principal y no se prevén versiones posteriores. La herramienta recomendada para nuevos proyectos es #link("https://grafana.com/docs/alloy/")[#strong[Grafana Alloy]], el sucesor unificado que incorpora las capacidades de Promtail y del Grafana Agent. Esta guía usa Promtail porque su modelo conceptual ---#emph[file tailing] hacia Loki--- es más directo para el aprendizaje y sigue siendo completamente funcional. Una vez comprendido Promtail, la migración a Alloy es natural.
+#strong[Estado de Promtail:] A partir de 2023, Grafana Labs ha puesto Promtail en #strong[modo mantenimiento]. Se siguen publicando correcciones de seguridad, pero no se añaden nuevas funcionalidades. La versión #NormalTok("3.0.0"); es la última de la rama principal y no se prevén versiones posteriores. La herramienta recomendada para nuevos proyectos es #link("https://grafana.com/docs/alloy/")[#strong[Grafana Alloy]], el sucesor unificado que incorpora las capacidades de Promtail y del Grafana Agent. Esta guía usa Promtail porque su modelo conceptual (#emph[file tailing] hacia Loki) es más directo para el aprendizaje y sigue siendo completamente funcional. Una vez comprendido Promtail, la migración a Alloy es natural.
 ]
-
-#horizontalrule
 
 == Objetivo de la guía
 <objetivo-de-la-guía-3>
 Implementar y validar una arquitectura de centralización de logs mediante #strong[Docker Compose], utilizando #strong[Promtail] como agente recolector, #strong[Loki] como motor de indexación y almacenamiento, y #strong[Grafana] para la visualización y análisis.
-
-#horizontalrule
 
 == Resultados de aprendizaje esperados
 <resultados-de-aprendizaje-esperados-4>
@@ -2704,8 +2738,6 @@ Al finalizar esta guía, el estudiante será capaz de:
 - Configurar Promtail para recolectar y enviar (#emph[scrape]) logs desde volúmenes compartidos.
 - Analizar y correlacionar eventos centralizados utilizando el lenguaje LogQL en Grafana.
 
-#horizontalrule
-
 == Propósito y alcance del recurso
 <propósito-y-alcance-del-recurso-3>
 El propósito principal de este recurso es guiar el diseño, despliegue y uso de una #strong[arquitectura de centralización de logs] eficiente, basada en la filosofía de Loki (indexación ligera basada en etiquetas en lugar de texto completo).
@@ -2716,16 +2748,67 @@ El material está concebido como:
 - Un #strong[entorno de laboratorio reproducible], para experimentar con flujos de generación, recolección y análisis.
 - Un #strong[caso de estudio técnico], que ilustra la recolección de logs a través de lectura directa de archivos (#emph[file tailing]) utilizando Promtail.
 
-#horizontalrule
-
 == Observabilidad y centralización de logs
 <observabilidad-y-centralización-de-logs-3>
-En arquitecturas basadas en microservicios, la observabilidad permite comprender el comportamiento interno del sistema. Los #strong[logs] constituyen una fuente primaria de información debido a su riqueza contextual.
+En arquitecturas basadas en microservicios, la observabilidad permite comprender el comportamiento interno del sistema a partir de señales externas. Los #strong[logs] constituyen una fuente primaria de información debido a su riqueza contextual.
 
-El ecosistema de Grafana aborda la centralización con un enfoque muy eficiente: - #strong[Promtail] es el agente encargado de descubrir y leer archivos de log (#emph[file tailing]) para enviarlos a Loki. - #strong[Loki] almacena los logs, pero solo indexa los #strong[metadatos (etiquetas/labels)], no el contenido completo del mensaje. Esto lo hace significativamente más ligero que motores de indexación completa como Elasticsearch u OpenSearch.
+Si las guías de ELK y OLO te mostraron el paradigma del índice invertido, esta guía te presenta su contrapunto más interesante. El ecosistema de Grafana (Promtail y Loki) parte de una pregunta provocadora: #emph[¿y si no indexáramos el contenido de los logs en absoluto?]
 
-#horizontalrule
+=== El paradigma de Loki: indexar solo etiquetas
+<el-paradigma-de-loki-indexar-solo-etiquetas>
+Recordando los tres paradigmas de almacenamiento del marco conceptual (#ref(<sec-5-7-3>, supplement: [Sección])), Loki encarna el tercero: el #strong[índice de solo etiquetas]. La diferencia con ELK es radical y vale la pena detenerse en ella:
 
+#table(
+  columns: (33.33%, 33.33%, 33.33%),
+  align: (auto,auto,auto,),
+  table.header([], [ELK / OpenSearch], [Loki],),
+  table.hline(),
+  [Qué indexa], [Cada término de cada mensaje], [Solo un puñado de etiquetas (metadatos)],
+  [Buscar texto libre], [Inmediato (índice invertido)], [Escaneo en tiempo de consulta],
+  [Costo de almacenamiento], [Alto], [Muy bajo],
+  [Analogía], [El índice temático de un libro], [Las etiquetas de las carpetas de un archivador],
+)
+¿Por qué renunciar a indexar el contenido? Porque indexarlo todo es caro (marco conceptual, #ref(<sec-5-7-3>, supplement: [Sección])). La apuesta de Loki es que, en la práctica, casi siempre acotas tu búsqueda primero por metadatos ("dame los logs del servicio #NormalTok("pagos"); en el entorno #NormalTok("prod"); durante la última hora") y solo entonces buscas dentro de ese subconjunto ya reducido. Loki indexa esas etiquetas (#NormalTok("servicio");, #NormalTok("entorno");…) para filtrar a gran velocidad, y deja el contenido sin indexar, comprimido en bloques baratos que solo se escanean cuando hace falta.
+
+El resultado es un sistema mucho más ligero en disco y memoria que un motor de indexación completa, a cambio de búsquedas de texto libre más lentas. De nuevo: no es "mejor" ni "peor", es un compromiso distinto.
+
+El stack PLG (Promtail, Loki, Grafana) se reparte las etapas conceptuales de esta forma:
+
+#table(
+  columns: (33.33%, 33.33%, 33.33%),
+  align: (auto,auto,auto,),
+  table.header([Componente], [Etapa conceptual], [Rol],),
+  table.hline(),
+  [#strong[Promtail]], [Recolección], [Descubre y lee archivos de log (#emph[file tailing]) y los envía a Loki],
+  [#strong[Loki]], [Almacenamiento + Búsqueda], [Indexa solo etiquetas; responde consultas mediante #strong[LogQL]],
+  [#strong[Grafana]], [Visualización], [Explora y grafica los logs con LogQL],
+)
+#block[
+#callout(
+body: 
+[
+El diseño cuidadoso de las etiquetas es crítico en Loki: usar como etiqueta un campo de alta #strong[cardinalidad] (marco conceptual, #ref(<sec-5-6>, supplement: [Sección])), como un identificador de usuario, multiplica el número de flujos internos y degrada el rendimiento. La regla práctica es: etiquetas de baja cardinalidad, y el resto de la información dentro del mensaje.
+
+]
+, 
+title: 
+[
+Nota
+]
+, 
+background_color: 
+rgb("#dae6fb")
+, 
+icon_color: 
+rgb("#0758E5")
+, 
+icon: 
+fa-info()
+, 
+body_background_color: 
+white
+)
+]
 == Requisitos previos
 <requisitos-previos-3>
 - Docker instalado (https:\/\/docs.docker.com/engine/install/)
@@ -2754,9 +2837,6 @@ Estos valores son parametrizables mediante variables de entorno definidas en un 
 [#VariableTok("PROMTAIL_MEM_LIMIT");#OperatorTok("=");#NormalTok("256m");],
 [#VariableTok("GRAFANA_MEM_LIMIT");#OperatorTok("=");#NormalTok("512m");],
 [#VariableTok("PRODUCER_MEM_LIMIT");#OperatorTok("=");#NormalTok("512m");],));
-
-#horizontalrule
-
 == Estructura del proyecto
 <estructura-del-proyecto-3>
 #Skylighting(([#ExtensionTok("logs-centralizados/");],
@@ -2771,9 +2851,6 @@ Estos valores son parametrizables mediante variables de entorno definidas en un 
 [#ExtensionTok("│");#NormalTok("       └── datasources/");],
 [#ExtensionTok("│");#NormalTok("           └── loki.yaml");],
 [#ExtensionTok("└──");#NormalTok(" logs/                 ");#OperatorTok("<");#NormalTok("-- Volumen compartido para archivos de log");],));
-
-#horizontalrule
-
 == Arquitectura de la solución
 <arquitectura-de-la-solución-3>
 #Skylighting(([#NormalTok("[Aplicaciones Java / Quarkus]");],
@@ -2794,8 +2871,6 @@ La arquitectura implementada en este recurso se fundamenta en tres componentes p
 - #strong[Promtail]: agente de recolección que vigila (#emph[tail]) archivos de log en un volumen compartido y los envía a Loki.
 - #strong[Loki]: motor de almacenamiento ligero que indexa solo etiquetas (labels), no el contenido textual de los logs.
 - #strong[Grafana]: capa de visualización y exploración mediante el lenguaje de consulta #strong[LogQL].
-
-#horizontalrule
 
 == Implementación de la arquitectura conceptual
 <implementación-de-la-arquitectura-conceptual>
@@ -2883,9 +2958,6 @@ body_background_color:
 white
 )
 ]
-
-#horizontalrule
-
 === Configuración de Promtail (#NormalTok("promtail-config.yaml");)
 <configuración-de-promtail-promtail-config.yaml>
 #Skylighting(([#FunctionTok("server");#KeywordTok(":");],
@@ -2938,9 +3010,6 @@ body_background_color:
 white
 )
 ]
-
-#horizontalrule
-
 === Aprovisionamiento de Grafana (#NormalTok("grafana/provisioning/datasources/loki.yaml");)
 <aprovisionamiento-de-grafana-grafanaprovisioningdatasourcesloki.yaml>
 #Skylighting(([#FunctionTok("apiVersion");#KeywordTok(":");#AttributeTok(" ");#DecValTok("1");],
@@ -2977,9 +3046,6 @@ body_background_color:
 white
 )
 ]
-
-#horizontalrule
-
 == Despliegue y validación
 <despliegue-y-validación-3>
 Antes de levantar el stack, cree el directorio compartido para los logs:
@@ -2991,9 +3057,6 @@ Luego ejecute:
 Verifique que los servicios estén activos:
 
 #Skylighting(([#ExtensionTok("docker");#NormalTok(" compose ps");],));
-
-#horizontalrule
-
 == Emisión de logs desde aplicaciones
 <emisión-de-logs-desde-aplicaciones-3>
 A diferencia de otras guías donde se usa envío por red (TCP/UDP), Promtail se especializa en #strong[leer archivos de log]. La aplicación escribe en un archivo dentro del volumen compartido #NormalTok("./logs");, y Promtail lo vigila continuamente.
@@ -3046,9 +3109,6 @@ white
 #strong[Uso del logger:]
 
 #Skylighting(([#KeywordTok("private");#NormalTok(" ");#DataTypeTok("static");#NormalTok(" ");#DataTypeTok("final");#NormalTok(" ");#BuiltInTok("Logger");#NormalTok(" LOG ");#OperatorTok("=");#NormalTok(" ");#BuiltInTok("Logger");#OperatorTok(".");#FunctionTok("getLogger");#OperatorTok("(");#NormalTok("MiClase");#OperatorTok(".");#FunctionTok("class");#OperatorTok(");");],));
-
-#horizontalrule
-
 === Otras aplicaciones Java (Logback)
 <otras-aplicaciones-java-logback-2>
 Si usa Logback, configure un #NormalTok("FileAppender"); con el codificador JSON de Logstash.
@@ -3075,9 +3135,6 @@ Si usa Logback, configure un #NormalTok("FileAppender"); con el codificador JSON
 [#NormalTok("    <");#KeywordTok("appender-ref");#NormalTok(" ");#OtherTok("ref=");#StringTok("\"FILE\"");#NormalTok(" />");],
 [#NormalTok("  </");#KeywordTok("root");#NormalTok(">");],
 [#NormalTok("</");#KeywordTok("configuration");#NormalTok(">");],));
-
-#horizontalrule
-
 == Visualización en Grafana
 <visualización-en-grafana>
 Acceda a Grafana en #NormalTok("http://localhost:3000");. La fuente de datos Loki ya está preconfigurada.
@@ -3098,9 +3155,6 @@ Buscar errores por contenido:
 Analizar los campos del JSON y mostrar solo el mensaje:
 
 #Skylighting(([#NormalTok("{job=\"quarkus_app\"} | json | line_format \"{{.message}}\"");],));
-
-#horizontalrule
-
 == Actividades de profundización
 <actividades-de-profundización-3>
 - #strong[Simular fallos y rastrear su origen:] El endpoint #NormalTok("GET /api/error"); genera intencionalmente una #NormalTok("NullPointerException");. Ejecútelo y utilice la consulta LogQL #NormalTok("{job=\"quarkus_app\"} |= \"NullPointerException\""); para localizarlo en Grafana.
@@ -3114,8 +3168,6 @@ Analizar los campos del JSON y mostrar solo el mensaje:
 + La configuración de Promtail usa una etapa #NormalTok("regex"); para extraer #NormalTok("log.level"); como label de Loki. Explique por qué no se puede usar la etapa #NormalTok("json"); estándar para esta tarea con el formato ECS de Quarkus.
 + Analice el mecanismo de #emph[file tailing] de Promtail y el archivo #NormalTok("positions.yaml");: ¿qué garantías de entrega ofrece este enfoque si el contenedor de Promtail se reinicia inesperadamente? ¿Es equivalente al buffer de Fluentd o al TCP de Logstash?
 + Loki indexa solo etiquetas (labels) y no el contenido textual de los logs. Evalúe las ventajas e inconvenientes de este diseño frente a la indexación completa de Elasticsearch: ¿qué tipos de consultas se vuelven más costosas con Loki y cuáles se benefician de su ligereza?
-
-#horizontalrule
 
 == Troubleshooting
 <troubleshooting-3>
@@ -3140,8 +3192,6 @@ Analizar los campos del JSON y mostrar solo el mensaje:
 [#AttributeTok("    ");#KeywordTok("-");#AttributeTok(" loki_data:/tmp/loki");],));
 Y declare #NormalTok("loki_data:"); en la sección #NormalTok("volumes:"); del compose.
 
-#horizontalrule
-
 == Referencias
 <referencias-3>
 - Loki Documentation: https:\/\/grafana.com/docs/loki/latest/
@@ -3159,13 +3209,9 @@ Y declare #NormalTok("loki_data:"); en la sección #NormalTok("volumes:"); del c
 #emph[Guía práctica para implementar una solución básica de centralización de logs utilizando Docker Compose y GELF/Graylog, como instanciación concreta de la arquitectura conceptual de observabilidad presentada en el documento central.]
 ]
 
-#horizontalrule
-
 == Objetivo de la guía
 <objetivo-de-la-guía-4>
 Implementar y validar una arquitectura básica de centralización de logs mediante Docker Compose, utilizando #strong[GELF] como protocolo de transporte y #strong[Graylog] como plataforma de ingestión y visualización, como ejercicio aplicado de los conceptos de observabilidad estudiados previamente.
-
-#horizontalrule
 
 == Resultados de aprendizaje esperados
 <resultados-de-aprendizaje-esperados-5>
@@ -3177,8 +3223,6 @@ Al finalizar esta guía, el estudiante será capaz de:
 - Configurar aplicaciones Java para emitir logs mediante GELF (Quarkus y Logback).
 - Explorar y consultar logs centralizados desde la interfaz de Graylog.
 - Reconocer desafíos y limitaciones de un envío basado en UDP y mensajes fragmentados.
-
-#horizontalrule
 
 == Propósito y alcance del recurso
 <propósito-y-alcance-del-recurso-4>
@@ -3192,16 +3236,63 @@ El material está concebido como:
 
 El alcance del recurso se limita a la #strong[centralización y visualización de logs]. No se abordan métricas ni trazas distribuidas, aunque se dejan sentadas bases conceptuales para integraciones futuras.
 
-#horizontalrule
-
 == Observabilidad y centralización de logs
 <observabilidad-y-centralización-de-logs-4>
-En arquitecturas basadas en microservicios, la observabilidad permite comprender el comportamiento interno del sistema a partir de señales externas que este produce durante su ejecución. Los #strong[logs] constituyen una fuente primaria de información por su riqueza semántica y contextual.
+En arquitecturas basadas en microservicios, la observabilidad permite comprender el comportamiento interno del sistema a partir de señales externas que este produce durante su ejecución. Los #strong[logs] constituyen una fuente primaria de información por su riqueza semántica y contextual, y la #strong[centralización de logs] mitiga la dispersión inherente a los sistemas distribuidos consolidando los registros de múltiples componentes en un repositorio común.
 
-La #strong[centralización de logs] mitiga la dispersión inherente a los sistemas distribuidos, consolidando los registros generados por múltiples componentes en un repositorio común que facilita su análisis, correlación temporal y visualización.
+Las guías anteriores se centraban en cómo se #emph[almacenan] los logs. Esta pone el foco en un eslabón previo y a menudo subestimado: #emph[¿cómo viajan los logs desde la aplicación hasta el sistema central?] La respuesta nos lleva al concepto de #strong[protocolo de transporte].
 
-#horizontalrule
+=== Del syslog clásico a GELF
+<del-syslog-clásico-a-gelf>
+Durante décadas, el protocolo estándar para transmitir logs por red fue #strong[syslog]. Pero syslog arrastra limitaciones serias para los sistemas modernos: trunca los mensajes largos y carece de un concepto nativo de campos estructurados (todo es una cadena de texto plana).
 
+#strong[GELF (Graylog Extended Log Format)] nació precisamente para resolver esto. Es un protocolo que:
+
+- transmite cada evento como un objeto #strong[estructurado en JSON], con campos explícitos (recuerda la discusión sobre logging estructurado del marco conceptual, #ref(<sec-5-2>, supplement: [Sección]));
+- #strong[fragmenta] (#emph[chunking]) los mensajes largos para que no se trunquen;
+- suele enviarse sobre #strong[UDP], priorizando la baja latencia y el desacoplamiento: la aplicación "dispara y olvida", sin esperar confirmación, de modo que el envío de logs nunca bloquee la lógica de negocio.
+
+Observa que GELF es un #strong[protocolo], no una herramienta: define #emph[cómo] se empaquetan y transmiten los logs, no dónde se guardan. Esta distinción conceptual es importante y conviene tenerla clara antes de continuar.
+
+=== Graylog y su arquitectura de dos almacenes
+<graylog-y-su-arquitectura-de-dos-almacenes>
+#strong[Graylog] es la plataforma que recibe los logs vía GELF, los procesa y los pone a disposición para búsqueda y visualización. Para ello se apoya en dos almacenes con roles bien diferenciados:
+
+#table(
+  columns: (50%, 50%),
+  align: (auto,auto,),
+  table.header([Componente], [Rol],),
+  table.hline(),
+  [#strong[Graylog]], [Ingestión (vía GELF), búsqueda y visualización],
+  [#strong[OpenSearch]], [Almacenamiento e indexación de los eventos (índice invertido)],
+  [#strong[MongoDB]], [Configuración y metadatos de la propia plataforma Graylog],
+)
+#block[
+#callout(
+body: 
+[
+El envío por UDP prioriza el rendimiento sobre la garantía de entrega: es un caso concreto de la semántica #emph[at-most-once] discutida en el marco conceptual (#ref(<sec-5-6>, supplement: [Sección])). Para escenarios donde no puede perderse ningún log, GELF también admite TCP.
+
+]
+, 
+title: 
+[
+Nota
+]
+, 
+background_color: 
+rgb("#dae6fb")
+, 
+icon_color: 
+rgb("#0758E5")
+, 
+icon: 
+fa-info()
+, 
+body_background_color: 
+white
+)
+]
 == Requisitos previos
 <requisitos-previos-4>
 - Docker instalado \
@@ -3282,9 +3373,6 @@ body_background_color:
 white
 )
 ]
-
-#horizontalrule
-
 == Estructura del proyecto
 <estructura-del-proyecto-4>
 #Skylighting(([#ExtensionTok("logs-centralizados/");],
@@ -3292,9 +3380,6 @@ white
 [#ExtensionTok("├──");#NormalTok(" logs.producer/");],
 [#ExtensionTok("│");#NormalTok("   ├── src/");],
 [#ExtensionTok("│");#NormalTok("   └── pom.xml");],));
-
-#horizontalrule
-
 == Arquitectura de la solución
 <arquitectura-de-la-solución-4>
 #Skylighting(([#NormalTok("[Aplicaciones Java / Quarkus]");],
@@ -3314,8 +3399,6 @@ La arquitectura implementada en este recurso se fundamenta en #strong[un protoco
 - #strong[MongoDB]: almacenamiento de configuración y metadatos de Graylog.
 
 El uso de #strong[Docker Compose] permite describir y desplegar la arquitectura como código, garantizando la #strong[portabilidad, reproducibilidad y facilidad de experimentación] del entorno.
-
-#horizontalrule
 
 == Implementación de la arquitectura conceptual con GELF y Graylog
 <implementación-de-la-arquitectura-conceptual-con-gelf-y-graylog>
@@ -3402,9 +3485,6 @@ El uso de #strong[Docker Compose] permite describir y desplegar la arquitectura 
 [#AttributeTok("  ");#FunctionTok("mongo_data");#KeywordTok(":");],
 [#AttributeTok("  ");#FunctionTok("opensearch_data");#KeywordTok(":");],
 [#AttributeTok("  ");#FunctionTok("graylog_data");#KeywordTok(":");],));
-
-#horizontalrule
-
 == Despliegue y validación
 <despliegue-y-validación-4>
 === Inicialización de los servicios
@@ -3420,9 +3500,6 @@ Salida esperada (referencial):
 [#NormalTok("opensearch   Up (healthy)");],
 [#NormalTok("graylog      Up (healthy)");],
 [#NormalTok("logs.producer  Up");],));
-
-#horizontalrule
-
 === Creación de la entrada GELF UDP (Input)
 <creación-de-la-entrada-gelf-udp-input>
 Antes de que los logs puedan ser recibidos, Graylog debe tener configurado un #strong[input]. Espere a que Graylog esté disponible en #NormalTok("http://localhost:9000");, luego ejecute:
@@ -3436,8 +3513,6 @@ Antes de que los logs puedan ser recibidos, Graylog debe tener configurado un #s
 #quote(block: true)[
 La cabecera #NormalTok("Authorization: Basic YWRtaW46YWRtaW4="); corresponde a #NormalTok("admin:admin"); en Base64. Alternativamente, puede crear el input desde la interfaz web: #strong[System → Inputs → GELF UDP → Launch new input].
 ]
-
-#horizontalrule
 
 == Emisión de logs desde aplicaciones
 <emisión-de-logs-desde-aplicaciones-4>
@@ -3487,9 +3562,6 @@ white
 #strong[Uso del logger:]
 
 #Skylighting(([#KeywordTok("private");#NormalTok(" ");#DataTypeTok("static");#NormalTok(" ");#DataTypeTok("final");#NormalTok(" ");#BuiltInTok("Logger");#NormalTok(" LOG ");#OperatorTok("=");#NormalTok(" ");#BuiltInTok("Logger");#OperatorTok(".");#FunctionTok("getLogger");#OperatorTok("(");#NormalTok("MiClase");#OperatorTok(".");#FunctionTok("class");#OperatorTok(");");],));
-
-#horizontalrule
-
 === Otras aplicaciones Java (Logback)
 <otras-aplicaciones-java-logback-3>
 Para aplicaciones Java que no utilizan Quarkus, se puede enviar GELF mediante Logback con la librería #NormalTok("logback-gelf");.
@@ -3518,9 +3590,6 @@ Configuración de #NormalTok("logback.xml");:
 [#NormalTok("    <");#KeywordTok("appender-ref");#NormalTok(" ");#OtherTok("ref=");#StringTok("\"GELF\"");#NormalTok(" />");],
 [#NormalTok("  </");#KeywordTok("root");#NormalTok(">");],
 [#NormalTok("</");#KeywordTok("configuration");#NormalTok(">");],));
-
-#horizontalrule
-
 == Visualización en Graylog
 <visualización-en-graylog>
 Acceda a Graylog en #NormalTok("http://localhost:9000"); con usuario #NormalTok("admin"); y contraseña #NormalTok("admin");.
@@ -3530,8 +3599,6 @@ Ruta sugerida:
 #strong[Search → All messages]
 
 Desde allí puede: - Filtrar por campos (#NormalTok("level");, #NormalTok("source");, #NormalTok("facility");). - Consultar con el lenguaje de búsqueda de Graylog (ej: #NormalTok("level:3"); para errores, #NormalTok("message:Exception");). - Crear streams y dashboards para análisis continuo.
-
-#horizontalrule
 
 == Actividades de profundización
 <actividades-de-profundización-4>
@@ -3551,8 +3618,6 @@ Desde allí puede: - Filtrar por campos (#NormalTok("level");, #NormalTok("sourc
 + GELF en esta guía utiliza transporte UDP (puerto 12201). Explique qué ocurre con los mensajes de log cuando la red experimenta congestión o pérdida de paquetes, y por qué este comportamiento puede ser aceptable o no según el contexto de uso.
 + La fragmentación de mensajes GELF (parámetro #NormalTok("maxChunkSize");) es necesaria cuando el payload supera el MTU de la red. Analice cómo un stacktrace de Java de 50 líneas podría afectar la entrega de mensajes GELF y qué estrategia de configuración mitigaría el riesgo de pérdida de fragmentos.
 + Compare la arquitectura de Graylog (con su propio journal, OpenSearch y MongoDB) frente al stack ELK: ¿qué ventajas ofrece Graylog al integrar en una sola plataforma la ingestión, el almacenamiento y la visualización, y qué complejidades operativas introduce el componente MongoDB?
-
-#horizontalrule
 
 == Troubleshooting
 <troubleshooting-4>
@@ -3576,8 +3641,6 @@ Desde allí puede: - Filtrar por campos (#NormalTok("level");, #NormalTok("sourc
 
 #strong[Solución:] Verifique que el input GELF UDP haya sido creado (sección 6). Sin el input, Graylog descarta los paquetes UDP recibidos en el puerto 12201. Confirme su existencia en #strong[System → Inputs].
 
-#horizontalrule
-
 == Referencias
 <referencias-4>
 - Graylog -- https:\/\/graylog.org
@@ -3595,13 +3658,9 @@ Desde allí puede: - Filtrar por campos (#NormalTok("level");, #NormalTok("sourc
 #emph[Guía práctica para implementar una solución de centralización de logs utilizando Docker Compose y OpenTelemetry, como instanciación concreta de la arquitectura conceptual de observabilidad presentada en el documento central.]
 ]
 
-#horizontalrule
-
 == Objetivo de la guía
 <objetivo-de-la-guía-5>
 Implementar y validar una arquitectura de centralización de logs mediante #strong[Docker Compose], usando #strong[OpenTelemetry] para la recolección y exportación de logs vía el protocolo #strong[OTLP], y #strong[Grafana] (integrado en el stack #NormalTok("grafana/otel-lgtm");) como herramienta de exploración.
-
-#horizontalrule
 
 == Resultados de aprendizaje esperados
 <resultados-de-aprendizaje-esperados-6>
@@ -3612,8 +3671,6 @@ Al finalizar esta guía, el estudiante será capaz de:
 - Configurar aplicaciones Quarkus para exportar logs mediante OTLP/gRPC.
 - Configurar aplicaciones Java (Logback) para enviar logs usando el agente de OpenTelemetry.
 - Explorar y correlacionar logs centralizados desde Grafana, aprovechando campos como #NormalTok("trace_id");, #NormalTok("span_id"); y #NormalTok("exception_stacktrace");.
-
-#horizontalrule
 
 == Propósito y alcance del recurso
 <propósito-y-alcance-del-recurso-5>
@@ -3627,17 +3684,24 @@ El material está concebido como:
 
 El alcance del recurso se limita a la #strong[centralización y visualización de logs]. El stack LGTM también soporta métricas y trazas distribuidas, lo cual sienta bases para integraciones futuras.
 
-#horizontalrule
-
 == Observabilidad y centralización de logs con OpenTelemetry
 <observabilidad-y-centralización-de-logs-con-opentelemetry>
 En arquitecturas basadas en microservicios, la observabilidad permite comprender el comportamiento interno del sistema a partir de señales externas. Los #strong[logs] constituyen una fuente primaria de información debido a su riqueza semántica y contextual.
 
-OpenTelemetry define un conjunto de APIs, SDKs y herramientas que permiten capturar y exportar señales de observabilidad (logs, métricas y trazas) hacia un backend común mediante el protocolo #strong[OTLP (OpenTelemetry Protocol)].
+Todas las guías anteriores resolvían la observabilidad con herramientas concretas, cada una con su propio formato y su propio protocolo. Esto plantea un problema de fondo: si mañana quieres cambiar de herramienta de almacenamiento, tendrías que reinstrumentar tus aplicaciones. OpenTelemetry (OTel) nace precisamente para romper ese acoplamiento.
 
-Una ventaja clave de OpenTelemetry frente a otros enfoques de logging es la #strong[correlación automática]: los logs generados durante una petición HTTP llevan automáticamente el #NormalTok("trace_id"); y #NormalTok("span_id"); de la traza activa, lo que permite navegar desde un log hacia la traza distribuida correspondiente y viceversa.
+=== OpenTelemetry: el estándar que desacopla la instrumentación del backend
+<opentelemetry-el-estándar-que-desacopla-la-instrumentación-del-backend>
+OpenTelemetry no es una herramienta de almacenamiento ni un visualizador: es un #strong[estándar abierto y neutral respecto al proveedor] (#emph[vendor-neutral]). Define un conjunto de APIs, SDKs y herramientas para capturar y exportar las señales de observabilidad ---#strong[logs, métricas y trazas], los tres pilares del marco conceptual (#ref(<sec-5-1>, supplement: [Sección]))--- y transmitirlas mediante un protocolo común, el #strong[OTLP (OpenTelemetry Protocol)].
 
-#horizontalrule
+¿Por qué es esto importante? Porque separa dos responsabilidades que antes estaban entrelazadas:
+
+- #emph[cómo se instrumenta] una aplicación (responsabilidad de OTel, una sola vez);
+- #emph[a dónde se envían] los datos (un simple detalle de configuración del backend).
+
+Instrumentas una vez con OpenTelemetry y puedes cambiar de backend de almacenamiento sin tocar el código de tus servicios. Es el mismo principio de neutralidad tecnológica que defiende el marco conceptual de este recurso, llevado al plano de la instrumentación.
+
+Una ventaja concreta de este enfoque es la #strong[correlación automática] entre señales: los logs generados durante una petición HTTP llevan automáticamente el #NormalTok("trace_id"); y el #NormalTok("span_id"); de la traza activa, lo que permite navegar desde un log hacia la traza distribuida correspondiente y viceversa. Recordarás del marco conceptual (#ref(<sec-5-3>, supplement: [Sección])) que la correlación de eventos era uno de los grandes problemas de la dispersión; OpenTelemetry lo resuelve de raíz, propagando el contexto de traza de forma transparente.
 
 == Requisitos previos
 <requisitos-previos-5>
@@ -3663,9 +3727,6 @@ Estos límites son #strong[parametrizables mediante un archivo #NormalTok(".env"
 
 #Skylighting(([#VariableTok("OTEL_LGTM_MEM_LIMIT");#OperatorTok("=");#NormalTok("2g");],
 [#VariableTok("PRODUCER_MEM_LIMIT");#OperatorTok("=");#NormalTok("512m");],));
-
-#horizontalrule
-
 == Estructura del proyecto
 <estructura-del-proyecto-5>
 #Skylighting(([#ExtensionTok("logs-centralizados/");],
@@ -3673,9 +3734,6 @@ Estos límites son #strong[parametrizables mediante un archivo #NormalTok(".env"
 [#ExtensionTok("└──");#NormalTok(" logs.producer/");],
 [#NormalTok("    ");#ExtensionTok("├──");#NormalTok(" src/");],
 [#NormalTok("    ");#ExtensionTok("└──");#NormalTok(" pom.xml");],));
-
-#horizontalrule
-
 == Arquitectura de la solución
 <arquitectura-de-la-solución-5>
 #Skylighting(([#NormalTok("[Aplicaciones Java / Quarkus]");],
@@ -3697,8 +3755,6 @@ La arquitectura implementada se fundamenta en:
 - #strong[Tempo]: almacena trazas distribuidas.
 - #strong[Grafana]: capa de visualización unificada para las tres señales.
 - #strong[#NormalTok("grafana/otel-lgtm");]: imagen todo-en-uno que empaqueta el Collector y el stack LGTM completo, pensada para entornos de desarrollo y laboratorio.
-
-#horizontalrule
 
 == Implementación de la arquitectura conceptual con OpenTelemetry
 <implementación-de-la-arquitectura-conceptual-con-opentelemetry>
@@ -3759,9 +3815,6 @@ body_background_color:
 white
 )
 ]
-
-#horizontalrule
-
 == Despliegue y validación
 <despliegue-y-validación-5>
 === Inicialización de los servicios
@@ -3775,9 +3828,6 @@ Salida esperada (referencial):
 #Skylighting(([#NormalTok("NAME                      STATUS");],
 [#NormalTok("otel-lgtm                 Up (healthy)");],
 [#NormalTok("logs.producer-1           Up");],));
-
-#horizontalrule
-
 == Emisión de logs desde aplicaciones
 <emisión-de-logs-desde-aplicaciones-5>
 === Aplicaciones Quarkus
@@ -3828,9 +3878,6 @@ white
 #strong[Uso del logger:]
 
 #Skylighting(([#KeywordTok("private");#NormalTok(" ");#DataTypeTok("static");#NormalTok(" ");#DataTypeTok("final");#NormalTok(" ");#BuiltInTok("Logger");#NormalTok(" LOG ");#OperatorTok("=");#NormalTok(" ");#BuiltInTok("Logger");#OperatorTok(".");#FunctionTok("getLogger");#OperatorTok("(");#NormalTok("MiClase");#OperatorTok(".");#FunctionTok("class");#OperatorTok(");");],));
-
-#horizontalrule
-
 === Otras aplicaciones Java (agente OpenTelemetry)
 <otras-aplicaciones-java-agente-opentelemetry>
 Para aplicaciones Java que no utilizan Quarkus, la forma más simple de integrar OpenTelemetry es mediante el #strong[agente de instrumentación automática], que intercepta los logs de Logback/Log4j2 sin modificar el código:
@@ -3848,8 +3895,6 @@ Para aplicaciones Java que no utilizan Quarkus, la forma más simple de integrar
 #quote(block: true)[
 El agente intercepta automáticamente Logback, Log4j2, JUL y JBoss Logging, sin necesidad de modificar #NormalTok("logback.xml"); ni el código de la aplicación.
 ]
-
-#horizontalrule
 
 == Visualización en Grafana
 <visualización-en-grafana-1>
@@ -3928,8 +3973,6 @@ Usted puede rastrear un problema en caliente cruzando las tres señales de la si
 
 Este nivel de integración elimina la necesidad de adivinar qué causó un pico de CPU o qué petición provocó una fuga de memoria, materializando de forma práctica la arquitectura de observabilidad conceptual del laboratorio.
 
-#horizontalrule
-
 == Actividades de profundización
 <actividades-de-profundización-5>
 - #strong[Simular fallos y rastrear su origen:] El endpoint #NormalTok("GET /api/error"); genera intencionalmente una #NormalTok("NullPointerException");. Ejecútelo y localice en Grafana el evento de error. Observe el campo #NormalTok("exception_stacktrace"); exportado como atributo estructurado, así como el #NormalTok("trace_id"); que correlaciona el log con la traza HTTP.
@@ -3943,8 +3986,6 @@ Este nivel de integración elimina la necesidad de adivinar qué causó un pico 
 + OpenTelemetry enriquece automáticamente los logs con #NormalTok("trace_id"); y #NormalTok("span_id"); cuando se generan dentro de una petición HTTP activa. Explique el mecanismo por el cual Quarkus propaga este contexto de traza al logger sin que el desarrollador lo haga explícitamente.
 + La imagen #NormalTok("grafana/otel-lgtm"); empaqueta en un solo contenedor el OTel Collector, Loki, Prometheus, Tempo y Grafana. Analice las ventajas y limitaciones de esta decisión de diseño para entornos de laboratorio frente a un despliegue de componentes separados como en la guía PLG.
 + Evalúe la diferencia arquitectónica entre exportar logs mediante OTLP/gRPC (esta guía) y los enfoques basados en TCP JSON (ELK/OLO/Vector) o file tailing (PLG): ¿qué pilares de la observabilidad se habilitan o quedan incompletos con cada enfoque?
-
-#horizontalrule
 
 == Troubleshooting
 <troubleshooting-5>
@@ -3972,8 +4013,6 @@ Este nivel de integración elimina la necesidad de adivinar qué causó un pico 
 
 #strong[Solución:] Si #NormalTok("logs.producer"); arranca antes de que #NormalTok("otel-lgtm"); esté listo, el exportador OTLP intentará reconectarse automáticamente. El #NormalTok("depends_on"); con #NormalTok("condition: service_healthy"); previene este escenario garantizando que #NormalTok("otel-lgtm"); esté completamente listo antes de iniciar la aplicación.
 
-#horizontalrule
-
 == Referencias
 <referencias-5>
 - OpenTelemetry -- https:\/\/opentelemetry.io/docs/
@@ -3992,13 +4031,9 @@ Este nivel de integración elimina la necesidad de adivinar qué causó un pico 
 #emph[Guía práctica para implementar una solución de centralización de logs de alto rendimiento utilizando Vector como enrutador y transformador, conectado a Loki y Grafana, como instanciación concreta de la arquitectura conceptual de observabilidad presentada en el documento central.]
 ]
 
-#horizontalrule
-
 == Objetivo de la guía
 <objetivo-de-la-guía-6>
 Implementar y validar una arquitectura moderna de enrutamiento y centralización de logs mediante #strong[Docker Compose], usando #strong[Vector] (escrito en Rust) como recolector y transformador ligero, #strong[Loki] para el almacenamiento eficiente por etiquetas, y #strong[Grafana] para la exploración y análisis.
-
-#horizontalrule
 
 == Resultados de aprendizaje esperados
 <resultados-de-aprendizaje-esperados-7>
@@ -4010,8 +4045,6 @@ Al finalizar esta guía, el estudiante será capaz de:
 - Configurar aplicaciones Java para emitir logs estructurados en JSON vía TCP hacia Vector.
 - Explorar y consultar logs centralizados desde Grafana usando #strong[LogQL].
 - Comparar el enfoque Vector frente a alternativas como Logstash o Fluentd en términos de rendimiento y consumo de recursos.
-
-#horizontalrule
 
 == Propósito y alcance del recurso
 <propósito-y-alcance-del-recurso-6>
@@ -4025,8 +4058,6 @@ El material está concebido como:
 
 El alcance del recurso se limita a la centralización y visualización de logs vía TCP JSON. Vector soporta docenas de fuentes y destinos adicionales (archivos, Docker, Kafka, S3, Elasticsearch, etc.).
 
-#horizontalrule
-
 == Observabilidad y rendimiento con Vector
 <observabilidad-y-rendimiento-con-vector>
 En arquitecturas donde el volumen de logs es masivo, el componente de recolección y procesamiento puede convertirse en el cuello de botella. #strong[Vector] soluciona esto al ser un ejecutable nativo (Rust) que:
@@ -4036,7 +4067,17 @@ En arquitecturas donde el volumen de logs es masivo, el componente de recolecci�
 - Soporta múltiples fuentes (#emph[sources]) y destinos (#emph[sinks]) mediante un modelo de pipeline declarativo.
 - Incluye #strong[VRL (Vector Remap Language)], un lenguaje de transformación seguro y tipado, específicamente diseñado para manipular eventos de observabilidad.
 
-#horizontalrule
+=== Vector y la etapa de procesamiento
+<vector-y-la-etapa-de-procesamiento>
+Conviene situar a Vector dentro de la arquitectura conceptual (marco conceptual, #ref(<sec-5-7>, supplement: [Sección])). Vector se concentra en las etapas de #strong[recolección y procesamiento], y su modelo #emph[source → transform → sink] es una materialización casi literal del pipeline de procesamiento descrito en el marco conceptual (#ref(<sec-5-7-2>, supplement: [Sección])):
+
+- #strong[Source] (fuente): de dónde llegan los eventos (TCP, archivos, etc.).
+- #strong[Transform] (transformación): donde se filtra, normaliza, enriquece y (de forma destacada) se #strong[sanitiza] la información sensible (marco conceptual, #ref(<sec-5-6>, supplement: [Sección])), todo mediante VRL.
+- #strong[Sink] (destino): hacia dónde se envían los eventos ya procesados.
+
+¿Por qué importa que Vector esté escrito en Rust? Porque el lenguaje le permite procesar eventos en memoria, sin un #emph[runtime] pesado (como la JVM de Logstash) ni el costo de plugins externos. En escenarios de alto volumen, donde el recolector puede convertirse en el cuello de botella (marco conceptual, #ref(<sec-5-7-1>, supplement: [Sección])), esta eficiencia deja de ser un detalle y pasa a ser un criterio de diseño decisivo.
+
+Observa, además, que Vector puede desplegarse en dos roles: como #strong[agente] (#emph[agent]) junto a cada servicio, o como #strong[agregador] (#emph[aggregator]) centralizado que recibe de muchos agentes. Esta flexibilidad conecta directamente con los patrones de recolección (agente, #emph[sidecar]) discutidos en el marco conceptual (#ref(<sec-5-4>, supplement: [Sección])).
 
 == Requisitos previos
 <requisitos-previos-6>
@@ -4068,9 +4109,6 @@ Los límites son parametrizables vía variables de entorno definidas en el archi
 [#VariableTok("LOKI_MEM_LIMIT");#OperatorTok("=");#NormalTok("512m");],
 [#VariableTok("GRAFANA_MEM_LIMIT");#OperatorTok("=");#NormalTok("512m");],
 [#VariableTok("PRODUCER_MEM_LIMIT");#OperatorTok("=");#NormalTok("512m");],));
-
-#horizontalrule
-
 == Estructura del proyecto
 <estructura-del-proyecto-6>
 #Skylighting(([#ExtensionTok("logs-centralizados/");],
@@ -4084,9 +4122,6 @@ Los límites son parametrizables vía variables de entorno definidas en el archi
 [#NormalTok("    ");#ExtensionTok("└──");#NormalTok(" provisioning/");],
 [#NormalTok("        ");#ExtensionTok("└──");#NormalTok(" datasources/");],
 [#NormalTok("            ");#ExtensionTok("└──");#NormalTok(" loki.yaml");],));
-
-#horizontalrule
-
 == Arquitectura de la solución
 <arquitectura-de-la-solución-6>
 #Skylighting(([#NormalTok("[Aplicaciones Java / Quarkus]");],
@@ -4105,8 +4140,6 @@ La arquitectura implementada se fundamenta en cuatro componentes:
 - #strong[VRL (Vector Remap Language)]: lenguaje declarativo para manipular eventos dentro del pipeline (extracción de campos, enriquecimiento, censura de datos).
 - #strong[Loki]: motor de almacenamiento ligero que indexa solo etiquetas (#emph[labels]), no el contenido textual.
 - #strong[Grafana]: capa de visualización y exploración mediante #strong[LogQL].
-
-#horizontalrule
 
 == Implementación de la arquitectura conceptual
 <implementación-de-la-arquitectura-conceptual-1>
@@ -4231,9 +4264,6 @@ body_background_color:
 white
 )
 ]
-
-#horizontalrule
-
 === Configuración del pipeline Vector (#NormalTok("vector/vector.toml");)
 <configuración-del-pipeline-vector-vectorvector.toml>
 #Skylighting(([#CommentTok("# Habilita la API interna de Vector (requerida para el healthcheck)");],
@@ -4293,9 +4323,6 @@ body_background_color:
 white
 )
 ]
-
-#horizontalrule
-
 === Aprovisionamiento de Grafana (#NormalTok("grafana/provisioning/datasources/loki.yaml");)
 <aprovisionamiento-de-grafana-grafanaprovisioningdatasourcesloki.yaml-1>
 #Skylighting(([#FunctionTok("apiVersion");#KeywordTok(":");#AttributeTok(" ");#DecValTok("1");],
@@ -4306,9 +4333,6 @@ white
 [#AttributeTok("    ");#FunctionTok("access");#KeywordTok(":");#AttributeTok(" proxy");],
 [#AttributeTok("    ");#FunctionTok("url");#KeywordTok(":");#AttributeTok(" http://loki:3100");],
 [#AttributeTok("    ");#FunctionTok("isDefault");#KeywordTok(":");#AttributeTok(" ");#CharTok("true");],));
-
-#horizontalrule
-
 == Despliegue y validación
 <despliegue-y-validación-6>
 === Inicialización de los servicios
@@ -4324,9 +4348,6 @@ Salida esperada (referencial):
 [#NormalTok("vector              Up (healthy)");],
 [#NormalTok("grafana             Up");],
 [#NormalTok("logs.producer-1     Up");],));
-
-#horizontalrule
-
 == Emisión de logs desde aplicaciones
 <emisión-de-logs-desde-aplicaciones-6>
 === Aplicaciones Quarkus
@@ -4354,9 +4375,6 @@ El recurso contempla un ejemplo de integración con aplicaciones desarrolladas e
 #strong[Uso del logger:]
 
 #Skylighting(([#KeywordTok("private");#NormalTok(" ");#DataTypeTok("static");#NormalTok(" ");#DataTypeTok("final");#NormalTok(" ");#BuiltInTok("Logger");#NormalTok(" LOG ");#OperatorTok("=");#NormalTok(" ");#BuiltInTok("Logger");#OperatorTok(".");#FunctionTok("getLogger");#OperatorTok("(");#NormalTok("MiClase");#OperatorTok(".");#FunctionTok("class");#OperatorTok(");");],));
-
-#horizontalrule
-
 === Otras aplicaciones Java (Logback)
 <otras-aplicaciones-java-logback-4>
 Para aplicaciones Java que no utilizan Quarkus, se puede usar el #NormalTok("LogstashTcpSocketAppender");, 100% compatible con la entrada TCP de Vector.
@@ -4378,9 +4396,6 @@ Para aplicaciones Java que no utilizan Quarkus, se puede usar el #NormalTok("Log
 [#NormalTok("    <");#KeywordTok("appender-ref");#NormalTok(" ");#OtherTok("ref=");#StringTok("\"VECTOR\"");#NormalTok(" />");],
 [#NormalTok("  </");#KeywordTok("root");#NormalTok(">");],
 [#NormalTok("</");#KeywordTok("configuration");#NormalTok(">");],));
-
-#horizontalrule
-
 == Visualización en Grafana
 <visualización-en-grafana-2>
 Acceda a Grafana en #NormalTok("http://localhost:3000");. La fuente de datos Loki ya está preconfigurada.
@@ -4401,9 +4416,6 @@ Buscar excepciones por contenido:
 Analizar los campos ECS y mostrar solo el mensaje:
 
 #Skylighting(([#NormalTok("{job=\"vector_app_logs\"} | json | line_format \"{{.message}}\"");],));
-
-#horizontalrule
-
 == Actividades de profundización
 <actividades-de-profundización-6>
 - #strong[Simular fallos y rastrear su origen:] El endpoint #NormalTok("GET /api/error"); genera intencionalmente una #NormalTok("NullPointerException");. Ejecútelo y use la consulta #NormalTok("{job=\"vector_app_logs\"} |= \"NullPointerException\""); en Grafana para localizarlo.
@@ -4418,11 +4430,9 @@ Analizar los campos ECS y mostrar solo el mensaje:
 + El modelo de pipeline de Vector (Source → Transform → Sink) es declarativo y tipado. Analice cómo este diseño facilita o dificulta la implementación de enrutamiento condicional (enviar logs de nivel ERROR a un destino distinto que los de nivel INFO) en comparación con el modelo de Fluentd o Logstash.
 + Vector está implementado en Rust y opera sin JVM ni runtime de Ruby. Evalúe en qué escenarios de producción esta diferencia de implementación justifica migrar desde Logstash o Fluentd, y en cuáles el ecosistema de plugins de esas herramientas sería un factor determinante para no hacerlo.
 
-#horizontalrule
-
 == Troubleshooting
 <troubleshooting-6>
-#strong[Error común:] Vector no arranca --- #NormalTok("no such file or directory: /etc/vector/vector.yaml");.
+#strong[Error común:] Vector no arranca y reporta #NormalTok("no such file or directory: /etc/vector/vector.yaml");.
 
 #strong[Solución:] La imagen #NormalTok("timberio/vector"); busca #NormalTok("/etc/vector/vector.yaml"); por defecto. Asegúrese de incluir #NormalTok("command: [\"--config\", \"/etc/vector/vector.toml\"]"); en el servicio para apuntar al archivo TOML correcto.
 
@@ -4438,15 +4448,13 @@ Analizar los campos ECS y mostrar solo el mensaje:
 
 #strong[Error común:] Error de VRL #NormalTok("unnecessary error coalescing operation"); al usar #NormalTok(".\"log.level\" ?? \"unknown\"");.
 
-#strong[Solución:] En VRL, el operador #NormalTok("??"); es para #emph[error-coalescing] (cuando una expresión puede fallar). El acceso a un campo (#NormalTok(".\"log.level\"");) no falla --- devuelve #NormalTok("null"); si el campo no existe. Para null-coalescing, use el operador lógico #NormalTok("||");: #NormalTok(".level = .\"log.level\" || \"unknown\"");.
+#strong[Solución:] En VRL, el operador #NormalTok("??"); es para #emph[error-coalescing] (cuando una expresión puede fallar). El acceso a un campo (#NormalTok(".\"log.level\"");) no falla: devuelve #NormalTok("null"); si el campo no existe. Para null-coalescing, use el operador lógico #NormalTok("||");: #NormalTok(".level = .\"log.level\" || \"unknown\"");.
 
 #horizontalrule
 
 #strong[Error común:] Los logs no aparecen en Grafana aunque Vector está corriendo.
 
 #strong[Solución:] Verifique que la datasource Loki esté aprovisionada en Grafana (carpeta #NormalTok("grafana/provisioning/datasources/");). Confirme que el pipeline Vector recibe datos consultando la API: #NormalTok("curl http://localhost:8686/graphql"); (responde con el esquema GraphQL si está activo). Revise los logs de Vector con #NormalTok("docker compose logs vector");.
-
-#horizontalrule
 
 == Referencias
 <referencias-6>
@@ -4465,13 +4473,9 @@ Analizar los campos ECS y mostrar solo el mensaje:
 #emph[Guía práctica para desplegar y configurar SigNoz, una plataforma moderna "Todo en Uno" basada nativamente en OpenTelemetry y soportada por la base de datos columnar ClickHouse, como instanciación concreta de la arquitectura conceptual de observabilidad presentada en el documento central.]
 ]
 
-#horizontalrule
-
 == Objetivo de la guía
 <objetivo-de-la-guía-7>
 Implementar y validar una plataforma unificada de observabilidad mediante #strong[Docker Compose], usando #strong[SigNoz] como solución integral que integra colector (OTel Collector), almacenamiento analítico (ClickHouse) e interfaz de exploración en un único despliegue.
-
-#horizontalrule
 
 == Resultados de aprendizaje esperados
 <resultados-de-aprendizaje-esperados-8>
@@ -4482,8 +4486,6 @@ Al finalizar esta guía, el estudiante será capaz de:
 - Configurar aplicaciones Quarkus para emitir telemetría nativa OTLP hacia SigNoz.
 - Explorar y correlacionar logs con trazas distribuidas desde la interfaz de SigNoz.
 - Comprender el patrón de #emph[override] de Docker Compose como técnica para extender stacks de terceros sin modificar sus archivos.
-
-#horizontalrule
 
 == Propósito y alcance del recurso
 <propósito-y-alcance-del-recurso-7>
@@ -4501,15 +4503,24 @@ El material está concebido como:
 
 El alcance del recurso cubre logs, métricas y trazas distribuidas (los tres pilares de la observabilidad), aunque el énfasis educativo está en los logs.
 
-#horizontalrule
-
 == Observabilidad Nativa y Almacenamiento Columnar
 <observabilidad-nativa-y-almacenamiento-columnar>
-#strong[ClickHouse] es una base de datos analítica orientada a columnas (OLAP). A diferencia de Elasticsearch, que crea índices invertidos para búsqueda de texto, ClickHouse almacena datos por columnas y comprime bloques enteros. Esto permite ingestar millones de logs por segundo usando una fracción del disco y RAM, revolucionando la manera en que la industria maneja la observabilidad a escala.
+Esta guía cierra el recorrido por los paradigmas de almacenamiento del marco conceptual (#ref(<sec-5-7-3>, supplement: [Sección])) con el tercero y más orientado al análisis a gran escala: el #strong[almacén columnar].
 
-SigNoz es la plataforma que integra ClickHouse como motor de almacenamiento con un colector OTel nativo, aprovechando la estandarización del protocolo #strong[OTLP] para recibir telemetría de cualquier aplicación instrumentada con OpenTelemetry.
+=== Filas vs.~columnas: el paradigma OLAP
+<filas-vs.-columnas-el-paradigma-olap>
+Imagina una tabla de logs con millones de filas y columnas como #NormalTok("timestamp");, #NormalTok("nivel");, #NormalTok("servicio"); y #NormalTok("mensaje");. Una base de datos tradicional (orientada a filas, u OLTP) guarda cada registro completo, uno tras otro (ideal para "tráeme el log \#4827 entero"). Una base de datos #strong[columnar (OLAP)], en cambio, guarda juntos todos los valores de una misma columna.
 
-#horizontalrule
+¿Qué se gana con esto? Fundamentalmente dos cosas:
+
+- #strong[Compresión muy alta:] los valores similares quedan contiguos (todos los #NormalTok("nivel"); juntos: #NormalTok("INFO, INFO, ERROR, INFO...");), y los datos repetitivos se comprimen extraordinariamente bien.
+- #strong[Análisis veloz:] una consulta como "¿cuántos errores por minuto en la última hora?" solo necesita leer las columnas #NormalTok("nivel"); y #NormalTok("timestamp");, no los millones de mensajes completos.
+
+#strong[ClickHouse] es la base de datos columnar que materializa este paradigma. A diferencia del índice invertido de Elasticsearch (optimizado para la búsqueda de texto), ClickHouse está optimizado para #emph[agregar] y #emph[analizar] grandes volúmenes, lo que le permite ingestar millones de logs por segundo usando una fracción del disco y la RAM.
+
+=== SigNoz: una plataforma nativa de OpenTelemetry
+<signoz-una-plataforma-nativa-de-opentelemetry>
+#strong[SigNoz] es la plataforma que integra ClickHouse como motor de almacenamiento con un colector #strong[OTel nativo]. Esto significa que adopta de fábrica el estándar OTLP que estudiaste en la guía de OpenTelemetry: recibe logs, métricas y trazas (los tres pilares) de cualquier aplicación instrumentada con OpenTelemetry, sin formatos propietarios. Es, en cierto modo, la convergencia de los dos últimos grandes temas del recurso: el estándar unificado (OTel) operando sobre el almacenamiento analítico (columnar).
 
 == Requisitos previos
 <requisitos-previos-7>
@@ -4564,9 +4575,6 @@ Las variables están centralizadas en el archivo #NormalTok(".env"); del overrid
 [#CommentTok("# Los servicios del core de SigNoz (ClickHouse, otel-collector, query-service,");],
 [#CommentTok("# frontend) los gobierna el docker-compose.yaml oficial del repositorio de SigNoz.");],
 [#VariableTok("PRODUCER_MEM_LIMIT");#OperatorTok("=");#NormalTok("512m");],));
-
-#horizontalrule
-
 == Estructura del proyecto
 <estructura-del-proyecto-7>
 #Skylighting(([#ExtensionTok("08-SigNoz/");],
@@ -4579,8 +4587,6 @@ Las variables están centralizadas en el archivo #NormalTok(".env"); del overrid
 [#NormalTok("        ");#ExtensionTok("├──");#NormalTok(" docker-compose.yaml");],
 [#NormalTok("        ");#ExtensionTok("└──");#NormalTok(" otel-collector-config.yaml");],));
 El directorio #NormalTok("signoz/"); se obtiene clonando el repositorio oficial a una versión fija. #strong[No se edita ningún archivo] de ese directorio: toda la personalización vive en el #NormalTok("docker-compose.yml"); de #emph[override].
-
-#horizontalrule
 
 == Arquitectura de la solución
 <arquitectura-de-la-solución-7>
@@ -4608,9 +4614,6 @@ Los componentes internos del stack SigNoz son:
   [#NormalTok("signoz-zookeeper-1");], [Coordinación de clúster ClickHouse],
   [#NormalTok("signoz");], [Backend API + Frontend (UI web en :8080)],
 )
-
-#horizontalrule
-
 == Implementación de la arquitectura
 <implementación-de-la-arquitectura>
 === Paso 1: Descargar el repositorio de SigNoz
@@ -4647,9 +4650,6 @@ body_background_color:
 white
 )
 ]
-
-#horizontalrule
-
 === Paso 2: El override #NormalTok("docker-compose.yml");
 <paso-2-el-override-docker-compose.yml>
 El archivo de #emph[override] que acompaña esta guía tiene dos responsabilidades:
@@ -4706,9 +4706,6 @@ body_background_color:
 white
 )
 ]
-
-#horizontalrule
-
 === Configuración de la aplicación (#NormalTok("application.properties");)
 <configuración-de-la-aplicación-application.properties>
 #Skylighting(([#NormalTok("quarkus.application.name=logs-producer");],
@@ -4718,8 +4715,6 @@ white
 [#NormalTok("# SIGNOZ_HOST defaults to localhost (dev/IDE); docker compose overrides to \"signoz-otel-collector\"");],
 [#NormalTok("quarkus.otel.exporter.otlp.endpoint=http://${SIGNOZ_HOST:localhost}:4317");],));
 La extensión #NormalTok("quarkus-opentelemetry"); envía logs, trazas y métricas automáticamente en formato OTLP. No se requiere ningún agente externo ni appender adicional.
-
-#horizontalrule
 
 == Despliegue y validación
 <despliegue-y-validación-7>
@@ -4773,9 +4768,6 @@ body_background_color:
 white
 )
 ]
-
-#horizontalrule
-
 == Emisión de logs desde aplicaciones
 <emisión-de-logs-desde-aplicaciones-7>
 === Aplicaciones Quarkus
@@ -4821,9 +4813,6 @@ body_background_color:
 white
 )
 ]
-
-#horizontalrule
-
 == Visualización en SigNoz
 <visualización-en-signoz>
 Acceda a SigNoz en #NormalTok("http://localhost:8080");.
@@ -4864,9 +4853,6 @@ La aplicación expone los siguientes endpoints:
 [],
 [#CommentTok("# Generar un error");],
 [#ExtensionTok("curl");#NormalTok(" http://localhost:8090/api/error");],));
-
-#horizontalrule
-
 == Actividades de profundización
 <actividades-de-profundización-7>
 - #strong[Correlación logs--trazas:] Genere errores con #NormalTok("GET /api/error"); y siga el enlace #NormalTok("trace_id"); desde el log hasta la traza completa en SigNoz Traces.
@@ -4881,8 +4867,6 @@ La aplicación expone los siguientes endpoints:
 + El override de Docker Compose de esta guía solo redefine el campo #NormalTok("command"); del servicio #NormalTok("otel-collector"); sin duplicar el resto de su definición. Analice el mecanismo de fusión de archivos que usa Docker Compose para entender cómo se combinan las claves del compose oficial con las del override, y qué ocurriría si se omitiera el override al levantar el stack.
 + El protocolo opAMP (#emph[Open Agent Management Protocol]) permite la configuración dinámica del OTel Collector desde SigNoz sin reiniciar el contenedor. Evalúe las implicaciones de seguridad y operativas de habilitar opAMP en producción frente al enfoque de configuración estática usado en esta guía de laboratorio.
 
-#horizontalrule
-
 == Troubleshooting
 <troubleshooting-7>
 #strong[El puerto 4317 no responde (conexión rechazada desde #NormalTok("logs.producer");).]
@@ -4893,7 +4877,7 @@ La aplicación expone los siguientes endpoints:
 
 #horizontalrule
 
-#strong[El colector tarda en arrancar --- #NormalTok("logs.producer"); reporta errores de conexión al inicio.]
+#strong[El colector tarda en arrancar y #NormalTok("logs.producer"); reporta errores de conexión al inicio.]
 
 #strong[Causa:] El colector ejecuta migraciones de esquema en ClickHouse antes de abrir el puerto 4317. En el primer arranque puede tardar hasta 60 segundos.
 
@@ -4914,8 +4898,6 @@ La aplicación expone los siguientes endpoints:
 #strong[Causa:] Hay otro servicio (por ejemplo, otra guía del laboratorio) usando el puerto 8080 en el host.
 
 #strong[Solución:] Detenga el servicio conflictivo antes de levantar este stack. El frontend de SigNoz necesita el puerto 8080 en el host.
-
-#horizontalrule
 
 == Referencias
 <referencias-7>
@@ -4940,13 +4922,9 @@ La aplicación expone los siguientes endpoints:
 #strong[Prerequisito recomendado:] Completar primero la guía Promtail. Esta guía asume familiaridad con Loki, LogQL y el modelo de indexación por etiquetas. El foco está en las diferencias de configuración entre Promtail y Alloy, no en los conceptos base.
 ]
 
-#horizontalrule
-
 == Objetivo de la guía
 <objetivo-de-la-guía-8>
 Implementar y validar una arquitectura de centralización de logs mediante #strong[Docker Compose], migrando el agente de recolección de #strong[Promtail] a #strong[Grafana Alloy], y comprendiendo el nuevo modelo de configuración orientado a componentes (#emph[dataflow]) que introduce Alloy.
-
-#horizontalrule
 
 == Resultados de aprendizaje esperados
 <resultados-de-aprendizaje-esperados-9>
@@ -4958,8 +4936,6 @@ Al finalizar esta guía, el estudiante será capaz de:
 - Utilizar la interfaz web integrada de Alloy para inspeccionar el estado de los componentes en tiempo real.
 - Migrar conceptualmente una configuración Promtail existente a Alloy.
 
-#horizontalrule
-
 == Propósito y alcance del recurso
 <propósito-y-alcance-del-recurso-8>
 #strong[Grafana Alloy] (v1.x) es el sucesor unificado de Promtail y del Grafana Agent. A diferencia de Promtail, que es un agente especializado en #emph[file tailing] hacia Loki, Alloy es una plataforma de telemetría genérica que puede recolectar logs, métricas y trazas desde múltiples fuentes y enviarlos a múltiples destinos.
@@ -4968,10 +4944,20 @@ El modelo de configuración de Alloy es explícitamente #strong[orientado al flu
 
 Esta guía se limita al caso de uso equivalente a Promtail: #emph[file tailing] de logs estructurados en JSON hacia Loki.
 
-#horizontalrule
-
 == Promtail vs Grafana Alloy
 <promtail-vs-grafana-alloy>
+En la guía de Promtail aprendiste a recolectar logs hacia Loki. Pero Promtail tiene un alcance deliberadamente estrecho: solo logs, y solo hacia Loki. ¿Qué ocurre cuando un mismo equipo necesita recolectar también métricas y trazas? Durante años, la respuesta fue instalar varios agentes distintos (Promtail para logs, otro agente para métricas…), cada uno con su propia configuración. #strong[Grafana Alloy] nace para unificar todo eso en un único recolector de telemetría.
+
+=== Del agente de propósito único al modelo de flujo de datos
+<del-agente-de-propósito-único-al-modelo-de-flujo-de-datos>
+La diferencia de fondo entre Promtail y Alloy no es de sintaxis, sino de #strong[modelo mental]. Promtail usa una configuración declarativa estática: defines #emph[trabajos] (#emph[jobs]) y, dentro de ellos, una cadena de etapas. Alloy adopta un #strong[modelo de componentes y flujo de datos] (#emph[dataflow]), heredado del proyecto Grafana Agent Flow: cada pieza del pipeline es un componente con entradas y salidas explícitas, que conectas entre sí declarando hacia dónde reenvía sus datos (#NormalTok("forward_to");).
+
+Piénsalo como la diferencia entre una receta lineal ("haz esto, luego esto otro") y un diagrama de tuberías donde conectas explícitamente cada tramo. El segundo modelo es más verboso, pero también más expresivo y depurable: puedes ramificar flujos, reutilizar componentes y observar el recorrido de los datos en una interfaz gráfica (sección 7).
+
+¿Por qué ocurrió esta transición en el ecosistema de Grafana? Como se anticipó en la guía de Promtail, este último entró en #strong[modo mantenimiento] en 2023. Grafana consolidó sus múltiples agentes (Promtail, Grafana Agent) en una sola herramienta (Alloy) capaz de manejar los tres pilares de la observabilidad (marco conceptual, #ref(<sec-5-1>, supplement: [Sección])) bajo un único modelo de configuración.
+
+La siguiente tabla resume las equivalencias concretas entre ambos, útil si llegas desde la guía de Promtail:
+
 #table(
   columns: (33.33%, 33.33%, 33.33%),
   align: (auto,auto,auto,),
@@ -4989,14 +4975,11 @@ Esta guía se limita al caso de uso equivalente a Promtail: #emph[file tailing] 
   [Recarga en caliente], [SIGHUP o #NormalTok("/-/reload");], [#NormalTok("/-/reload"); HTTP o SIGHUP],
   [Interfaz de inspección], [Ninguna], [UI web en #NormalTok(":12345"); con grafo de componentes],
 )
-
-#horizontalrule
-
 == Requisitos previos
 <requisitos-previos-8>
 - Docker instalado https:\/\/docs.docker.com/engine/install/
 - Docker Compose https:\/\/docs.docker.com/compose/install/
-- Al menos #strong[4 GB de RAM] libres (este stack no incluye Elasticsearch ni OpenSearch; Alloy, Loki y Grafana tienen un huella de memoria significativamente menor que los stacks ELK/OLO --- este requisito reducido es en sí mismo un punto de comparación pedagógico con las guías anteriores)
+- Al menos #strong[4 GB de RAM] libres (este stack no incluye Elasticsearch ni OpenSearch; Alloy, Loki y Grafana tienen una huella de memoria significativamente menor que los stacks ELK/OLO). Este requisito reducido es, en sí mismo, un punto de comparación pedagógico con las guías anteriores.
 
 === Dimensionamiento de recursos
 <dimensionamiento-de-recursos-8>
@@ -5020,9 +5003,6 @@ Los límites son parametrizables mediante variables de entorno definidas en un a
 [#VariableTok("ALLOY_MEM_LIMIT");#OperatorTok("=");#NormalTok("512m");],
 [#VariableTok("LOKI_MEM_LIMIT");#OperatorTok("=");#NormalTok("512m");],
 [#VariableTok("GRAFANA_MEM_LIMIT");#OperatorTok("=");#NormalTok("512m");],));
-
-#horizontalrule
-
 == Estructura del proyecto
 <estructura-del-proyecto-8>
 #Skylighting(([#ExtensionTok("09-Alloy/");],
@@ -5037,9 +5017,6 @@ Los límites son parametrizables mediante variables de entorno definidas en un a
 [#ExtensionTok("└──");#NormalTok(" logs.producer/");],
 [#NormalTok("    ");#ExtensionTok("├──");#NormalTok(" src/");],
 [#NormalTok("    ");#ExtensionTok("└──");#NormalTok(" pom.xml");],));
-
-#horizontalrule
-
 == Arquitectura de la solución
 <arquitectura-de-la-solución-8>
 #Skylighting(([#NormalTok("[Aplicación Quarkus / logs.producer]");],
@@ -5057,8 +5034,6 @@ Los límites son parametrizables mediante variables de entorno definidas en un a
 [#NormalTok("         v");],
 [#NormalTok("     [Loki 3.0] ──→ [Grafana 13.0]");],));
 La arquitectura es funcionalmente idéntica a la de la guía Promtail. La diferencia es interna: el pipeline de Alloy es un #strong[grafo de componentes] con conexiones explícitas en lugar de una lista de etapas implícitas.
-
-#horizontalrule
 
 == Implementación
 <implementación>
@@ -5191,9 +5166,6 @@ body_background_color:
 white
 )
 ]
-
-#horizontalrule
-
 === Pipeline de Alloy (#NormalTok("alloy/config.alloy");)
 <pipeline-de-alloy-alloyconfig.alloy>
 #Skylighting(([#NormalTok("// ─── 1. Descubrir el archivo de log ─────────────────────────────────────────");],
@@ -5242,7 +5214,7 @@ white
 #callout(
 body: 
 [
-#strong[#NormalTok("log.level"); en ECS:] El formato ECS de Quarkus produce la clave con el punto como parte del nombre (#NormalTok("\"log.level\"");), no como estructura anidada. #NormalTok("stage.json"); de Alloy interpreta el punto como separador de ruta (igual que Promtail), por lo que se usa #NormalTok("stage.regex"); con la expresión #NormalTok("\"log\\\\.level\""); --- la misma estrategia validada en la guía Promtail.
+#strong[#NormalTok("log.level"); en ECS:] El formato ECS de Quarkus produce la clave con el punto como parte del nombre (#NormalTok("\"log.level\"");), no como estructura anidada. #NormalTok("stage.json"); de Alloy interpreta el punto como separador de ruta (igual que Promtail), por lo que se usa #NormalTok("stage.regex"); con la expresión #NormalTok("\"log\\\\.level\"");, la misma estrategia validada en la guía Promtail.
 
 ]
 , 
@@ -5290,9 +5262,6 @@ body_background_color:
 white
 )
 ]
-
-#horizontalrule
-
 === Configuración de la aplicación (#NormalTok("application.properties");)
 <configuración-de-la-aplicación-application.properties-1>
 Idéntica a la guía Promtail: la aplicación escribe en archivo JSON, sin conocimiento del agente que la lee.
@@ -5305,9 +5274,6 @@ Idéntica a la guía Promtail: la aplicación escribe en archivo JSON, sin conoc
 [#NormalTok("quarkus.log.file.path=/deployments/logs/application.log");],
 [#NormalTok("quarkus.log.file.json.exception-output-type=formatted");],
 [#NormalTok("quarkus.log.file.json.log-format=ECS");],));
-
-#horizontalrule
-
 == Despliegue y validación
 <despliegue-y-validación-8>
 Antes de levantar el stack, cree el directorio compartido para los logs:
@@ -5319,9 +5285,6 @@ Luego ejecute:
 Verifique que los servicios estén activos:
 
 #Skylighting(([#ExtensionTok("docker");#NormalTok(" compose ps");],));
-
-#horizontalrule
-
 == Interfaz de Alloy
 <interfaz-de-alloy>
 Acceda a #NormalTok("http://localhost:12345"); para ver la #strong[UI de Alloy]. Desde allí puede:
@@ -5333,12 +5296,10 @@ Acceda a #NormalTok("http://localhost:12345"); para ver la #strong[UI de Alloy].
 
 Esta interfaz no existe en Promtail y es una de las ventajas operativas más importantes de Alloy.
 
-#horizontalrule
-
 == Emisión de logs desde la aplicación
 <emisión-de-logs-desde-la-aplicación>
 #quote(block: true)[
-#strong[Reutilización de la aplicación:] Si ya completó la guía Promtail, puede reutilizar la misma aplicación #NormalTok("logs.producer"); --- la configuración de escritura a archivo JSON (#NormalTok("application.properties");) es idéntica. Si aún no la tiene, créela con el siguiente comando:
+#strong[Reutilización de la aplicación:] Si ya completó la guía Promtail, puede reutilizar la misma aplicación #NormalTok("logs.producer");. La configuración de escritura a archivo JSON (#NormalTok("application.properties");) es idéntica. Si aún no la tiene, créela con el siguiente comando:
 ]
 
 #Skylighting(([#NormalTok("mvn io.quarkus.platform:quarkus-maven-plugin:3.18.4:create \\");],
@@ -5373,9 +5334,6 @@ La aplicación expone los mismos endpoints que en las guías anteriores:
 [],
 [#CommentTok("# Generar un error");],
 [#ExtensionTok("curl");#NormalTok(" http://localhost:8080/api/error");],));
-
-#horizontalrule
-
 == Visualización en Grafana
 <visualización-en-grafana-3>
 Acceda a Grafana en #NormalTok("http://localhost:3000");. La fuente de datos Loki está preconfigurada.
@@ -5391,9 +5349,6 @@ Filtrar por nivel:
 Analizar el JSON y mostrar solo el mensaje:
 
 #Skylighting(([#NormalTok("{job=\"alloy_app_logs\"} | json | line_format \"{{.message}}\"");],));
-
-#horizontalrule
-
 == Actividades de profundización
 <actividades-de-profundización-8>
 - #strong[Comparar el grafo de componentes con la guía Promtail:] Dibuje o esquematice el pipeline equivalente en Promtail y compare la verbosidad y claridad de ambas configuraciones. ¿Cuándo es preferible cada modelo?
@@ -5408,8 +5363,6 @@ Analizar el JSON y mostrar solo el mensaje:
 + El healthcheck de Alloy usa #NormalTok("/proc/net/tcp6"); en lugar de #NormalTok("wget"); o #NormalTok("curl");. Explique qué limitación de la imagen impone esta solución y proponga una alternativa basada en un Dockerfile personalizado.
 + Compare el modelo de configuración de Alloy (#emph[dataflow] explícito con #NormalTok("forward_to");) con el de Promtail (#emph[stages] implícitas en cadena). ¿En qué escenario de producción el modelo de Alloy ofrece una ventaja clara?
 
-#horizontalrule
-
 == Troubleshooting
 <troubleshooting-8>
 #strong[Alloy queda en estado #NormalTok("unhealthy"); al arrancar.]
@@ -5422,7 +5375,7 @@ Analizar el JSON y mostrar solo el mensaje:
 
 #strong[Los logs no aparecen en Loki / Grafana.]
 
-#strong[Causas posibles:] 1. El directorio #NormalTok("./logs"); no existe o está vacío --- #NormalTok("logs.producer"); no ha podido escribir el archivo. 2. El componente #NormalTok("loki.source.file"); no encuentra el glob #NormalTok("/var/log/app/*.log"); porque el archivo no se ha creado aún.
+#strong[Causas posibles:] 1. El directorio #NormalTok("./logs"); no existe o está vacío: #NormalTok("logs.producer"); no ha podido escribir el archivo. 2. El componente #NormalTok("loki.source.file"); no encuentra el glob #NormalTok("/var/log/app/*.log"); porque el archivo no se ha creado aún.
 
 #strong[Solución:] Verifique que #NormalTok("./logs/application.log"); exista tras el arranque de #NormalTok("logs.producer");:
 
@@ -5441,8 +5394,6 @@ Luego inspeccione el estado de los componentes en la UI de Alloy (#NormalTok("ht
 [#NormalTok("  grafana/alloy:v1.16.1 ");#DataTypeTok("\\");],
 [#NormalTok("  fmt /etc/alloy/config.alloy");],));
 Si hay errores de sintaxis, el comando los reporta con la línea exacta.
-
-#horizontalrule
 
 == Referencias
 <referencias-8>

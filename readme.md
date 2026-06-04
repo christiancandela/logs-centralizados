@@ -8,11 +8,9 @@
 **Universidad del Quindío** — Programa de Ingeniería de Sistemas y Computación  
 **Asignatura asociada:** Arquitectura Orientada a Microservicios  
 **Versión:** 1.0.0 | **Fecha:** mayo de 2026  
-[![CC BY-SA 4.0](https://licensebuttons.net/l/by-sa/4.0/88x31.png)](https://creativecommons.org/licenses/by-sa/4.0/deed.es) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20534944.svg)](https://doi.org/10.5281/zenodo.20534944)
+[![CC BY-SA 4.0](https://licensebuttons.net/l/by-sa/4.0/88x31.png)](https://creativecommons.org/licenses/by-sa/4.0/deed.es) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20187576.svg)](https://doi.org/10.5281/zenodo.20187576)
 
 > Este recurso educativo abierto consta de: (a) el presente marco conceptual, (b) una guía de estudio con preguntas de comprensión y articulación teoría–práctica ([`guia_estudio.md`](./guia_estudio.md)), (c) una guía para docentes con planificación sugerida y rúbricas ([`guia_docente.md`](./guia_docente.md)), y (d) nueve guías prácticas reproducibles en el directorio [`guias/`](./guias/) con sus respectivas soluciones en [`soluciones/`](./soluciones/).
-
----
 
 ## 1. Introducción
 
@@ -24,8 +22,6 @@ El presente trabajo escrito tiene como propósito desarrollar, desde un enfoque 
 
 Las guías prácticas complementarias cubren un espectro tecnológico más amplio que el enunciado originalmente en la propuesta de trabajo. Esta ampliación es una decisión consciente: el estado del arte de la observabilidad ha evolucionado de forma acelerada durante el período de desarrollo del recurso, incorporando estándares de protocolo unificado y plataformas de nueva generación que ofrecen un valor pedagógico significativo y mejoran la transferibilidad del conocimiento. Las guías adicionales se diseñaron con el mismo rigor y estructura que las originalmente propuestas, manteniendo coherencia con el marco conceptual presentado en este documento.
 
----
-
 ## 2. Justificación
 
 La formación en ingeniería de sistemas enfrenta el desafío de preparar a los estudiantes para comprender y gestionar sistemas de software cada vez más complejos y distribuidos. Si bien los programas académicos suelen abordar con profundidad los aspectos relacionados con el diseño y la construcción de software, los elementos asociados a su operación, análisis y diagnóstico suelen recibir una atención limitada o fragmentada.
@@ -33,8 +29,6 @@ La formación en ingeniería de sistemas enfrenta el desafío de preparar a los 
 En particular, la observabilidad y la centralización de logs suelen introducirse desde enfoques predominantemente instrumentales, centrados en el uso de herramientas específicas. Esta aproximación dificulta la transferencia del conocimiento a contextos tecnológicos diversos y limita la comprensión de los principios conceptuales que subyacen a dichas prácticas (Cito et al., 2015).
 
 En este contexto, se justifica el desarrollo de un trabajo académico que aborde la observabilidad y la centralización de logs desde una perspectiva teórica y estructurada, orientada al aprendizaje. Al priorizar un enfoque neutral en términos tecnológicos, el documento busca fortalecer el pensamiento sistémico, la capacidad analítica y la comprensión profunda de arquitecturas distribuidas, aportando así a la formación integral de los estudiantes.
-
----
 
 ## 3. Objetivos
 
@@ -59,8 +53,6 @@ Al finalizar el estudio de este documento, el estudiante será capaz de:
 - **Identificar** los componentes de la arquitectura conceptual de centralización de logs (recolección, procesamiento, almacenamiento y visualización) y el rol de cada uno dentro del flujo de información.
 - **Analizar** los desafíos de diseño asociados a la estandarización semántica, el ciclo de vida de los datos y la protección de información sensible.
 - **Relacionar** los conceptos teóricos desarrollados en este documento con las implementaciones prácticas abordadas en las guías complementarias.
-
----
 
 ## 4. Metodología de Construcción del Recurso Educativo y Trazabilidad con la Propuesta
 
@@ -94,13 +86,14 @@ graph TD
 ```
 
 1. **Design Science Research (DSR):** Permite tratar el recurso educativo (compuesto por el marco conceptual, las 9 guías en markdown, las plantillas de configuración y la guía docente) como un **artefacto diseñado** para resolver un problema práctico: la complejidad cognitiva que enfrentan los estudiantes al comprender arquitecturas de observabilidad distribuidas y heterogéneas (Hevner et al., 2004; Peffers et al., 2007). La evaluación del artefacto se realiza bajo criterios de utilidad pedagógica, claridad procedimental y reproducibilidad multiplataforma.
-2. **Design-Based Research (DBR):** Aporta los principios de diseño orientado a contextos reales de aprendizaje y de refinamiento iterativo que guían la construcción del recurso con miras a su puesta en práctica en el aula de la asignatura *Arquitectura Orientada a Microservicios* (Design-Based Research Collective, 2003; McKenney & Reeves, 2018). La validación empírica con estudiantes —análisis de las curvas de aprendizaje y depuración del código Docker ante la heterogeneidad de sus equipos personales— se plantea como fase de **trabajo futuro**, dado que esta versión corresponde a la primera publicación del recurso.
+2. **Design-Based Research (DBR):** Aporta los principios de diseño orientado a contextos reales de aprendizaje y de refinamiento iterativo que guían la construcción del recurso con miras a su puesta en práctica en el aula de la asignatura *Arquitectura Orientada a Microservicios* (Design-Based Research Collective, 2003; McKenney & Reeves, 2018). La validación empírica con estudiantes (análisis de las curvas de aprendizaje y depuración del código Docker ante la heterogeneidad de sus equipos personales) se plantea como fase de **trabajo futuro**, dado que esta versión corresponde a la primera publicación del recurso.
 3. **Modelo ADDIE:** Estructura de forma sistemática el ciclo de vida instruccional del recurso a través de sus fases de Análisis (de necesidades curriculares y de los entornos de ejecución del estudiante), Diseño (de los RAE y la estructura de las guías), Desarrollo (configuración de los entornos Docker Compose y mockups de microservicios), Implementación (preparación del despliegue local para su ejecución por parte de los estudiantes) y Evaluación (diseño de rúbricas cualitativas y cuantitativas) (Branch, 2009).
 4. **Alineación Constructiva (Biggs):** Garantiza que no haya desconexión entre los objetivos de aprendizaje de la asignatura, las actividades técnicas requeridas en las guías y los criterios e instrumentos de evaluación declarados en la guía docente (Biggs & Tang, 2011).
 
 ### 4.2. Naturaleza del trabajo y tipo de producto esperado
 
-El trabajo se clasifica como un **desarrollo académico aplicado con orientación instruccional y tecnológica**. El producto final esperado es un **Recurso Educativo Abierto (REA)** compuesto por:
+El trabajo se clasifica como un **desarrollo académico aplicado con orientación instruccional y tecnológica**. El producto final esperado es un **Recurso Educativo Abierto (REA)** compuesto por:  
+
 1. Un marco conceptual neutro respecto a las herramientas.
 2. Una arquitectura conceptual general del flujo de logs (recolección, procesamiento, almacenamiento y visualización).
 3. Nueve (9) guías prácticas e independientes que materializan dicha arquitectura mediante diferentes combinaciones tecnológicas (*stacks*).
@@ -110,7 +103,8 @@ El valor del producto radica en su **portabilidad, modularidad y transferibilida
 
 ### 4.3. Principios metodológicos
 
-El diseño del recurso se sustenta en los siguientes principios metodológicos:
+El diseño del recurso se sustenta en los siguientes principios metodológicos:  
+
 * **Interoperabilidad Curricular y Adaptabilidad (Filosofía REA):** Los contenidos didácticos y stacks prácticos deben estar diseñados para ser independientes de los programas de curso de una institución específica. Se estructuran alineándose con las directrices de currículo globales de computación (ACM/IEEE) y se suministran **rutas de aprendizaje flexibles**, facilitando que el recurso pueda ser extrapolado y adoptado en diferentes materias del área de Infraestructura y Desarrollo de TI (ej. Sistemas Distribuidos, DevOps, Arquitectura de Software).
 * **Reproducibilidad multiplataforma:** Los procedimientos técnicos y los contenedores deben estar diseñados para ser agnósticos respecto al sistema operativo del host local (compatibles con Windows/WSL2, macOS y GNU/Linux).
 * **Transparencia y visibilidad de recursos (Capacity Planning):** El recurso exige la **visibilidad, parametrización y dimensionamiento explícito** de los requerimientos de CPU, memoria RAM y dependencias de software de cada una de las prácticas. Esto permite que el REA pueda ser extrapolado y dimensionado de forma adaptativa a contextos educativos con diferentes restricciones de recursos.
@@ -186,13 +180,14 @@ graph TD
 ```
 
 Para asegurar la coherencia sistémica, cada guía didáctica en el repositorio cumple con la siguiente estructura formal:
+
 1. **Resultados de Aprendizaje Esperados (RAE):** Definición exacta de las habilidades conceptuales y operativas que el estudiante adquirirá.
 2. **Dimensionamiento y Prerrequisitos de Recursos:** Estimación explícita del consumo de memoria RAM y CPU del stack, advertencias de configuración del host (ej. límites del sistema operativo) y parametrización de los límites de memoria de los contenedores (`mem_limit` vía variables de entorno `.env`).
 3. **Diagrama del Pipeline Lógico:** Ilustración de la arquitectura de la guía en función de las 4 etapas del ciclo de logs.
 4. **Procedimiento Técnico Paso a Paso:** Comandos y configuraciones limpias, reproducibles y ordenadas.
 5. **Cuestionario de Análisis Crítico:** Preguntas diseñadas para la conceptualización abstracta y el diagnóstico reflexivo de fallos.
 
-Los **instrumentos de evaluación** —entregables exigibles y rúbrica analítica de niveles de desempeño— se proveen de forma **homogénea y centralizada** en la guía docente (`guia_docente.md` §6), aplicables de manera uniforme a cualquiera de las nueve guías. Esta centralización es una decisión deliberada de diseño REA: garantiza criterios de evaluación consistentes entre stacks, evita la duplicación de rúbricas y facilita que el docente adopte y adapte un único conjunto de instrumentos.
+Los **instrumentos de evaluación** (entregables exigibles y rúbrica analítica de niveles de desempeño) se proveen de forma **homogénea y centralizada** en la guía docente (`guia_docente.md` §6), aplicables de manera uniforme a cualquiera de las nueve guías. Esta centralización es una decisión deliberada de diseño REA: garantiza criterios de evaluación consistentes entre stacks, evita la duplicación de rúbricas y facilita que el docente adopte y adapte un único conjunto de instrumentos.
 
 ### 4.7. Marco de Verificación y Validación (V&V)
 
@@ -211,7 +206,7 @@ El marco de verificación y validación del recurso se centra en dos dimensiones
   * *Validación de Coherencia Pedagógica:* Revisión de que las tareas solicitadas permitan alcanzar y evaluar empíricamente los Resultados de Aprendizaje Esperados (RAE) de la asignatura *Arquitectura Orientada a Microservicios*.
   * *Evaluación Editorial y Estructura Docente:* Revisión de la portabilidad e inteligibilidad de la guía docente (`guia_docente.md`) para asegurar que el recurso pueda ser fácilmente reutilizado por otros docentes del programa de Ingeniería de Sistemas.
 
-**Delimitación del alcance evaluativo.** Los **Resultados de Aprendizaje Esperados (RAE)** declarados en el recurso son objetivos de diseño instruccional, no mediciones empíricas. Los objetivos comprometidos en la propuesta aprobada se circunscriben al **diseño, desarrollo y verificación técnica** del REA —fundamentación teórica, guías prácticas y entornos reproducibles—; la **medición del impacto pedagógico** (la evaluación empírica de los resultados de aprendizaje al aplicar el recurso con estudiantes) excede dichos objetivos y se proyecta como una **fase posterior** de validación en aula —analítica de uso, encuestas de percepción y ajuste iterativo conforme a los principios de la investigación basada en diseño (DBR)—, dado que esta versión corresponde a la primera publicación del recurso.
+**Delimitación del alcance evaluativo.** Los **Resultados de Aprendizaje Esperados (RAE)** declarados en el recurso son objetivos de diseño instruccional, no mediciones empíricas. Los objetivos comprometidos en la propuesta aprobada se circunscriben al **diseño, desarrollo y verificación técnica** del REA (fundamentación teórica, guías prácticas y entornos reproducibles); la **medición del impacto pedagógico** (la evaluación empírica de los resultados de aprendizaje al aplicar el recurso con estudiantes) excede dichos objetivos y se proyecta como una **fase posterior** de validación en aula —analítica de uso, encuestas de percepción y ajuste iterativo conforme a los principios de la investigación basada en diseño (DBR)—, dado que esta versión corresponde a la primera publicación del recurso.
 
 #### 4.7.1. Prueba de humo estandarizada
 
@@ -241,12 +236,9 @@ La siguiente matriz detalla de forma explícita cómo cada uno de los tres objet
 | **OE2:** Elaborar guías prácticas para el despliegue progresivo de soluciones para centralización de logs utilizando Docker. | * Carpeta de guías didácticas (`guias/` de la 1 a la 9).<br>* Rúbricas y planeación sugerida (`guia_docente.md`). | * 9 Guías académicas estructuradas bajo el modelo instruccional de Kolb.<br>* Rúbrica analítica homogénea y entregables exigibles definidos en la guía docente, aplicables a las 9 guías. | Se diseñan 9 guías instruccionales que cubren desde los stacks tradicionales hasta soluciones en el estado del arte, ordenadas por complejidad progresiva. |
 | **OE3:** Implementar cada guía en entornos funcionales y reproducibles para los estudiantes. | * Carpeta de configuraciones y entornos (`soluciones/` de la 1 a la 9).<br>* Repositorio de código con archivos `docker-compose.yml` y configs. | * Archivos YAML de Docker Compose funcionales.<br>* Archivos de configuración de colectores e indexadores.<br>* Aplicaciones mocks generadoras de logs.<br>* Logs e historiales de comandos. | Las 9 soluciones y contenedores de observabilidad son funcionales, portables y reproducibles, estructuradas de forma parametrizada y con guías de dimensionamiento técnico. |
 
----
-
 ## 5. Desarrollo de la temática
 
 Esta sección desarrolla de manera progresiva los fundamentos conceptuales de la observabilidad y la centralización de logs en sistemas distribuidos. El recorrido inicia con la definición y alcance del concepto de observabilidad, avanza hacia el análisis del rol de los logs como fuente primaria de información y culmina con la presentación de una arquitectura conceptual que integra los distintos componentes involucrados. Esta progresión busca facilitar una comprensión gradual y coherente, orientada al aprendizaje y a la posterior aplicación práctica de los conceptos abordados.
-
 
 ### 5.1 Observabilidad en sistemas distribuidos
 
@@ -254,11 +246,45 @@ La observabilidad se define como la capacidad de inferir el estado interno de un
 
 Desde la ingeniería de software, la observabilidad se ha consolidado como un principio complementario a la monitorización tradicional. Mientras esta última se enfoca en indicadores previamente definidos, la observabilidad busca responder preguntas no anticipadas, permitiendo explorar el comportamiento del sistema cuando surgen fallos o degradaciones inesperadas (Turnbull, 2016). Este enfoque resulta particularmente relevante en arquitecturas de microservicios, donde los comportamientos emergentes no pueden ser previstos completamente en tiempo de diseño (Newman, 2015).
 
+Conviene precisar que el término *observabilidad* no se originó en la ingeniería de software, sino en la teoría de control, donde Kalman (1960) lo definió formalmente como la propiedad que permite reconstruir el estado interno de un sistema dinámico a partir del conocimiento de sus salidas externas. Esta raíz conceptual resulta esclarecedora: un sistema es observable no por la cantidad de datos que emite, sino por la posibilidad de inferir su estado interno a partir de ellos. Trasladada al software, la observabilidad no se reduce, por tanto, a "generar abundantes registros", sino a disponer de señales suficientes y bien estructuradas para responder preguntas sobre el comportamiento del sistema.
+
+En la práctica, la observabilidad de un sistema de software se construye sobre tres tipos de señales complementarias, conocidas como los **tres pilares de la observabilidad** (Sridharan, 2018; Majors, Fong-Jones & Miranda, 2022):
+
+| Señal | Naturaleza | Pregunta que ayuda a responder | Ejemplo conceptual |
+|---|---|---|---|
+| **Logs** | Registros textuales de eventos discretos | ¿Qué ocurrió exactamente y por qué? | `ERROR pago rechazado: saldo insuficiente, usuario=4827` |
+| **Métricas** | Valores numéricos agregados en el tiempo | ¿Cuánto, con qué frecuencia, con qué tendencia? | `solicitudes_por_segundo = 1450` |
+| **Trazas** | Recorrido de una solicitud a través de varios servicios | ¿Por dónde pasó la solicitud y dónde se demoró? | `petición #abc: API (2 ms) → pagos (310 ms) → BD (15 ms)` |
+
+Aunque los tres pilares se complementan, presentan diferencias importantes en su costo de almacenamiento y en su riqueza contextual. Las métricas son altamente compactas, pero pierden el detalle de los eventos individuales; las trazas revelan la topología de las interacciones, pero requieren instrumentación explícita; los logs, en cambio, preservan el contexto semántico completo de cada evento, razón por la cual constituyen el foco de este documento. Un concepto transversal a los tres pilares es el de **cardinalidad** (el número de valores distintos que puede tomar un atributo), cuya gestión inadecuada constituye uno de los principales retos de costo y rendimiento de los sistemas de observabilidad, como se discute en la sección 5.6.
+
 ### 5.2 Logs como fuente primaria de información
 
 Los logs constituyen registros textuales de eventos discretos que ocurren durante la ejecución de un sistema y representan una de las formas más expresivas de instrumentación del software (Turnbull, 2016). A diferencia de las métricas, que capturan valores agregados, y de las trazas, que describen recorridos de solicitudes, los logs preservan el contexto semántico de los eventos, facilitando la comprensión del *qué* y el *por qué* de una situación determinada.
 
 Diversos estudios destacan que los logs no solo cumplen una función operativa, sino que actúan como artefactos de conocimiento que reflejan decisiones de diseño, supuestos implícitos y modelos mentales de los desarrolladores (Xu et al., 2009; Oliner, Ganapathi, & Xu, 2012; He et al., 2021). Desde una perspectiva formativa, esta característica permite a los estudiantes analizar evidencias reales de ejecución y vincular los conceptos teóricos de arquitectura y diseño con su manifestación práctica.
+
+Para comprender el valor de los logs conviene examinar su anatomía. Un registro típico se compone de, al menos, una **marca temporal** (cuándo ocurrió el evento), un **nivel de severidad** (qué tan importante es), un **mensaje** descriptivo y, idealmente, un conjunto de **campos de contexto** (qué servicio, qué usuario, qué operación). La forma en que estos elementos se representan determina la facilidad con que pueden analizarse de manera automatizada. Históricamente, los logs se escribían como texto libre no estructurado, legible para las personas pero difícil de procesar por las máquinas:
+
+```text
+2026-05-14 10:32:01 ERROR El pago del usuario 4827 fue rechazado por saldo insuficiente
+```
+
+El **logging estructurado** propone, en cambio, representar cada evento como un objeto con campos explícitos (habitualmente en formato JSON), de modo que cada dato sea identificable y consultable sin necesidad de interpretar la cadena de texto (Chuvakin, Schmidt & Phillips, 2012):
+
+```json
+{
+  "timestamp": "2026-05-14T10:32:01Z",
+  "level": "ERROR",
+  "event": "pago_rechazado",
+  "usuario_id": 4827,
+  "motivo": "saldo_insuficiente"
+}
+```
+
+Esta diferencia es determinante para la centralización: los logs estructurados pueden filtrarse, agregarse y correlacionarse de forma sistemática, mientras que el texto libre exige un procesamiento adicional (y frecuentemente frágil) para extraer su significado, como se detalla en la sección 5.7.2.
+
+Los niveles de severidad constituyen otra convención fundamental. La mayoría de los marcos de registro adoptan una jerarquía estándar (comúnmente TRACE, DEBUG, INFO, WARN, ERROR y FATAL) que expresa la importancia relativa de cada evento y permite regular el volumen de información según el contexto: un registro detallado durante el desarrollo y la depuración, y un registro selectivo de advertencias y errores en producción. Comprender la semántica de estos niveles es esencial para equilibrar la riqueza informativa con el costo de almacenamiento y el ruido analítico que un exceso de registros de bajo nivel puede introducir.
 
 ### 5.3 Problemática de la dispersión de logs
 
@@ -266,11 +292,17 @@ En sistemas distribuidos, cada componente genera sus propios registros de manera
 
 La literatura señala que, a medida que aumenta el número de servicios y nodos, el análisis manual de logs locales se vuelve inviable, generando opacidad operativa y dependencia excesiva de conocimiento tácito (Oliner et al., 2012; Burns et al., 2016). Esta problemática refuerza la necesidad de enfoques sistemáticos para la gestión y análisis de registros en entornos distribuidos.
 
+Más allá del volumen, la dispersión plantea dos problemas conceptualmente profundos. El primero es el de la **correlación de eventos**: cuando una sola solicitud de usuario atraviesa varios servicios, cada uno genera registros de forma independiente, y sin un mecanismo que los vincule resulta imposible reconstruir la secuencia completa. La solución conceptual a este problema es la propagación de un **identificador de correlación** (*correlation ID* o *trace ID*) que acompaña a la solicitud a lo largo de todos los servicios que la procesan, permitiendo agrupar a posteriori todos los eventos que pertenecen a la misma operación (Sigelman et al., 2010).
+
+El segundo problema es el del **orden temporal**. En un sistema distribuido, cada nodo posee su propio reloj físico, y estos relojes nunca están perfectamente sincronizados. En consecuencia, ordenar eventos provenientes de máquinas distintas únicamente por su marca temporal puede producir secuencias incorrectas. Lamport (1978) demostró que, en ausencia de un reloj global, lo determinante no es el tiempo absoluto sino la relación de causalidad entre eventos (la relación *happened-before*), y propuso los relojes lógicos como mecanismo para establecer un orden coherente. Esta noción es fundamental para comprender por qué la correlación y el ordenamiento de logs distribuidos constituyen un problema no trivial, y no una simple cuestión de comparar fechas.
+
 ### 5.4 Centralización de logs
 
 La centralización de logs surge como una estrategia para mitigar la dispersión de información mediante la recolección, consolidación y almacenamiento de los registros generados por los distintos componentes del sistema en un repositorio común (Turnbull, 2016; Majors, Fong-Jones & Miranda, 2022). Este enfoque facilita la consulta unificada, la correlación temporal y el análisis transversal de eventos.
 
 Desde el punto de vista conceptual, la centralización de logs transforma un conjunto fragmentado de mensajes en una fuente coherente de conocimiento operativo, habilitando procesos de diagnóstico distribuido y análisis post-mortem de incidentes complejos (Beyer et al., 2016). Asimismo, permite reconstruir narrativas de ejecución que son fundamentales para comprender fallos en cascada y comportamientos no deterministas.
+
+Desde el punto de vista de su materialización, la centralización admite distintos **modelos de recolección**. En el modelo de *envío* (*push*), cada componente (o un agente asociado a él) transmite activamente sus registros hacia el sistema central. En el modelo de *extracción* (*pull*), el sistema central consulta periódicamente a las fuentes para obtener los registros disponibles. La captura, a su vez, puede realizarse mediante distintos patrones: un agente recolector instalado en cada host, un componente acompañante dedicado a un único servicio (*sidecar*) o el envío directo desde la propia aplicación mediante una biblioteca de instrumentación. La elección entre estos modelos afecta el acoplamiento, la resiliencia y la sobrecarga operativa de la solución, y constituye una de las primeras decisiones de diseño que el estudiante debe aprender a razonar de forma crítica.
 
 ### 5.5 Beneficios conceptuales de la centralización de logs
 
@@ -287,9 +319,12 @@ Estos beneficios refuerzan el valor de la centralización de logs como herramien
 
 El diseño de soluciones de centralización de logs implica enfrentar diversos desafíos técnicos y operativos (Kitchin, 2014; Beyer et al., 2016). Abordarlos adecuadamente requiere la adopción de criterios conceptuales sólidos:
 
-- **Estandarización Semántica:** En arquitecturas heterogéneas, consolidar logs carece de valor si no comparten un esquema común. La adopción de estándares de esquema semántico ampliamente reconocidos en la industria —que definen convenciones uniformes para nombres de campos, tipos de datos y niveles de severidad— es fundamental para garantizar que los eventos de distintos servicios puedan correlacionarse correctamente (He, He, Chen et al., 2021), facilitando así la reconstrucción de flujos de ejecución distribuidos que atraviesan múltiples microservicios (Sigelman et al., 2010). Las guías prácticas complementarias ilustran la aplicación concreta de varios de estos estándares en diferentes ecosistemas tecnológicos.
+- **Estandarización Semántica:** En arquitecturas heterogéneas, consolidar logs carece de valor si no comparten un esquema común. La adopción de estándares de esquema semántico ampliamente reconocidos en la industria (que definen convenciones uniformes para nombres de campos, tipos de datos y niveles de severidad) es fundamental para garantizar que los eventos de distintos servicios puedan correlacionarse correctamente (He, He, Chen et al., 2021), facilitando así la reconstrucción de flujos de ejecución distribuidos que atraviesan múltiples microservicios (Sigelman et al., 2010). Las guías prácticas complementarias ilustran la aplicación concreta de varios de estos estándares en diferentes ecosistemas tecnológicos.
 - **Ciclo de Vida y Retención de Datos:** Dado el inmenso volumen de información operativa, los sistemas de centralización deben implementar políticas de retención, rotación y almacenamiento por niveles (*Hot/Cold storage*) para gestionar el impacto en la infraestructura sin perder capacidades de auditoría a largo plazo.
 - **Seguridad y Privacidad (Sanitización):** Los logs suelen capturar inadvertidamente información sensible (contraseñas, tokens, datos de usuarios PII). Es imperativo que las arquitecturas incluyan mecanismos de censura o enmascaramiento de datos durante la fase de procesamiento antes de su indexación (Aghili, Li & Khomh, 2025).
+- **Volumen, Cardinalidad y Costo:** El valor analítico de un sistema de centralización depende de su capacidad de indexar los datos para consultarlos con rapidez, pero indexar tiene un costo. Los atributos de alta *cardinalidad* (aquellos con un número muy elevado de valores distintos, como los identificadores de usuario o de petición) pueden provocar un crecimiento desproporcionado de los índices y degradar el rendimiento. Diseñar una solución de centralización implica, por tanto, decidir conscientemente qué campos justifican el costo de ser indexados y cuáles no, decisión que se relaciona directamente con el paradigma de almacenamiento elegido (sección 5.7.3).
+- **Orden Temporal y Relojes Distribuidos:** Como se discutió en la sección 5.3, los relojes de los distintos nodos no están perfectamente sincronizados, lo que dificulta establecer el orden real de los eventos a partir de sus marcas temporales (Lamport, 1978). Las soluciones de centralización deben asumir esta limitación y apoyarse en identificadores de correlación y en marcas temporales coherentes para reconstruir las secuencias de ejecución.
+- **Confiabilidad de la Entrega y Contrapresión:** El transporte de logs desde su origen hasta el repositorio central no está exento de fallos. Las soluciones deben definir garantías de entrega —desde *at-most-once* (se prioriza no duplicar, a riesgo de perder eventos) hasta *at-least-once* (se prioriza no perder, a riesgo de duplicar)— así como mecanismos de amortiguación (*buffering*) y contrapresión (*backpressure*) que eviten que un pico en la generación de logs sature o derribe los componentes intermedios.
 
 Desde una perspectiva académica, el análisis de estos desafíos permite a los estudiantes desarrollar criterios transferibles a distintos contextos tecnológicos, fomentando una comprensión crítica de las decisiones de diseño y sus implicaciones operativas y éticas.
 
@@ -321,7 +356,7 @@ graph LR
     class E gen;
 ```
 
-> **Nota sobre el alcance del diagrama:** Los sistemas distribuidos generan tres tipos de señales de observabilidad: **logs** (eventos discretos con contexto semántico), **métricas** (mediciones numéricas agregadas en el tiempo) y **trazas** (recorridos de solicitudes a través de múltiples servicios). La arquitectura conceptual de cuatro etapas —recolección, procesamiento, almacenamiento y visualización— aplica a las tres señales. Este documento centra su desarrollo en los **logs**, por ser la señal de mayor riqueza contextual y la más directamente vinculada a la comprensión del comportamiento interno del sistema (Majors, Fong-Jones & Miranda, 2022). Las guías prácticas complementarias amplían el tratamiento hacia métricas y trazas en los ecosistemas que las integran de forma nativa.
+> **Nota sobre el alcance del diagrama:** Los sistemas distribuidos generan tres tipos de señales de observabilidad: **logs** (eventos discretos con contexto semántico), **métricas** (mediciones numéricas agregadas en el tiempo) y **trazas** (recorridos de solicitudes a través de múltiples servicios). La arquitectura conceptual de cuatro etapas (recolección, procesamiento, almacenamiento y visualización) aplica a las tres señales. Este documento centra su desarrollo en los **logs**, por ser la señal de mayor riqueza contextual y la más directamente vinculada a la comprensión del comportamiento interno del sistema (Majors, Fong-Jones & Miranda, 2022). Las guías prácticas complementarias amplían el tratamiento hacia métricas y trazas en los ecosistemas que las integran de forma nativa.
 
 #### 5.7.1 Recolección de logs
 
@@ -329,11 +364,15 @@ El componente de **recolección de logs** es responsable de capturar los registr
 
 Desde una perspectiva formativa, resulta relevante comprender que la recolección de logs involucra decisiones relacionadas con la ubicación de los agentes de captura, la frecuencia de recolección y el tipo de información registrada. Estas decisiones influyen directamente en la calidad, utilidad y confiabilidad de la observabilidad obtenida, y condicionan los análisis posteriores que pueden realizarse sobre los datos recolectados (Xu et al., 2009).
 
+Una propiedad conceptual central de esta etapa es el desacoplamiento temporal entre la generación y el consumo de los registros. Para que la captura no interfiera con la aplicación cuando el sistema central se ralentiza o deja de responder, los recolectores suelen incorporar mecanismos de amortiguación (*buffering*) que almacenan temporalmente los eventos. Comprender este principio permite razonar sobre las garantías de entrega y la contrapresión introducidas en la sección 5.6, y entender por qué un buen recolector debe ser, ante todo, robusto frente a la indisponibilidad de los componentes que lo suceden.
+
 #### 5.7.2 Procesamiento y enriquecimiento de logs
 
 El **procesamiento de logs** comprende el conjunto de actividades orientadas a transformar los registros crudos en información estructurada y significativa. Entre estas actividades se incluyen el filtrado de eventos irrelevantes, la normalización de formatos, el enriquecimiento semántico y la correlación básica de eventos.
 
 Desde el punto de vista conceptual, este procesamiento permite reducir el ruido inherente a grandes volúmenes de datos operativos y preparar los logs para su almacenamiento y análisis posterior. En el ámbito educativo, este componente introduce a los estudiantes en la noción de que los datos generados por los sistemas requieren un tratamiento previo para convertirse en información útil y accionable (Oliner et al., 2012; He et al., 2017; Zhu et al., 2019).
+
+La viabilidad y el costo de esta etapa dependen en gran medida de la estructura de los datos de entrada. Cuando los logs llegan ya estructurados (sección 5.2), el procesamiento se reduce a operaciones directas sobre campos identificados; cuando llegan como texto libre, es necesario aplicar técnicas de análisis sintáctico (expresiones regulares o gramáticas de extracción) que resultan más frágiles y costosas de mantener (He et al., 2017; Zhu et al., 2019). El procesamiento es también el punto natural donde se aplican dos operaciones críticas: el *muestreo* (*sampling*), que descarta deliberadamente parte de los eventos para controlar el volumen, y la *sanitización* o enmascaramiento de información sensible antes de su almacenamiento (sección 5.6), lo que convierte a esta etapa en un punto de decisión tanto técnico como ético.
 
 #### 5.7.3 Almacenamiento y búsqueda
 
@@ -341,11 +380,23 @@ El **almacenamiento y motor de búsqueda** constituye el núcleo analítico de u
 
 A nivel conceptual, este componente introduce nociones fundamentales relacionadas con la indexación de datos, la gestión de la retención de información y la ejecución de consultas temporales. Estos aspectos resultan esenciales para comprender cómo se construye la visibilidad del sistema a lo largo del tiempo y cómo se posibilita el análisis retrospectivo de eventos (Kitchin, 2014; Kleppmann, 2017).
 
+Desde una perspectiva más avanzada, no existe un único modelo de almacenamiento óptimo: las soluciones adoptan distintos **paradigmas de indexación**, cada uno con compromisos diferentes entre velocidad de consulta, flexibilidad y costo. Comprender estos paradigmas permite entender por qué soluciones distintas resultan más adecuadas para necesidades distintas, y constituye uno de los criterios de diseño más transferibles del área:
+
+| Paradigma | Qué indexa | Fortaleza de consulta | Perfil de costo | Orientación típica |
+|---|---|---|---|---|
+| **Índice invertido** (búsqueda de texto completo) | Cada término de cada mensaje | Búsqueda libre y flexible sobre cualquier palabra del contenido | Alto costo de indexación y almacenamiento | Exploración y búsqueda ad hoc |
+| **Almacén columnar** (analítico / OLAP) | Columnas completas de atributos estructurados | Agregaciones y análisis sobre grandes volúmenes | Eficiente en compresión; menos flexible para texto libre | Análisis cuantitativo a gran escala |
+| **Índice de solo etiquetas** | Únicamente un conjunto reducido de etiquetas (metadatos) | Filtrado rápido por etiquetas; el contenido se examina al consultar | Muy bajo costo de indexación y almacenamiento | Grandes volúmenes con consultas acotadas por etiquetas |
+
+El **índice invertido**, heredado de la disciplina de recuperación de información, asocia cada término al conjunto de registros que lo contienen, lo que habilita búsquedas de texto completo muy flexibles a cambio de un alto costo de indexación y almacenamiento (Manning, Raghavan & Schütze, 2008). El **almacenamiento columnar**, propio de los sistemas analíticos, organiza los datos por columnas en lugar de por filas, lo que permite comprimir y agregar grandes volúmenes de datos estructurados con notable eficiencia, aunque resulta menos apto para la búsqueda libre de texto (Abadi, Madden & Hachem, 2008). Finalmente, el **índice de solo etiquetas** minimiza deliberadamente lo que se indexa (apenas un conjunto reducido de metadatos), reduciendo de forma drástica el costo a cambio de exigir que el contenido se examine en el momento de la consulta. Estas tres aproximaciones no son excluyentes, y las guías prácticas complementarias permiten contrastar empíricamente sus implicaciones en ecosistemas tecnológicos concretos.
+
 #### 5.7.4 Visualización y análisis
 
 El componente de **visualización** tiene como propósito presentar la información contenida en los logs de manera comprensible para los usuarios humanos. Mediante representaciones gráficas, tablas y paneles, se facilita la identificación de patrones, tendencias y posibles anomalías en el comportamiento del sistema.
 
 Desde una perspectiva formativa, la visualización cumple un rol clave al reducir la carga cognitiva asociada al análisis de grandes volúmenes de información y al permitir que los estudiantes desarrollen habilidades de interpretación y análisis de datos operativos. De este modo, se establece un vínculo directo entre los registros técnicos y los procesos de toma de decisiones informadas (Bosch, 2016).
+
+A un nivel más avanzado, la visualización se apoya en **lenguajes de consulta** especializados que permiten filtrar, agregar y transformar los registros almacenados, y cuya expresividad está condicionada por el paradigma de almacenamiento subyacente (sección 5.7.3). Sobre esta capacidad de consulta se construye, además, la noción de **alertamiento**: la definición de condiciones que, al cumplirse sobre el flujo de logs, notifican automáticamente a los responsables del sistema. De este modo, la visualización no es únicamente un mecanismo de exploración retrospectiva, sino también un soporte para la detección proactiva de anomalías.
 
 #### 5.7.5 Integración conceptual de los componentes
 
@@ -354,8 +405,6 @@ Los componentes de recolección, procesamiento, almacenamiento y visualización 
 Desde el punto de vista conceptual, esta integración permite comprender cómo los eventos generados durante la ejecución de un sistema se transforman progresivamente en información significativa para el análisis y la toma de decisiones. Para los estudiantes, esta visión integrada facilita el tránsito desde la comprensión teórica hacia la implementación práctica, al proporcionar un modelo mental claro que puede ser instanciado mediante distintas tecnologías en los ejercicios aplicados.
 
 De este modo, la arquitectura conceptual presentada establece un puente entre los fundamentos teóricos desarrollados en este trabajo escrito y las actividades prácticas abordadas en los materiales complementarios, manteniendo la neutralidad tecnológica del documento.
-
----
 
 ## 6. Alcance del documento
 
@@ -370,8 +419,6 @@ Este capítulo conceptual se limita intencionalmente a la **fundamentación teó
 - Mantener la neutralidad tecnológica del contenido central.
 - Facilitar su reutilización en distintos cursos y programas académicos.
 - Permitir la actualización incremental de las guías prácticas sin afectar el marco teórico.
-
----
 
 ## 7. Articulación con las actividades prácticas
 
@@ -395,8 +442,6 @@ Aunque las guías son independientes, se sugiere el siguiente orden de consumo p
 8. **[SigNoz (ClickHouse)](guias/signoz-guide.md):** (*Estado del Arte*) Plataforma "Todo en Uno" que utiliza OpenTelemetry nativamente y almacenamiento analítico columnar, representando la alternativa libre a plataformas comerciales.
 9. **[Grafana Alloy](guias/alloy-guide.md):** (*Guía complementaria*) Migración de Promtail al sucesor oficial. Introduce el modelo de configuración orientado al flujo de datos (*dataflow*) con componentes explícitamente conectados.
 
----
-
 ## 8. Conclusiones
 
 La observabilidad se consolida como un principio fundamental para la comprensión, análisis y gestión de sistemas distribuidos, al permitir inferir su comportamiento interno a partir de las señales externas generadas durante su ejecución. En arquitecturas basadas en microservicios, donde la complejidad operativa y los comportamientos emergentes son inherentes, este principio resulta indispensable para el diagnóstico, la toma de decisiones y la mejora continua de los sistemas (Majors, Fong-Jones & Miranda, 2022; Beyer et al., 2016).
@@ -407,9 +452,9 @@ Este enfoque arquitectónico y conceptual proporciona a los estudiantes un model
 
 En conjunto, el trabajo escrito ofrece una base teórica robusta y coherente que apoya los procesos formativos en ingeniería de sistemas y disciplinas afines, fortaleciendo la articulación entre fundamentos conceptuales y escenarios reales de operación, y sentando las bases para un aprendizaje significativo en torno a la observabilidad y la centralización de logs.
 
----
-
 ## 9. Referencias bibliográficas
+
+Abadi, D. J., Madden, S. R., & Hachem, N. (2008). Column-stores vs. row-stores: How different are they really? In *Proceedings of the 2008 ACM SIGMOD International Conference on Management of Data* (pp. 967–980). Association for Computing Machinery. https://doi.org/10.1145/1376616.1376712
 
 Aghili, R., Li, H., & Khomh, F. (2025). Protecting privacy in software logs: What should be anonymized? *Proceedings of the ACM on Software Engineering, 2*(FSE). https://doi.org/10.1145/3715779
 
@@ -423,6 +468,8 @@ Branch, R. M. (2009). *Instructional design: The ADDIE approach*. Springer. http
 
 Burns, B., Grant, B., Oppenheimer, D., Brewer, E., & Wilkes, J. (2016). Borg, Omega, and Kubernetes: Lessons learned from three container-management systems over a decade. *ACM Queue, 14*(1), 70–93. https://doi.org/10.1145/2898442.2898444
 
+Chuvakin, A., Schmidt, K., & Phillips, C. (2012). *Logging and log management: The authoritative guide to understanding the concepts surrounding logging and log management*. Syngress.
+
 Cito, J., Leitner, P., Fritz, T., & Gall, H. C. (2015). The making of cloud applications: An empirical study on software development for the cloud. In *Proceedings of the 10th Joint Meeting on Foundations of Software Engineering* (pp. 393–403). Association for Computing Machinery. https://doi.org/10.1145/2786805.2786826
 
 Design-Based Research Collective. (2003). Design-based research: An emerging paradigm for educational inquiry. *Educational Researcher, 32*(1), 5–8. https://doi.org/10.3102/0013189X032001005
@@ -433,13 +480,19 @@ He, S., He, P., Chen, Z., Yang, T., Su, Y., & Lyu, M. R. (2021). A survey on aut
 
 Hevner, A. R., March, S. T., Park, J., & Ram, S. (2004). Design science in information systems research. *MIS Quarterly, 28*(1), 75–105. https://doi.org/10.2307/25148625
 
-Kitchin, R. (2014). *The data revolution: Big data, open data, data infrastructures and their consequences*. Sage Publications.
+Kalman, R. E. (1960). On the general theory of control systems. In *Proceedings of the First International Congress of the International Federation of Automatic Control (IFAC)* (Vol. 1, pp. 481–492). Butterworth.
 
-Kolb, D. A. (1984). *Experiential learning: Experience as the source of learning and development*. Prentice-Hall.
+Kitchin, R. (2014). *The data revolution: Big data, open data, data infrastructures and their consequences*. Sage Publications.
 
 Kleppmann, M. (2017). *Designing data-intensive applications: The big ideas behind reliable, scalable, and maintainable systems*. O’Reilly Media.
 
+Kolb, D. A. (1984). *Experiential learning: Experience as the source of learning and development*. Prentice-Hall.
+
+Lamport, L. (1978). Time, clocks, and the ordering of events in a distributed system. *Communications of the ACM, 21*(7), 558–565. https://doi.org/10.1145/359545.359563
+
 Majors, C., Fong-Jones, L., & Miranda, G. (2022). *Observability engineering: Achieving production excellence*. O’Reilly Media.
+
+Manning, C. D., Raghavan, P., & Schütze, H. (2008). *Introduction to information retrieval*. Cambridge University Press.
 
 McKenney, S., & Reeves, T. C. (2018). *Conducting educational design research* (2nd ed.). Routledge. https://doi.org/10.4324/9781315105642
 
@@ -463,13 +516,11 @@ Xu, W., Huang, L., Fox, A., Patterson, D., & Jordan, M. I. (2009). Detecting lar
 
 Zhu, J., He, S., Liu, J., He, P., Xie, Q., Zheng, Z., & Lyu, M. R. (2019). Tools and benchmarks for automated log parsing. In *Proceedings of the 41st International Conference on Software Engineering: Software Engineering in Practice* (pp. 121–130). IEEE. https://doi.org/10.1109/ICSE-SEIP.2019.00021
 
----
-
 ## 10. Cómo citar este trabajo
 
 Si reutiliza, adapta o referencia este recurso educativo en publicaciones académicas, materiales docentes o trabajos derivados, se sugiere la siguiente forma de cita en formato APA 7:
 
-> Candela Uribe, C. A., Acero Franco, P. A., & Sepúlveda Rodríguez, L. E. (2026). *Recurso educativo para el despliegue de ecosistemas de centralización de logs mediante Docker* (Versión 1.0.0) [Recurso educativo abierto]. Universidad del Quindío. https://doi.org/10.5281/zenodo.20534944
+> Candela Uribe, C. A., Acero Franco, P. A., & Sepúlveda Rodríguez, L. E. (2026). *Recurso educativo para el despliegue de ecosistemas de centralización de logs mediante Docker* (Versión 1.0.0) [Recurso educativo abierto]. Universidad del Quindío. https://doi.org/10.5281/zenodo.20187576
 
 **Entrada BibTeX:**
 
@@ -485,12 +536,10 @@ Si reutiliza, adapta o referencia este recurso educativo en publicaciones acadé
   howpublished = {Recurso educativo abierto},
   institution  = {Universidad del Quind{\'i}o},
   note         = {Licencia CC BY-SA 4.0},
-  doi          = {10.5281/zenodo.20534944},
-  url          = {https://doi.org/10.5281/zenodo.20534944}
+  doi          = {10.5281/zenodo.20187576},
+  url          = {https://doi.org/10.5281/zenodo.20187576}
 }
 ```
-
----
 
 ## 11. Licencia
 

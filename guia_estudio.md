@@ -40,7 +40,25 @@ Este componente se orienta a transformar registros crudos mediante actividades c
 
 La visualización presenta la información contenida en los registros de manera gráfica y comprensible para humanos mediante paneles y tablas. Esto reduce la carga cognitiva requerida para el análisis masivo, permitiendo identificar rápidamente patrones, tendencias y anomalías en el sistema, conectando así los datos operativos con la toma de decisiones informadas.
 
---- 
+## 11. ¿Cuáles son los tres pilares de la observabilidad y en qué se diferencian?
+
+Los tres pilares son los **logs**, las **métricas** y las **trazas**. Los logs son registros textuales de eventos discretos que preservan el contexto semántico (el *qué* y el *porqué*). Las métricas son valores numéricos agregados en el tiempo, muy compactos pero sin detalle de los eventos individuales. Las trazas describen el recorrido de una solicitud a través de varios servicios, revelando dónde se invierte el tiempo. Se complementan: las métricas suelen detectar que *algo* va mal, las trazas localizan *dónde* ocurre, y los logs explican *por qué*.
+
+## 12. ¿Qué distingue al logging estructurado del texto libre, y por qué importa para la centralización?
+
+El logging no estructurado escribe los eventos como texto libre, legible para las personas pero difícil de procesar por las máquinas. El **logging estructurado** representa cada evento como un objeto con campos explícitos (típicamente en JSON), de modo que cada dato es identificable y consultable directamente. Importa porque los logs estructurados pueden filtrarse, agregarse y correlacionarse de forma sistemática, mientras que el texto libre exige un análisis sintáctico posterior y frágil (expresiones regulares) para extraer su significado.
+
+## 13. El marco conceptual describe tres paradigmas de almacenamiento e indexación. ¿Cuáles son y qué compromiso ofrece cada uno?
+
+(1) El **índice invertido** (búsqueda de texto completo) indexa cada término de cada mensaje, habilitando búsquedas libres muy flexibles a un alto costo de indexación y almacenamiento. (2) El **almacén columnar** (OLAP) organiza los datos por columnas, optimizado para comprimir y agregar grandes volúmenes de datos estructurados, aunque resulta menos apto para el texto libre. (3) El **índice de solo etiquetas** indexa apenas un conjunto reducido de metadatos, con un costo mínimo, a cambio de escanear el contenido en el momento de la consulta. No existe un paradigma óptimo: cada uno responde a necesidades distintas.
+
+## 14. ¿Por qué el orden temporal de los eventos es un problema no trivial en sistemas distribuidos?
+
+Porque cada nodo posee su propio reloj físico y estos nunca están perfectamente sincronizados (*clock skew*); ordenar eventos provenientes de máquinas distintas únicamente por su marca temporal puede producir secuencias incorrectas. Lamport demostró que, en ausencia de un reloj global, lo determinante es la relación de causalidad entre eventos (la relación *happened-before*), y no el tiempo absoluto. Por ello, la correlación de logs distribuidos se apoya en identificadores de correlación, y no únicamente en las marcas temporales.
+
+## 15. ¿Qué se entiende por cardinalidad y por qué constituye un reto de costo en la centralización?
+
+La **cardinalidad** es el número de valores distintos que puede tomar un atributo. Indexar atributos de alta cardinalidad (como un identificador de usuario o de petición) provoca un crecimiento desproporcionado de los índices y degrada el rendimiento. Por eso, diseñar una solución de centralización implica decidir conscientemente qué campos justifican el costo de ser indexados, decisión directamente ligada al paradigma de almacenamiento elegido.
 
 ## Glosario 
 
@@ -70,28 +88,46 @@ La visualización presenta la información contenida en los registros de manera 
 
 **Procesamiento y enriquecimiento de logs:** Etapa intermedia del *pipeline* orientada a transformar los datos crudos en información útil, realizando el **filtrado de eventos irrelevantes, normalización de formatos, enriquecimiento semántico** y la estructuración de la información.
 
----
+**Tres pilares de la observabilidad:** Los tres tipos de señales complementarias sobre los que se construye la observabilidad: **logs** (eventos discretos con contexto semántico), **métricas** (valores numéricos agregados en el tiempo) y **trazas** (recorridos de una solicitud a través de varios servicios).
+
+**Logging estructurado:** Práctica de emitir cada evento como un **objeto con campos explícitos** (típicamente JSON), en lugar de como texto libre, de modo que pueda filtrarse, agregarse y correlacionarse de forma automatizada sin necesidad de un análisis sintáctico posterior.
+
+**Niveles de severidad:** Jerarquía estándar (comúnmente TRACE, DEBUG, INFO, WARN, ERROR y FATAL) que expresa la **importancia relativa** de cada evento y permite regular el volumen de registro según el contexto (depuración vs. producción).
+
+**Identificador de correlación (correlation ID / trace ID):** Identificador que **acompaña a una solicitud** a lo largo de todos los servicios que la procesan, permitiendo agrupar a posteriori todos los eventos que pertenecen a la misma operación y resolver así el problema de correlación inherente a la dispersión.
+
+**Cardinalidad:** Número de **valores distintos** que puede tomar un atributo. La alta cardinalidad (p. ej., identificadores de usuario) encarece la indexación y degrada el rendimiento, por lo que condiciona qué campos conviene indexar.
+
+**Índice invertido:** Paradigma de almacenamiento que **indexa cada término** de cada mensaje, asociándolo a la lista de registros que lo contienen. Habilita búsquedas de texto completo muy flexibles a un alto costo de indexación y almacenamiento.
+
+**Almacenamiento columnar (OLAP):** Paradigma que organiza los datos **por columnas** en lugar de por filas, optimizado para comprimir y **agregar/analizar** grandes volúmenes de datos estructurados; menos apto para la búsqueda libre de texto.
+
+**Índice de solo etiquetas:** Paradigma que indexa **únicamente un conjunto reducido de metadatos** (etiquetas), minimizando el costo de almacenamiento a cambio de escanear el contenido en el momento de la consulta.
+
+**Modelos de recolección (push / pull):** Estrategias de captura de logs. En el modelo *push* (envío), la fuente transmite activamente sus registros al sistema central; en el modelo *pull* (extracción), el sistema central consulta periódicamente a las fuentes.
+
+**Contrapresión (backpressure):** Mecanismo que evita que un **pico en la generación de logs** sature o derribe los componentes intermedios, típicamente combinado con amortiguación (*buffering*) y con una garantía de entrega definida (*at-least-once* / *at-most-once*).
 
 ## Articulación teoría–práctica
 
 Las siguientes preguntas proponen un puente entre los conceptos del documento central y las implementaciones concretas de las guías prácticas. Para responderlas es necesario haber revisado tanto el marco teórico como al menos algunas de las guías correspondientes.
 
-### 11. La arquitectura de cuatro etapas describe la "Recolección" como un componente idealmente desacoplado del sistema productor. ¿Qué guías del recurso instancian ese desacoplamiento con un agente independiente? ¿Cuál es su ventaja operativa frente a enviar los logs directamente desde la aplicación?
+### 16. La arquitectura de cuatro etapas describe la "Recolección" como un componente idealmente desacoplado del sistema productor. ¿Qué guías del recurso instancian ese desacoplamiento con un agente independiente? ¿Cuál es su ventaja operativa frente a enviar los logs directamente desde la aplicación?
 
-Las guías ELK, OLO, Fluentd, Promtail, Vector y Alloy utilizan un agente o recolector externo (Logstash, Fluentd, Promtail, Vector, Alloy) separado de la aplicación. Las guías GELF/Graylog, OpenTelemetry y SigNoz trasladan la responsabilidad del transporte al protocolo (GELF UDP) o al SDK de instrumentación (OTLP). El desacoplamiento mediante agente evita que los fallos o la latencia del sistema centralizado afecten la disponibilidad de la aplicación productora, cumpliendo el principio de no interferencia descrito en §4.7.1 del documento central.
+Las guías ELK, OLO, Fluentd, Promtail, Vector y Alloy utilizan un agente o recolector externo (Logstash, Fluentd, Promtail, Vector, Alloy) separado de la aplicación. Las guías GELF/Graylog, OpenTelemetry y SigNoz trasladan la responsabilidad del transporte al protocolo (GELF UDP) o al SDK de instrumentación (OTLP). El desacoplamiento mediante agente evita que los fallos o la latencia del sistema centralizado afecten la disponibilidad de la aplicación productora, cumpliendo el principio de no interferencia descrito en §5.7.1 del documento central.
 
-### 12. El documento teórico distingue entre indexación completa de texto y almacenamiento por etiquetas como dos modelos de almacenamiento con compromisos diferentes. ¿Qué guías implementan cada modelo? ¿Qué consecuencia tiene esa elección sobre el tipo de consultas posibles?
+### 17. El marco conceptual describe tres paradigmas de almacenamiento e indexación con compromisos diferentes. ¿Qué guías implementan cada uno? ¿Qué consecuencia tiene esa elección sobre el tipo de consultas posibles?
 
-Las guías ELK, OLO, GELF/Graylog y SigNoz emplean indexación completa (Elasticsearch, OpenSearch o ClickHouse), que permite búsquedas de texto libre sobre cualquier campo. Las guías Promtail, Vector y Alloy usan Loki, cuyo modelo indexa únicamente etiquetas (*labels*), lo que reduce drásticamente el almacenamiento pero limita las consultas a los campos indexados como etiquetas; el resto del contenido se recupera mediante expresiones regulares sobre el texto crudo. La guía OpenTelemetry (LGTM) también usa Loki para logs, combinando ambos modelos según la señal (logs vs. métricas vs. trazas).
+Las guías ELK, OLO y GELF/Graylog emplean el **índice invertido** (Elasticsearch u OpenSearch), que permite búsquedas de texto libre sobre cualquier campo a un alto costo de almacenamiento. La guía SigNoz usa un **almacén columnar** (ClickHouse), optimizado para comprimir y agregar grandes volúmenes de datos estructurados a gran escala. Las guías Promtail, Vector y Alloy usan Loki, cuyo **índice de solo etiquetas** reduce drásticamente el almacenamiento pero limita el filtrado rápido a los campos promovidos a etiquetas; el resto del contenido se escanea en el momento de la consulta. La guía OpenTelemetry (LGTM) también usa Loki para los logs. De este modo, el recurso permite contrastar empíricamente los tres paradigmas descritos en el marco conceptual (§5.7.3).
 
-### 13. El desafío de "sanitización" (§4.6) establece que la información sensible debe enmascararse antes de ser almacenada. ¿En qué guía práctica se propone explícitamente una actividad de censura de campos sensibles? ¿Qué mecanismo técnico lo implementa?
+### 18. El desafío de "sanitización" (§5.6) establece que la información sensible debe enmascararse antes de ser almacenada. ¿En qué guía práctica se propone explícitamente una actividad de censura de campos sensibles? ¿Qué mecanismo técnico lo implementa?
 
 La guía Vector (§9, actividades de profundización) propone usar **VRL (Vector Remap Language)** para enmascarar campos como contraseñas o tokens antes de enviarlos a Loki. VRL permite expresiones del tipo `redact!(.message, filters: [r'\bpassword=\S+'i])`, operando en la etapa de transformación del pipeline, antes de que el dato llegue al almacenamiento. Este es el mecanismo más directo del recurso para ilustrar la sanitización como práctica operativa concreta.
 
-### 14. El documento teórico menciona que los tres pilares de la observabilidad son logs, métricas y trazas, pero el recurso se enfoca en logs. ¿Cuál de las guías prácticas es la única que aborda los tres pilares de forma integrada? ¿Qué diferencia conceptual introduce respecto a las demás guías?
+### 19. El documento teórico menciona que los tres pilares de la observabilidad son logs, métricas y trazas, pero el recurso se enfoca en logs. ¿Cuál de las guías prácticas es la única que aborda los tres pilares de forma integrada? ¿Qué diferencia conceptual introduce respecto a las demás guías?
 
 La guía OpenTelemetry (LGTM stack) es la única que recolecta y visualiza los tres pilares simultáneamente: logs vía Loki, métricas vía Prometheus/Mimir y trazas vía Tempo, utilizando el protocolo **OTLP** como transporte unificado. La diferencia conceptual es que OpenTelemetry no es una herramienta de un solo dominio sino un estándar de telemetría agnóstico al *backend*, lo que permite cambiar el sistema de almacenamiento sin modificar la instrumentación de las aplicaciones.
 
-### 15. Las guías Promtail y Alloy implementan el mismo stack subyacente (Loki + Grafana). ¿Cuál es la diferencia arquitectónica fundamental entre ambos agentes? ¿Qué razón motivó la transición en el ecosistema de Grafana?
+### 20. Las guías Promtail y Alloy implementan el mismo stack subyacente (Loki + Grafana). ¿Cuál es la diferencia arquitectónica fundamental entre ambos agentes? ¿Qué razón motivó la transición en el ecosistema de Grafana?
 
 Promtail es un agente de propósito único diseñado exclusivamente para enviar logs a Loki, con un modelo de configuración declarativo pero estático. Alloy adopta un **modelo orientado a componentes y flujos de datos** (heredado del proyecto Grafana Agent Flow), donde cada pieza del pipeline es un componente con entradas y salidas explícitas que pueden conectarse de forma flexible. Esto permite que Alloy procese no solo logs sino también métricas y trazas con el mismo agente. La transición fue motivada por la consolidación de múltiples agentes (Grafana Agent, Prometheus Agent, Promtail) en una única herramienta mantenible y más expresiva.

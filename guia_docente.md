@@ -2,15 +2,11 @@
 
 *Planificación pedagógica, rúbricas y orientaciones para la incorporación del recurso educativo en la asignatura **Arquitectura Orientada a Microservicios**.*
 
----
-
 ## 1. Propósito de esta guía
 
 Este documento está dirigido al **docente** que utilizará el recurso en su curso. Su objetivo es facilitar la integración del material en una planificación realista, sugerir rutas de aprendizaje según el tiempo disponible, proponer instrumentos de evaluación y anticipar las dificultades más frecuentes que enfrentan los estudiantes.
 
-El recurso completo está pensado para una unidad temática de **dos semanas** dentro de un curso semestral de 16 semanas. No se espera —ni es deseable— cubrir las nueve guías prácticas en ese tiempo; el diseño asume que el docente seleccionará dos o tres guías para trabajo en aula y dejará el resto como material de profundización para estudiantes interesados o como base para trabajos finales.
-
----
+El recurso completo está pensado para una unidad temática de **dos semanas** dentro de un curso semestral de 16 semanas. No se espera (ni es deseable) cubrir las nueve guías prácticas en ese tiempo; el diseño asume que el docente seleccionará dos o tres guías para trabajo en aula y dejará el resto como material de profundización para estudiantes interesados o como base para trabajos finales.
 
 ## 2. Ubicación pedagógica dentro del curso
 
@@ -21,8 +17,6 @@ La unidad sobre **observabilidad y centralización de logs** se inserta de forma
 
 Una ubicación común y efectiva es entre **las semanas 9 y 11** del curso, una vez los estudiantes tienen aplicaciones distribuidas funcionales sobre las cuales aplicar el material.
 
----
-
 ## 3. Prerrequisitos del estudiante
 
 Antes de iniciar la unidad, el estudiante debería ser capaz de:
@@ -32,19 +26,15 @@ Antes de iniciar la unidad, el estudiante debería ser capaz de:
 - Tener nociones básicas de formatos estructurados como JSON.
 - Haber escrito al menos una aplicación Java/Quarkus simple, ya que todas las guías usan este *stack* como productor de logs.
 
----
-
 ## 4. Resultados de aprendizaje de la unidad
 
 Al finalizar las dos semanas, el estudiante debe ser capaz de:
 
-1. **Explicar** qué es la observabilidad y por qué es un requisito de diseño —no un complemento operativo— en arquitecturas distribuidas.
+1. **Explicar** qué es la observabilidad y por qué es un requisito de diseño (no un complemento operativo) en arquitecturas distribuidas.
 2. **Describir** la arquitectura conceptual de cuatro etapas (recolección, procesamiento, almacenamiento, visualización) y reconocerla en al menos dos implementaciones tecnológicamente distintas.
 3. **Justificar** los desafíos transversales de estandarización semántica, ciclo de vida del dato y sanitización de información sensible.
 4. **Desplegar y validar** al menos un stack completo de centralización de logs sobre un entorno reproducible con Docker Compose.
 5. **Contrastar** decisiones arquitectónicas entre stacks (por ejemplo: indexación completa vs. solo etiquetas; protocolo específico vs. estándar unificado).
-
----
 
 ## 5. Rutas sugeridas
 
@@ -77,8 +67,6 @@ Si la unidad debe condensarse en una sola semana:
 |--------|-----------|
 | **1** | Toda la teoría conceptual del [documento base](readme.md), centrándose en los conceptos esenciales y delegando lecturas a casa. |
 | **2** | Un único laboratorio con la guía de **OpenTelemetry**, por ser la más representativa del estado del arte y cubrir los tres pilares en una sola implementación. |
-
----
 
 ## 6. Estrategia de evaluación
 
@@ -118,8 +106,6 @@ Se propone una evaluación de **tres componentes** con peso ponderado, alineada 
 
 Este componente evalúa el resultado de aprendizaje 5 (capacidad de contrastar decisiones arquitectónicas), que es el de mayor nivel cognitivo y el que distingue una formación conceptual de una meramente operativa.
 
----
-
 ## 7. Dificultades frecuentes y cómo anticiparlas
 
 A continuación se enumeran las fricciones más comunes que experimentan los estudiantes al trabajar con el recurso, junto con orientaciones para anticiparlas en clase.
@@ -154,8 +140,6 @@ Cada herramienta introduce su propio lenguaje de configuración: YAML (Promtail,
 
 **Recomendación docente:** Enfatizar desde la sesión 2 que cada herramienta tiene su propio lenguaje y que la habilidad transferible es leer la documentación del producto, no memorizar sintaxis.
 
----
-
 ## 8. Recomendaciones de articulación con otras unidades del curso
 
 | Unidad del curso | Articulación posible |
@@ -165,8 +149,6 @@ Cada herramienta introduce su propio lenguaje de configuración: YAML (Promtail,
 | Seguridad | Usar el ejercicio de sanitización con VRL (guía Vector) para discutir manejo de credenciales en logs |
 | Despliegue continuo | El recurso completo se despliega con `docker compose`; puede extenderse a Kubernetes en una unidad posterior |
 
----
-
 ## 9. Mantenimiento y evolución del recurso
 
 El ecosistema de observabilidad evoluciona rápidamente; las versiones de las imágenes Docker quedan obsoletas en plazos de 12 a 18 meses. Se recomienda al docente que reutilice este material:
@@ -174,8 +156,6 @@ El ecosistema de observabilidad evoluciona rápidamente; las versiones de las im
 - Verificar las versiones de las imágenes en las guías al inicio de cada semestre.
 - Reportar errores o sugerencias al equipo autor a través del repositorio del recurso.
 - Considerar contribuciones de los propios estudiantes (actualización de versiones, nuevas guías) como actividad complementaria de aprendizaje.
-
----
 
 ## 10. Contacto
 

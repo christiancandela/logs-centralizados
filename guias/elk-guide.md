@@ -2,13 +2,9 @@
 
 > *Guía práctica para implementar una solución básica de centralización de logs usando Docker Compose y el stack ELK, como instanciación concreta de la arquitectura conceptual de observabilidad presentada en el documento central.*
 
----
-
 ## Objetivo de la guía
 
 Implementar y validar una arquitectura básica de centralización de logs mediante Docker Compose y el stack ELK, como ejercicio aplicado de los conceptos de observabilidad estudiados previamente.
-
----
 
 ## Resultados de aprendizaje esperados
 
@@ -19,8 +15,6 @@ Al finalizar esta guía, el estudiante será capaz de:
 - Configurar aplicaciones para emitir logs estructurados.
 - Analizar y correlacionar eventos centralizados.
 - Reconocer desafíos y limitaciones de una solución básica de logging.
-
----
 
 ## Propósito y alcance del recurso
 
@@ -36,15 +30,35 @@ El alcance del recurso se limita a la **centralización y visualización de logs
 
 Aunque la implementación se apoya en el stack ELK, los principios abordados son **transferibles a otros ecosistemas de observabilidad**.
 
----
-
 ## 1. Observabilidad y centralización de logs
 
-En arquitecturas basadas en microservicios, la observabilidad permite comprender el comportamiento interno del sistema a partir de señales externas. Los **logs** constituyen una fuente primaria de información debido a su riqueza semántica y contextual.
+En arquitecturas basadas en microservicios, la observabilidad permite comprender el comportamiento interno del sistema a partir de señales externas. Los **logs** constituyen una fuente primaria de información debido a su riqueza semántica y contextual, y la **centralización de logs** mitiga la dispersión inherente a los sistemas distribuidos, consolidando los registros de múltiples componentes en un repositorio común.
 
-La **centralización de logs** mitiga la dispersión inherente a los sistemas distribuidos, consolidando los registros generados por múltiples componentes en un repositorio común que facilita su análisis, correlación temporal y visualización.
+Hasta aquí, nada nuevo respecto al marco conceptual. La pregunta que esta guía busca responder es más concreta: una vez centralizado un log, *¿cómo se almacena y cómo se busca entre millones de registros?* El stack ELK responde con un paradigma específico (el **índice invertido**), y entenderlo es la clave para comprender por qué ELK es tan potente para la búsqueda y, al mismo tiempo, tan exigente en recursos.
 
----
+### El paradigma de ELK: el índice invertido
+
+En el documento conceptual se presentaron tres paradigmas de almacenamiento (marco conceptual, §5.7.3). ELK encarna el primero, heredado de los motores de búsqueda. La idea es sencilla pero poderosa: en lugar de guardar los logs como simples líneas de texto, **Elasticsearch** descompone cada mensaje en sus términos individuales y construye un diccionario que asocia cada término con la lista de registros que lo contienen:
+
+```text
+término "saldo"        → [log#42, log#118, log#349, ...]
+término "insuficiente" → [log#42, log#349, ...]
+```
+
+¿Por qué importa esto? Porque cuando buscas "saldo insuficiente", el motor no recorre millones de logs uno por uno: consulta directamente el diccionario y obtiene la respuesta de forma casi instantánea. Es la misma técnica que emplean los buscadores web, y es lo que convierte a Elasticsearch en una herramienta de búsqueda de texto completo extraordinariamente flexible.
+
+Observa que esta potencia tiene un precio: construir y mantener el índice invertido consume CPU, memoria y disco. Por eso ELK es el stack más demandante en recursos de todo el recurso (ver la sección 2), y por eso otros paradigmas (como el de *solo etiquetas* que estudiarás en la guía de Promtail/Loki) renuncian deliberadamente a parte de esta flexibilidad para ganar eficiencia. No hay un paradigma "mejor": hay compromisos distintos para necesidades distintas.
+
+ELK está compuesto por tres piezas que mapean directamente a la arquitectura conceptual de cuatro etapas:
+
+| Componente | Etapa conceptual | Rol |
+|---|---|---|
+| **Logstash** | Recolección + Procesamiento | Recibe, parsea y transforma los logs antes de almacenarlos |
+| **Elasticsearch** | Almacenamiento + Búsqueda | Indexa (índice invertido) y responde las consultas |
+| **Kibana** | Visualización | Explora y grafica los logs centralizados |
+
+> [!NOTE]
+> El nombre "ELK" corresponde a las iniciales de sus tres componentes: **E**lasticsearch, **L**ogstash y **K**ibana. Es la denominación de industria más extendida para este stack.
 
 ## 2. Requisitos previos
 
@@ -77,8 +91,6 @@ PRODUCER_MEM_LIMIT=512m
 > [!WARNING]
 > En Linux/WSL, Elasticsearch requiere que el host tenga `vm.max_map_count ≥ 262144`.
 
----
-
 ## 3. Estructura del proyecto
 
 ```bash
@@ -93,8 +105,6 @@ logs-centralizados/
 └── .env
 ```
 
----
-
 ## 4. Arquitectura de la solución
 
 ```
@@ -108,8 +118,6 @@ La arquitectura implementada en este recurso se fundamenta en tres componentes p
 - **Kibana**: capa de visualización y exploración de los datos centralizados.
 
 El uso de **Docker Compose** permite describir y desplegar la arquitectura como código, garantizando la **portabilidad, reproducibilidad y facilidad de experimentación** del entorno, características fundamentales en un contexto formativo.
-
----
 
 ## 5. Implementación de la arquitectura conceptual con ELK
 
@@ -188,8 +196,6 @@ volumes:
   es_data:
 ```
 
----
-
 ### 5.2 Pipeline de Logstash (`ecs.conf`)
 
 ```text
@@ -225,8 +231,6 @@ output {
 > [!NOTE]
 > **Elasticsearch 9.x:** A partir de la versión 9, el output de Logstash utiliza *data streams* en lugar de índices con fecha (`logstash-YYYY.MM.dd`). La configuración anterior crea el data stream `logs-producer-default`, que sigue la convención `{type}-{dataset}-{namespace}` definida por ECS. Esto es transparente para la visualización en Kibana.
 
----
-
 ## 6. Despliegue y validación
 
 ### Inicialización de los servicios
@@ -237,8 +241,6 @@ El despliegue del entorno se realiza mediante un único comando, el cual levanta
 docker compose up -d
 ```
 
----
-
 ### Validación de los servicios
 
 La validación del entorno permite comprobar que los contenedores asociados a Elasticsearch, Logstash y Kibana se encuentran en ejecución y disponibles.
@@ -247,13 +249,9 @@ La validación del entorno permite comprobar que los contenedores asociados a El
 docker compose ps
 ```
 
----
-
 ### Persistencia y configuración del entorno
 
 Se emplean **volúmenes Docker** para garantizar la persistencia de los datos almacenados en **Elasticsearch**, incluso ante reinicios del entorno.
-
----
 
 ## 7. Emisión de logs desde aplicaciones
 
@@ -289,8 +287,6 @@ quarkus.log.socket.json.log-format=ECS
 ```java
 private static final Logger LOG = Logger.getLogger(MiClase.class);
 ```
-
----
 
 ### 7.2 Otras aplicaciones Java (Logback)
 
@@ -330,8 +326,6 @@ Configura `logback.xml` para enviar logs a Logstash:
 </configuration>
 ```
 
----
-
 ## 8. Visualización en Kibana
 
 Una vez centralizados, los logs pueden ser explorados mediante Kibana, permitiendo:
@@ -360,8 +354,6 @@ Selecciona la fuente `logs-producer-default` para ver únicamente los eventos de
 
 Crea o selecciona el data view `logs-*` con campo de tiempo `@timestamp`. Esta vista muestra todos los data streams que coinciden con el patrón.
 
----
-
 ## 9. Actividades de profundización
 
 - **Simular fallos y rastrear su origen:** El endpoint `GET /api/error` de la aplicación de ejemplo genera intencionalmente una `NullPointerException`. Ejecútelo y utilice Kibana para localizar el *stacktrace* del error, validando la ventaja del campo `exception` en formato ECS estructurado.
@@ -374,8 +366,6 @@ Crea o selecciona el data view `logs-*` con campo de tiempo `@timestamp`. Esta v
 1. ¿Qué ventaja concreta ofrece el Elastic Common Schema (ECS) frente a un esquema de logs personalizado cuando se correlacionan eventos de múltiples servicios en Kibana Discover?
 2. El pipeline de Logstash de esta guía usa un appender TCP sin TLS. Analice qué riesgos de seguridad introduce este diseño y qué cambios de configuración serían necesarios para mitigarlos en un entorno productivo.
 3. Evalúe las diferencias arquitectónicas entre los data streams de Elasticsearch 9.x (usados en esta guía) y los índices con fecha (`logs-YYYY.MM.dd`): ¿en qué escenarios concretos justificaría elegir uno sobre el otro?
-
----
 
 ## 10. Troubleshooting
 
@@ -393,8 +383,6 @@ sudo sysctl -w vm.max_map_count=262144
 **Explicación:** Kibana 9.x intenta conectarse por defecto al registro externo de integraciones de Fleet (`epr.elastic.co`). En un entorno de laboratorio local sin acceso a internet este intento falla. El aviso es **no bloqueante**: Kibana funciona correctamente para visualización de logs.
 
 **Solución:** El archivo `docker-compose.yml` de esta guía ya incluye `xpack.fleet.enabled: "false"` en el servicio Kibana, lo que elimina el aviso. Si crea su propio `docker-compose.yml`, asegúrese de incluir esa variable de entorno.
-
----
 
 ## Referencias
 

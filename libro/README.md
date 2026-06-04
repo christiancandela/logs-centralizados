@@ -116,6 +116,36 @@ Los archivos `.qmd` en este directorio son **envolventes mínimos**: cada uno de
 
 ---
 
+## Bibliografía y referencias cruzadas
+
+El libro resuelve dos tipos de referencias de forma automática durante la compilación (`scripts/prepare_book.py`), de modo que los archivos `.md` fuente permanecen limpios y legibles en GitHub.
+
+### Bibliografía (`references.bib`)
+
+Las citas del PDF se generan con **citeproc** a partir de `libro/references.bib`, **no** del listado en prosa de `readme.md` (sección "Referencias bibliográficas"). Por tanto, ambos deben mantenerse sincronizados:
+
+> [!IMPORTANT]
+> Cada vez que se agregue, elimine o modifique una referencia en `readme.md`, hay que reflejar el mismo cambio en `libro/references.bib`. La clave de cada entrada sigue la convención `apellidoprimerautor-año` en minúsculas (p. ej. `lamport-1978`). Si una cita del texto no encuentra su clave en el `.bib`, el script imprime `WARNING: Cita no resuelta`.
+
+El conversor de citas reconoce dos formas en el texto fuente y las transforma a sintaxis Pandoc:
+
+- **Parentéticas** `(Autor, Año)` → `[@clave]` (renderiza "(Autor, Año)").
+- **Narrativas** `Autor (Año)` → `@clave` (renderiza "Autor (Año)").
+
+En ambos casos solo se convierten si la clave existe en `references.bib`, evitando falsos positivos.
+
+### Referencias cruzadas a secciones del marco conceptual
+
+Las referencias a secciones del marco conceptual se escriben en el `.md` fuente con su numeración natural —`(sección 5.7.3)`, `§5.7.3`, `(marco conceptual, §5.6)`— porque así son correctas y navegables en GitHub. Durante la compilación, `prepare_book.py`:
+
+1. **Inyecta identificadores** Quarto (`{#sec-5-7-3}`) en los encabezados numerados del capítulo del marco conceptual.
+2. **Convierte** las referencias textuales `5.x` en referencias cruzadas Quarto (`@sec-5-7-3`), que se renderizan con el **número real del PDF** (distinto del `.md`, porque el documento base pasa a ser un capítulo y Quarto renumera) y como **hiperenlace** a la sección.
+
+> [!NOTE]
+> La conversión solo afecta a los números `5.x` (el marco conceptual). Las referencias internas de cada guía a sus propias secciones (p. ej. `sección 7.1` en la guía de Fluentd) se dejan intactas, ya que apuntan al mismo documento. Si en el futuro se desea enlazar también esas referencias internas, habría que extender `convert_section_refs`/`inject_section_ids` con identificadores por guía (p. ej. `sec-fluentd-7-1`).
+
+---
+
 ## Formatos generados
 
 | Formato | Salida | Propósito |

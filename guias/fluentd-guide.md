@@ -2,13 +2,9 @@
 
 > *Guía práctica para implementar una solución básica de centralización de logs utilizando Docker Compose y Fluentd, como instanciación concreta de la arquitectura conceptual de observabilidad presentada en el documento central.*
 
----
-
 ## Objetivo de la guía
 
 Implementar y validar una arquitectura básica de centralización de logs mediante Docker Compose y Fluentd, como ejercicio aplicado de los conceptos de observabilidad estudiados previamente.
-
----
 
 ## Resultados de aprendizaje esperados
 
@@ -19,8 +15,6 @@ Al finalizar esta guía, el estudiante será capaz de:
 - Configurar aplicaciones para emitir logs hacia Fluentd.
 - Analizar y correlacionar eventos centralizados.
 - Reconocer desafíos y limitaciones de una solución básica de logging.
-
----
 
 ## Propósito y alcance del recurso
 
@@ -34,15 +28,22 @@ El material está concebido como:
 
 El alcance del recurso se limita a la **centralización y visualización de logs**. No se abordan métricas ni trazas distribuidas, aunque se dejan sentadas las bases conceptuales para su integración futura.
 
----
-
 ## 1. Observabilidad y centralización de logs
 
-En arquitecturas basadas en microservicios, la observabilidad permite comprender el comportamiento interno del sistema a partir de las señales externas que este produce durante su ejecución. Los **logs** constituyen una fuente primaria de información debido a su riqueza semántica y contextual.
+En arquitecturas basadas en microservicios, la observabilidad permite comprender el comportamiento interno del sistema a partir de las señales externas que este produce durante su ejecución. Los **logs** constituyen una fuente primaria de información debido a su riqueza semántica y contextual, y la **centralización de logs** mitiga la dispersión inherente a los sistemas distribuidos consolidando los registros de múltiples componentes en un repositorio común.
 
-La **centralización de logs** mitiga la dispersión inherente a los sistemas distribuidos, consolidando los registros generados por múltiples componentes en un repositorio común que facilita su análisis, correlación temporal y visualización.
+Las guías de ELK y OLO presentaban stacks "verticales", en los que el recolector (Logstash) venía estrechamente atado a un motor de almacenamiento concreto. Fluentd propone una idea distinta y muy influyente: **desacoplar por completo la recolección del almacenamiento**.
 
----
+### Fluentd como "capa de logging unificada"
+
+Fluentd se sitúa en las etapas de **recolección y procesamiento** de la arquitectura conceptual (marco conceptual, §§5.7.1 y 5.7.2), pero no impone ningún destino. Su filosofía es actuar como una *capa de logging unificada* (*unified logging layer*): un punto central que recibe logs desde cualquier fuente, los normaliza a un formato común y los reenvía hacia cualquier destino.
+
+¿Cómo logra esta flexibilidad? Mediante un modelo de **plugins**: entradas (*inputs*), filtros (*filters*) y salidas (*outputs*) que se combinan como piezas de un mecano. Una misma instancia de Fluentd puede recibir logs por TCP, desde archivos y vía syslog, y enviarlos simultáneamente a un motor de búsqueda, a un archivo de respaldo y a un servicio en la nube, sin recompilar nada.
+
+Observa una propiedad clave que conecta directamente con el marco conceptual: Fluentd implementa *buffering* (amortiguación) configurable para no perder eventos cuando el destino se ralentiza o cae, materializando el principio de desacoplamiento temporal y las garantías de entrega discutidos en el marco conceptual (§§5.7.1 y 5.6).
+
+> [!NOTE]
+> Fluentd es un proyecto graduado de la **CNCF** (Cloud Native Computing Foundation), la misma fundación que alberga a Kubernetes. Esto refleja su adopción como uno de los estándares de facto para la recolección de logs en entornos nativos de la nube.
 
 ## 2. Requisitos previos
 
@@ -75,8 +76,6 @@ PRODUCER_MEM_LIMIT=512m
 > [!WARNING]
 > En sistemas Linux/WSL, Elasticsearch requiere que la memoria virtual del anfitrión cumpla `vm.max_map_count ≥ 262144`. Consulte la sección de Troubleshooting para el comando de ajuste.
 
----
-
 ## 3. Estructura del proyecto
 
 ```bash
@@ -91,8 +90,6 @@ logs-centralizados/
 │       └── fluent.conf
 └── .env
 ```
-
----
 
 ## 4. Arquitectura de la solución
 
@@ -114,8 +111,6 @@ La arquitectura implementada en este recurso se fundamenta en tres componentes p
 - **Kibana**: capa de visualización y exploración de los datos centralizados.
 
 El uso de **Docker Compose** permite describir y desplegar la arquitectura como código, garantizando la **portabilidad, reproducibilidad y facilidad de experimentación** del entorno, características fundamentales en un contexto formativo.
-
----
 
 ## 5. Implementación de la arquitectura conceptual con Fluentd
 
@@ -197,8 +192,6 @@ volumes:
   es_data:
 ```
 
----
-
 ### 5.2 Configuración de Fluentd (`fluent.conf`)
 
 ```xml
@@ -229,8 +222,6 @@ volumes:
 > [!NOTE]
 > A diferencia de Logstash, la imagen oficial de Fluentd **no incluye** el plugin de Elasticsearch. El plugin `fluent-plugin-elasticsearch` debe instalarse al construir la imagen personalizada (ver Dockerfile en la siguiente sección). El archivo de configuración debe llamarse `fluent.conf`, que es el nombre esperado por el entrypoint del contenedor.
 
----
-
 ### 5.3 Dockerfile de Fluentd
 
 ```dockerfile
@@ -242,8 +233,6 @@ USER fluent
 
 > [!NOTE]
 > La imagen base de Fluentd corre como usuario no privilegiado `fluent`. La instalación de gems requiere cambiar temporalmente al usuario `root` y volver a `fluent` al finalizar.
-
----
 
 ## 6. Despliegue y validación
 
@@ -263,13 +252,9 @@ La validación del entorno permite comprobar que los contenedores asociados a El
 docker compose ps
 ```
 
----
-
 ### Persistencia y configuración del entorno
 
 Se emplean **volúmenes Docker** para garantizar la persistencia de los datos almacenados en **Elasticsearch**, incluso ante reinicios del entorno.
-
----
 
 ## 7. Emisión de logs desde aplicaciones
 
@@ -305,8 +290,6 @@ quarkus.log.socket.json.log-format=ECS
 ```java
 private static final Logger LOG = Logger.getLogger(MiClase.class);
 ```
-
----
 
 ### 7.2 Otras aplicaciones Java (Logback con Syslog)
 
@@ -357,8 +340,6 @@ Configuración de Fluentd para recibir Syslog:
 > [!NOTE]
 > A diferencia del transporte TCP JSON (sección 7.1), el protocolo Syslog no transporta campos estructurados: el cuerpo del mensaje es texto plano. Esta diferencia es pedagógicamente relevante al comparar el nivel de observabilidad obtenido con cada protocolo.
 
----
-
 ## 8. Visualización en Kibana
 
 Una vez centralizados, los logs pueden ser explorados mediante Kibana, permitiendo:
@@ -379,8 +360,6 @@ http://localhost:5601
 
 Navegue a **Hamburger menu → Discover**. Cree un data view con el patrón `logs-*` y campo de tiempo `@timestamp`. Esta vista muestra todos los índices generados por Fluentd con el prefijo `logs-YYYY.MM.dd`.
 
----
-
 ## 9. Actividades de profundización
 
 - **Simular fallos y rastrear su origen:** El endpoint `GET /api/error` de la aplicación de ejemplo genera intencionalmente una `NullPointerException`. Ejecútelo y utilice Kibana para localizar el evento de error e inspeccionar el stacktrace estructurado.
@@ -394,8 +373,6 @@ Navegue a **Hamburger menu → Discover**. Cree un data view con el patrón `log
 1. En la configuración de Fluentd de esta guía, el bloque `<buffer>` usa `@type file` con `flush_interval 5s`. Explique qué papel cumple este buffer en términos de confiabilidad de entrega y qué ocurriría si el contenedor de Fluentd se reinicia antes de que el buffer se vacíe.
 2. Compare el modelo de configuración de Fluentd (`fluent.conf` con directivas `<source>`, `<filter>`, `<match>`) frente al pipeline de Logstash (`input`, `filter`, `output`): ¿qué diferencias de diseño se observan en la forma de enrutar eventos a múltiples destinos?
 3. La sección 7.2 describe el transporte Syslog UDP como alternativa al TCP JSON. Evalúe las implicaciones de observabilidad de cada protocolo: ¿cuál ofrece mayor fidelidad semántica y por qué el enfoque TCP JSON es preferible para sistemas modernos?
-
----
 
 ## 10. Troubleshooting
 
@@ -421,8 +398,6 @@ sudo sysctl -w vm.max_map_count=262144
 **Explicación:** El entrypoint del contenedor de Fluentd busca el archivo de configuración con el nombre exacto `fluent.conf` (no `fluentd.conf`).
 
 **Solución:** Asegúrese de que el archivo de configuración se llame `fluent.conf`.
-
----
 
 ## Referencias
 

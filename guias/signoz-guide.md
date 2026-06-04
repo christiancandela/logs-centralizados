@@ -2,13 +2,9 @@
 
 > *Guía práctica para desplegar y configurar SigNoz, una plataforma moderna "Todo en Uno" basada nativamente en OpenTelemetry y soportada por la base de datos columnar ClickHouse, como instanciación concreta de la arquitectura conceptual de observabilidad presentada en el documento central.*
 
----
-
 ## Objetivo de la guía
 
 Implementar y validar una plataforma unificada de observabilidad mediante **Docker Compose**, usando **SigNoz** como solución integral que integra colector (OTel Collector), almacenamiento analítico (ClickHouse) e interfaz de exploración en un único despliegue.
-
----
 
 ## Resultados de aprendizaje esperados
 
@@ -19,8 +15,6 @@ Al finalizar esta guía, el estudiante será capaz de:
 - Configurar aplicaciones Quarkus para emitir telemetría nativa OTLP hacia SigNoz.
 - Explorar y correlacionar logs con trazas distribuidas desde la interfaz de SigNoz.
 - Comprender el patrón de *override* de Docker Compose como técnica para extender stacks de terceros sin modificar sus archivos.
-
----
 
 ## Propósito y alcance del recurso
 
@@ -38,15 +32,24 @@ El material está concebido como:
 
 El alcance del recurso cubre logs, métricas y trazas distribuidas (los tres pilares de la observabilidad), aunque el énfasis educativo está en los logs.
 
----
-
 ## 1. Observabilidad Nativa y Almacenamiento Columnar
 
-**ClickHouse** es una base de datos analítica orientada a columnas (OLAP). A diferencia de Elasticsearch, que crea índices invertidos para búsqueda de texto, ClickHouse almacena datos por columnas y comprime bloques enteros. Esto permite ingestar millones de logs por segundo usando una fracción del disco y RAM, revolucionando la manera en que la industria maneja la observabilidad a escala.
+Esta guía cierra el recorrido por los paradigmas de almacenamiento del marco conceptual (§5.7.3) con el tercero y más orientado al análisis a gran escala: el **almacén columnar**.
 
-SigNoz es la plataforma que integra ClickHouse como motor de almacenamiento con un colector OTel nativo, aprovechando la estandarización del protocolo **OTLP** para recibir telemetría de cualquier aplicación instrumentada con OpenTelemetry.
+### Filas vs. columnas: el paradigma OLAP
 
----
+Imagina una tabla de logs con millones de filas y columnas como `timestamp`, `nivel`, `servicio` y `mensaje`. Una base de datos tradicional (orientada a filas, u OLTP) guarda cada registro completo, uno tras otro (ideal para "tráeme el log #4827 entero"). Una base de datos **columnar (OLAP)**, en cambio, guarda juntos todos los valores de una misma columna.
+
+¿Qué se gana con esto? Fundamentalmente dos cosas:
+
+- **Compresión muy alta:** los valores similares quedan contiguos (todos los `nivel` juntos: `INFO, INFO, ERROR, INFO...`), y los datos repetitivos se comprimen extraordinariamente bien.
+- **Análisis veloz:** una consulta como "¿cuántos errores por minuto en la última hora?" solo necesita leer las columnas `nivel` y `timestamp`, no los millones de mensajes completos.
+
+**ClickHouse** es la base de datos columnar que materializa este paradigma. A diferencia del índice invertido de Elasticsearch (optimizado para la búsqueda de texto), ClickHouse está optimizado para *agregar* y *analizar* grandes volúmenes, lo que le permite ingestar millones de logs por segundo usando una fracción del disco y la RAM.
+
+### SigNoz: una plataforma nativa de OpenTelemetry
+
+**SigNoz** es la plataforma que integra ClickHouse como motor de almacenamiento con un colector **OTel nativo**. Esto significa que adopta de fábrica el estándar OTLP que estudiaste en la guía de OpenTelemetry: recibe logs, métricas y trazas (los tres pilares) de cualquier aplicación instrumentada con OpenTelemetry, sin formatos propietarios. Es, en cierto modo, la convergencia de los dos últimos grandes temas del recurso: el estándar unificado (OTel) operando sobre el almacenamiento analítico (columnar).
 
 ## 2. Requisitos previos
 
@@ -78,8 +81,6 @@ Las variables están centralizadas en el archivo `.env` del override:
 PRODUCER_MEM_LIMIT=512m
 ```
 
----
-
 ## 3. Estructura del proyecto
 
 ```bash
@@ -95,8 +96,6 @@ PRODUCER_MEM_LIMIT=512m
 ```
 
 El directorio `signoz/` se obtiene clonando el repositorio oficial a una versión fija. **No se edita ningún archivo** de ese directorio: toda la personalización vive en el `docker-compose.yml` de *override*.
-
----
 
 ## 4. Arquitectura de la solución
 
@@ -124,8 +123,6 @@ Los componentes internos del stack SigNoz son:
 | `signoz-zookeeper-1` | Coordinación de clúster ClickHouse |
 | `signoz` | Backend API + Frontend (UI web en :8080) |
 
----
-
 ## 5. Implementación de la arquitectura
 
 ### 5.1 Paso 1: Descargar el repositorio de SigNoz
@@ -144,8 +141,6 @@ git clone --depth 1 --branch v0.122.0 https://github.com/SigNoz/signoz.git
 
 > [!NOTE]
 > `--depth 1` descarga solo el último commit (sin historia), reduciendo el tamaño. `--branch v0.122.0` fija la versión para reproducibilidad. El directorio `signoz/` está en `.gitignore` y no se versiona.
-
----
 
 ### 5.2 Paso 2: El override `docker-compose.yml`
 
@@ -183,8 +178,6 @@ services:
 > [!NOTE]
 > El `context` del build usa una ruta relativa desde el directorio del primer `-f` (`signoz/deploy/docker/`), por eso el path `../../../logs.producer` apunta al directorio correcto.
 
----
-
 ### 5.3 Configuración de la aplicación (`application.properties`)
 
 ```properties
@@ -197,8 +190,6 @@ quarkus.otel.exporter.otlp.endpoint=http://${SIGNOZ_HOST:localhost}:4317
 ```
 
 La extensión `quarkus-opentelemetry` envía logs, trazas y métricas automáticamente en formato OTLP. No se requiere ningún agente externo ni appender adicional.
-
----
 
 ## 6. Despliegue y validación
 
@@ -238,8 +229,6 @@ docker compose \
 > [!NOTE]
 > Para eliminar también los volúmenes (ClickHouse, Zookeeper, SQLite), agregue `--volumes`. Esto borra todos los datos almacenados.
 
----
-
 ## 7. Emisión de logs desde aplicaciones
 
 ### 7.1 Aplicaciones Quarkus
@@ -270,8 +259,6 @@ private static final Logger LOG = Logger.getLogger(MiClase.class);
 
 > [!NOTE]
 > A diferencia de otras guías, aquí no se escribe en archivos ni se configura un socket. El OTel SDK envía los logs directamente al colector por red en formato OTLP. Las trazas HTTP se correlacionan automáticamente con los logs mediante `trace_id` y `span_id`.
-
----
 
 ## 8. Visualización en SigNoz
 
@@ -320,8 +307,6 @@ curl -X POST http://localhost:8090/logs \
 curl http://localhost:8090/api/error
 ```
 
----
-
 ## 9. Actividades de profundización
 
 - **Correlación logs–trazas:** Genere errores con `GET /api/error` y siga el enlace `trace_id` desde el log hasta la traza completa en SigNoz Traces.
@@ -336,8 +321,6 @@ curl http://localhost:8090/api/error
 2. El override de Docker Compose de esta guía solo redefine el campo `command` del servicio `otel-collector` sin duplicar el resto de su definición. Analice el mecanismo de fusión de archivos que usa Docker Compose para entender cómo se combinan las claves del compose oficial con las del override, y qué ocurriría si se omitiera el override al levantar el stack.
 3. El protocolo opAMP (*Open Agent Management Protocol*) permite la configuración dinámica del OTel Collector desde SigNoz sin reiniciar el contenedor. Evalúe las implicaciones de seguridad y operativas de habilitar opAMP en producción frente al enfoque de configuración estática usado en esta guía de laboratorio.
 
----
-
 ## 10. Troubleshooting
 
 **El puerto 4317 no responde (conexión rechazada desde `logs.producer`).**
@@ -348,7 +331,7 @@ curl http://localhost:8090/api/error
 
 ---
 
-**El colector tarda en arrancar — `logs.producer` reporta errores de conexión al inicio.**
+**El colector tarda en arrancar y `logs.producer` reporta errores de conexión al inicio.**
 
 **Causa:** El colector ejecuta migraciones de esquema en ClickHouse antes de abrir el puerto 4317. En el primer arranque puede tardar hasta 60 segundos.
 
@@ -369,8 +352,6 @@ curl http://localhost:8090/api/error
 **Causa:** Hay otro servicio (por ejemplo, otra guía del laboratorio) usando el puerto 8080 en el host.
 
 **Solución:** Detenga el servicio conflictivo antes de levantar este stack. El frontend de SigNoz necesita el puerto 8080 en el host.
-
----
 
 ## Referencias
 

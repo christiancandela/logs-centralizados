@@ -4,13 +4,9 @@
 
 > **Prerequisito recomendado:** Completar primero la guía Promtail. Esta guía asume familiaridad con Loki, LogQL y el modelo de indexación por etiquetas. El foco está en las diferencias de configuración entre Promtail y Alloy, no en los conceptos base.
 
----
-
 ## Objetivo de la guía
 
 Implementar y validar una arquitectura de centralización de logs mediante **Docker Compose**, migrando el agente de recolección de **Promtail** a **Grafana Alloy**, y comprendiendo el nuevo modelo de configuración orientado a componentes (*dataflow*) que introduce Alloy.
-
----
 
 ## Resultados de aprendizaje esperados
 
@@ -22,8 +18,6 @@ Al finalizar esta guía, el estudiante será capaz de:
 - Utilizar la interfaz web integrada de Alloy para inspeccionar el estado de los componentes en tiempo real.
 - Migrar conceptualmente una configuración Promtail existente a Alloy.
 
----
-
 ## Propósito y alcance del recurso
 
 **Grafana Alloy** (v1.x) es el sucesor unificado de Promtail y del Grafana Agent. A diferencia de Promtail, que es un agente especializado en *file tailing* hacia Loki, Alloy es una plataforma de telemetría genérica que puede recolectar logs, métricas y trazas desde múltiples fuentes y enviarlos a múltiples destinos.
@@ -32,9 +26,19 @@ El modelo de configuración de Alloy es explícitamente **orientado al flujo de 
 
 Esta guía se limita al caso de uso equivalente a Promtail: *file tailing* de logs estructurados en JSON hacia Loki.
 
----
-
 ## 1. Promtail vs Grafana Alloy
+
+En la guía de Promtail aprendiste a recolectar logs hacia Loki. Pero Promtail tiene un alcance deliberadamente estrecho: solo logs, y solo hacia Loki. ¿Qué ocurre cuando un mismo equipo necesita recolectar también métricas y trazas? Durante años, la respuesta fue instalar varios agentes distintos (Promtail para logs, otro agente para métricas...), cada uno con su propia configuración. **Grafana Alloy** nace para unificar todo eso en un único recolector de telemetría.
+
+### Del agente de propósito único al modelo de flujo de datos
+
+La diferencia de fondo entre Promtail y Alloy no es de sintaxis, sino de **modelo mental**. Promtail usa una configuración declarativa estática: defines *trabajos* (*jobs*) y, dentro de ellos, una cadena de etapas. Alloy adopta un **modelo de componentes y flujo de datos** (*dataflow*), heredado del proyecto Grafana Agent Flow: cada pieza del pipeline es un componente con entradas y salidas explícitas, que conectas entre sí declarando hacia dónde reenvía sus datos (`forward_to`).
+
+Piénsalo como la diferencia entre una receta lineal ("haz esto, luego esto otro") y un diagrama de tuberías donde conectas explícitamente cada tramo. El segundo modelo es más verboso, pero también más expresivo y depurable: puedes ramificar flujos, reutilizar componentes y observar el recorrido de los datos en una interfaz gráfica (sección 7).
+
+¿Por qué ocurrió esta transición en el ecosistema de Grafana? Como se anticipó en la guía de Promtail, este último entró en **modo mantenimiento** en 2023. Grafana consolidó sus múltiples agentes (Promtail, Grafana Agent) en una sola herramienta (Alloy) capaz de manejar los tres pilares de la observabilidad (marco conceptual, §5.1) bajo un único modelo de configuración.
+
+La siguiente tabla resume las equivalencias concretas entre ambos, útil si llegas desde la guía de Promtail:
 
 | Concepto | Promtail (YAML) | Grafana Alloy (Alloy syntax) |
 |---|---|---|
@@ -50,15 +54,13 @@ Esta guía se limita al caso de uso equivalente a Promtail: *file tailing* de lo
 | Recarga en caliente | SIGHUP o `/-/reload` | `/-/reload` HTTP o SIGHUP |
 | Interfaz de inspección | Ninguna | UI web en `:12345` con grafo de componentes |
 
----
-
 ## 2. Requisitos previos
 
 - Docker instalado
   https://docs.docker.com/engine/install/
 - Docker Compose
   https://docs.docker.com/compose/install/
-- Al menos **4 GB de RAM** libres (este stack no incluye Elasticsearch ni OpenSearch; Alloy, Loki y Grafana tienen un huella de memoria significativamente menor que los stacks ELK/OLO — este requisito reducido es en sí mismo un punto de comparación pedagógico con las guías anteriores)
+- Al menos **4 GB de RAM** libres (este stack no incluye Elasticsearch ni OpenSearch; Alloy, Loki y Grafana tienen una huella de memoria significativamente menor que los stacks ELK/OLO). Este requisito reducido es, en sí mismo, un punto de comparación pedagógico con las guías anteriores.
 
 ### Dimensionamiento de recursos
 
@@ -82,8 +84,6 @@ LOKI_MEM_LIMIT=512m
 GRAFANA_MEM_LIMIT=512m
 ```
 
----
-
 ## 3. Estructura del proyecto
 
 ```bash
@@ -100,8 +100,6 @@ GRAFANA_MEM_LIMIT=512m
     ├── src/
     └── pom.xml
 ```
-
----
 
 ## 4. Arquitectura de la solución
 
@@ -123,8 +121,6 @@ GRAFANA_MEM_LIMIT=512m
 ```
 
 La arquitectura es funcionalmente idéntica a la de la guía Promtail. La diferencia es interna: el pipeline de Alloy es un **grafo de componentes** con conexiones explícitas en lugar de una lista de etapas implícitas.
-
----
 
 ## 5. Implementación
 
@@ -214,8 +210,6 @@ volumes:
 > [!NOTE]
 > **El healthcheck:** La imagen de Alloy no incluye `wget` ni `curl`. El puerto 12345 en hexadecimal es `0x3039`; verificamos su presencia en `/proc/net/tcp6` como alternativa portable.
 
----
-
 ### 5.2 Pipeline de Alloy (`alloy/config.alloy`)
 
 ```alloy
@@ -264,12 +258,10 @@ loki.write "loki_backend" {
 ```
 
 > [!NOTE]
-> **`log.level` en ECS:** El formato ECS de Quarkus produce la clave con el punto como parte del nombre (`"log.level"`), no como estructura anidada. `stage.json` de Alloy interpreta el punto como separador de ruta (igual que Promtail), por lo que se usa `stage.regex` con la expresión `"log\\.level"` — la misma estrategia validada en la guía Promtail.
+> **`log.level` en ECS:** El formato ECS de Quarkus produce la clave con el punto como parte del nombre (`"log.level"`), no como estructura anidada. `stage.json` de Alloy interpreta el punto como separador de ruta (igual que Promtail), por lo que se usa `stage.regex` con la expresión `"log\\.level"`, la misma estrategia validada en la guía Promtail.
 
 > [!NOTE]
 > **`forward_to`:** El wiring explícito es la diferencia conceptual central de Alloy. `loki.source.file.quarkus_tail` envía a `loki.process.enrich.receiver`; este a su vez envía a `loki.write.loki_backend.receiver`. Este grafo es visible en la UI de Alloy en `http://localhost:12345`.
-
----
 
 ### 5.3 Configuración de la aplicación (`application.properties`)
 
@@ -285,8 +277,6 @@ quarkus.log.file.path=/deployments/logs/application.log
 quarkus.log.file.json.exception-output-type=formatted
 quarkus.log.file.json.log-format=ECS
 ```
-
----
 
 ## 6. Despliegue y validación
 
@@ -308,8 +298,6 @@ Verifique que los servicios estén activos:
 docker compose ps
 ```
 
----
-
 ## 7. Interfaz de Alloy
 
 Acceda a `http://localhost:12345` para ver la **UI de Alloy**. Desde allí puede:
@@ -321,11 +309,9 @@ Acceda a `http://localhost:12345` para ver la **UI de Alloy**. Desde allí puede
 
 Esta interfaz no existe en Promtail y es una de las ventajas operativas más importantes de Alloy.
 
----
-
 ## 8. Emisión de logs desde la aplicación
 
-> **Reutilización de la aplicación:** Si ya completó la guía Promtail, puede reutilizar la misma aplicación `logs.producer` — la configuración de escritura a archivo JSON (`application.properties`) es idéntica. Si aún no la tiene, créela con el siguiente comando:
+> **Reutilización de la aplicación:** Si ya completó la guía Promtail, puede reutilizar la misma aplicación `logs.producer`. La configuración de escritura a archivo JSON (`application.properties`) es idéntica. Si aún no la tiene, créela con el siguiente comando:
 
 ```shell
 mvn io.quarkus.platform:quarkus-maven-plugin:3.18.4:create \
@@ -365,8 +351,6 @@ curl -X POST http://localhost:8080/logs \
 curl http://localhost:8080/api/error
 ```
 
----
-
 ## 9. Visualización en Grafana
 
 Acceda a Grafana en `http://localhost:3000`. La fuente de datos Loki está preconfigurada.
@@ -388,8 +372,6 @@ Analizar el JSON y mostrar solo el mensaje:
 {job="alloy_app_logs"} | json | line_format "{{.message}}"
 ```
 
----
-
 ## 10. Actividades de profundización
 
 - **Comparar el grafo de componentes con la guía Promtail:** Dibuje o esquematice el pipeline equivalente en Promtail y compare la verbosidad y claridad de ambas configuraciones. ¿Cuándo es preferible cada modelo?
@@ -404,8 +386,6 @@ Analizar el JSON y mostrar solo el mensaje:
 2. El healthcheck de Alloy usa `/proc/net/tcp6` en lugar de `wget` o `curl`. Explique qué limitación de la imagen impone esta solución y proponga una alternativa basada en un Dockerfile personalizado.
 3. Compare el modelo de configuración de Alloy (*dataflow* explícito con `forward_to`) con el de Promtail (*stages* implícitas en cadena). ¿En qué escenario de producción el modelo de Alloy ofrece una ventaja clara?
 
----
-
 ## 11. Troubleshooting
 
 **Alloy queda en estado `unhealthy` al arrancar.**
@@ -419,7 +399,7 @@ Analizar el JSON y mostrar solo el mensaje:
 **Los logs no aparecen en Loki / Grafana.**
 
 **Causas posibles:**
-1. El directorio `./logs` no existe o está vacío — `logs.producer` no ha podido escribir el archivo.
+1. El directorio `./logs` no existe o está vacío: `logs.producer` no ha podido escribir el archivo.
 2. El componente `loki.source.file` no encuentra el glob `/var/log/app/*.log` porque el archivo no se ha creado aún.
 
 **Solución:** Verifique que `./logs/application.log` exista tras el arranque de `logs.producer`:
@@ -441,8 +421,6 @@ docker run --rm \
   fmt /etc/alloy/config.alloy
 ```
 Si hay errores de sintaxis, el comando los reporta con la línea exacta.
-
----
 
 ## Referencias
 

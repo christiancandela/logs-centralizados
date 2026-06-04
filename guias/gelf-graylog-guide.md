@@ -2,13 +2,9 @@
 
 > *Guía práctica para implementar una solución básica de centralización de logs utilizando Docker Compose y GELF/Graylog, como instanciación concreta de la arquitectura conceptual de observabilidad presentada en el documento central.*
 
----
-
 ## Objetivo de la guía
 
 Implementar y validar una arquitectura básica de centralización de logs mediante Docker Compose, utilizando **GELF** como protocolo de transporte y **Graylog** como plataforma de ingestión y visualización, como ejercicio aplicado de los conceptos de observabilidad estudiados previamente.
-
----
 
 ## Resultados de aprendizaje esperados
 
@@ -20,8 +16,6 @@ Al finalizar esta guía, el estudiante será capaz de:
 - Configurar aplicaciones Java para emitir logs mediante GELF (Quarkus y Logback).
 - Explorar y consultar logs centralizados desde la interfaz de Graylog.
 - Reconocer desafíos y limitaciones de un envío basado en UDP y mensajes fragmentados.
-
----
 
 ## Propósito y alcance del recurso
 
@@ -35,15 +29,36 @@ El material está concebido como:
 
 El alcance del recurso se limita a la **centralización y visualización de logs**. No se abordan métricas ni trazas distribuidas, aunque se dejan sentadas bases conceptuales para integraciones futuras.
 
----
-
 ## 1. Observabilidad y centralización de logs
 
-En arquitecturas basadas en microservicios, la observabilidad permite comprender el comportamiento interno del sistema a partir de señales externas que este produce durante su ejecución. Los **logs** constituyen una fuente primaria de información por su riqueza semántica y contextual.
+En arquitecturas basadas en microservicios, la observabilidad permite comprender el comportamiento interno del sistema a partir de señales externas que este produce durante su ejecución. Los **logs** constituyen una fuente primaria de información por su riqueza semántica y contextual, y la **centralización de logs** mitiga la dispersión inherente a los sistemas distribuidos consolidando los registros de múltiples componentes en un repositorio común.
 
-La **centralización de logs** mitiga la dispersión inherente a los sistemas distribuidos, consolidando los registros generados por múltiples componentes en un repositorio común que facilita su análisis, correlación temporal y visualización.
+Las guías anteriores se centraban en cómo se *almacenan* los logs. Esta pone el foco en un eslabón previo y a menudo subestimado: *¿cómo viajan los logs desde la aplicación hasta el sistema central?* La respuesta nos lleva al concepto de **protocolo de transporte**.
 
----
+### Del syslog clásico a GELF
+
+Durante décadas, el protocolo estándar para transmitir logs por red fue **syslog**. Pero syslog arrastra limitaciones serias para los sistemas modernos: trunca los mensajes largos y carece de un concepto nativo de campos estructurados (todo es una cadena de texto plana).
+
+**GELF (Graylog Extended Log Format)** nació precisamente para resolver esto. Es un protocolo que:
+
+- transmite cada evento como un objeto **estructurado en JSON**, con campos explícitos (recuerda la discusión sobre logging estructurado del marco conceptual, §5.2);
+- **fragmenta** (*chunking*) los mensajes largos para que no se trunquen;
+- suele enviarse sobre **UDP**, priorizando la baja latencia y el desacoplamiento: la aplicación "dispara y olvida", sin esperar confirmación, de modo que el envío de logs nunca bloquee la lógica de negocio.
+
+Observa que GELF es un **protocolo**, no una herramienta: define *cómo* se empaquetan y transmiten los logs, no dónde se guardan. Esta distinción conceptual es importante y conviene tenerla clara antes de continuar.
+
+### Graylog y su arquitectura de dos almacenes
+
+**Graylog** es la plataforma que recibe los logs vía GELF, los procesa y los pone a disposición para búsqueda y visualización. Para ello se apoya en dos almacenes con roles bien diferenciados:
+
+| Componente | Rol |
+|---|---|
+| **Graylog** | Ingestión (vía GELF), búsqueda y visualización |
+| **OpenSearch** | Almacenamiento e indexación de los eventos (índice invertido) |
+| **MongoDB** | Configuración y metadatos de la propia plataforma Graylog |
+
+> [!NOTE]
+> El envío por UDP prioriza el rendimiento sobre la garantía de entrega: es un caso concreto de la semántica *at-most-once* discutida en el marco conceptual (§5.6). Para escenarios donde no puede perderse ningún log, GELF también admite TCP.
 
 ## 2. Requisitos previos
 
@@ -79,8 +94,6 @@ PRODUCER_MEM_LIMIT=512m
 > [!WARNING]
 > el backend de búsqueda (Elasticsearch/OpenSearch) requiere `vm.max_map_count ≥ 262144` en Linux/WSL. De lo contrario, el contenedor `opensearch` no arrancará.
 
----
-
 ## 3. Estructura del proyecto
 
 ```bash
@@ -90,8 +103,6 @@ logs-centralizados/
 │   ├── src/
 │   └── pom.xml
 ```
-
----
 
 ## 4. Arquitectura de la solución
 
@@ -115,8 +126,6 @@ La arquitectura implementada en este recurso se fundamenta en **un protocolo de 
 - **MongoDB**: almacenamiento de configuración y metadatos de Graylog.
 
 El uso de **Docker Compose** permite describir y desplegar la arquitectura como código, garantizando la **portabilidad, reproducibilidad y facilidad de experimentación** del entorno.
-
----
 
 ## 5. Implementación de la arquitectura conceptual con GELF y Graylog
 
@@ -206,8 +215,6 @@ volumes:
   graylog_data:
 ```
 
----
-
 ## 6. Despliegue y validación
 
 ### Inicialización de los servicios
@@ -232,8 +239,6 @@ graylog      Up (healthy)
 logs.producer  Up
 ```
 
----
-
 ### Creación de la entrada GELF UDP (Input)
 
 Antes de que los logs puedan ser recibidos, Graylog debe tener configurado un **input**. Espere a que Graylog esté disponible en `http://localhost:9000`, luego ejecute:
@@ -248,8 +253,6 @@ curl -H "Content-Type: application/json" \
 ```
 
 > La cabecera `Authorization: Basic YWRtaW46YWRtaW4=` corresponde a `admin:admin` en Base64. Alternativamente, puede crear el input desde la interfaz web: **System → Inputs → GELF UDP → Launch new input**.
-
----
 
 ## 7. Emisión de logs desde aplicaciones
 
@@ -285,8 +288,6 @@ quarkus.log.handler.gelf.port=12201
 private static final Logger LOG = Logger.getLogger(MiClase.class);
 ```
 
----
-
 ### 7.2 Otras aplicaciones Java (Logback)
 
 Para aplicaciones Java que no utilizan Quarkus, se puede enviar GELF mediante Logback con la librería `logback-gelf`.
@@ -321,8 +322,6 @@ Configuración de `logback.xml`:
 </configuration>
 ```
 
----
-
 ## 8. Visualización en Graylog
 
 Acceda a Graylog en `http://localhost:9000` con usuario `admin` y contraseña `admin`.
@@ -335,8 +334,6 @@ Desde allí puede:
 - Filtrar por campos (`level`, `source`, `facility`).
 - Consultar con el lenguaje de búsqueda de Graylog (ej: `level:3` para errores, `message:Exception`).
 - Crear streams y dashboards para análisis continuo.
-
----
 
 ## 9. Actividades de profundización
 
@@ -356,8 +353,6 @@ Desde allí puede:
 1. GELF en esta guía utiliza transporte UDP (puerto 12201). Explique qué ocurre con los mensajes de log cuando la red experimenta congestión o pérdida de paquetes, y por qué este comportamiento puede ser aceptable o no según el contexto de uso.
 2. La fragmentación de mensajes GELF (parámetro `maxChunkSize`) es necesaria cuando el payload supera el MTU de la red. Analice cómo un stacktrace de Java de 50 líneas podría afectar la entrega de mensajes GELF y qué estrategia de configuración mitigaría el riesgo de pérdida de fragmentos.
 3. Compare la arquitectura de Graylog (con su propio journal, OpenSearch y MongoDB) frente al stack ELK: ¿qué ventajas ofrece Graylog al integrar en una sola plataforma la ingestión, el almacenamiento y la visualización, y qué complejidades operativas introduce el componente MongoDB?
-
----
 
 ## 10. Troubleshooting
 
@@ -381,8 +376,6 @@ sudo sysctl -w vm.max_map_count=262144
 **Error común:** Los logs no aparecen en Graylog aunque la aplicación está corriendo.
 
 **Solución:** Verifique que el input GELF UDP haya sido creado (sección 6). Sin el input, Graylog descarta los paquetes UDP recibidos en el puerto 12201. Confirme su existencia en **System → Inputs**.
-
----
 
 ## Referencias
 

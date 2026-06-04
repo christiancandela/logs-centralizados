@@ -2,15 +2,11 @@
 
 > *Guía práctica para implementar una solución de centralización de logs utilizando Docker Compose con el ecosistema de Grafana (Promtail y Loki), como instanciación de la arquitectura conceptual de observabilidad presentada en el documento central.*
 
-> **Estado de Promtail:** A partir de 2023, Grafana Labs ha puesto Promtail en **modo mantenimiento**. Se siguen publicando correcciones de seguridad, pero no se añaden nuevas funcionalidades. La versión `3.0.0` es la última de la rama principal y no se prevén versiones posteriores. La herramienta recomendada para nuevos proyectos es [**Grafana Alloy**](https://grafana.com/docs/alloy/), el sucesor unificado que incorpora las capacidades de Promtail y del Grafana Agent. Esta guía usa Promtail porque su modelo conceptual —*file tailing* hacia Loki— es más directo para el aprendizaje y sigue siendo completamente funcional. Una vez comprendido Promtail, la migración a Alloy es natural.
-
----
+> **Estado de Promtail:** A partir de 2023, Grafana Labs ha puesto Promtail en **modo mantenimiento**. Se siguen publicando correcciones de seguridad, pero no se añaden nuevas funcionalidades. La versión `3.0.0` es la última de la rama principal y no se prevén versiones posteriores. La herramienta recomendada para nuevos proyectos es [**Grafana Alloy**](https://grafana.com/docs/alloy/), el sucesor unificado que incorpora las capacidades de Promtail y del Grafana Agent. Esta guía usa Promtail porque su modelo conceptual (*file tailing* hacia Loki) es más directo para el aprendizaje y sigue siendo completamente funcional. Una vez comprendido Promtail, la migración a Alloy es natural.
 
 ## Objetivo de la guía
 
 Implementar y validar una arquitectura de centralización de logs mediante **Docker Compose**, utilizando **Promtail** como agente recolector, **Loki** como motor de indexación y almacenamiento, y **Grafana** para la visualización y análisis.
-
----
 
 ## Resultados de aprendizaje esperados
 
@@ -22,8 +18,6 @@ Al finalizar esta guía, el estudiante será capaz de:
 - Configurar Promtail para recolectar y enviar (*scrape*) logs desde volúmenes compartidos.
 - Analizar y correlacionar eventos centralizados utilizando el lenguaje LogQL en Grafana.
 
----
-
 ## Propósito y alcance del recurso
 
 El propósito principal de este recurso es guiar el diseño, despliegue y uso de una **arquitectura de centralización de logs** eficiente, basada en la filosofía de Loki (indexación ligera basada en etiquetas en lugar de texto completo).
@@ -34,17 +28,37 @@ El material está concebido como:
 - Un **entorno de laboratorio reproducible**, para experimentar con flujos de generación, recolección y análisis.
 - Un **caso de estudio técnico**, que ilustra la recolección de logs a través de lectura directa de archivos (*file tailing*) utilizando Promtail.
 
----
-
 ## 1. Observabilidad y centralización de logs
 
-En arquitecturas basadas en microservicios, la observabilidad permite comprender el comportamiento interno del sistema. Los **logs** constituyen una fuente primaria de información debido a su riqueza contextual.
+En arquitecturas basadas en microservicios, la observabilidad permite comprender el comportamiento interno del sistema a partir de señales externas. Los **logs** constituyen una fuente primaria de información debido a su riqueza contextual.
 
-El ecosistema de Grafana aborda la centralización con un enfoque muy eficiente:
-- **Promtail** es el agente encargado de descubrir y leer archivos de log (*file tailing*) para enviarlos a Loki.
-- **Loki** almacena los logs, pero solo indexa los **metadatos (etiquetas/labels)**, no el contenido completo del mensaje. Esto lo hace significativamente más ligero que motores de indexación completa como Elasticsearch u OpenSearch.
+Si las guías de ELK y OLO te mostraron el paradigma del índice invertido, esta guía te presenta su contrapunto más interesante. El ecosistema de Grafana (Promtail y Loki) parte de una pregunta provocadora: *¿y si no indexáramos el contenido de los logs en absoluto?*
 
----
+### El paradigma de Loki: indexar solo etiquetas
+
+Recordando los tres paradigmas de almacenamiento del marco conceptual (§5.7.3), Loki encarna el tercero: el **índice de solo etiquetas**. La diferencia con ELK es radical y vale la pena detenerse en ella:
+
+| | ELK / OpenSearch | Loki |
+|---|---|---|
+| Qué indexa | Cada término de cada mensaje | Solo un puñado de etiquetas (metadatos) |
+| Buscar texto libre | Inmediato (índice invertido) | Escaneo en tiempo de consulta |
+| Costo de almacenamiento | Alto | Muy bajo |
+| Analogía | El índice temático de un libro | Las etiquetas de las carpetas de un archivador |
+
+¿Por qué renunciar a indexar el contenido? Porque indexarlo todo es caro (marco conceptual, §5.7.3). La apuesta de Loki es que, en la práctica, casi siempre acotas tu búsqueda primero por metadatos ("dame los logs del servicio `pagos` en el entorno `prod` durante la última hora") y solo entonces buscas dentro de ese subconjunto ya reducido. Loki indexa esas etiquetas (`servicio`, `entorno`...) para filtrar a gran velocidad, y deja el contenido sin indexar, comprimido en bloques baratos que solo se escanean cuando hace falta.
+
+El resultado es un sistema mucho más ligero en disco y memoria que un motor de indexación completa, a cambio de búsquedas de texto libre más lentas. De nuevo: no es "mejor" ni "peor", es un compromiso distinto.
+
+El stack PLG (Promtail, Loki, Grafana) se reparte las etapas conceptuales de esta forma:
+
+| Componente | Etapa conceptual | Rol |
+|---|---|---|
+| **Promtail** | Recolección | Descubre y lee archivos de log (*file tailing*) y los envía a Loki |
+| **Loki** | Almacenamiento + Búsqueda | Indexa solo etiquetas; responde consultas mediante **LogQL** |
+| **Grafana** | Visualización | Explora y grafica los logs con LogQL |
+
+> [!NOTE]
+> El diseño cuidadoso de las etiquetas es crítico en Loki: usar como etiqueta un campo de alta **cardinalidad** (marco conceptual, §5.6), como un identificador de usuario, multiplica el número de flujos internos y degrada el rendimiento. La regla práctica es: etiquetas de baja cardinalidad, y el resto de la información dentro del mensaje.
 
 ## 2. Requisitos previos
 
@@ -74,8 +88,6 @@ GRAFANA_MEM_LIMIT=512m
 PRODUCER_MEM_LIMIT=512m
 ```
 
----
-
 ## 3. Estructura del proyecto
 
 ```bash
@@ -92,8 +104,6 @@ logs-centralizados/
 │           └── loki.yaml
 └── logs/                 <-- Volumen compartido para archivos de log
 ```
-
----
 
 ## 4. Arquitectura de la solución
 
@@ -118,8 +128,6 @@ La arquitectura implementada en este recurso se fundamenta en tres componentes p
 - **Promtail**: agente de recolección que vigila (*tail*) archivos de log en un volumen compartido y los envía a Loki.
 - **Loki**: motor de almacenamiento ligero que indexa solo etiquetas (labels), no el contenido textual de los logs.
 - **Grafana**: capa de visualización y exploración mediante el lenguaje de consulta **LogQL**.
-
----
 
 ## 5. Implementación de la arquitectura conceptual
 
@@ -187,8 +195,6 @@ services:
 > [!NOTE]
 > La carpeta `./logs` actúa como volumen compartido: `logs.producer` escribe los archivos allí y Promtail los lee en modo solo lectura (`:ro`). La carpeta `./grafana/provisioning` configura automáticamente Loki como fuente de datos en Grafana.
 
----
-
 ### 5.2 Configuración de Promtail (`promtail-config.yaml`)
 
 ```yaml
@@ -221,8 +227,6 @@ scrape_configs:
 > [!NOTE]
 > La etapa `regex` extrae el campo `log.level` del JSON de cada línea y lo convierte en un **label de Loki** (`level`). Esto permite filtrar logs por nivel directamente en LogQL sin necesidad de analizar el contenido. Las claves con punto (como `log.level`) no pueden ser extraídas con la etapa `json` estándar de Promtail porque gjson las interpreta como rutas anidadas; el enfoque `regex` resuelve este caso.
 
----
-
 ### 5.3 Aprovisionamiento de Grafana (`grafana/provisioning/datasources/loki.yaml`)
 
 ```yaml
@@ -238,8 +242,6 @@ datasources:
 
 > [!NOTE]
 > Este archivo configura Loki como fuente de datos de Grafana automáticamente al arrancar el contenedor. No es necesario agregarla manualmente desde la interfaz.
-
----
 
 ## 6. Despliegue y validación
 
@@ -260,8 +262,6 @@ Verifique que los servicios estén activos:
 ```bash
 docker compose ps
 ```
-
----
 
 ## 7. Emisión de logs desde aplicaciones
 
@@ -301,8 +301,6 @@ quarkus.log.file.json.log-format=ECS
 private static final Logger LOG = Logger.getLogger(MiClase.class);
 ```
 
----
-
 ### 7.2 Otras aplicaciones Java (Logback)
 
 Si usa Logback, configure un `FileAppender` con el codificador JSON de Logstash.
@@ -335,8 +333,6 @@ Si usa Logback, configure un `FileAppender` con el codificador JSON de Logstash.
 </configuration>
 ```
 
----
-
 ## 8. Visualización en Grafana
 
 Acceda a Grafana en `http://localhost:3000`. La fuente de datos Loki ya está preconfigurada.
@@ -365,8 +361,6 @@ Analizar los campos del JSON y mostrar solo el mensaje:
 {job="quarkus_app"} | json | line_format "{{.message}}"
 ```
 
----
-
 ## 9. Actividades de profundización
 
 - **Simular fallos y rastrear su origen:** El endpoint `GET /api/error` genera intencionalmente una `NullPointerException`. Ejecútelo y utilice la consulta LogQL `{job="quarkus_app"} |= "NullPointerException"` para localizarlo en Grafana.
@@ -380,8 +374,6 @@ Analizar los campos del JSON y mostrar solo el mensaje:
 1. La configuración de Promtail usa una etapa `regex` para extraer `log.level` como label de Loki. Explique por qué no se puede usar la etapa `json` estándar para esta tarea con el formato ECS de Quarkus.
 2. Analice el mecanismo de *file tailing* de Promtail y el archivo `positions.yaml`: ¿qué garantías de entrega ofrece este enfoque si el contenedor de Promtail se reinicia inesperadamente? ¿Es equivalente al buffer de Fluentd o al TCP de Logstash?
 3. Loki indexa solo etiquetas (labels) y no el contenido textual de los logs. Evalúe las ventajas e inconvenientes de este diseño frente a la indexación completa de Elasticsearch: ¿qué tipos de consultas se vuelven más costosas con Loki y cuáles se benefician de su ligereza?
-
----
 
 ## 10. Troubleshooting
 
@@ -406,8 +398,6 @@ loki:
     - loki_data:/tmp/loki
 ```
 Y declare `loki_data:` en la sección `volumes:` del compose.
-
----
 
 ## Referencias
 

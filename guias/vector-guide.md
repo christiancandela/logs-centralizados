@@ -2,13 +2,9 @@
 
 > *Guía práctica para implementar una solución de centralización de logs de alto rendimiento utilizando Vector como enrutador y transformador, conectado a Loki y Grafana, como instanciación concreta de la arquitectura conceptual de observabilidad presentada en el documento central.*
 
----
-
 ## Objetivo de la guía
 
 Implementar y validar una arquitectura moderna de enrutamiento y centralización de logs mediante **Docker Compose**, usando **Vector** (escrito en Rust) como recolector y transformador ligero, **Loki** para el almacenamiento eficiente por etiquetas, y **Grafana** para la exploración y análisis.
-
----
 
 ## Resultados de aprendizaje esperados
 
@@ -20,8 +16,6 @@ Al finalizar esta guía, el estudiante será capaz de:
 - Configurar aplicaciones Java para emitir logs estructurados en JSON vía TCP hacia Vector.
 - Explorar y consultar logs centralizados desde Grafana usando **LogQL**.
 - Comparar el enfoque Vector frente a alternativas como Logstash o Fluentd en términos de rendimiento y consumo de recursos.
-
----
 
 ## Propósito y alcance del recurso
 
@@ -35,8 +29,6 @@ El material está concebido como:
 
 El alcance del recurso se limita a la centralización y visualización de logs vía TCP JSON. Vector soporta docenas de fuentes y destinos adicionales (archivos, Docker, Kafka, S3, Elasticsearch, etc.).
 
----
-
 ## 1. Observabilidad y rendimiento con Vector
 
 En arquitecturas donde el volumen de logs es masivo, el componente de recolección y procesamiento puede convertirse en el cuello de botella. **Vector** soluciona esto al ser un ejecutable nativo (Rust) que:
@@ -46,7 +38,17 @@ En arquitecturas donde el volumen de logs es masivo, el componente de recolecci�
 - Soporta múltiples fuentes (*sources*) y destinos (*sinks*) mediante un modelo de pipeline declarativo.
 - Incluye **VRL (Vector Remap Language)**, un lenguaje de transformación seguro y tipado, específicamente diseñado para manipular eventos de observabilidad.
 
----
+### Vector y la etapa de procesamiento
+
+Conviene situar a Vector dentro de la arquitectura conceptual (marco conceptual, §5.7). Vector se concentra en las etapas de **recolección y procesamiento**, y su modelo *source → transform → sink* es una materialización casi literal del pipeline de procesamiento descrito en el marco conceptual (§5.7.2):
+
+- **Source** (fuente): de dónde llegan los eventos (TCP, archivos, etc.).
+- **Transform** (transformación): donde se filtra, normaliza, enriquece y (de forma destacada) se **sanitiza** la información sensible (marco conceptual, §5.6), todo mediante VRL.
+- **Sink** (destino): hacia dónde se envían los eventos ya procesados.
+
+¿Por qué importa que Vector esté escrito en Rust? Porque el lenguaje le permite procesar eventos en memoria, sin un *runtime* pesado (como la JVM de Logstash) ni el costo de plugins externos. En escenarios de alto volumen, donde el recolector puede convertirse en el cuello de botella (marco conceptual, §5.7.1), esta eficiencia deja de ser un detalle y pasa a ser un criterio de diseño decisivo.
+
+Observa, además, que Vector puede desplegarse en dos roles: como **agente** (*agent*) junto a cada servicio, o como **agregador** (*aggregator*) centralizado que recibe de muchos agentes. Esta flexibilidad conecta directamente con los patrones de recolección (agente, *sidecar*) discutidos en el marco conceptual (§5.4).
 
 ## 2. Requisitos previos
 
@@ -78,8 +80,6 @@ GRAFANA_MEM_LIMIT=512m
 PRODUCER_MEM_LIMIT=512m
 ```
 
----
-
 ## 3. Estructura del proyecto
 
 ```bash
@@ -95,8 +95,6 @@ logs-centralizados/
         └── datasources/
             └── loki.yaml
 ```
-
----
 
 ## 4. Arquitectura de la solución
 
@@ -119,8 +117,6 @@ La arquitectura implementada se fundamenta en cuatro componentes:
 - **VRL (Vector Remap Language)**: lenguaje declarativo para manipular eventos dentro del pipeline (extracción de campos, enriquecimiento, censura de datos).
 - **Loki**: motor de almacenamiento ligero que indexa solo etiquetas (*labels*), no el contenido textual.
 - **Grafana**: capa de visualización y exploración mediante **LogQL**.
-
----
 
 ## 5. Implementación de la arquitectura conceptual
 
@@ -202,8 +198,6 @@ services:
 > [!NOTE]
 > **El healthcheck de Vector:** La imagen Alpine de Vector usa busybox `wget`, que no soporta la opción `--spider`. Se usa `-O /dev/null` en su lugar. Además, se usa `127.0.0.1` en vez de `localhost` para evitar inconsistencias con la resolución de la interfaz de loopback en busybox.
 
----
-
 ### 5.2 Configuración del pipeline Vector (`vector/vector.toml`)
 
 ```toml
@@ -243,8 +237,6 @@ encoding.codec = "json"
 > [!NOTE]
 > **VRL y claves con punto:** En el formato ECS, el nivel de log se serializa como la clave plana `"log.level"` (no como objeto anidado). En VRL, para acceder a esta clave sin que sea interpretada como ruta anidada, se usa la sintaxis `."log.level"` (entre comillas). El operador `||` realiza null-coalescing: si el campo no existe o es nulo, usa el valor por defecto `"unknown"`. No se usa el operador `??` (que es para error-coalescing, no para null).
 
----
-
 ### 5.3 Aprovisionamiento de Grafana (`grafana/provisioning/datasources/loki.yaml`)
 
 ```yaml
@@ -257,8 +249,6 @@ datasources:
     url: http://loki:3100
     isDefault: true
 ```
-
----
 
 ## 6. Despliegue y validación
 
@@ -283,8 +273,6 @@ vector              Up (healthy)
 grafana             Up
 logs.producer-1     Up
 ```
-
----
 
 ## 7. Emisión de logs desde aplicaciones
 
@@ -322,8 +310,6 @@ quarkus.log.socket.json.log-format=ECS
 private static final Logger LOG = Logger.getLogger(MiClase.class);
 ```
 
----
-
 ### 7.2 Otras aplicaciones Java (Logback)
 
 Para aplicaciones Java que no utilizan Quarkus, se puede usar el `LogstashTcpSocketAppender`, 100% compatible con la entrada TCP de Vector.
@@ -350,8 +336,6 @@ Para aplicaciones Java que no utilizan Quarkus, se puede usar el `LogstashTcpSoc
   </root>
 </configuration>
 ```
-
----
 
 ## 8. Visualización en Grafana
 
@@ -381,8 +365,6 @@ Analizar los campos ECS y mostrar solo el mensaje:
 {job="vector_app_logs"} | json | line_format "{{.message}}"
 ```
 
----
-
 ## 9. Actividades de profundización
 
 - **Simular fallos y rastrear su origen:** El endpoint `GET /api/error` genera intencionalmente una `NullPointerException`. Ejecútelo y use la consulta `{job="vector_app_logs"} |= "NullPointerException"` en Grafana para localizarlo.
@@ -397,11 +379,9 @@ Analizar los campos ECS y mostrar solo el mensaje:
 2. El modelo de pipeline de Vector (Source → Transform → Sink) es declarativo y tipado. Analice cómo este diseño facilita o dificulta la implementación de enrutamiento condicional (enviar logs de nivel ERROR a un destino distinto que los de nivel INFO) en comparación con el modelo de Fluentd o Logstash.
 3. Vector está implementado en Rust y opera sin JVM ni runtime de Ruby. Evalúe en qué escenarios de producción esta diferencia de implementación justifica migrar desde Logstash o Fluentd, y en cuáles el ecosistema de plugins de esas herramientas sería un factor determinante para no hacerlo.
 
----
-
 ## 10. Troubleshooting
 
-**Error común:** Vector no arranca — `no such file or directory: /etc/vector/vector.yaml`.
+**Error común:** Vector no arranca y reporta `no such file or directory: /etc/vector/vector.yaml`.
 
 **Solución:** La imagen `timberio/vector` busca `/etc/vector/vector.yaml` por defecto. Asegúrese de incluir `command: ["--config", "/etc/vector/vector.toml"]` en el servicio para apuntar al archivo TOML correcto.
 
@@ -417,15 +397,13 @@ Analizar los campos ECS y mostrar solo el mensaje:
 
 **Error común:** Error de VRL `unnecessary error coalescing operation` al usar `."log.level" ?? "unknown"`.
 
-**Solución:** En VRL, el operador `??` es para *error-coalescing* (cuando una expresión puede fallar). El acceso a un campo (`."log.level"`) no falla — devuelve `null` si el campo no existe. Para null-coalescing, use el operador lógico `||`: `.level = ."log.level" || "unknown"`.
+**Solución:** En VRL, el operador `??` es para *error-coalescing* (cuando una expresión puede fallar). El acceso a un campo (`."log.level"`) no falla: devuelve `null` si el campo no existe. Para null-coalescing, use el operador lógico `||`: `.level = ."log.level" || "unknown"`.
 
 ---
 
 **Error común:** Los logs no aparecen en Grafana aunque Vector está corriendo.
 
 **Solución:** Verifique que la datasource Loki esté aprovisionada en Grafana (carpeta `grafana/provisioning/datasources/`). Confirme que el pipeline Vector recibe datos consultando la API: `curl http://localhost:8686/graphql` (responde con el esquema GraphQL si está activo). Revise los logs de Vector con `docker compose logs vector`.
-
----
 
 ## Referencias
 

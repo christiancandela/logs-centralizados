@@ -128,8 +128,52 @@ def load_bib_keys():
     return keys
 
 
+ACCENT_MAP = {
+    'á': 'a', 'é': 'e', 'í': 'i', 'ó': 'o', 'ú': 'u', 'ñ': 'n',
+    'Á': 'a', 'É': 'e', 'Í': 'i', 'Ó': 'o', 'Ú': 'u', 'Ñ': 'n',
+}
+
+
+def _strip_accents(s):
+    for char, repl in ACCENT_MAP.items():
+        s = s.replace(char, repl)
+    return s
+
+
+# Cadena de apellidos: tokens que inician en mayúscula, unidos por separadores de
+# autoría (coma, &, "y", "and") o un espacio, admitiendo "et al.".
+_NAME = r"[A-ZÁÉÍÓÚÑ][A-Za-zÁÉÍÓÚÑáéíóúñ.'’-]*"
+_AUTHOR_CHAIN = (
+    rf"{_NAME}(?:(?:,\s*|\s+&\s+|\s+y\s+|\s+and\s+|\s+)(?:et\s+al\.|{_NAME}))*"
+)
+NARRATIVE_CITE_RE = re.compile(rf"({_AUTHOR_CHAIN})\s*\((19\d{{2}}|20\d{{2}})\)")
+
+
+def convert_narrative_citations(text, bib_keys):
+    """Convierte citas narrativas 'Autor (Año)' (con el autor FUERA del paréntesis)
+    en la forma narrativa de Pandoc '@clave', que citeproc renderiza como 'Autor (Año)'.
+
+    Solo actúa cuando la clave resultante existe en references.bib; de este modo, los
+    patrones que parezcan citas pero no lo sean (p. ej. 'la versión (2024)') se dejan
+    intactos. La cadena de autores exige tokens que inician en mayúscula, lo que evita
+    capturar palabras minúsculas previas (p. ej. en 'permite a Lamport (1978)' solo se
+    captura 'Lamport').
+    """
+    def replacer(match):
+        author_blob, year = match.group(1), match.group(2)
+        for word in re.findall(r'[A-Za-zÁÉÍÓÚÑáéíóúñ]+', author_blob):
+            key = _strip_accents(f"{word.lower()}-{year}")
+            if key in bib_keys:
+                return f"@{key}"
+        return match.group(0)
+    return NARRATIVE_CITE_RE.sub(replacer, text)
+
+
 def convert_citations(text, bib_keys):
-    """Busca citas parentéticas del tipo (Autor, Año) y las reemplaza por claves de Pandoc [@clave]."""
+    """Reemplaza las citas por claves de Pandoc: primero las narrativas 'Autor (Año)'
+    por '@clave', y luego las parentéticas '(Autor, Año)' por '[@clave]'."""
+    text = convert_narrative_citations(text, bib_keys)
+
     def replacer(match):
         inside = match.group(1)
         
@@ -185,6 +229,53 @@ def convert_mermaid(text):
     return re.sub(r'^\s*```\s*mermaid\b', '```{mermaid}', text, flags=re.MULTILINE)
 
 
+def _sec_label(num):
+    """'5.7.3' -> 'sec-5-7-3' (etiqueta Quarto de la sección del marco conceptual)."""
+    return "sec-" + num.replace(".", "-")
+
+
+def inject_section_ids(text):
+    """Inyecta identificadores Quarto '{#sec-N-N}' en los encabezados numerados del
+    capítulo del marco conceptual, para que las referencias cruzadas puedan apuntar a
+    ellos. La numeración manual visible la elimina después clean-headers.lua; el id
+    permanece y Quarto renumera de forma automática."""
+    out, in_code = [], False
+    for line in text.split("\n"):
+        if FENCE_RE.match(line):
+            in_code = not in_code
+            out.append(line)
+            continue
+        m = None if in_code else re.match(r'^(#{2,6})\s+(\d+(?:\.\d+)+)\s+(.+?)\s*$', line)
+        if m and "{#" not in line:
+            out.append(f"{m.group(1)} {m.group(2)} {m.group(3)} {{#{_sec_label(m.group(2))}}}")
+        else:
+            out.append(line)
+    return "\n".join(out)
+
+
+# Referencias a secciones del marco conceptual (siempre numeradas '5.x'):
+#   '§5.7.3', '§§5.7.1 y 5.6', 'sección 5.6', 'secciones 5.7.1 y 5.7.2'.
+# Se reemplazan por la referencia cruzada Quarto '@sec-5-7-3', que Quarto renderiza
+# como 'Sección 3.7.3' (el número REAL del PDF, distinto del .md) con hiperenlace.
+# La palabra clave en minúscula ('sección') se descarta para no duplicar el prefijo
+# 'Sección' que aporta la propia referencia cruzada. Solo actúa sobre números '5.x',
+# de modo que las referencias internas de las guías (p. ej. 'sección 7.1') quedan intactas.
+_SEC_NUM = r'5(?:\.\d+)+'
+_SECREF_KW_RE = re.compile(rf'\bsecci[oó]n(?:es)?\s+{_SEC_NUM}(?:\s+y\s+{_SEC_NUM})?')
+_SECREF_SIGN_RE = re.compile(rf'§§?\s*{_SEC_NUM}(?:\s+y\s+{_SEC_NUM})?')
+
+
+def convert_section_refs(text):
+    """Convierte las referencias textuales a secciones del marco conceptual en
+    referencias cruzadas Quarto (@sec-...). Ver la nota anterior."""
+    def repl(m):
+        nums = re.findall(_SEC_NUM, m.group(0))
+        return " y ".join(f"@{_sec_label(n)}" for n in nums)
+    text = _SECREF_KW_RE.sub(repl, text)
+    text = _SECREF_SIGN_RE.sub(repl, text)
+    return text
+
+
 def main():
     os.makedirs(os.path.join(OUTDIR, "guias"), exist_ok=True)
     bib_keys = load_bib_keys()
@@ -205,9 +296,12 @@ def main():
             sys.exit(f"ERROR: faltan secciones {missing} para {fname}")
         
         chapter_content = build_chapter(title, nums, mode, anchor, sections)
+        if anchor == "sec-marco-conceptual":
+            chapter_content = inject_section_ids(chapter_content)
         converted_content = convert_citations(chapter_content, bib_keys)
+        converted_content = convert_section_refs(converted_content)
         converted_content = convert_mermaid(converted_content)
-        
+
         with open(os.path.join(OUTDIR, fname), "w", encoding="utf-8") as f:
             f.write(converted_content)
         print(f"  ✓ {fname}  (§{','.join(map(str, nums))})")
@@ -219,6 +313,7 @@ def main():
         with open(src, encoding="utf-8") as fi, open(dst, "w", encoding="utf-8") as fo:
             content = convert_alerts(fi.read())
             content = convert_citations(content, bib_keys)
+            content = convert_section_refs(content)
             fo.write(convert_mermaid(content))
     for d in DOCS:
         src = os.path.join(ROOT, f"{d}.md")
@@ -226,6 +321,7 @@ def main():
         with open(src, encoding="utf-8") as fi, open(dst, "w", encoding="utf-8") as fo:
             content = convert_alerts(fi.read())
             content = convert_citations(content, bib_keys)
+            content = convert_section_refs(content)
             fo.write(convert_mermaid(content))
     print(f"  ✓ {len(GUIDES)} guías + {len(DOCS)} documentos copiados a _generated/ (alerts→callouts, citations, mermaid)")
     print(f"Listo. Salida en {OUTDIR}")
