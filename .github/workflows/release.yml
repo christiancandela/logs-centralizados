@@ -5,8 +5,10 @@ name: Compilar y publicar libro
 # está conectado en zenodo.org/account/settings/github.
 on:
   push:
-    tags:
-      - 'v[0-9]+.[0-9]+.[0-9]+'
+    branches:
+      - main
+#    tags:
+#      - 'v[0-9]+.[0-9]+.[0-9]+'
 
 permissions:
   contents: write   # necesario para crear GitHub Releases
@@ -128,26 +130,26 @@ jobs:
           echo "ZIP_PATH=${ZIP_NAME}" >> "$GITHUB_ENV"
           echo "ZIP_NAME=${ZIP_NAME}" >> "$GITHUB_ENV"
 
-      # ── 9. Publicar en Zenodo vía API ─────────────────────────────────────
-      - name: Publicar en Zenodo
-        id: zenodo
-        env:
-          ZENODO_TOKEN: ${{ secrets.ZENODO_TOKEN }}
-          TAG: ${{ github.ref_name }}
-        run: python3 .github/scripts/zenodo_publish.py
-
-      # ── 10. Actualizar DOI en archivos del repositorio ────────────────────
-      - name: Actualizar DOI y versión en archivos del repositorio
-        run: |
-          python3 .github/scripts/update_doi.py \
-            "${{ steps.zenodo.outputs.doi }}" \
-            "${{ github.ref_name }}"
-
-      - name: Commit y push de DOI y versión actualizados
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add readme.md CITATION.cff guia_docente.md libro/index.qmd
-          git diff --staged --quiet && echo "Sin cambios" && exit 0
-          git commit -m "docs: actualizar DOI y versión a ${{ github.ref_name }} [skip ci]"
-          git push origin HEAD:main
+#      # ── 9. Publicar en Zenodo vía API ─────────────────────────────────────
+#      - name: Publicar en Zenodo
+#        id: zenodo
+#        env:
+#          ZENODO_TOKEN: ${{ secrets.ZENODO_TOKEN }}
+#          TAG: ${{ github.ref_name }}
+#        run: python3 .github/scripts/zenodo_publish.py
+#
+#      # ── 10. Actualizar DOI en archivos del repositorio ────────────────────
+#      - name: Actualizar DOI y versión en archivos del repositorio
+#        run: |
+#          python3 .github/scripts/update_doi.py \
+#            "${{ steps.zenodo.outputs.doi }}" \
+#            "${{ github.ref_name }}"
+#
+#      - name: Commit y push de DOI y versión actualizados
+#        run: |
+#          git config user.name "github-actions[bot]"
+#          git config user.email "github-actions[bot]@users.noreply.github.com"
+#          git add readme.md CITATION.cff guia_docente.md libro/index.qmd
+#          git diff --staged --quiet && echo "Sin cambios" && exit 0
+#          git commit -m "docs: actualizar DOI y versión a ${{ github.ref_name }} [skip ci]"
+#          git push origin HEAD:main
