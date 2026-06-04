@@ -64,6 +64,14 @@ jobs:
           which typst
           typst --version
 
+      - name: Verificar Chrome
+        run: |
+          google-chrome --version
+          timeout 20s google-chrome \
+            --headless \
+            --no-sandbox \
+            --disable-gpu \
+            --dump-dom https://example.com
       # ── 6. Compilar ───────────────────────────────────────────────────────
       - name: Preparar fuentes del libro (troceo + alerts→callouts)
         working-directory: libro
@@ -74,7 +82,7 @@ jobs:
         env:
           QUARTO_LOG_LEVEL: DEBUG
         run: |
-          timeout 20m quarto render --to typst --verbose
+          quarto render --to typst --verbose
       - name: Renombrar PDF con la versión del tag
         run: |
           TAG="${{ github.ref_name }}"
