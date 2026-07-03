@@ -415,7 +415,235 @@
   inset: 6pt,
   stroke: none
 )
-#show image: it => align(center, it)
+// Fase 5 — Tema global de tablas que replica el estilo Word del documento
+// ("Tabla con cuadrícula": bordes completos + encabezado sombreado en azul claro).
+#set table(
+  stroke: 0.5pt + rgb("#808080"),     // cuadrícula gris (estilo Word)
+  inset: 4pt,
+  fill: (_, y) => if y == 0 { rgb("#DBE5F1") },  // encabezado azul claro como el Word
+  // Encabezado centrado; filas de datos alineadas a la izquierda (start).
+  // La alineación explícita por columna en Pandoc (:--, --:, :--:) sobrescribe este valor.
+  align: (_, y) => if y == 0 { center + horizon } else { start + horizon },
+)
+// Tamaño legible en las tablas.
+// Las tablas extensas deben dividirse o trasladarse a anexos antes que reducir
+// la letra hasta comprometer su consulta en pantalla o impresa.
+#show table.cell: set text(size: 8.5pt)
+#show table.cell.where(y: 0): set text(weight: "bold")
+
+// Asegurar que las celdas con imágenes (como fotos incrustadas en fichas técnicas)
+// tengan fondo blanco. Se reconstruye el table.cell con fill: white explícito
+// (set table.cell(fill:…) dentro de un show rule no sobrescribe el fill ya asignado).
+#show table.cell: it => {
+  if repr(it.body).contains("image(") and it.fill != white {
+    let fields = it.fields()
+    let body = fields.remove("body")
+    table.cell(..fields, fill: white)[#body]
+  } else {
+    it
+  }
+}
+
+
+// Configuración personalizada de estilos para el documento Typst
+#import "@preview/orange-book:0.7.1": main-color-state, part-change, appendix-state
+#import "@preview/shadowed:0.3.0": shadow
+
+#show: doc => {
+  set page(
+    header: context {
+      set text(size: 9pt)
+      let page_number = counter(page).at(here()).first()
+      let odd_page = calc.odd(page_number)
+      let part_change_val = part-change.at(here())
+      let all = query(heading.where(level: 1))
+      if all.any(it => it.location().page() == page_number) or part_change_val {
+        return
+      }
+      let appendix = appendix-state.at(here())      
+      if odd_page {
+        let before = query(selector(heading.where(level: 2)).before(here()))
+        let counterInt = counter(heading).at(here())
+        if before != () and counterInt.len()> 1 {
+          box(width: 100%, inset: (bottom: 5pt), stroke: (bottom: 0.5pt))[
+            #text(if appendix != none {numbering("A.1", ..counterInt.slice(0,2)) + " " + before.last().body} else {numbering("1.1", ..counterInt.slice(0,2)) + " " + before.last().body})
+            #h(1fr)
+            #page_number
+          ]
+        }
+      } else{
+        let before = query(selector(heading.where(level: 1)).before(here()))
+        let counterInt = counter(heading).at(here()).first()
+
+        if before != () and counterInt > 0 {
+          box(width: 100%, inset: (bottom: 5pt), stroke: (bottom: 0.5pt))[
+            #set par(justify: false)
+            #grid(
+              columns: (auto, 1fr),
+              align: (left + horizon, right + horizon),
+              column-gutter: 0.3em,
+              [#page_number],
+              text(weight: "bold")[
+                #if appendix != none {
+                  numbering("A.1", counterInt) + ". " + before.last().body
+                } else {
+                  before.last().supplement + " " + str(counterInt) + ". " + before.last().body
+                }
+              ]
+            )
+          ]
+        }
+      }
+    }
+  )
+  doc
+}
+
+
+// Referencias cruzadas (@fig-, @tbl-, @sec-) en el mismo color azul que citas y enlaces
+#show ref: it => context {
+  let mc = main-color-state.at(here())
+  if mc != none { text(fill: mc, it) } else { it }
+}
+
+// Ajuste del espaciado entre párrafos (mayor separación que el valor predeterminado)
+#show par: set par(spacing: 1.5em)
+
+// Incrementar la altura del cuadro azul (bloque de la portada) de 7.5cm a 10.5cm
+#show block: it => {
+  if it.has("height") and it.height == 7.5cm {
+    let fields = it.fields()
+    let body = fields.remove("body")
+    fields.height = 10.5cm
+    if fields.at("below", default: none) != none and fields.below != auto {
+      fields.below = fields.below.abs
+    }
+    block.with(..fields)(body)
+  } else {
+    it
+  }
+}
+
+// Formato de bibliografía según estilo APA v7 (sangría francesa de 1.27cm y espaciado)
+#show <refs>: it => {
+  set par(hanging-indent: 1.27cm, justify: true)
+  show block: set block(spacing: 1.5em)
+  it
+}
+
+
+
+// Evitar página en blanco después de la portada removiendo el salto de página del índice
+#show outline: it => {
+  if it.title == none {
+    // Reducir el tamaño de letra de la tabla de contenido a 10pt
+    set text(size: 10pt)
+
+    // Función auxiliar para extraer el texto de un bloque de contenido
+    let to-string(content) = {
+      if content == none {
+        ""
+      } else if type(content) == str {
+        content
+      } else if content.has("text") {
+        content.text
+      } else if content.has("children") {
+        let ch = content.children
+        if ch.len() == 0 { "" } else { ch.map(to-string).join("") }
+      } else if content.has("body") {
+        to-string(content.body)
+      } else {
+        ""
+      }
+    }
+
+    // Interceptar la cuadrícula de my-outline-row para ajustar dinámicamente el ancho de la numeración
+    show grid: it => {
+      if it.columns == (1.2cm, 1fr, auto) {
+        let fields = it.fields()
+        let children = fields.remove("children")
+        
+        let number-str = to-string(children.at(0).body)
+        let num-dots = number-str.clusters().filter(c => c == ".").len()
+        
+        // Ancho dinámico: nivel 3 obtiene 2.2cm, nivel 2 obtiene 1.6cm, nivel 1 obtiene 1.2cm
+        let col-width = if num-dots >= 2 { 2.2cm } else if num-dots == 1 { 1.6cm } else { 1.2cm }
+        
+        if col-width != 1.2cm {
+          fields.columns = (col-width, 1fr, auto)
+          grid(..fields, ..children)
+        } else {
+          it
+        }
+      } else {
+        it
+      }
+    }
+
+    it
+  } else {
+    let fields = it.fields()
+    fields.title = none
+    
+    // Iniciar el índice en página nueva
+    pagebreak()
+
+    // Título personalizado que no dispara el pagebreak(to: "odd")
+    align(center)[
+      #v(1cm)
+      #text(size: 2.2em, weight: "bold", fill: rgb("#003b4f"))[Índice]
+      #v(1cm)
+    ]
+    
+    outline(..fields)
+  }
+}
+
+// Tamaño 9pt para los títulos (pies de figura/tabla) de ilustraciones y tablas
+#show figure.caption: set text(size: 9pt)
+
+// Evitar la división silábica con guiones en todos los títulos (capítulos y secciones)
+#show heading: set text(hyphenate: false)
+
+// Sombra suave para ilustraciones con título.
+// Quarto genera figuras con kind: "quarto-float-fig" (no kind: image).
+// Técnica: bloque exterior con relleno semitransparente e inset solo en derecha+abajo.
+// El bloque interior con fill:white tapa ese fondo; la sombra queda visible
+// únicamente en las franjas derecha y abajo.
+#show figure.where(kind: "quarto-float-fig"): fig => {
+  if fig.body.func() == block and fig.body.has("inset") and type(fig.body.inset) == dictionary and fig.body.inset.at("top", default: none) == 0.123pt {
+    fig
+  } else {
+    figure(
+      placement: fig.placement,
+      caption: fig.caption,
+      kind: fig.kind,
+      supplement: fig.supplement,
+      numbering: fig.numbering,
+      gap: fig.gap,
+      block(
+        stroke: none,
+        fill: none,
+        inset: (top: 0.123pt),
+        shadow(
+          dx: 3.5pt,
+          dy: 3.5pt,
+          blur: 8pt,
+          fill: rgb(0, 0, 0, 20%),
+          radius: 0pt,
+        )[
+          #block(
+            fill: white,
+            stroke: 0.5pt + luma(200),
+            inset: 0pt,
+            fig.body
+          )
+        ]
+      )
+    )
+  }
+}
+
 #import "@preview/fontawesome:0.5.0": *
 #let brand-color = (:)
 #let brand-color-background = (:)
@@ -430,18 +658,132 @@
 // Logo is handled by orange-book's cover page, not as a page background
 // NOTE: marginalia.setup is called in typst-show.typ AFTER book.with()
 // to ensure marginalia's margins override the book format's default margins
-#import "orange-book/lib.typ": book, part, chapter, appendices
+// #import "orange-book/lib.typ": book, part, chapter, appendices
+#import "@preview/orange-book:0.7.1": book, part, chapter, appendices
+
+#import "./typst/cover.typ": cover
+
+#page(margin: 0pt, numbering: none, header: none, footer: none)[
+
+#cover(
+  [Recurso Educativo para el Despliegue de Ecosistemas de Centralización de Logs Mediante Docker],
+  [Marco conceptual, guía de estudio, guía docente y nueve guías prácticas reproducibles],
+  [
+        Christian Andrés Candela Uribe, Ph.D.\
+        Paola Andrea Acero Franco, M.Sc.\
+        Luis Eduardo Sepúlveda Rodríguez, Ph.D.\
+      ],
+  [2026],
+)
+]
+
 
 #show: book.with(
+  image-index: image("images/chapter_header.png"),
   title: [Recurso Educativo para el Despliegue de Ecosistemas de Centralización de Logs Mediante Docker],
   subtitle: [Marco conceptual, guía de estudio, guía docente y nueve guías prácticas reproducibles],
-  author: "Ph.D.~Christian Andrés Candela Uribe, M.Sc. Paola Andrea Acero Franco, Ph.D.~Luis Eduardo Sepúlveda Rodríguez",
-  date: "mayo de 2026",
+
+  author: "Christian Andrés Candela Uribe, Ph.D.\nPaola Andrea Acero Franco, M.Sc.\nLuis Eduardo Sepúlveda Rodríguez, Ph.D.",
+  date: "2025",
   lang: "es",
-  cover-height: auto,
-  title-size: 2.2em,
-  subtitle-size: 1.4em,
-  author-size: 1.6em,
+
+  supplement-chapter: "Capítulo",
+  copyright: [
+    #set text(size: 9pt)
+
+    *Recurso Educativo para el Despliegue de Ecosistemas de Centralización de Logs Mediante Docker* \
+    _Marco conceptual, guía de estudio, guía docente y nueve guías prácticas reproducibles_
+
+    #v(0.3em)
+    *Autores* \
+        
+        Christian Andrés Candela Uribe, Ph.D.\
+
+        
+        Paola Andrea Acero Franco, M.Sc.\
+
+        
+        Luis Eduardo Sepúlveda Rodríguez, Ph.D.\
+
+        
+
+
+    #v(0.3em)
+    Universidad del Quindío — Facultad de Ingeniería \
+    Programa de Ingeniería de Sistemas y Computación \
+    Armenia, Quindío, Colombia — 2026
+
+    #v(0.6em)
+    #line(length: 100%, stroke: 0.5pt)
+    #v(0.4em)
+
+    #image("images/by-nc-sa.png", width: 2.8cm)
+
+    #v(0.15em)
+    #text(weight: "bold")[Licencia Creative Commons]
+
+    #v(0.1em)
+    Atribución – No Comercial – Compartir Igual 4.0 Internacional (CC BY-NC-SA 4.0) \
+    #link("https://creativecommons.org/licenses/by-nc-sa/4.0/")[creativecommons.org/licenses/by-nc-sa/4.0]
+
+    #v(0.15em)
+    #text(size: 8.5pt)[Esta licencia permite a otros distribuir, remezclar, retocar y crear a partir de esta obra de modo no comercial, siempre y cuando den crédito a los autores y licencien sus nuevas creaciones bajo las mismas condiciones.]
+
+    #v(0.3em)
+    © 2026  Christian Andrés Candela Uribe, Paola Andrea Acero Franco, Luis Eduardo Sepúlveda Rodríguez
+
+    #v(0.4em)
+    #line(length: 100%, stroke: 0.5pt)
+    #v(0.4em)
+
+    #text(weight: "bold", size: 9.5pt)[Sobre los autores]
+
+    #v(0.4em)
+    #grid(
+      columns: (2cm, 1fr),
+      column-gutter: 0.7em,
+      align: (top, top),
+      image("images/foto-sepulveda.jpg", width: 2cm),
+      [
+        #text(weight: "bold", size: 8.5pt)[Luis Eduardo Sepúlveda Rodríguez, PhD.] \
+        #v(0.1em)
+        #text(size: 8pt)[Doctor en Ingeniería con énfasis en Ciencias de la Computación, Universidad Tecnológica de Pereira. Colombia. Profesor Asociado en la Universidad del Quindío, Colombia. Áreas de interés: infraestructura de TI, sistemas operativos y cloud computing. ORCID: #link("https://orcid.org/0000-0003-2446-0602")[0000-0003-2446-0602]]
+      ]
+    )
+
+    #v(0.35em)
+    #grid(
+      columns: (2cm, 1fr),
+      column-gutter: 0.7em,
+      align: (top, top),
+      image("images/foto-acero.jpg", width: 2cm),
+      [
+        #text(weight: "bold", size: 8.5pt)[Paola Andrea Acero Franco, MSc.] \
+        #v(0.1em)
+        #text(size: 8pt)[Magíster en E-Learning, Universidad Autónoma de Bucaramanga. Colombia. Profesora Asociada en la Universidad del Quindío, Colombia. Áreas de interés: diseño instruccional, recursos educativos abiertos y tecnología educativa. ORCID: #link("https://orcid.org/0009-0005-6538-5030")[0009-0005-6538-5030]]
+      ]
+    )
+
+
+    #v(0.35em)
+    #grid(
+      columns: (2cm, 1fr),
+      column-gutter: 0.7em,
+      align: (top, top),
+      image("images/foto-candela.jpg", width: 2cm),
+      [
+        #text(weight: "bold", size: 8.5pt)[Christian Andrés Candela Uribe, PhD.] \
+        #v(0.1em)
+        #text(size: 8pt)[Doctor en Ingeniería con énfasis en Ciencias de la Computación, Universidad Tecnológica de Pereira. Profesor Asociado en la Universidad del Quindío, Colombia. Áreas de interés: Arquitectura de Software, Ingeniería de Software y Microservicios. ORCID: #link("https://orcid.org/0000-0002-3961-1840")[0000-0002-3961-1840]]
+      ]
+    )
+
+  ],
+  supplement-part: "Parte",
+  // cover-height: auto,
+  // title-size: 2.2em,
+  // subtitle-size: 1.4em,
+  // author-size: 1.6em,
   main-color: brand-color.at("primary", default: blue),
   logo: {
     let logo-info = brand-logo.at("medium", default: none)
@@ -509,11 +851,11 @@ Los autores agradecen a la Universidad del Quindío y al Programa de Ingeniería
 <introducción-justificación-y-objetivos>
 == Introducción
 <introducción>
-La adopción creciente de arquitecturas basadas en sistemas distribuidos y microservicios ha transformado de manera significativa el desarrollo y la operación del software contemporáneo @newman-2015@richardson-2018@bosch-2016. Estas arquitecturas aportan beneficios claros en términos de escalabilidad, resiliencia y evolución independiente de los componentes; sin embargo, también introducen un aumento considerable en la complejidad asociada a su análisis y gestión.
+La adopción creciente de arquitecturas basadas en sistemas distribuidos y microservicios ha transformado de manera significativa el desarrollo y la operación del software contemporáneo \(#link(<ref-bosch-2016>)[Bosch, 2016]\; #link(<ref-newman-2015>)[Newman, 2015]\; #link(<ref-richardson-2018>)[Richardson, 2018]). Estas arquitecturas aportan beneficios claros en términos de escalabilidad, resiliencia y evolución independiente de los componentes; sin embargo, también introducen un aumento considerable en la complejidad asociada a su análisis y gestión.
 
-En este escenario, comprender el comportamiento interno de los sistemas en ejecución se convierte en un reto central para la formación en ingeniería de sistemas y disciplinas afines. La #strong[observabilidad] surge como un principio fundamental que permite abordar este reto, al posibilitar la inferencia del estado interno de un sistema a partir de las señales externas que este produce durante su operación @majors-2022@beyer-2016@sridharan-2018.
+En este escenario, comprender el comportamiento interno de los sistemas en ejecución se convierte en un reto central para la formación en ingeniería de sistemas y disciplinas afines. La #strong[observabilidad] surge como un principio fundamental que permite abordar este reto, al posibilitar la inferencia del estado interno de un sistema a partir de las señales externas que este produce durante su operación \(#link(<ref-beyer-2016>)[Beyer et~al., 2016]\; #link(<ref-majors-2022>)[Majors et~al., 2022]\; #link(<ref-sridharan-2018>)[Sridharan, 2018]).
 
-El presente trabajo escrito tiene como propósito desarrollar, desde un enfoque académico y formativo, los fundamentos conceptuales de la observabilidad en sistemas distribuidos, con énfasis en la #strong[centralización de logs] como uno de sus pilares principales. El documento se concibe como un recurso educativo orientado a facilitar el aprendizaje progresivo de estos conceptos, priorizando los principios y la arquitectura conceptual sobre el uso de herramientas o tecnologías específicas. Esta separación entre el marco teórico y las guías prácticas es una decisión metodológica deliberada: mantener el documento conceptual neutral en términos tecnológicos permite que los fundamentos presentados conserven validez con independencia de la evolución del ecosistema de herramientas, mientras que las guías prácticas ofrecen la experiencia concreta necesaria para anclar el aprendizaje en contextos reales @kolb-1984.
+El presente trabajo escrito tiene como propósito desarrollar, desde un enfoque académico y formativo, los fundamentos conceptuales de la observabilidad en sistemas distribuidos, con énfasis en la #strong[centralización de logs] como uno de sus pilares principales. El documento se concibe como un recurso educativo orientado a facilitar el aprendizaje progresivo de estos conceptos, priorizando los principios y la arquitectura conceptual sobre el uso de herramientas o tecnologías específicas. Esta separación entre el marco teórico y las guías prácticas es una decisión metodológica deliberada: mantener el documento conceptual neutral en términos tecnológicos permite que los fundamentos presentados conserven validez con independencia de la evolución del ecosistema de herramientas, mientras que las guías prácticas ofrecen la experiencia concreta necesaria para anclar el aprendizaje en contextos reales \(#link(<ref-kolb-1984>)[Kolb, 1984]).
 
 Las guías prácticas complementarias cubren un espectro tecnológico más amplio que el enunciado originalmente en la propuesta de trabajo. Esta ampliación es una decisión consciente: el estado del arte de la observabilidad ha evolucionado de forma acelerada durante el período de desarrollo del recurso, incorporando estándares de protocolo unificado y plataformas de nueva generación que ofrecen un valor pedagógico significativo y mejoran la transferibilidad del conocimiento. Las guías adicionales se diseñaron con el mismo rigor y estructura que las originalmente propuestas, manteniendo coherencia con el marco conceptual presentado en este documento.
 
@@ -521,7 +863,7 @@ Las guías prácticas complementarias cubren un espectro tecnológico más ampli
 <justificación>
 La formación en ingeniería de sistemas enfrenta el desafío de preparar a los estudiantes para comprender y gestionar sistemas de software cada vez más complejos y distribuidos. Si bien los programas académicos suelen abordar con profundidad los aspectos relacionados con el diseño y la construcción de software, los elementos asociados a su operación, análisis y diagnóstico suelen recibir una atención limitada o fragmentada.
 
-En particular, la observabilidad y la centralización de logs suelen introducirse desde enfoques predominantemente instrumentales, centrados en el uso de herramientas específicas. Esta aproximación dificulta la transferencia del conocimiento a contextos tecnológicos diversos y limita la comprensión de los principios conceptuales que subyacen a dichas prácticas @cito-2015.
+En particular, la observabilidad y la centralización de logs suelen introducirse desde enfoques predominantemente instrumentales, centrados en el uso de herramientas específicas. Esta aproximación dificulta la transferencia del conocimiento a contextos tecnológicos diversos y limita la comprensión de los principios conceptuales que subyacen a dichas prácticas \(#link(<ref-cito-2015>)[Cito et~al., 2015]).
 
 En este contexto, se justifica el desarrollo de un trabajo académico que aborde la observabilidad y la centralización de logs desde una perspectiva teórica y estructurada, orientada al aprendizaje. Al priorizar un enfoque neutral en términos tecnológicos, el documento busca fortalecer el pensamiento sistémico, la capacidad analítica y la comprensión profunda de arquitecturas distribuidas, aportando así a la formación integral de los estudiantes.
 
@@ -575,10 +917,10 @@ supplement: "Figura",
 <fig-enfoque-metodologico>
 
 
-+ #strong[Design Science Research (DSR):] Permite tratar el recurso educativo (compuesto por el marco conceptual, las 9 guías en markdown, las plantillas de configuración y la guía docente) como un #strong[artefacto diseñado] para resolver un problema práctico: la complejidad cognitiva que enfrentan los estudiantes al comprender arquitecturas de observabilidad distribuidas y heterogéneas @hevner-2004@peffers-2007. La evaluación del artefacto se realiza bajo criterios de utilidad pedagógica, claridad procedimental y reproducibilidad multiplataforma.
-+ #strong[Design-Based Research (DBR):] Aporta los principios de diseño orientado a contextos reales de aprendizaje y de refinamiento iterativo que guían la construcción del recurso con miras a su puesta en práctica en el aula de la asignatura #emph[Arquitectura Orientada a Microservicios] @design-2003@mckenney-2018. La validación empírica con estudiantes (análisis de las curvas de aprendizaje y depuración del código Docker ante la heterogeneidad de sus equipos personales) se plantea como fase de #strong[trabajo futuro], dado que esta versión corresponde a la primera publicación del recurso.
-+ #strong[Modelo ADDIE:] Estructura de forma sistemática el ciclo de vida instruccional del recurso a través de sus fases de Análisis (de necesidades curriculares y de los entornos de ejecución del estudiante), Diseño (de los RAE y la estructura de las guías), Desarrollo (configuración de los entornos Docker Compose y mockups de microservicios), Implementación (preparación del despliegue local para su ejecución por parte de los estudiantes) y Evaluación (diseño de rúbricas cualitativas y cuantitativas) @branch-2009.
-+ #strong[Alineación Constructiva (Biggs):] Garantiza que no haya desconexión entre los objetivos de aprendizaje de la asignatura, las actividades técnicas requeridas en las guías y los criterios e instrumentos de evaluación declarados en la guía docente @biggs-2011.
++ #strong[Design Science Research (DSR):] Permite tratar el recurso educativo (compuesto por el marco conceptual, las 9 guías en markdown, las plantillas de configuración y la guía docente) como un #strong[artefacto diseñado] para resolver un problema práctico: la complejidad cognitiva que enfrentan los estudiantes al comprender arquitecturas de observabilidad distribuidas y heterogéneas \(#link(<ref-hevner-2004>)[Hevner et~al., 2004]\; #link(<ref-peffers-2007>)[Peffers et~al., 2007]). La evaluación del artefacto se realiza bajo criterios de utilidad pedagógica, claridad procedimental y reproducibilidad multiplataforma.
++ #strong[Design-Based Research (DBR):] Aporta los principios de diseño orientado a contextos reales de aprendizaje y de refinamiento iterativo que guían la construcción del recurso con miras a su puesta en práctica en el aula de la asignatura #emph[Arquitectura Orientada a Microservicios] \(#link(<ref-design-2003>)[Design-Based Research Collective, 2003]\; #link(<ref-mckenney-2018>)[McKenney & Reeves, 2018]). La validación empírica con estudiantes (análisis de las curvas de aprendizaje y depuración del código Docker ante la heterogeneidad de sus equipos personales) se plantea como fase de #strong[trabajo futuro], dado que esta versión corresponde a la primera publicación del recurso.
++ #strong[Modelo ADDIE:] Estructura de forma sistemática el ciclo de vida instruccional del recurso a través de sus fases de Análisis (de necesidades curriculares y de los entornos de ejecución del estudiante), Diseño (de los RAE y la estructura de las guías), Desarrollo (configuración de los entornos Docker Compose y mockups de microservicios), Implementación (preparación del despliegue local para su ejecución por parte de los estudiantes) y Evaluación (diseño de rúbricas cualitativas y cuantitativas) \(#link(<ref-branch-2009>)[Branch, 2009]).
++ #strong[Alineación Constructiva (Biggs):] Garantiza que no haya desconexión entre los objetivos de aprendizaje de la asignatura, las actividades técnicas requeridas en las guías y los criterios e instrumentos de evaluación declarados en la guía docente \(#link(<ref-biggs-2011>)[Biggs & Tang, 2011]).
 
 == Naturaleza del trabajo y tipo de producto esperado
 <naturaleza-del-trabajo-y-tipo-de-producto-esperado>
@@ -743,13 +1085,13 @@ Esta sección desarrolla de manera progresiva los fundamentos conceptuales de la
 
 == Observabilidad en sistemas distribuidos
 <sec-5-1>
-La observabilidad se define como la capacidad de inferir el estado interno de un sistema complejo a partir de las señales externas que este produce durante su ejecución @majors-2022@beyer-2016@sridharan-2018. En sistemas distribuidos, esta capacidad resulta crítica debido a la concurrencia, la comunicación asincrónica y la distribución de responsabilidades entre múltiples componentes autónomos, factores que dificultan la identificación directa de causas y efectos @usman-2022.
+La observabilidad se define como la capacidad de inferir el estado interno de un sistema complejo a partir de las señales externas que este produce durante su ejecución \(#link(<ref-beyer-2016>)[Beyer et~al., 2016]\; #link(<ref-majors-2022>)[Majors et~al., 2022]\; #link(<ref-sridharan-2018>)[Sridharan, 2018]). En sistemas distribuidos, esta capacidad resulta crítica debido a la concurrencia, la comunicación asincrónica y la distribución de responsabilidades entre múltiples componentes autónomos, factores que dificultan la identificación directa de causas y efectos \(#link(<ref-usman-2022>)[Usman et~al., 2022]).
 
-Desde la ingeniería de software, la observabilidad se ha consolidado como un principio complementario a la monitorización tradicional. Mientras esta última se enfoca en indicadores previamente definidos, la observabilidad busca responder preguntas no anticipadas, permitiendo explorar el comportamiento del sistema cuando surgen fallos o degradaciones inesperadas @turnbull-2016. Este enfoque resulta particularmente relevante en arquitecturas de microservicios, donde los comportamientos emergentes no pueden ser previstos completamente en tiempo de diseño @newman-2015.
+Desde la ingeniería de software, la observabilidad se ha consolidado como un principio complementario a la monitorización tradicional. Mientras esta última se enfoca en indicadores previamente definidos, la observabilidad busca responder preguntas no anticipadas, permitiendo explorar el comportamiento del sistema cuando surgen fallos o degradaciones inesperadas \(#link(<ref-turnbull-2016>)[Turnbull, 2016]). Este enfoque resulta particularmente relevante en arquitecturas de microservicios, donde los comportamientos emergentes no pueden ser previstos completamente en tiempo de diseño \(#link(<ref-newman-2015>)[Newman, 2015]).
 
-Conviene precisar que el término #emph[observabilidad] no se originó en la ingeniería de software, sino en la teoría de control, donde #cite(<kalman-1960>, form: "prose") lo definió formalmente como la propiedad que permite reconstruir el estado interno de un sistema dinámico a partir del conocimiento de sus salidas externas. Esta raíz conceptual resulta esclarecedora: un sistema es observable no por la cantidad de datos que emite, sino por la posibilidad de inferir su estado interno a partir de ellos. Trasladada al software, la observabilidad no se reduce, por tanto, a "generar abundantes registros", sino a disponer de señales suficientes y bien estructuradas para responder preguntas sobre el comportamiento del sistema.
+Conviene precisar que el término #emph[observabilidad] no se originó en la ingeniería de software, sino en la teoría de control, donde Kalman (#link(<ref-kalman-1960>)[1960]) lo definió formalmente como la propiedad que permite reconstruir el estado interno de un sistema dinámico a partir del conocimiento de sus salidas externas. Esta raíz conceptual resulta esclarecedora: un sistema es observable no por la cantidad de datos que emite, sino por la posibilidad de inferir su estado interno a partir de ellos. Trasladada al software, la observabilidad no se reduce, por tanto, a "generar abundantes registros", sino a disponer de señales suficientes y bien estructuradas para responder preguntas sobre el comportamiento del sistema.
 
-En la práctica, la observabilidad de un sistema de software se construye sobre tres tipos de señales complementarias, conocidas como los #strong[tres pilares de la observabilidad] @sridharan-2018@majors-2022:
+En la práctica, la observabilidad de un sistema de software se construye sobre tres tipos de señales complementarias, conocidas como los #strong[tres pilares de la observabilidad] \(#link(<ref-majors-2022>)[Majors et~al., 2022]\; #link(<ref-sridharan-2018>)[Sridharan, 2018]):
 
 #table(
   columns: (25%, 25%, 25%, 25%),
@@ -764,14 +1106,14 @@ Aunque los tres pilares se complementan, presentan diferencias importantes en su
 
 == Logs como fuente primaria de información
 <sec-5-2>
-Los logs constituyen registros textuales de eventos discretos que ocurren durante la ejecución de un sistema y representan una de las formas más expresivas de instrumentación del software @turnbull-2016. A diferencia de las métricas, que capturan valores agregados, y de las trazas, que describen recorridos de solicitudes, los logs preservan el contexto semántico de los eventos, facilitando la comprensión del #emph[qué] y el #emph[por qué] de una situación determinada.
+Los logs constituyen registros textuales de eventos discretos que ocurren durante la ejecución de un sistema y representan una de las formas más expresivas de instrumentación del software \(#link(<ref-turnbull-2016>)[Turnbull, 2016]). A diferencia de las métricas, que capturan valores agregados, y de las trazas, que describen recorridos de solicitudes, los logs preservan el contexto semántico de los eventos, facilitando la comprensión del #emph[qué] y el #emph[por qué] de una situación determinada.
 
-Diversos estudios destacan que los logs no solo cumplen una función operativa, sino que actúan como artefactos de conocimiento que reflejan decisiones de diseño, supuestos implícitos y modelos mentales de los desarrolladores @xu-2009@oliner-2012@he-2021. Desde una perspectiva formativa, esta característica permite a los estudiantes analizar evidencias reales de ejecución y vincular los conceptos teóricos de arquitectura y diseño con su manifestación práctica.
+Diversos estudios destacan que los logs no solo cumplen una función operativa, sino que actúan como artefactos de conocimiento que reflejan decisiones de diseño, supuestos implícitos y modelos mentales de los desarrolladores \(#link(<ref-he-2021>)[S. He et~al., 2021]\; #link(<ref-oliner-2012>)[Oliner et~al., 2012]\; #link(<ref-xu-2009>)[Xu et~al., 2009]). Desde una perspectiva formativa, esta característica permite a los estudiantes analizar evidencias reales de ejecución y vincular los conceptos teóricos de arquitectura y diseño con su manifestación práctica.
 
 Para comprender el valor de los logs conviene examinar su anatomía. Un registro típico se compone de, al menos, una #strong[marca temporal] (cuándo ocurrió el evento), un #strong[nivel de severidad] (qué tan importante es), un #strong[mensaje] descriptivo y, idealmente, un conjunto de #strong[campos de contexto] (qué servicio, qué usuario, qué operación). La forma en que estos elementos se representan determina la facilidad con que pueden analizarse de manera automatizada. Históricamente, los logs se escribían como texto libre no estructurado, legible para las personas pero difícil de procesar por las máquinas:
 
 #Skylighting(([#NormalTok("2026-05-14 10:32:01 ERROR El pago del usuario 4827 fue rechazado por saldo insuficiente");],));
-El #strong[logging estructurado] propone, en cambio, representar cada evento como un objeto con campos explícitos (habitualmente en formato JSON), de modo que cada dato sea identificable y consultable sin necesidad de interpretar la cadena de texto @chuvakin-2012:
+El #strong[logging estructurado] propone, en cambio, representar cada evento como un objeto con campos explícitos (habitualmente en formato JSON), de modo que cada dato sea identificable y consultable sin necesidad de interpretar la cadena de texto \(#link(<ref-chuvakin-2012>)[Chuvakin et~al., 2012]):
 
 #Skylighting(([#FunctionTok("{");],
 [#NormalTok("  ");#DataTypeTok("\"timestamp\"");#FunctionTok(":");#NormalTok(" ");#StringTok("\"2026-05-14T10:32:01Z\"");#FunctionTok(",");],
@@ -786,19 +1128,19 @@ Los niveles de severidad constituyen otra convención fundamental. La mayoría d
 
 == Problemática de la dispersión de logs
 <sec-5-3>
-En sistemas distribuidos, cada componente genera sus propios registros de manera local, lo que conduce a una dispersión de la información que dificulta su análisis integral. Esta fragmentación incrementa la carga cognitiva requerida para el diagnóstico de fallos y limita la capacidad de correlacionar eventos entre servicios independientes @cito-2015.
+En sistemas distribuidos, cada componente genera sus propios registros de manera local, lo que conduce a una dispersión de la información que dificulta su análisis integral. Esta fragmentación incrementa la carga cognitiva requerida para el diagnóstico de fallos y limita la capacidad de correlacionar eventos entre servicios independientes \(#link(<ref-cito-2015>)[Cito et~al., 2015]).
 
-La literatura señala que, a medida que aumenta el número de servicios y nodos, el análisis manual de logs locales se vuelve inviable, generando opacidad operativa y dependencia excesiva de conocimiento tácito @oliner-2012@burns-2016. Esta problemática refuerza la necesidad de enfoques sistemáticos para la gestión y análisis de registros en entornos distribuidos.
+La literatura señala que, a medida que aumenta el número de servicios y nodos, el análisis manual de logs locales se vuelve inviable, generando opacidad operativa y dependencia excesiva de conocimiento tácito \(#link(<ref-burns-2016>)[Burns et~al., 2016]\; #link(<ref-oliner-2012>)[Oliner et~al., 2012]). Esta problemática refuerza la necesidad de enfoques sistemáticos para la gestión y análisis de registros en entornos distribuidos.
 
-Más allá del volumen, la dispersión plantea dos problemas conceptualmente profundos. El primero es el de la #strong[correlación de eventos]: cuando una sola solicitud de usuario atraviesa varios servicios, cada uno genera registros de forma independiente, y sin un mecanismo que los vincule resulta imposible reconstruir la secuencia completa. La solución conceptual a este problema es la propagación de un #strong[identificador de correlación] (#emph[correlation ID] o #emph[trace ID]) que acompaña a la solicitud a lo largo de todos los servicios que la procesan, permitiendo agrupar a posteriori todos los eventos que pertenecen a la misma operación @sigelman-2010.
+Más allá del volumen, la dispersión plantea dos problemas conceptualmente profundos. El primero es el de la #strong[correlación de eventos]: cuando una sola solicitud de usuario atraviesa varios servicios, cada uno genera registros de forma independiente, y sin un mecanismo que los vincule resulta imposible reconstruir la secuencia completa. La solución conceptual a este problema es la propagación de un #strong[identificador de correlación] (#emph[correlation ID] o #emph[trace ID]) que acompaña a la solicitud a lo largo de todos los servicios que la procesan, permitiendo agrupar a posteriori todos los eventos que pertenecen a la misma operación \(#link(<ref-sigelman-2010>)[Sigelman et~al., 2010]).
 
-El segundo problema es el del #strong[orden temporal]. En un sistema distribuido, cada nodo posee su propio reloj físico, y estos relojes nunca están perfectamente sincronizados. En consecuencia, ordenar eventos provenientes de máquinas distintas únicamente por su marca temporal puede producir secuencias incorrectas. #cite(<lamport-1978>, form: "prose") demostró que, en ausencia de un reloj global, lo determinante no es el tiempo absoluto sino la relación de causalidad entre eventos (la relación #emph[happened-before]), y propuso los relojes lógicos como mecanismo para establecer un orden coherente. Esta noción es fundamental para comprender por qué la correlación y el ordenamiento de logs distribuidos constituyen un problema no trivial, y no una simple cuestión de comparar fechas.
+El segundo problema es el del #strong[orden temporal]. En un sistema distribuido, cada nodo posee su propio reloj físico, y estos relojes nunca están perfectamente sincronizados. En consecuencia, ordenar eventos provenientes de máquinas distintas únicamente por su marca temporal puede producir secuencias incorrectas. Lamport (#link(<ref-lamport-1978>)[1978]) demostró que, en ausencia de un reloj global, lo determinante no es el tiempo absoluto sino la relación de causalidad entre eventos (la relación #emph[happened-before]), y propuso los relojes lógicos como mecanismo para establecer un orden coherente. Esta noción es fundamental para comprender por qué la correlación y el ordenamiento de logs distribuidos constituyen un problema no trivial, y no una simple cuestión de comparar fechas.
 
 == Centralización de logs
 <sec-5-4>
-La centralización de logs surge como una estrategia para mitigar la dispersión de información mediante la recolección, consolidación y almacenamiento de los registros generados por los distintos componentes del sistema en un repositorio común @turnbull-2016@majors-2022. Este enfoque facilita la consulta unificada, la correlación temporal y el análisis transversal de eventos.
+La centralización de logs surge como una estrategia para mitigar la dispersión de información mediante la recolección, consolidación y almacenamiento de los registros generados por los distintos componentes del sistema en un repositorio común \(#link(<ref-majors-2022>)[Majors et~al., 2022]\; #link(<ref-turnbull-2016>)[Turnbull, 2016]). Este enfoque facilita la consulta unificada, la correlación temporal y el análisis transversal de eventos.
 
-Desde el punto de vista conceptual, la centralización de logs transforma un conjunto fragmentado de mensajes en una fuente coherente de conocimiento operativo, habilitando procesos de diagnóstico distribuido y análisis post-mortem de incidentes complejos @beyer-2016. Asimismo, permite reconstruir narrativas de ejecución que son fundamentales para comprender fallos en cascada y comportamientos no deterministas.
+Desde el punto de vista conceptual, la centralización de logs transforma un conjunto fragmentado de mensajes en una fuente coherente de conocimiento operativo, habilitando procesos de diagnóstico distribuido y análisis post-mortem de incidentes complejos \(#link(<ref-beyer-2016>)[Beyer et~al., 2016]). Asimismo, permite reconstruir narrativas de ejecución que son fundamentales para comprender fallos en cascada y comportamientos no deterministas.
 
 Desde el punto de vista de su materialización, la centralización admite distintos #strong[modelos de recolección]. En el modelo de #emph[envío] (#emph[push]), cada componente (o un agente asociado a él) transmite activamente sus registros hacia el sistema central. En el modelo de #emph[extracción] (#emph[pull]), el sistema central consulta periódicamente a las fuentes para obtener los registros disponibles. La captura, a su vez, puede realizarse mediante distintos patrones: un agente recolector instalado en cada host, un componente acompañante dedicado a un único servicio (#emph[sidecar]) o el envío directo desde la propia aplicación mediante una biblioteca de instrumentación. La elección entre estos modelos afecta el acoplamiento, la resiliencia y la sobrecarga operativa de la solución, y constituye una de las primeras decisiones de diseño que el estudiante debe aprender a razonar de forma crítica.
 
@@ -811,24 +1153,24 @@ La centralización de logs aporta beneficios que trascienden el ámbito técnico
 - Posibilidad de correlacionar eventos en función del tiempo y del contexto.
 - Apoyo a procesos de aprendizaje, investigación formativa y análisis de casos reales.
 
-Estos beneficios refuerzan el valor de la centralización de logs como herramienta conceptual para la formación en arquitectura de software y sistemas distribuidos @bosch-2016.
+Estos beneficios refuerzan el valor de la centralización de logs como herramienta conceptual para la formación en arquitectura de software y sistemas distribuidos \(#link(<ref-bosch-2016>)[Bosch, 2016]).
 
 == Desafíos y criterios conceptuales
 <sec-5-6>
-El diseño de soluciones de centralización de logs implica enfrentar diversos desafíos técnicos y operativos @kitchin-2014@beyer-2016. Abordarlos adecuadamente requiere la adopción de criterios conceptuales sólidos:
+El diseño de soluciones de centralización de logs implica enfrentar diversos desafíos técnicos y operativos \(#link(<ref-beyer-2016>)[Beyer et~al., 2016]\; #link(<ref-kitchin-2014>)[Kitchin, 2014]). Abordarlos adecuadamente requiere la adopción de criterios conceptuales sólidos:
 
-- #strong[Estandarización Semántica:] En arquitecturas heterogéneas, consolidar logs carece de valor si no comparten un esquema común. La adopción de estándares de esquema semántico ampliamente reconocidos en la industria (que definen convenciones uniformes para nombres de campos, tipos de datos y niveles de severidad) es fundamental para garantizar que los eventos de distintos servicios puedan correlacionarse correctamente @he-2021, facilitando así la reconstrucción de flujos de ejecución distribuidos que atraviesan múltiples microservicios @sigelman-2010. Las guías prácticas complementarias ilustran la aplicación concreta de varios de estos estándares en diferentes ecosistemas tecnológicos.
+- #strong[Estandarización Semántica:] En arquitecturas heterogéneas, consolidar logs carece de valor si no comparten un esquema común. La adopción de estándares de esquema semántico ampliamente reconocidos en la industria (que definen convenciones uniformes para nombres de campos, tipos de datos y niveles de severidad) es fundamental para garantizar que los eventos de distintos servicios puedan correlacionarse correctamente \(#link(<ref-he-2021>)[S. He et~al., 2021]), facilitando así la reconstrucción de flujos de ejecución distribuidos que atraviesan múltiples microservicios \(#link(<ref-sigelman-2010>)[Sigelman et~al., 2010]). Las guías prácticas complementarias ilustran la aplicación concreta de varios de estos estándares en diferentes ecosistemas tecnológicos.
 - #strong[Ciclo de Vida y Retención de Datos:] Dado el inmenso volumen de información operativa, los sistemas de centralización deben implementar políticas de retención, rotación y almacenamiento por niveles (#emph[Hot/Cold storage]) para gestionar el impacto en la infraestructura sin perder capacidades de auditoría a largo plazo.
-- #strong[Seguridad y Privacidad (Sanitización):] Los logs suelen capturar inadvertidamente información sensible (contraseñas, tokens, datos de usuarios PII). Es imperativo que las arquitecturas incluyan mecanismos de censura o enmascaramiento de datos durante la fase de procesamiento antes de su indexación @aghili-2025.
+- #strong[Seguridad y Privacidad (Sanitización):] Los logs suelen capturar inadvertidamente información sensible (contraseñas, tokens, datos de usuarios PII). Es imperativo que las arquitecturas incluyan mecanismos de censura o enmascaramiento de datos durante la fase de procesamiento antes de su indexación \(#link(<ref-aghili-2025>)[Aghili et~al., 2025]).
 - #strong[Volumen, Cardinalidad y Costo:] El valor analítico de un sistema de centralización depende de su capacidad de indexar los datos para consultarlos con rapidez, pero indexar tiene un costo. Los atributos de alta #emph[cardinalidad] (aquellos con un número muy elevado de valores distintos, como los identificadores de usuario o de petición) pueden provocar un crecimiento desproporcionado de los índices y degradar el rendimiento. Diseñar una solución de centralización implica, por tanto, decidir conscientemente qué campos justifican el costo de ser indexados y cuáles no, decisión que se relaciona directamente con el paradigma de almacenamiento elegido (#ref(<sec-5-7-3>, supplement: [Sección])).
-- #strong[Orden Temporal y Relojes Distribuidos:] Como se discutió en la #ref(<sec-5-3>, supplement: [Sección]), los relojes de los distintos nodos no están perfectamente sincronizados, lo que dificulta establecer el orden real de los eventos a partir de sus marcas temporales @lamport-1978. Las soluciones de centralización deben asumir esta limitación y apoyarse en identificadores de correlación y en marcas temporales coherentes para reconstruir las secuencias de ejecución.
+- #strong[Orden Temporal y Relojes Distribuidos:] Como se discutió en la #ref(<sec-5-3>, supplement: [Sección]), los relojes de los distintos nodos no están perfectamente sincronizados, lo que dificulta establecer el orden real de los eventos a partir de sus marcas temporales \(#link(<ref-lamport-1978>)[Lamport, 1978]). Las soluciones de centralización deben asumir esta limitación y apoyarse en identificadores de correlación y en marcas temporales coherentes para reconstruir las secuencias de ejecución.
 - #strong[Confiabilidad de la Entrega y Contrapresión:] El transporte de logs desde su origen hasta el repositorio central no está exento de fallos. Las soluciones deben definir garantías de entrega ---desde #emph[at-most-once] (se prioriza no duplicar, a riesgo de perder eventos) hasta #emph[at-least-once] (se prioriza no perder, a riesgo de duplicar)--- así como mecanismos de amortiguación (#emph[buffering]) y contrapresión (#emph[backpressure]) que eviten que un pico en la generación de logs sature o derribe los componentes intermedios.
 
 Desde una perspectiva académica, el análisis de estos desafíos permite a los estudiantes desarrollar criterios transferibles a distintos contextos tecnológicos, fomentando una comprensión crítica de las decisiones de diseño y sus implicaciones operativas y éticas.
 
 == Arquitectura conceptual de las soluciones de centralización de logs
 <sec-5-7>
-Aunque las implementaciones prácticas de la centralización de logs pueden variar ampliamente en función de las tecnologías empleadas, la literatura y la experiencia industrial coinciden en que dichas soluciones comparten una #strong[arquitectura conceptual común], compuesta por varios componentes claramente diferenciables @turnbull-2016@newman-2015.
+Aunque las implementaciones prácticas de la centralización de logs pueden variar ampliamente en función de las tecnologías empleadas, la literatura y la experiencia industrial coinciden en que dichas soluciones comparten una #strong[arquitectura conceptual común], compuesta por varios componentes claramente diferenciables \(#link(<ref-newman-2015>)[Newman, 2015]\; #link(<ref-turnbull-2016>)[Turnbull, 2016]).
 
 Introducir esta arquitectura a nivel conceptual resulta pertinente desde el punto de vista formativo, ya que permite a los estudiantes comprender la lógica subyacente de las soluciones antes de enfrentarse a su implementación práctica, facilitando la transferencia de conocimiento entre distintos ecosistemas tecnológicos.
 
@@ -849,14 +1191,14 @@ supplement: "Figura",
 
 
 #quote(block: true)[
-#strong[Nota sobre el alcance del diagrama:] Los sistemas distribuidos generan tres tipos de señales de observabilidad: #strong[logs] (eventos discretos con contexto semántico), #strong[métricas] (mediciones numéricas agregadas en el tiempo) y #strong[trazas] (recorridos de solicitudes a través de múltiples servicios). La arquitectura conceptual de cuatro etapas (recolección, procesamiento, almacenamiento y visualización) aplica a las tres señales. Este documento centra su desarrollo en los #strong[logs], por ser la señal de mayor riqueza contextual y la más directamente vinculada a la comprensión del comportamiento interno del sistema @majors-2022. Las guías prácticas complementarias amplían el tratamiento hacia métricas y trazas en los ecosistemas que las integran de forma nativa.
+#strong[Nota sobre el alcance del diagrama:] Los sistemas distribuidos generan tres tipos de señales de observabilidad: #strong[logs] (eventos discretos con contexto semántico), #strong[métricas] (mediciones numéricas agregadas en el tiempo) y #strong[trazas] (recorridos de solicitudes a través de múltiples servicios). La arquitectura conceptual de cuatro etapas (recolección, procesamiento, almacenamiento y visualización) aplica a las tres señales. Este documento centra su desarrollo en los #strong[logs], por ser la señal de mayor riqueza contextual y la más directamente vinculada a la comprensión del comportamiento interno del sistema \(#link(<ref-majors-2022>)[Majors et~al., 2022]). Las guías prácticas complementarias amplían el tratamiento hacia métricas y trazas en los ecosistemas que las integran de forma nativa.
 ]
 
 === Recolección de logs
 <sec-5-7-1>
 El componente de #strong[recolección de logs] es responsable de capturar los registros generados por aplicaciones, servicios y componentes de infraestructura. En términos conceptuales, este componente actúa como el punto de entrada del flujo de observabilidad y debe operar de manera desacoplada, de modo que la captura de eventos no interfiera con la ejecución normal del sistema.
 
-Desde una perspectiva formativa, resulta relevante comprender que la recolección de logs involucra decisiones relacionadas con la ubicación de los agentes de captura, la frecuencia de recolección y el tipo de información registrada. Estas decisiones influyen directamente en la calidad, utilidad y confiabilidad de la observabilidad obtenida, y condicionan los análisis posteriores que pueden realizarse sobre los datos recolectados @xu-2009.
+Desde una perspectiva formativa, resulta relevante comprender que la recolección de logs involucra decisiones relacionadas con la ubicación de los agentes de captura, la frecuencia de recolección y el tipo de información registrada. Estas decisiones influyen directamente en la calidad, utilidad y confiabilidad de la observabilidad obtenida, y condicionan los análisis posteriores que pueden realizarse sobre los datos recolectados \(#link(<ref-xu-2009>)[Xu et~al., 2009]).
 
 Una propiedad conceptual central de esta etapa es el desacoplamiento temporal entre la generación y el consumo de los registros. Para que la captura no interfiera con la aplicación cuando el sistema central se ralentiza o deja de responder, los recolectores suelen incorporar mecanismos de amortiguación (#emph[buffering]) que almacenan temporalmente los eventos. Comprender este principio permite razonar sobre las garantías de entrega y la contrapresión introducidas en la #ref(<sec-5-6>, supplement: [Sección]), y entender por qué un buen recolector debe ser, ante todo, robusto frente a la indisponibilidad de los componentes que lo suceden.
 
@@ -864,15 +1206,15 @@ Una propiedad conceptual central de esta etapa es el desacoplamiento temporal en
 <sec-5-7-2>
 El #strong[procesamiento de logs] comprende el conjunto de actividades orientadas a transformar los registros crudos en información estructurada y significativa. Entre estas actividades se incluyen el filtrado de eventos irrelevantes, la normalización de formatos, el enriquecimiento semántico y la correlación básica de eventos.
 
-Desde el punto de vista conceptual, este procesamiento permite reducir el ruido inherente a grandes volúmenes de datos operativos y preparar los logs para su almacenamiento y análisis posterior. En el ámbito educativo, este componente introduce a los estudiantes en la noción de que los datos generados por los sistemas requieren un tratamiento previo para convertirse en información útil y accionable @oliner-2012@he-2017@zhu-2019.
+Desde el punto de vista conceptual, este procesamiento permite reducir el ruido inherente a grandes volúmenes de datos operativos y preparar los logs para su almacenamiento y análisis posterior. En el ámbito educativo, este componente introduce a los estudiantes en la noción de que los datos generados por los sistemas requieren un tratamiento previo para convertirse en información útil y accionable \(#link(<ref-he-2017>)[P. He et~al., 2017]\; #link(<ref-oliner-2012>)[Oliner et~al., 2012]\; #link(<ref-zhu-2019>)[Zhu et~al., 2019]).
 
-La viabilidad y el costo de esta etapa dependen en gran medida de la estructura de los datos de entrada. Cuando los logs llegan ya estructurados (#ref(<sec-5-2>, supplement: [Sección])), el procesamiento se reduce a operaciones directas sobre campos identificados; cuando llegan como texto libre, es necesario aplicar técnicas de análisis sintáctico (expresiones regulares o gramáticas de extracción) que resultan más frágiles y costosas de mantener @he-2017@zhu-2019. El procesamiento es también el punto natural donde se aplican dos operaciones críticas: el #emph[muestreo] (#emph[sampling]), que descarta deliberadamente parte de los eventos para controlar el volumen, y la #emph[sanitización] o enmascaramiento de información sensible antes de su almacenamiento (#ref(<sec-5-6>, supplement: [Sección])), lo que convierte a esta etapa en un punto de decisión tanto técnico como ético.
+La viabilidad y el costo de esta etapa dependen en gran medida de la estructura de los datos de entrada. Cuando los logs llegan ya estructurados (#ref(<sec-5-2>, supplement: [Sección])), el procesamiento se reduce a operaciones directas sobre campos identificados; cuando llegan como texto libre, es necesario aplicar técnicas de análisis sintáctico (expresiones regulares o gramáticas de extracción) que resultan más frágiles y costosas de mantener \(#link(<ref-he-2017>)[P. He et~al., 2017]\; #link(<ref-zhu-2019>)[Zhu et~al., 2019]). El procesamiento es también el punto natural donde se aplican dos operaciones críticas: el #emph[muestreo] (#emph[sampling]), que descarta deliberadamente parte de los eventos para controlar el volumen, y la #emph[sanitización] o enmascaramiento de información sensible antes de su almacenamiento (#ref(<sec-5-6>, supplement: [Sección])), lo que convierte a esta etapa en un punto de decisión tanto técnico como ético.
 
 === Almacenamiento y búsqueda
 <sec-5-7-3>
 El #strong[almacenamiento y motor de búsqueda] constituye el núcleo analítico de una solución de centralización de logs. Su función principal es conservar los registros de manera eficiente y habilitar mecanismos de consulta flexibles que faciliten el análisis exploratorio y el diagnóstico de incidentes.
 
-A nivel conceptual, este componente introduce nociones fundamentales relacionadas con la indexación de datos, la gestión de la retención de información y la ejecución de consultas temporales. Estos aspectos resultan esenciales para comprender cómo se construye la visibilidad del sistema a lo largo del tiempo y cómo se posibilita el análisis retrospectivo de eventos @kitchin-2014@kleppmann-2017.
+A nivel conceptual, este componente introduce nociones fundamentales relacionadas con la indexación de datos, la gestión de la retención de información y la ejecución de consultas temporales. Estos aspectos resultan esenciales para comprender cómo se construye la visibilidad del sistema a lo largo del tiempo y cómo se posibilita el análisis retrospectivo de eventos \(#link(<ref-kitchin-2014>)[Kitchin, 2014]\; #link(<ref-kleppmann-2017>)[Kleppmann, 2017]).
 
 Desde una perspectiva más avanzada, no existe un único modelo de almacenamiento óptimo: las soluciones adoptan distintos #strong[paradigmas de indexación], cada uno con compromisos diferentes entre velocidad de consulta, flexibilidad y costo. Comprender estos paradigmas permite entender por qué soluciones distintas resultan más adecuadas para necesidades distintas, y constituye uno de los criterios de diseño más transferibles del área:
 
@@ -885,13 +1227,13 @@ Desde una perspectiva más avanzada, no existe un único modelo de almacenamient
   [#strong[Almacén columnar] (analítico / OLAP)], [Columnas completas de atributos estructurados], [Agregaciones y análisis sobre grandes volúmenes], [Eficiente en compresión; menos flexible para texto libre], [Análisis cuantitativo a gran escala],
   [#strong[Índice de solo etiquetas]], [Únicamente un conjunto reducido de etiquetas (metadatos)], [Filtrado rápido por etiquetas; el contenido se examina al consultar], [Muy bajo costo de indexación y almacenamiento], [Grandes volúmenes con consultas acotadas por etiquetas],
 )
-El #strong[índice invertido], heredado de la disciplina de recuperación de información, asocia cada término al conjunto de registros que lo contienen, lo que habilita búsquedas de texto completo muy flexibles a cambio de un alto costo de indexación y almacenamiento @manning-2008. El #strong[almacenamiento columnar], propio de los sistemas analíticos, organiza los datos por columnas en lugar de por filas, lo que permite comprimir y agregar grandes volúmenes de datos estructurados con notable eficiencia, aunque resulta menos apto para la búsqueda libre de texto @abadi-2008. Finalmente, el #strong[índice de solo etiquetas] minimiza deliberadamente lo que se indexa (apenas un conjunto reducido de metadatos), reduciendo de forma drástica el costo a cambio de exigir que el contenido se examine en el momento de la consulta. Estas tres aproximaciones no son excluyentes, y las guías prácticas complementarias permiten contrastar empíricamente sus implicaciones en ecosistemas tecnológicos concretos.
+El #strong[índice invertido], heredado de la disciplina de recuperación de información, asocia cada término al conjunto de registros que lo contienen, lo que habilita búsquedas de texto completo muy flexibles a cambio de un alto costo de indexación y almacenamiento \(#link(<ref-manning-2008>)[Manning et~al., 2008]). El #strong[almacenamiento columnar], propio de los sistemas analíticos, organiza los datos por columnas en lugar de por filas, lo que permite comprimir y agregar grandes volúmenes de datos estructurados con notable eficiencia, aunque resulta menos apto para la búsqueda libre de texto \(#link(<ref-abadi-2008>)[Abadi et~al., 2008]). Finalmente, el #strong[índice de solo etiquetas] minimiza deliberadamente lo que se indexa (apenas un conjunto reducido de metadatos), reduciendo de forma drástica el costo a cambio de exigir que el contenido se examine en el momento de la consulta. Estas tres aproximaciones no son excluyentes, y las guías prácticas complementarias permiten contrastar empíricamente sus implicaciones en ecosistemas tecnológicos concretos.
 
 === Visualización y análisis
 <sec-5-7-4>
 El componente de #strong[visualización] tiene como propósito presentar la información contenida en los logs de manera comprensible para los usuarios humanos. Mediante representaciones gráficas, tablas y paneles, se facilita la identificación de patrones, tendencias y posibles anomalías en el comportamiento del sistema.
 
-Desde una perspectiva formativa, la visualización cumple un rol clave al reducir la carga cognitiva asociada al análisis de grandes volúmenes de información y al permitir que los estudiantes desarrollen habilidades de interpretación y análisis de datos operativos. De este modo, se establece un vínculo directo entre los registros técnicos y los procesos de toma de decisiones informadas @bosch-2016.
+Desde una perspectiva formativa, la visualización cumple un rol clave al reducir la carga cognitiva asociada al análisis de grandes volúmenes de información y al permitir que los estudiantes desarrollen habilidades de interpretación y análisis de datos operativos. De este modo, se establece un vínculo directo entre los registros técnicos y los procesos de toma de decisiones informadas \(#link(<ref-bosch-2016>)[Bosch, 2016]).
 
 A un nivel más avanzado, la visualización se apoya en #strong[lenguajes de consulta] especializados que permiten filtrar, agregar y transformar los registros almacenados, y cuya expresividad está condicionada por el paradigma de almacenamiento subyacente (#ref(<sec-5-7-3>, supplement: [Sección])). Sobre esta capacidad de consulta se construye, además, la noción de #strong[alertamiento]: la definición de condiciones que, al cumplirse sobre el flujo de logs, notifican automáticamente a los responsables del sistema. De este modo, la visualización no es únicamente un mecanismo de exploración retrospectiva, sino también un soporte para la detección proactiva de anomalías.
 
@@ -943,7 +1285,7 @@ Aunque las guías son independientes, se sugiere el siguiente orden de consumo p
 
 == Conclusiones
 <conclusiones>
-La observabilidad se consolida como un principio fundamental para la comprensión, análisis y gestión de sistemas distribuidos, al permitir inferir su comportamiento interno a partir de las señales externas generadas durante su ejecución. En arquitecturas basadas en microservicios, donde la complejidad operativa y los comportamientos emergentes son inherentes, este principio resulta indispensable para el diagnóstico, la toma de decisiones y la mejora continua de los sistemas @majors-2022@beyer-2016.
+La observabilidad se consolida como un principio fundamental para la comprensión, análisis y gestión de sistemas distribuidos, al permitir inferir su comportamiento interno a partir de las señales externas generadas durante su ejecución. En arquitecturas basadas en microservicios, donde la complejidad operativa y los comportamientos emergentes son inherentes, este principio resulta indispensable para el diagnóstico, la toma de decisiones y la mejora continua de los sistemas \(#link(<ref-beyer-2016>)[Beyer et~al., 2016]\; #link(<ref-majors-2022>)[Majors et~al., 2022]).
 
 Dentro de este marco, la centralización de logs se presenta como un pilar esencial de la observabilidad, no solo por su valor operativo, sino por su capacidad para transformar eventos dispersos en una fuente coherente de información y conocimiento. El desarrollo conceptual propuesto en este trabajo permite comprender la centralización de logs como un flujo integrado que articula componentes de recolección, procesamiento, almacenamiento y visualización, ofreciendo una visión sistémica del ciclo de vida de la información operativa.
 
@@ -5409,7 +5751,134 @@ Si hay errores de sintaxis, el comando los reporta con la línea exacta.
 
 #emph[Esta guía complementa la guía Promtail y el marco teórico de observabilidad y centralización de logs desarrollado en el documento central.]
 
-#set bibliography(style: "apa.csl")
+#heading(level: 1, numbering: none)[Referencias bibliográficas]
+<referencias-bibliográficas>
+#block[
+#block[
+Abadi, D. J., Madden, S. R., & Hachem, N. (2008). Column-stores vs. row-stores: How different are they really? #emph[Proceedings of the 2008 ACM SIGMOD International Conference on Management of Data], 967-980. #link("https://doi.org/10.1145/1376616.1376712")
 
-#bibliography(("references.bib"))
+] <ref-abadi-2008>
+#block[
+Aghili, R., Li, H., & Khomh, F. (2025). Protecting privacy in software logs: What should be anonymized? #emph[Proceedings of the ACM on Software Engineering], #emph[2]\(FSE). #link("https://doi.org/10.1145/3715779")
+
+] <ref-aghili-2025>
+#block[
+Beyer, B., Jones, C., Petoff, J., & Murphy, N. R. (2016). #emph[Site Reliability Engineering: How Google Runs Production Systems]. O'Reilly Media.
+
+] <ref-beyer-2016>
+#block[
+Biggs, J., & Tang, C. (2011). #emph[Teaching for Quality Learning at University] (4th ed.). Open University Press.
+
+] <ref-biggs-2011>
+#block[
+Bosch, J. (2016). Speed, data, and ecosystems: The future of software engineering. #emph[IEEE Software], #emph[33]\(1), 82-88. #link("https://doi.org/10.1109/MS.2016.14")
+
+] <ref-bosch-2016>
+#block[
+Branch, R. M. (2009). #emph[Instructional Design: The ADDIE Approach]. Springer. #link("https://doi.org/10.1007/978-0-387-09506-6")
+
+] <ref-branch-2009>
+#block[
+Burns, B., Grant, B., Oppenheimer, D., Brewer, E., & Wilkes, J. (2016). Borg, Omega, and Kubernetes: Lessons learned from three container-management systems over a decade. #emph[ACM Queue], #emph[14]\(1), 70-93. #link("https://doi.org/10.1145/2898442.2898444")
+
+] <ref-burns-2016>
+#block[
+Chuvakin, A., Schmidt, K., & Phillips, C. (2012). #emph[Logging and Log Management: The Authoritative Guide to Understanding the Concepts Surrounding Logging and Log Management]. Syngress.
+
+] <ref-chuvakin-2012>
+#block[
+Cito, J., Leitner, P., Fritz, T., & Gall, H. C. (2015). The making of cloud applications: An empirical study on software development for the cloud. #emph[Proceedings of the 10th Joint Meeting on Foundations of Software Engineering], 393-403. #link("https://doi.org/10.1145/2786805.2786826")
+
+] <ref-cito-2015>
+#block[
+Design-Based Research Collective. (2003). Design-based research: An emerging paradigm for educational inquiry. #emph[Educational Researcher], #emph[32]\(1), 5-8. #link("https://doi.org/10.3102/0013189X032001005")
+
+] <ref-design-2003>
+#block[
+He, P., Zhu, J., Zheng, Z., & Lyu, M. R. (2017). Drain: An online log parsing approach with fixed depth tree. #emph[2017 IEEE International Conference on Web Services], 33-40. #link("https://doi.org/10.1109/ICWS.2017.13")
+
+] <ref-he-2017>
+#block[
+He, S., He, P., Chen, Z., Yang, T., Su, Y., & Lyu, M. R. (2021). A survey on automated log analysis for reliability engineering. #emph[ACM Computing Surveys], #emph[54]\(6), 1-37. #link("https://doi.org/10.1145/3460345")
+
+] <ref-he-2021>
+#block[
+Hevner, A. R., March, S. T., Park, J., & Ram, S. (2004). Design science in information systems research. #emph[MIS Quarterly], #emph[28]\(1), 75-105. #link("https://doi.org/10.2307/25148625")
+
+] <ref-hevner-2004>
+#block[
+Kalman, R. E. (1960). On the general theory of control systems. #emph[Proceedings of the First International Congress of the International Federation of Automatic Control (IFAC)], #emph[1], 481-492.
+
+] <ref-kalman-1960>
+#block[
+Kitchin, R. (2014). #emph[The Data Revolution: Big Data, Open Data, Data Infrastructures and Their Consequences]. Sage Publications.
+
+] <ref-kitchin-2014>
+#block[
+Kleppmann, M. (2017). #emph[Designing Data-Intensive Applications: The Big Ideas Behind Reliable, Scalable, and Maintainable Systems]. O'Reilly Media.
+
+] <ref-kleppmann-2017>
+#block[
+Kolb, D. A. (1984). #emph[Experiential Learning: Experience as the Source of Learning and Development]. Prentice-Hall.
+
+] <ref-kolb-1984>
+#block[
+Lamport, L. (1978). Time, clocks, and the ordering of events in a distributed system. #emph[Communications of the ACM], #emph[21]\(7), 558-565. #link("https://doi.org/10.1145/359545.359563")
+
+] <ref-lamport-1978>
+#block[
+Majors, C., Fong-Jones, L., & Miranda, G. (2022). #emph[Observability Engineering: Achieving Production Excellence]. O'Reilly Media.
+
+] <ref-majors-2022>
+#block[
+Manning, C. D., Raghavan, P., & Schütze, H. (2008). #emph[Introduction to Information Retrieval]. Cambridge University Press.
+
+] <ref-manning-2008>
+#block[
+McKenney, S., & Reeves, T. C. (2018). #emph[Conducting Educational Design Research] (2nd ed.). Routledge. #link("https://doi.org/10.4324/9781315105642")
+
+] <ref-mckenney-2018>
+#block[
+Newman, S. (2015). #emph[Building Microservices: Designing Fine-Grained Systems]. O'Reilly Media.
+
+] <ref-newman-2015>
+#block[
+Oliner, A. J., Ganapathi, A., & Xu, W. (2012). Advances and challenges in log analysis. #emph[Communications of the ACM], #emph[55]\(2), 55-61. #link("https://doi.org/10.1145/2076450.2076466")
+
+] <ref-oliner-2012>
+#block[
+Peffers, K., Tuunanen, T., Rothenberg, M. A., & Chatterjee, R. (2007). A design science research methodology for information systems research. #emph[Journal of Management Information Systems], #emph[24]\(3), 45-77. #link("https://doi.org/10.2753/MIS0742-1222240302")
+
+] <ref-peffers-2007>
+#block[
+Richardson, C. (2018). #emph[Microservices Patterns: With Examples in Java]. Manning Publications.
+
+] <ref-richardson-2018>
+#block[
+Sigelman, B. H., Barroso, L. A., Burrows, M., Stephenson, P., Plakal, M., Beaver, D., Jaspan, S., & Shanbhag, C. (2010). #emph[Dapper, a Large-Scale Distributed Systems Tracing Infrastructure] (Dapper-2010-1). Google.
+
+] <ref-sigelman-2010>
+#block[
+Sridharan, C. (2018). #emph[Distributed Systems Observability: A Guide to Building Robust Systems]. O'Reilly Media.
+
+] <ref-sridharan-2018>
+#block[
+Turnbull, J. (2016). #emph[The Art of Monitoring]. Turnbull Press.
+
+] <ref-turnbull-2016>
+#block[
+Usman, M., Ferlin, S., Brunstrom, A., & Taheri, J. (2022). A survey on observability of distributed edge & container-based microservices. #emph[IEEE Access], #emph[10], 86904-86919. #link("https://doi.org/10.1109/ACCESS.2022.3193102")
+
+] <ref-usman-2022>
+#block[
+Xu, W., Huang, L., Fox, A., Patterson, D., & Jordan, M. I. (2009). Detecting large-scale system problems by mining console logs. #emph[Proceedings of the ACM SIGOPS 22nd Symposium on Operating Systems Principles], 117-132. #link("https://doi.org/10.1145/1629575.1629587")
+
+] <ref-xu-2009>
+#block[
+Zhu, J., He, S., Liu, J., He, P., Xie, Q., Zheng, Z., & Lyu, M. R. (2019). Tools and benchmarks for automated log parsing. #emph[Proceedings of the 41st International Conference on Software Engineering: Software Engineering in Practice], 121-130. #link("https://doi.org/10.1109/ICSE-SEIP.2019.00021")
+
+] <ref-zhu-2019>
+] <refs>
+
+
 

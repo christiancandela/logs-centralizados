@@ -9,17 +9,20 @@ book:
   title: "Recurso Educativo para el Despliegue de Ecosistemas de Centralización de Logs Mediante Docker"
   subtitle: "Marco conceptual, guía de estudio, guía docente y nueve guías prácticas reproducibles"
   author:
-    - name: "Ph.D. Christian Andrés Candela Uribe"
+    - name: "Christian Andrés Candela Uribe"
+      degree: "Ph.D."
       affiliation: "Profesor Asociado, Universidad del Quindío"
       orcid: "0000-0002-3961-1840"
-    - name: "M.Sc. Paola Andrea Acero Franco"
+    - name: "Paola Andrea Acero Franco"
+      degree: "M.Sc."
       affiliation: "Profesor Asociado, Universidad del Quindío"
       orcid: "0009-0005-6538-5030"
-    - name: "Ph.D. Luis Eduardo Sepúlveda Rodríguez"
+    - name: "Luis Eduardo Sepúlveda Rodríguez"
+      degree: "Ph.D."
       affiliation: "Profesor Asociado, Universidad del Quindío"
       orcid: "0000-0003-2446-0602"
-  date: "2026-05-14"
-  date-format: "MMMM [de] YYYY"
+  date: "2026"
+  date-format: "YYYY"
   language: es
   reader-mode: true
 
@@ -47,7 +50,7 @@ book:
         - guias/08-signoz.qmd
         - guias/09-alloy.qmd
 #  appendices:
-#    - _generated/99-referencias.qmd
+    - _generated/99-referencias.qmd
 
   page-footer:
     left: "© 2026 Universidad del Quindío"
@@ -55,6 +58,8 @@ book:
     right: "CC BY-SA 4.0"
 
 lang: es
+link-citations: true       # citas en el texto clicables -> entrada en la bibliografía
+link-bibliography: true     # enlaces (DOI/URL) clicables dentro de la bibliografía
 
 # Localización de etiquetas de callout no traducidas por Quarto al español
 language:
@@ -75,13 +80,19 @@ format:
     number-sections: true
     code-copy: true
   typst:
+    citeproc: true
     toc: true
+    toc-title: "Tabla de contenido"
     section-numbering: 1.1.1
+    number-sections: true
+    number-depth: 4
     columns: 1
     paper: us-letter
+    papersize: us-letter
+    fig-pos: H
     keep-typ: true
     template-partials:
       - typst-show.typ
     include-in-header:
-      text: |
-        #show image: it => align(center, it)
+      - typst/tablas-tema.typ
+      - typst/estilos.typ
