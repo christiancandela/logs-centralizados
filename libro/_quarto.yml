@@ -30,14 +30,16 @@ book:
     - index.qmd
     - part: "Documento base"
       chapters:
-        - _generated/01-introduccion-objetivos.qmd
-        - _generated/02-metodologia.qmd
-        - _generated/03-marco-conceptual.qmd
-        - _generated/04-alcance-articulacion.qmd
-        - _generated/05-resultados.qmd
-        - _generated/06-discusion.qmd
-        - _generated/07-conclusiones.qmd
-        - _generated/08-trabajo-futuro.qmd
+        - _generated/01-introduccion.qmd
+        - _generated/02-justificacion.qmd
+        - _generated/03-objetivos.qmd
+        - _generated/04-metodologia.qmd
+        - _generated/05-desarrollo-tematica.qmd
+        - _generated/06-alcance-articulacion.qmd
+        - _generated/07-resultados.qmd
+        - _generated/08-discusion.qmd
+        - _generated/09-conclusiones.qmd
+        - _generated/10-trabajo-futuro.qmd
     - part: "Material de estudio y docencia"
       chapters:
         - 02-guia-estudio.qmd

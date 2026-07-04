@@ -7,8 +7,10 @@ Este libro recoge en un único volumen el **Recurso Educativo para el Despliegue
 | Problema formativo | Solución propuesta | Evidencia principal | Uso esperado |
 |---|---|---|---|
 | La observabilidad suele enseñarse de forma instrumental, acoplada a herramientas que cambian con rapidez. | Marco conceptual neutral con una arquitectura de cuatro etapas, seis desafíos de diseño y tres paradigmas de almacenamiento. | @sec-marco-conceptual | Fundamentación teórica de la unidad temática. |
-| Los laboratorios dependen de infraestructura institucional o de entornos difíciles de reproducir. | Nueve ecosistemas autocontenidos con Docker Compose, dimensionados, parametrizados y con prueba de humo automatizada. | Parte III y repositorio público de soluciones. | Laboratorios en el equipo personal del estudiante. |
+| Los laboratorios dependen de infraestructura institucional o de entornos difíciles de reproducir. | Nueve ecosistemas autocontenidos con Docker Compose, dimensionados, parametrizados y con prueba de humo automatizada. | Parte III y [repositorio público de soluciones](https://github.com/christiancandela/logs-centralizados/tree/main/soluciones). | Laboratorios en el equipo personal del estudiante. |
 | La evaluación de los laboratorios técnicos suele desalinearse de los resultados de aprendizaje. | Guía docente con rutas de planificación, rúbrica analítica homogénea y evaluación de tres componentes. | [Guía docente](#sec-guia-docente) | Planificación y evaluación del curso. |
+
+: Síntesis del problema formativo, la solución propuesta y el uso esperado del recurso. {#tbl-pres-vistazo}
 
 ## ¿Para quién y cómo se usa?
 
@@ -19,6 +21,8 @@ Este libro recoge en un único volumen el **Recurso Educativo para el Despliegue
 | Lector autodidacta | [Guía ELK](#sec-guia-elk) en adelante | Ruta progresiva de nueve laboratorios reproducibles, del ecosistema clásico al estado del arte. |
 | Par académico evaluador | @sec-metodologia y @sec-resultados | Trazabilidad con la propuesta aprobada, gestión de evidencias y correspondencia objetivos–resultados. |
 
+: Públicos del recurso y puntos de partida sugeridos. {#tbl-pres-publicos}
+
 ## Indicadores del recurso
 
 | Componente | Magnitud | Valor formativo |
@@ -28,6 +32,8 @@ Este libro recoge en un único volumen el **Recurso Educativo para el Despliegue
 | Material de estudio | 20 preguntas resueltas y glosario terminológico. | Autoevaluación y articulación teoría–práctica. |
 | Instrumentos docentes | 3 rutas de planificación y rúbrica analítica de 4 criterios. | Adopción realista en cursos semestrales. |
 | Reproducibilidad | 9 pruebas de humo automatizadas y límites de memoria parametrizados. | Verificación objetiva del entorno en equipos heterogéneos. |
+
+: Indicadores de magnitud y valor formativo del recurso. {#tbl-pres-indicadores}
 
 ## Estructura del libro
 
@@ -54,11 +60,11 @@ Aunque el recurso fue diseñado pensando en su uso supervisado dentro del aula, 
 
 ## Acceso al material complementario
 
-El código fuente completo de las nueve guías prácticas, incluidos los archivos `docker-compose.yml`, las configuraciones de cada herramienta y la aplicación Java/Quarkus productora de logs, está disponible en el repositorio público del recurso. Las versiones digitales de este libro y de sus componentes individuales se distribuyen bajo licencia **Creative Commons Atribución-CompartirIgual 4.0 Internacional (CC BY-SA 4.0)**, lo que habilita su reutilización, adaptación y redistribución por parte de docentes, estudiantes e instituciones que deseen incorporarlo a sus propios procesos formativos.
+El código fuente completo de las nueve guías prácticas, incluidos los archivos `docker-compose.yml`, las configuraciones de cada herramienta y la aplicación Java/Quarkus productora de logs, está disponible en el repositorio público del recurso: <https://github.com/christiancandela/logs-centralizados>. Este libro cuenta, además, con una versión web navegable en <https://christiancandela.github.io/logs-centralizados/>, útil para la consulta en línea y para copiar los fragmentos de configuración durante los laboratorios. Las versiones digitales de este libro y de sus componentes individuales se distribuyen bajo licencia **Creative Commons Atribución-CompartirIgual 4.0 Internacional (CC BY-SA 4.0)**, lo que habilita su reutilización, adaptación y redistribución por parte de docentes, estudiantes e instituciones que deseen incorporarlo a sus propios procesos formativos.
 
 ## Forma de cita sugerida
 
-> Candela Uribe, C. A., Acero Franco, P. A., & Sepúlveda Rodríguez, L. E. (2026). *Recurso educativo para la centralización de logs y la observabilidad en sistemas distribuidos* (Versión 1.0.0) [Recurso educativo abierto]. Universidad del Quindío.
+> Candela Uribe, C. A., Acero Franco, P. A., & Sepúlveda Rodríguez, L. E. (2026). *Recurso educativo para el despliegue de ecosistemas de centralización de logs mediante Docker* (Versión 1.0.0) [Recurso educativo abierto]. Universidad del Quindío. <https://doi.org/10.5281/zenodo.20187576>
 
 \vspace{1em}
 

@@ -29,15 +29,21 @@ HEADING_RE = re.compile(r"^(#{3,6})(\s.*)$")  # niveles 3-6, para degradar
 FENCE_RE = re.compile(r"^\s*```")
 
 # (archivo, título del capítulo, [secciones], modo, ancla)
+# Los seis elementos mínimos exigidos por el estatuto docente (Acuerdo 121 de
+# 2021: Introducción, Justificación, Objetivos, Desarrollo de la temática,
+# Conclusiones y Referencias bibliográficas) se materializan como capítulos
+# con su nombre literal, para que sean verificables en la tabla de contenido.
 CHAPTERS = [
-    ("01-introduccion-objetivos.qmd", "Introducción, justificación y objetivos", [1, 2, 3], "group", None),
-    ("02-metodologia.qmd", None, [4], "promote", "sec-metodologia"),
-    ("03-marco-conceptual.qmd", "Marco conceptual", [5], "promote", "sec-marco-conceptual"),
-    ("04-alcance-articulacion.qmd", "Alcance y articulación con las actividades prácticas", [6, 7], "group", None),
-    ("05-resultados.qmd", None, [8], "promote", "sec-resultados"),
-    ("06-discusion.qmd", None, [9], "promote", "sec-discusion"),
-    ("07-conclusiones.qmd", None, [10], "promote", "sec-conclusiones"),
-    ("08-trabajo-futuro.qmd", None, [11], "promote", "sec-trabajo-futuro"),
+    ("01-introduccion.qmd", None, [1], "promote", None),
+    ("02-justificacion.qmd", None, [2], "promote", None),
+    ("03-objetivos.qmd", None, [3], "promote", None),
+    ("04-metodologia.qmd", None, [4], "promote", "sec-metodologia"),
+    ("05-desarrollo-tematica.qmd", None, [5], "promote", "sec-marco-conceptual"),
+    ("06-alcance-articulacion.qmd", "Alcance y articulación con las actividades prácticas", [6, 7], "group", None),
+    ("07-resultados.qmd", None, [8], "promote", "sec-resultados"),
+    ("08-discusion.qmd", None, [9], "promote", "sec-discusion"),
+    ("09-conclusiones.qmd", None, [10], "promote", "sec-conclusiones"),
+    ("10-trabajo-futuro.qmd", None, [11], "promote", "sec-trabajo-futuro"),
     ("99-referencias.qmd", None, [12], "promote", None),
 ]
 

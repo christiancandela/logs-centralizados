@@ -8,7 +8,7 @@
 **Universidad del Quindío** — Programa de Ingeniería de Sistemas y Computación  
 **Asignatura asociada:** Arquitectura Orientada a Microservicios  
 **Versión:** 1.0.0 | **Fecha:** mayo de 2026  
-[![CC BY-SA 4.0](https://licensebuttons.net/l/by-sa/4.0/88x31.png)](https://creativecommons.org/licenses/by-sa/4.0/deed.es) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20187576.svg)](https://doi.org/10.5281/zenodo.20187576)
+[![CC BY-SA 4.0](https://licensebuttons.net/l/by-sa/4.0/88x31.png)](https://creativecommons.org/licenses/by-sa/4.0/deed.es) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20187576.svg)](https://doi.org/10.5281/zenodo.20187576) [![Repositorio](https://img.shields.io/badge/GitHub-logs--centralizados-181717?logo=github)](https://github.com/christiancandela/logs-centralizados) [![Versión web](https://img.shields.io/badge/Versi%C3%B3n%20web-github.io-2ea44f)](https://christiancandela.github.io/logs-centralizados/)
 
 > Este recurso educativo abierto consta de: (a) el presente marco conceptual, (b) una guía de estudio con preguntas de comprensión y articulación teoría–práctica ([`guia_estudio.md`](./guia_estudio.md)), (c) una guía para docentes con planificación sugerida y rúbricas ([`guia_docente.md`](./guia_docente.md)), y (d) nueve guías prácticas reproducibles en el directorio [`guias/`](./guias/) con sus respectivas soluciones en [`soluciones/`](./soluciones/).
 
@@ -241,7 +241,7 @@ La siguiente matriz detalla de forma explícita cómo cada uno de los tres objet
 
 ### 4.9. Gestión de evidencias del trabajo
 
-Para que el cumplimiento de los objetivos sea verificable por pares académicos, el recurso adopta una gestión explícita de evidencias: todo resultado declarado en este documento está respaldado por un artefacto observable dentro del repositorio público. Este enfoque es coherente con la naturaleza del trabajo como artefacto de Design Science Research, cuyo valor se demuestra mediante productos tangibles y auditables, y aprovecha una característica diferencial del recurso: al publicarse como repositorio navegable con DOI, cualquier evaluador puede inspeccionar las evidencias e incluso reproducirlas en su propio equipo. La Tabla 5 inventaría las evidencias del trabajo, su ubicación y el objetivo específico al que aportan.
+Para que el cumplimiento de los objetivos sea verificable por pares académicos, el recurso adopta una gestión explícita de evidencias: todo resultado declarado en este documento está respaldado por un artefacto observable dentro del repositorio público. Este enfoque es coherente con la naturaleza del trabajo como artefacto de Design Science Research, cuyo valor se demuestra mediante productos tangibles y auditables, y aprovecha una característica diferencial del recurso: al publicarse como repositorio navegable con DOI (<https://github.com/christiancandela/logs-centralizados>), cualquier evaluador puede inspeccionar las evidencias e incluso reproducirlas en su propio equipo. La Tabla 5 inventaría las evidencias del trabajo, su ubicación y el objetivo específico al que aportan.
 
 **Tabla 5.** Inventario de evidencias verificables del recurso educativo.
 
@@ -511,7 +511,7 @@ En cumplimiento del OE3, cada guía cuenta con una solución implementada como e
 | Verificación automatizada de extremo a extremo del pipeline en los nueve stacks. | Prueba de humo estandarizada que emite un log con marcador único y confirma su registro en el motor de almacenamiento. | `smoke_test.sh` en cada solución |
 | Transparencia y dimensionamiento adaptativo de recursos. | Límites de memoria parametrizados mediante variables de entorno y tablas de dimensionamiento al inicio de cada guía. | Archivos `.env` de cada solución y guías prácticas |
 | Verificación de portabilidad sobre la primera plataforma objetivo. | Despliegue verificado sobre macOS Apple Silicon (ARM); la cobertura de Windows 11/WSL2 y Ubuntu Linux se documenta como verificación en curso. | Marco de verificación y validación de la metodología |
-| Publicación abierta, citable e indexada del recurso completo. | DOI persistente, metadatos de citación estructurada y licencia abierta. | `CITATION.cff`, `.zenodo.json` y registro en Zenodo |
+| Publicación abierta, citable e indexada del recurso completo. | DOI persistente, metadatos de citación estructurada, licencia abierta, repositorio público y versión web navegable. | `CITATION.cff`, `.zenodo.json`, registro en Zenodo y repositorio en GitHub con su versión web |
 
 Un resultado transversal merece mención explícita: la prueba de humo estandarizada demostró que la fase de generación del log es idéntica en los nueve stacks mientras solo varía la verificación del registro, lo que constituye evidencia operativa directa de la tesis central del recurso: las etapas funcionales del pipeline son invariantes; las tecnologías que las implementan, no.
 
@@ -703,6 +703,11 @@ Si reutiliza, adapta o referencia este recurso educativo en publicaciones acadé
   url          = {https://doi.org/10.5281/zenodo.20187576}
 }
 ```
+
+**Acceso al recurso:** la cita formal emplea el DOI por ser un identificador persistente. Para el acceso directo:
+
+- Repositorio con el código fuente y las soluciones ejecutables: <https://github.com/christiancandela/logs-centralizados>
+- Versión web navegable del recurso: <https://christiancandela.github.io/logs-centralizados/>
 
 ## 14. Licencia
 

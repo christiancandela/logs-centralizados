@@ -256,7 +256,7 @@ Cada herramienta introduce su propio lenguaje de configuración: YAML (Promtail,
 El ecosistema de observabilidad evoluciona rápidamente; las versiones de las imágenes Docker quedan obsoletas en plazos de 12 a 18 meses. Se recomienda al docente que reutilice este material:
 
 - Verificar las versiones de las imágenes en las guías al inicio de cada semestre.
-- Reportar errores o sugerencias al equipo autor a través del repositorio del recurso.
+- Reportar errores o sugerencias al equipo autor a través del repositorio del recurso (<https://github.com/christiancandela/logs-centralizados/issues>).
 - Considerar contribuciones de los propios estudiantes (actualización de versiones, nuevas guías) como actividad complementaria de aprendizaje.
 
 ## 12. Contacto
@@ -266,6 +266,8 @@ Para consultas sobre el uso pedagógico, propuestas de mejora o solicitudes de c
 - PhD Christian Andrés Candela Uribe — Profesor Asociado, Universidad del Quindío
 - MSc Paola Andrea Acero Franco — Profesor Asociado, Universidad del Quindío
 - PhD Luis Eduardo Sepúlveda Rodríguez — Profesor Asociado, Universidad del Quindío
+
+Repositorio del recurso: <https://github.com/christiancandela/logs-centralizados> · Versión web: <https://christiancandela.github.io/logs-centralizados/>
 
 ---
 

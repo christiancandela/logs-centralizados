@@ -159,6 +159,15 @@ $if(fontsize)$
 $endif$
 )
 
+// Numeración de figuras y tablas en los capítulos no numerados (la
+// Presentación): sin prefijo de capítulo ("Tabla 1" en lugar de "Tabla 0.1").
+// Debe declararse DESPUÉS de book.with() para prevalecer sobre el patrón
+// "1.1" que fija la plantilla.
+#set figure(numbering: num => {
+  let ch = counter(heading).get().first()
+  if ch == 0 { numbering("1", num) } else { numbering("1.1", ch, num) }
+})
+
 $if(margin-geometry)$
 // Configure marginalia page geometry for book context
 // Geometry computed by Quarto's meta.lua filter (typstGeometryFromPaperWidth)

@@ -823,6 +823,15 @@
   font-size: 11pt,
 )
 
+// Numeración de figuras y tablas en los capítulos no numerados (la
+// Presentación): sin prefijo de capítulo ("Tabla 1" en lugar de "Tabla 0.1").
+// Debe declararse DESPUÉS de book.with() para prevalecer sobre el patrón
+// "1.1" que fija la plantilla.
+#set figure(numbering: num => {
+  let ch = counter(heading).get().first()
+  if ch == 0 { numbering("1", num) } else { numbering("1.1", ch, num) }
+})
+
 
 // Reset Quarto's custom figure counters at each chapter (level-1 heading).
 // Orange-book only resets kind:image and kind:table, but Quarto uses custom kinds.
@@ -846,17 +855,30 @@ Este libro recoge en un único volumen el #strong[Recurso Educativo para el Desp
 
 #heading(level: 2, numbering: none)[El recurso en un vistazo]
 <el-recurso-en-un-vistazo>
+#figure([
 #table(
   columns: (25%, 25%, 25%, 25%),
   align: (auto,auto,auto,auto,),
   table.header([Problema formativo], [Solución propuesta], [Evidencia principal], [Uso esperado],),
   table.hline(),
   [La observabilidad suele enseñarse de forma instrumental, acoplada a herramientas que cambian con rapidez.], [Marco conceptual neutral con una arquitectura de cuatro etapas, seis desafíos de diseño y tres paradigmas de almacenamiento.], [#ref(<sec-marco-conceptual>, supplement: [Capítulo])], [Fundamentación teórica de la unidad temática.],
-  [Los laboratorios dependen de infraestructura institucional o de entornos difíciles de reproducir.], [Nueve ecosistemas autocontenidos con Docker Compose, dimensionados, parametrizados y con prueba de humo automatizada.], [Parte III y repositorio público de soluciones.], [Laboratorios en el equipo personal del estudiante.],
+  [Los laboratorios dependen de infraestructura institucional o de entornos difíciles de reproducir.], [Nueve ecosistemas autocontenidos con Docker Compose, dimensionados, parametrizados y con prueba de humo automatizada.], [Parte III y #link("https://github.com/christiancandela/logs-centralizados/tree/main/soluciones")[repositorio público de soluciones].], [Laboratorios en el equipo personal del estudiante.],
   [La evaluación de los laboratorios técnicos suele desalinearse de los resultados de aprendizaje.], [Guía docente con rutas de planificación, rúbrica analítica homogénea y evaluación de tres componentes.], [#link(<sec-guia-docente>)[Guía docente]], [Planificación y evaluación del curso.],
 )
+], caption: figure.caption(
+position: top, 
+[
+Síntesis del problema formativo, la solución propuesta y el uso esperado del recurso.
+]), 
+kind: "quarto-float-tbl", 
+supplement: "Tabla", 
+)
+<tbl-pres-vistazo>
+
+
 #heading(level: 2, numbering: none)[¿Para quién y cómo se usa?]
 <para-quién-y-cómo-se-usa>
+#figure([
 #table(
   columns: (33.33%, 33.33%, 33.33%),
   align: (auto,auto,auto,),
@@ -867,8 +889,20 @@ Este libro recoge en un único volumen el #strong[Recurso Educativo para el Desp
   [Lector autodidacta], [#link(<sec-guia-elk>)[Guía ELK] en adelante], [Ruta progresiva de nueve laboratorios reproducibles, del ecosistema clásico al estado del arte.],
   [Par académico evaluador], [#ref(<sec-metodologia>, supplement: [Capítulo]) y #ref(<sec-resultados>, supplement: [Capítulo])], [Trazabilidad con la propuesta aprobada, gestión de evidencias y correspondencia objetivos--resultados.],
 )
+], caption: figure.caption(
+position: top, 
+[
+Públicos del recurso y puntos de partida sugeridos.
+]), 
+kind: "quarto-float-tbl", 
+supplement: "Tabla", 
+)
+<tbl-pres-publicos>
+
+
 #heading(level: 2, numbering: none)[Indicadores del recurso]
 <indicadores-del-recurso>
+#figure([
 #table(
   columns: (33.33%, 33.33%, 33.33%),
   align: (auto,auto,auto,),
@@ -880,6 +914,17 @@ Este libro recoge en un único volumen el #strong[Recurso Educativo para el Desp
   [Instrumentos docentes], [3 rutas de planificación y rúbrica analítica de 4 criterios.], [Adopción realista en cursos semestrales.],
   [Reproducibilidad], [9 pruebas de humo automatizadas y límites de memoria parametrizados.], [Verificación objetiva del entorno en equipos heterogéneos.],
 )
+], caption: figure.caption(
+position: top, 
+[
+Indicadores de magnitud y valor formativo del recurso.
+]), 
+kind: "quarto-float-tbl", 
+supplement: "Tabla", 
+)
+<tbl-pres-indicadores>
+
+
 #heading(level: 2, numbering: none)[Estructura del libro]
 <estructura-del-libro>
 El volumen se organiza en tres partes complementarias:
@@ -905,12 +950,12 @@ Aunque el recurso fue diseñado pensando en su uso supervisado dentro del aula, 
 
 #heading(level: 2, numbering: none)[Acceso al material complementario]
 <acceso-al-material-complementario>
-El código fuente completo de las nueve guías prácticas, incluidos los archivos #NormalTok("docker-compose.yml");, las configuraciones de cada herramienta y la aplicación Java/Quarkus productora de logs, está disponible en el repositorio público del recurso. Las versiones digitales de este libro y de sus componentes individuales se distribuyen bajo licencia #strong[Creative Commons Atribución-CompartirIgual 4.0 Internacional (CC BY-SA 4.0)], lo que habilita su reutilización, adaptación y redistribución por parte de docentes, estudiantes e instituciones que deseen incorporarlo a sus propios procesos formativos.
+El código fuente completo de las nueve guías prácticas, incluidos los archivos #NormalTok("docker-compose.yml");, las configuraciones de cada herramienta y la aplicación Java/Quarkus productora de logs, está disponible en el repositorio público del recurso: #link("https://github.com/christiancandela/logs-centralizados"). Este libro cuenta, además, con una versión web navegable en #link("https://christiancandela.github.io/logs-centralizados/"), útil para la consulta en línea y para copiar los fragmentos de configuración durante los laboratorios. Las versiones digitales de este libro y de sus componentes individuales se distribuyen bajo licencia #strong[Creative Commons Atribución-CompartirIgual 4.0 Internacional (CC BY-SA 4.0)], lo que habilita su reutilización, adaptación y redistribución por parte de docentes, estudiantes e instituciones que deseen incorporarlo a sus propios procesos formativos.
 
 #heading(level: 2, numbering: none)[Forma de cita sugerida]
 <forma-de-cita-sugerida>
 #quote(block: true)[
-Candela Uribe, C. A., Acero Franco, P. A., & Sepúlveda Rodríguez, L. E. (2026). #emph[Recurso educativo para la centralización de logs y la observabilidad en sistemas distribuidos] (Versión 1.0.0) \[Recurso educativo abierto\]. Universidad del Quindío.
+Candela Uribe, C. A., Acero Franco, P. A., & Sepúlveda Rodríguez, L. E. (2026). #emph[Recurso educativo para el despliegue de ecosistemas de centralización de logs mediante Docker] (Versión 1.0.0) \[Recurso educativo abierto\]. Universidad del Quindío. #link("https://doi.org/10.5281/zenodo.20187576")
 ]
 
 Los autores agradecen a la Universidad del Quindío y al Programa de Ingeniería de Sistemas y Computación por el espacio institucional que hizo posible la elaboración de este recurso, así como a los estudiantes que, en su rol de primeros lectores, contribuyeron con sus dudas y observaciones a mejorar la claridad del material final.
@@ -918,9 +963,7 @@ Los autores agradecen a la Universidad del Quindío y al Programa de Ingeniería
 #emph[Armenia, Quindío. Mayo de 2026.]
 
 #part[Documento base]
-= Introducción, justificación y objetivos
-<introducción-justificación-y-objetivos>
-== Introducción
+= Introducción
 <introducción>
 La adopción creciente de arquitecturas basadas en sistemas distribuidos y microservicios ha transformado de manera significativa el desarrollo y la operación del software contemporáneo \(#link(<ref-bosch-2016>)[Bosch, 2016]\; #link(<ref-newman-2015>)[Newman, 2015]\; #link(<ref-richardson-2018>)[Richardson, 2018]). Estas arquitecturas aportan beneficios claros en términos de escalabilidad, resiliencia y evolución independiente de los componentes; sin embargo, también introducen un aumento considerable en la complejidad asociada a su análisis y gestión.
 
@@ -930,7 +973,7 @@ El presente trabajo escrito tiene como propósito desarrollar, desde un enfoque 
 
 Las guías prácticas complementarias cubren un espectro tecnológico más amplio que el enunciado originalmente en la propuesta de trabajo. Esta ampliación es una decisión consciente: el estado del arte de la observabilidad ha evolucionado de forma acelerada durante el período de desarrollo del recurso, incorporando estándares de protocolo unificado y plataformas de nueva generación que ofrecen un valor pedagógico significativo y mejoran la transferibilidad del conocimiento. Las guías adicionales se diseñaron con el mismo rigor y estructura que las originalmente propuestas, manteniendo coherencia con el marco conceptual presentado en este documento.
 
-== Justificación
+= Justificación
 <justificación>
 La formación en ingeniería de sistemas y computación enfrenta el desafío de preparar a los estudiantes para comprender y gestionar sistemas de software cada vez más complejos y distribuidos. Si bien los programas académicos suelen abordar con profundidad los aspectos relacionados con el diseño y la construcción de software, los elementos asociados a su operación, análisis y diagnóstico suelen recibir una atención limitada o fragmentada.
 
@@ -938,20 +981,20 @@ En particular, la observabilidad y la centralización de logs suelen introducirs
 
 En este contexto, se justifica el desarrollo de un trabajo académico que aborde la observabilidad y la centralización de logs desde una perspectiva teórica y estructurada, orientada al aprendizaje. Al priorizar un enfoque neutral en términos tecnológicos, el documento busca fortalecer el pensamiento sistémico, la capacidad analítica y la comprensión profunda de arquitecturas distribuidas, aportando así a la formación integral de los estudiantes.
 
-== Objetivos
+= Objetivos
 <objetivos>
-=== Objetivo general
+== Objetivo general
 <objetivo-general>
 Desarrollar un marco conceptual que permita comprender la observabilidad en sistemas distribuidos, con énfasis en la centralización de logs, como fundamento para el análisis y la comprensión del comportamiento de sistemas de software complejos.
 
-=== Objetivos específicos
+== Objetivos específicos
 <objetivos-específicos>
 - Analizar los fundamentos conceptuales de la observabilidad y su relevancia en arquitecturas distribuidas.
 - Examinar el rol de los logs como fuente primaria de información sobre la ejecución de sistemas de software.
 - Describir la centralización de logs como un mecanismo para reducir la complejidad cognitiva y operativa.
 - Identificar beneficios y desafíos conceptuales asociados al diseño de soluciones de centralización de logs.
 
-=== Resultados de aprendizaje esperados
+== Resultados de aprendizaje esperados
 <resultados-de-aprendizaje-esperados>
 Al finalizar el estudio de este documento, el estudiante será capaz de:
 
@@ -974,7 +1017,7 @@ El desarrollo metodológico integra cuatro referentes teóricos de la educación
 
 #figure([
 #block[
-#box(image("_generated/02-metodologia_files/figure-typst/mermaid-figure-1.png", height: 2.02in, width: 6.5in))
+#box(image("_generated/04-metodologia_files/figure-typst/mermaid-figure-1.png", height: 2.02in, width: 6.5in))
 
 ]
 ], caption: figure.caption(
@@ -1020,7 +1063,7 @@ Para la consecución de los objetivos propuestos, el proyecto se organizó en si
 
 #figure([
 #block[
-#box(image("_generated/02-metodologia_files/figure-typst/mermaid-figure-3.png", height: 2.35in, width: 6.5in))
+#box(image("_generated/04-metodologia_files/figure-typst/mermaid-figure-3.png", height: 2.35in, width: 6.5in))
 
 ]
 ], caption: figure.caption(
@@ -1093,7 +1136,7 @@ El diseño de las prácticas académicas asume el computador personal del estudi
 
 #figure([
 #block[
-#box(image("_generated/02-metodologia_files/figure-typst/mermaid-figure-2.png", height: 3.5in, width: 1.94in))
+#box(image("_generated/04-metodologia_files/figure-typst/mermaid-figure-2.png", height: 3.5in, width: 1.94in))
 
 ]
 ], caption: figure.caption(
@@ -1192,7 +1235,7 @@ supplement: "Tabla",
 
 == Gestión de evidencias del trabajo
 <gestión-de-evidencias-del-trabajo>
-Para que el cumplimiento de los objetivos sea verificable por pares académicos, el recurso adopta una gestión explícita de evidencias: todo resultado declarado en este documento está respaldado por un artefacto observable dentro del repositorio público. Este enfoque es coherente con la naturaleza del trabajo como artefacto de Design Science Research, cuyo valor se demuestra mediante productos tangibles y auditables, y aprovecha una característica diferencial del recurso: al publicarse como repositorio navegable con DOI, cualquier evaluador puede inspeccionar las evidencias e incluso reproducirlas en su propio equipo. La #ref(<tbl-base-5>, supplement: [Tabla]) inventaría las evidencias del trabajo, su ubicación y el objetivo específico al que aportan.
+Para que el cumplimiento de los objetivos sea verificable por pares académicos, el recurso adopta una gestión explícita de evidencias: todo resultado declarado en este documento está respaldado por un artefacto observable dentro del repositorio público. Este enfoque es coherente con la naturaleza del trabajo como artefacto de Design Science Research, cuyo valor se demuestra mediante productos tangibles y auditables, y aprovecha una característica diferencial del recurso: al publicarse como repositorio navegable con DOI (#link("https://github.com/christiancandela/logs-centralizados")), cualquier evaluador puede inspeccionar las evidencias e incluso reproducirlas en su propio equipo. La #ref(<tbl-base-5>, supplement: [Tabla]) inventaría las evidencias del trabajo, su ubicación y el objetivo específico al que aportan.
 
 #figure([
 #table(
@@ -1222,7 +1265,7 @@ supplement: "Tabla",
 
 Cada evidencia se presenta acompañada de su propósito y de su relación con el objetivo que soporta: las capturas y salidas incluidas en las guías se contextualizan con el paso del procedimiento al que corresponden, los scripts de verificación declaran qué comprueban y cómo interpretarlo, y la matriz de trazabilidad de la #ref(<tbl-base-4>, supplement: [Tabla]) vincula formalmente cada conjunto de evidencias con sus criterios y métricas de cumplimiento. El capítulo de resultados retoma este inventario para sintetizar, objetivo por objetivo, lo efectivamente producido y su evidencia asociada.
 
-= Marco conceptual
+= Desarrollo de la temática
 <sec-marco-conceptual>
 Esta sección desarrolla de manera progresiva los fundamentos conceptuales de la observabilidad y la centralización de logs en sistemas distribuidos. El recorrido inicia con la definición y alcance del concepto de observabilidad, avanza hacia el análisis del rol de los logs como fuente primaria de información y culmina con la presentación de una arquitectura conceptual que integra los distintos componentes involucrados. Esta progresión busca facilitar una comprensión gradual y coherente, orientada al aprendizaje y a la posterior aplicación práctica de los conceptos abordados.
 
@@ -1331,7 +1374,7 @@ Introducir esta arquitectura a nivel conceptual resulta pertinente desde el punt
 
 #figure([
 #block[
-#box(image("_generated/03-marco-conceptual_files/figure-typst/mermaid-figure-1.png", height: 1.09in, width: 6.5in))
+#box(image("_generated/05-desarrollo-tematica_files/figure-typst/mermaid-figure-1.png", height: 1.09in, width: 6.5in))
 
 ]
 ], caption: figure.caption(
@@ -1507,7 +1550,7 @@ En cumplimiento del OE3, cada guía cuenta con una solución implementada como e
   [Verificación automatizada de extremo a extremo del pipeline en los nueve stacks.], [Prueba de humo estandarizada que emite un log con marcador único y confirma su registro en el motor de almacenamiento.], [#NormalTok("smoke_test.sh"); en cada solución],
   [Transparencia y dimensionamiento adaptativo de recursos.], [Límites de memoria parametrizados mediante variables de entorno y tablas de dimensionamiento al inicio de cada guía.], [Archivos #NormalTok(".env"); de cada solución y guías prácticas],
   [Verificación de portabilidad sobre la primera plataforma objetivo.], [Despliegue verificado sobre macOS Apple Silicon (ARM); la cobertura de Windows 11/WSL2 y Ubuntu Linux se documenta como verificación en curso.], [Marco de verificación y validación de la metodología],
-  [Publicación abierta, citable e indexada del recurso completo.], [DOI persistente, metadatos de citación estructurada y licencia abierta.], [#NormalTok("CITATION.cff");, #NormalTok(".zenodo.json"); y registro en Zenodo],
+  [Publicación abierta, citable e indexada del recurso completo.], [DOI persistente, metadatos de citación estructurada, licencia abierta, repositorio público y versión web navegable.], [#NormalTok("CITATION.cff");, #NormalTok(".zenodo.json");, registro en Zenodo y repositorio en GitHub con su versión web],
 )
 ], caption: figure.caption(
 position: top, 
@@ -2184,7 +2227,7 @@ supplement: "Tabla",
 El ecosistema de observabilidad evoluciona rápidamente; las versiones de las imágenes Docker quedan obsoletas en plazos de 12 a 18 meses. Se recomienda al docente que reutilice este material:
 
 - Verificar las versiones de las imágenes en las guías al inicio de cada semestre.
-- Reportar errores o sugerencias al equipo autor a través del repositorio del recurso.
+- Reportar errores o sugerencias al equipo autor a través del repositorio del recurso (#link("https://github.com/christiancandela/logs-centralizados/issues")).
 - Considerar contribuciones de los propios estudiantes (actualización de versiones, nuevas guías) como actividad complementaria de aprendizaje.
 
 == Contacto
@@ -2194,6 +2237,8 @@ Para consultas sobre el uso pedagógico, propuestas de mejora o solicitudes de c
 - PhD Christian Andrés Candela Uribe --- Profesor Asociado, Universidad del Quindío
 - MSc Paola Andrea Acero Franco --- Profesor Asociado, Universidad del Quindío
 - PhD Luis Eduardo Sepúlveda Rodríguez --- Profesor Asociado, Universidad del Quindío
+
+Repositorio del recurso: #link("https://github.com/christiancandela/logs-centralizados") · Versión web: #link("https://christiancandela.github.io/logs-centralizados/")
 
 #horizontalrule
 
