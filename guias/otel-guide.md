@@ -63,6 +63,8 @@ Una ventaja concreta de este enfoque es la **correlación automática** entre se
 
 El stack tiene un **consumo estimado de ~3 GB de RAM en estado estable**. Para evitar que un contenedor agote la memoria del host, cada servicio define un límite explícito mediante `mem_limit`:
 
+**Tabla 1.** Servicios del stack LGTM, su función en el pipeline y límites de memoria por defecto.
+
 | Servicio | Función en el pipeline | `mem_limit` por defecto |
 |----------|------------------------|-------------------------|
 | `otel-lgtm` | Imagen todo-en-uno: OTel Collector + Loki + Prometheus + Tempo + Grafana | `2g` |
@@ -265,6 +267,8 @@ El protocolo **OTLP (OpenTelemetry Protocol)** permite unificar el envío de log
 Usted puede rastrear un problema en caliente cruzando las tres señales de la siguiente manera:
 
 ```mermaid
+%%| label: fig-otel-correlacion-senales
+%%| fig-cap: "Correlación de las tres señales de observabilidad para el diagnóstico de un problema."
 graph TD
     A["1. LOGS (Loki)"] -- "Click en trace_id" --> B["2. TRAZAS (Tempo)"]
     B -- "Analizar latencia/operaciones" --> C["3. MÉTRICAS (Prometheus)"]

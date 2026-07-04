@@ -55,6 +55,8 @@ Observa que esta potencia tiene un precio: construir y mantener el índice inver
 
 ELK está compuesto por tres piezas que mapean directamente a la arquitectura conceptual de cuatro etapas:
 
+**Tabla 1.** Correspondencia entre los componentes de ELK y las etapas de la arquitectura conceptual.
+
 | Componente | Etapa conceptual | Rol |
 |---|---|---|
 | **Logstash** | Recolección + Procesamiento | Recibe, parsea y transforma los logs antes de almacenarlos |
@@ -75,6 +77,8 @@ ELK está compuesto por tres piezas que mapean directamente a la arquitectura co
 ### Dimensionamiento de recursos
 
 **Consumo estimado del stack:** ~5 GB de RAM en estado estable.
+
+**Tabla 2.** Servicios del stack ELK, su función en el pipeline y límites de memoria por defecto.
 
 | Servicio | Función en el pipeline | `mem_limit` por defecto |
 |---|---|---|

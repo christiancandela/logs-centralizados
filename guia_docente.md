@@ -46,6 +46,8 @@ La relación de este trabajo con el sílabo es directa. El Núcleo Temático 3, 
 
 ### 5.1 Contribución a los resultados de aprendizaje del sílabo
 
+**Tabla 1.** Contribución de la unidad a los resultados de aprendizaje del sílabo oficial.
+
 | RA oficial del sílabo | Contribución de la unidad | Componentes que la materializan |
 |---|---|---|
 | **R.A.1** — Diseño soluciones basadas en la arquitectura orientada a microservicios, considerando patrones de diseño aceptados por la industria y los desafíos técnicos, funcionales y no funcionales. | La unidad desarrolla la observabilidad como familia de patrones de diseño: la arquitectura conceptual de cuatro etapas, los patrones de recolección (agente, sidecar, envío directo) y los desafíos transversales (estandarización, retención, sanitización, cardinalidad) son criterios que el estudiante aprende a razonar y contrastar. | Marco conceptual; componente integrador (ensayo comparativo de decisiones arquitectónicas). |
@@ -53,6 +55,8 @@ La relación de este trabajo con el sílabo es directa. El Núcleo Temático 3, 
 | **R.A.3** — Construyo recursos documentales acerca de tecnologías basadas en microservicios, en primera y segunda lengua, con perspectiva ética y estándares de la industria. | Los entregables son recursos documentales técnicos (informe de laboratorio y ensayo comparativo); las guías exigen leer documentación oficial en inglés; el desafío de sanitización de datos sensibles aporta la perspectiva ética; el formato ECS y OTLP ilustran los estándares de la industria. | Entregables de los componentes práctico e integrador; guía de estudio; guía de Vector (sanitización). |
 
 ### 5.2 Cobertura de los núcleos temáticos
+
+**Tabla 2.** Cobertura de los núcleos temáticos del sílabo por la unidad.
 
 | Núcleo temático del sílabo | Temáticas que la unidad desarrolla | Aporte del recurso |
 |---|---|---|
@@ -63,6 +67,8 @@ La relación de este trabajo con el sílabo es directa. El Núcleo Temático 3, 
 ### 5.3 Aporte a las unidades de competencia del programa
 
 El sílabo declara mayor nivel de aporte a cinco unidades de competencia (UC) del programa; la unidad contribuye a cada una así:
+
+**Tabla 3.** Aporte de la unidad a las unidades de competencia del programa.
 
 | UC del programa | Cómo aporta la unidad |
 |---|---|
@@ -75,6 +81,8 @@ El sílabo declara mayor nivel de aporte a cinco unidades de competencia (UC) de
 ### 5.4 Correspondencia con los ejes Ser, Saber y Saber Hacer
 
 El sílabo organiza cada núcleo temático en ejes actitudinales (Ser), conceptuales (Saber) y procedimentales (Saber Hacer). La unidad los desarrolla de la siguiente manera:
+
+**Tabla 4.** Correspondencia de la unidad con los ejes Ser, Saber y Saber Hacer del sílabo.
 
 | Eje | Cómo lo desarrolla la unidad | Dónde se evalúa |
 |---|---|---|
@@ -91,6 +99,8 @@ Esta sección permite al docente preparar una sesión de laboratorio sin recorre
 ### 6.1 Tabla de consulta rápida
 
 Cada fila resume el reto de la guía, las condiciones que conviene verificar antes de la sesión y el entregable mínimo con el que el estudiante demuestra el logro. Los números de la última columna corresponden a los resultados de aprendizaje (RA) enumerados en la sección 4.
+
+**Tabla 5.** Consulta rápida de las nueve guías prácticas.
 
 | # | Guía | Reto y logro verificable | Antes de iniciar | Entregable mínimo | RA |
 |---|------|--------------------------|------------------|-------------------|-----|
@@ -110,6 +120,8 @@ Cada guía declara, además, su tiempo estimado (2 horas de laboratorio acompañ
 
 La siguiente matriz vincula cada resultado de aprendizaje de la unidad con las guías que lo desarrollan, la evidencia observable y el instrumento con que se evalúa, en aplicación del principio de alineación constructiva:
 
+**Tabla 6.** Matriz de alineación entre resultados de aprendizaje de la unidad, guías, evidencias e instrumentos.
+
 | RA de la unidad | Guías que lo desarrollan | Evidencia observable | Instrumento de evaluación |
 |------------------|--------------------------|----------------------|---------------------------|
 | **RA1** — Explicar la observabilidad como requisito de diseño. | Marco conceptual; se refuerza en cualquiera de las guías. | Respuestas al cuestionario conceptual. | Componente conceptual de la estrategia de evaluación. |
@@ -123,6 +135,8 @@ La siguiente matriz vincula cada resultado de aprendizaje de la unidad con las g
 ### 7.1 Ruta mínima (2 semanas, 4 sesiones)
 
 Es la ruta recomendada para la unidad estándar. Cubre teoría completa y dos guías prácticas que ilustran enfoques contrastados.
+
+**Tabla 7.** Planeación de la ruta mínima en cuatro sesiones.
 
 | Sesión | Duración | Contenido | Material |
 |--------|----------|-----------|----------|
@@ -144,6 +158,8 @@ Para estudiantes que desarrollarán un trabajo final, electiva especializada o s
 ### 7.3 Ruta corta (1 semana, 2 sesiones)
 
 Si la unidad debe condensarse en una sola semana:
+
+**Tabla 8.** Planeación de la ruta corta en dos sesiones.
 
 | Sesión | Contenido |
 |--------|-----------|
@@ -174,6 +190,8 @@ Se propone una evaluación de **tres componentes** con peso ponderado, alineada 
 > **Ayuda de validación:** cada solución del repositorio incluye un script `smoke_test.sh` que despliega el stack, emite un log de prueba y verifica su registro de extremo a extremo. El estudiante puede ejecutarlo para comprobar objetivamente que su entorno funciona antes de capturar las evidencias.
 
 **Rúbrica sugerida:**
+
+**Tabla 9.** Rúbrica analítica del componente práctico.
 
 | Criterio | Peso | Excelente (5.0) | Aceptable (3.0) | Insuficiente (1.0) |
 |----------|------|-----------------|-----------------|---------------------|
@@ -223,6 +241,8 @@ Cada herramienta introduce su propio lenguaje de configuración: YAML (Promtail,
 **Recomendación docente:** Enfatizar desde la sesión 2 que cada herramienta tiene su propio lenguaje y que la habilidad transferible es leer la documentación del producto, no memorizar sintaxis.
 
 ## 10. Recomendaciones de articulación con otras unidades del curso
+
+**Tabla 10.** Articulación de la unidad con otras unidades del curso.
 
 | Unidad del curso | Articulación posible |
 |------------------|----------------------|

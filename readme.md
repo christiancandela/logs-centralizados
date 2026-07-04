@@ -66,6 +66,7 @@ El desarrollo metodológico integra cuatro referentes teóricos de la educación
 
 ```mermaid
 %%| label: fig-enfoque-metodologico
+%%| fig-cap: "Referentes metodológicos que orientan el diseño del recurso educativo."
 %%| fig-align: center
 %%| fig-width: 6.5in
 graph TD
@@ -117,6 +118,7 @@ Para la consecución de los objetivos propuestos, el proyecto se organizó en si
 
 ```mermaid
 %%| label: fig-fases-metodologicas
+%%| fig-cap: "Cronograma de las fases metodológicas del proyecto."
 %%| fig-align: center
 %%| fig-width: 6.5in
 gantt
@@ -165,6 +167,7 @@ El diseño de las prácticas académicas asume el computador personal del estudi
 
 ```mermaid
 %%| label: fig-ciclo-kolb
+%%| fig-cap: "Ciclo de aprendizaje experiencial de Kolb aplicado a la estructura de las guías prácticas."
 %%| fig-align: center
 %%| fig-height: 3.5in
 graph TD
@@ -269,6 +272,8 @@ Conviene precisar que el término *observabilidad* no se originó en la ingenier
 
 En la práctica, la observabilidad de un sistema de software se construye sobre tres tipos de señales complementarias, conocidas como los **tres pilares de la observabilidad** (Sridharan, 2018; Majors, Fong-Jones & Miranda, 2022):
 
+**Tabla 6.** Los tres pilares de la observabilidad.
+
 | Señal | Naturaleza | Pregunta que ayuda a responder | Ejemplo conceptual |
 |---|---|---|---|
 | **Logs** | Registros textuales de eventos discretos | ¿Qué ocurrió exactamente y por qué? | `ERROR pago rechazado: saldo insuficiente, usuario=4827` |
@@ -355,6 +360,7 @@ Introducir esta arquitectura a nivel conceptual resulta pertinente desde el punt
 
 ```mermaid
 %%| label: fig-arquitectura-conceptual
+%%| fig-cap: "Arquitectura conceptual de la centralización de logs en cuatro etapas."
 %%| fig-align: center
 %%| fig-width: 6.5in
 graph LR
@@ -400,6 +406,8 @@ El **almacenamiento y motor de búsqueda** constituye el núcleo analítico de u
 A nivel conceptual, este componente introduce nociones fundamentales relacionadas con la indexación de datos, la gestión de la retención de información y la ejecución de consultas temporales. Estos aspectos resultan esenciales para comprender cómo se construye la visibilidad del sistema a lo largo del tiempo y cómo se posibilita el análisis retrospectivo de eventos (Kitchin, 2014; Kleppmann, 2017).
 
 Desde una perspectiva más avanzada, no existe un único modelo de almacenamiento óptimo: las soluciones adoptan distintos **paradigmas de indexación**, cada uno con compromisos diferentes entre velocidad de consulta, flexibilidad y costo. Comprender estos paradigmas permite entender por qué soluciones distintas resultan más adecuadas para necesidades distintas, y constituye uno de los criterios de diseño más transferibles del área:
+
+**Tabla 7.** Paradigmas de indexación y almacenamiento y sus compromisos.
 
 | Paradigma | Qué indexa | Fortaleza de consulta | Perfil de costo | Orientación típica |
 |---|---|---|---|---|
@@ -475,9 +483,9 @@ El marco se complementa con la guía de estudio, que operacionaliza la fundament
 
 En cumplimiento del OE2 se diseñaron nueve guías prácticas con estructura formal homogénea (RAE observables, dimensionamiento explícito de recursos, diagrama del pipeline lógico, procedimiento reproducible y cuestionario de análisis crítico), organizadas bajo el ciclo de aprendizaje experiencial de Kolb y ordenadas por complejidad progresiva, desde el ecosistema tradicional más extendido hasta las plataformas del estado del arte. El diseño instruccional se completa con la guía docente, que aporta una alineación explícita con el microcurrículo oficial de la asignatura (resultados de aprendizaje, núcleos temáticos, unidades de competencia y ejes Ser–Saber–Saber Hacer del sílabo, donde los patrones de observabilidad figuran como temática declarada), tres rutas de planificación según el tiempo disponible, una estrategia de evaluación de tres componentes con rúbrica analítica homogénea aplicable a cualquiera de las nueve guías, y un repertorio de dificultades frecuentes con orientaciones para anticiparlas en el aula.
 
-La Tabla 6 sintetiza la cobertura conceptual del conjunto: cada guía materializa la misma arquitectura de cuatro etapas con un aporte conceptual diferencial, de modo que la progresión completa expone al estudiante a los tres paradigmas de almacenamiento caracterizados en la sección 5.7.3 y a los principales patrones de recolección y transporte.
+La Tabla 8 sintetiza la cobertura conceptual del conjunto: cada guía materializa la misma arquitectura de cuatro etapas con un aporte conceptual diferencial, de modo que la progresión completa expone al estudiante a los tres paradigmas de almacenamiento caracterizados en la sección 5.7.3 y a los principales patrones de recolección y transporte.
 
-**Tabla 6.** Resultados del diseño instruccional: cobertura conceptual de las nueve guías prácticas.
+**Tabla 8.** Resultados del diseño instruccional: cobertura conceptual de las nueve guías prácticas.
 
 | # | Guía (stack) | Paradigma de almacenamiento | Aporte conceptual diferencial |
 | :--- | :--- | :--- | :--- |
@@ -493,9 +501,9 @@ La Tabla 6 sintetiza la cobertura conceptual del conjunto: cada guía materializ
 
 ### 8.3 Resultados técnicos verificables
 
-En cumplimiento del OE3, cada guía cuenta con una solución implementada como entorno funcional, autocontenido y reproducible. La Tabla 7 enuncia los resultados técnicos junto con su evidencia:
+En cumplimiento del OE3, cada guía cuenta con una solución implementada como entorno funcional, autocontenido y reproducible. La Tabla 9 enuncia los resultados técnicos junto con su evidencia:
 
-**Tabla 7.** Resultados técnicos verificables y sus evidencias.
+**Tabla 9.** Resultados técnicos verificables y sus evidencias.
 
 | Resultado | Evidencia verificable | Ubicación |
 | :--- | :--- | :--- |
@@ -509,9 +517,9 @@ Un resultado transversal merece mención explícita: la prueba de humo estandari
 
 ### 8.4 Síntesis y correspondencia con los objetivos del trabajo
 
-La Tabla 8 consolida la correspondencia entre los objetivos específicos comprometidos, los resultados obtenidos y sus evidencias:
+La Tabla 10 consolida la correspondencia entre los objetivos específicos comprometidos, los resultados obtenidos y sus evidencias:
 
-**Tabla 8.** Correspondencia entre objetivos específicos, resultados y evidencias.
+**Tabla 10.** Correspondencia entre objetivos específicos, resultados y evidencias.
 
 | Objetivo específico | Componente donde se desarrolla | Resultado principal | Evidencia verificable |
 | :--- | :--- | :--- | :--- |

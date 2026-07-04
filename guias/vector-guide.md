@@ -68,6 +68,8 @@ Observa, además, que Vector puede desplegarse en dos roles: como **agente** (*a
 
 Cada servicio declara un `mem_limit` que acota su consumo máximo de memoria:
 
+**Tabla 1.** Servicios del stack Vector, su función en el pipeline y límites de memoria por defecto.
+
 | Servicio | Función en el pipeline | `mem_limit` por defecto |
 |----------|------------------------|-------------------------|
 | Vector | Recolección y transformación de eventos (Rust) | 512m |

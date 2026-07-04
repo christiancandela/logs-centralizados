@@ -44,6 +44,8 @@ Piénsalo como la diferencia entre una receta lineal ("haz esto, luego esto otro
 
 La siguiente tabla resume las equivalencias concretas entre ambos, útil si llegas desde la guía de Promtail:
 
+**Tabla 1.** Equivalencias de configuración entre Promtail y Grafana Alloy.
+
 | Concepto | Promtail (YAML) | Grafana Alloy (Alloy syntax) |
 |---|---|---|
 | Formato de config | YAML (`promtail-config.yaml`) | HCL-like (`.alloy`) |
@@ -71,6 +73,8 @@ La siguiente tabla resume las equivalencias concretas entre ambos, útil si lleg
 **Consumo estimado del stack:** ~2.5 GB de RAM en estado estable. Se trata de un stack ligero, apto para equipos con tan solo 4 GB de RAM disponibles.
 
 Cada servicio declara un `mem_limit` que acota su consumo de memoria. La siguiente tabla resume el rol de cada contenedor en el pipeline y su límite por defecto:
+
+**Tabla 2.** Servicios del stack, su función en el pipeline y límites de memoria por defecto.
 
 | Servicio | Función en el pipeline | `mem_limit` por defecto |
 |----------|------------------------|-------------------------|
@@ -339,6 +343,8 @@ quarkus.log.file.json.log-format=ECS
 ```
 
 La aplicación expone los mismos endpoints que en las guías anteriores:
+
+**Tabla 3.** Endpoints expuestos por la aplicación de ejemplo.
 
 | Método | Path | Descripción |
 |--------|------|-------------|

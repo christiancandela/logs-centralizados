@@ -73,6 +73,59 @@ def convert_alerts(text):
     return "\n".join(out)
 
 
+TABLE_CAPTION_RE = re.compile(r"^\*\*Tabla (\d+)\.\*\*\s*(.*\S)\s*$")
+
+
+def convert_table_captions(text, prefix):
+    """Convierte los rótulos manuales '**Tabla N.** Título' (colocados antes de
+    cada tabla en los .md canónicos, donde GitHub los renderiza como texto en
+    negrita) en captions nativos de Quarto (': Título {#tbl-...}', colocados
+    después de la tabla). Quarto numera entonces las tablas por capítulo
+    ('Tabla 2.1.') igual que las figuras. Las referencias textuales 'Tabla N'
+    del mismo documento se convierten en referencias cruzadas '@tbl-...' con
+    hiperenlace y numeración real del PDF."""
+    lines, out, i, in_code = text.split("\n"), [], 0, False
+    mapping = {}
+    while i < len(lines):
+        if FENCE_RE.match(lines[i]):
+            in_code = not in_code
+            out.append(lines[i]); i += 1; continue
+        m = None if in_code else TABLE_CAPTION_RE.match(lines[i])
+        if m:
+            j = i + 1
+            while j < len(lines) and lines[j].strip() == "":
+                j += 1
+            if j < len(lines) and lines[j].lstrip().startswith("|"):
+                num, caption = m.group(1), m.group(2)
+                label = f"tbl-{prefix}-{num}"
+                mapping[num] = label
+                k = j
+                while k < len(lines) and lines[k].lstrip().startswith("|"):
+                    out.append(lines[k]); k += 1
+                out.append("")
+                out.append(f": {caption} {{#{label}}}")
+                i = k
+                continue
+        out.append(lines[i]); i += 1
+
+    # Referencias textuales 'Tabla N' -> '@tbl-...' (solo números con caption
+    # definido en este mismo documento y solo fuera de bloques de código).
+    result, in_code = [], False
+    ref_re = re.compile(r"\bTabla (\d+)\b")
+    for line in out:
+        if FENCE_RE.match(line):
+            in_code = not in_code
+            result.append(line)
+            continue
+        if not in_code and not line.lstrip().startswith(": "):
+            line = ref_re.sub(
+                lambda m: f"@{mapping[m.group(1)]}" if m.group(1) in mapping else m.group(0),
+                line,
+            )
+        result.append(line)
+    return "\n".join(result)
+
+
 def parse_sections(lines):
     start = next((i for i, l in enumerate(lines) if SECTION_RE.match(l)), None)
     if start is None:
@@ -286,7 +339,8 @@ def main():
 
     # 1. Trocear readme en capítulos (con conversión de alerts, citas y mermaid)
     with open(README, encoding="utf-8") as f:
-        sections = parse_sections(f.read().splitlines())
+        readme_text = convert_table_captions(f.read(), "base")
+    sections = parse_sections(readme_text.splitlines())
     for fname, title, nums, mode, anchor in CHAPTERS:
         if fname == "99-referencias.qmd":
             # Output nativo de referencias para Quarto
@@ -316,14 +370,17 @@ def main():
         dst = os.path.join(OUTDIR, "guias", f"{g}.md")
         with open(src, encoding="utf-8") as fi, open(dst, "w", encoding="utf-8") as fo:
             content = convert_alerts(fi.read())
+            content = convert_table_captions(content, g.replace("-guide", ""))
             content = convert_citations(content, bib_keys)
             content = convert_section_refs(content)
             fo.write(convert_mermaid(content))
+    DOC_PREFIX = {"guia_estudio": "ge", "guia_docente": "gd"}
     for d in DOCS:
         src = os.path.join(ROOT, f"{d}.md")
         dst = os.path.join(OUTDIR, f"{d}.md")
         with open(src, encoding="utf-8") as fi, open(dst, "w", encoding="utf-8") as fo:
             content = convert_alerts(fi.read())
+            content = convert_table_captions(content, DOC_PREFIX.get(d, d))
             content = convert_citations(content, bib_keys)
             content = convert_section_refs(content)
             fo.write(convert_mermaid(content))

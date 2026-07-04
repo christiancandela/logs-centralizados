@@ -69,6 +69,8 @@ Imagina una tabla de logs con millones de filas y columnas como `timestamp`, `ni
 
 Este recurso se despliega como un *override* sobre el `docker-compose.yaml` oficial de SigNoz, por lo que **solo controla los componentes propios** del laboratorio. La siguiente tabla muestra los servicios definidos por este override y su `mem_limit`:
 
+**Tabla 1.** Límites de memoria controlados por el archivo de override de Docker Compose.
+
 | Servicio | `mem_limit` | Variable |
 |---|---|---|
 | `logs.producer` (aplicación Quarkus) | `512m` | `PRODUCER_MEM_LIMIT` |
@@ -119,6 +121,8 @@ El directorio `signoz/` se obtiene clonando el repositorio oficial a una versió
 ```
 
 Los componentes internos del stack SigNoz son:
+
+**Tabla 2.** Componentes internos del stack SigNoz y su rol.
 
 | Contenedor | Rol |
 |---|---|
@@ -295,6 +299,8 @@ En la vista de detalle de un log, el campo `trace_id` actúa como enlace directo
 ### 8.3 Generar tráfico de prueba
 
 La aplicación expone los siguientes endpoints:
+
+**Tabla 3.** Endpoints expuestos por la aplicación de ejemplo.
 
 | Método | Path | Descripción |
 |--------|------|-------------|

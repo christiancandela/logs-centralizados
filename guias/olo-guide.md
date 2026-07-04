@@ -49,6 +49,8 @@ Observa la lección de fondo: la elección de una tecnología no depende únicam
 
 En lo conceptual, OLO se mapea a la arquitectura de cuatro etapas igual que ELK, componente por componente:
 
+**Tabla 1.** Correspondencia entre los componentes de OLO, las etapas conceptuales y sus equivalentes en ELK.
+
 | Componente | Etapa conceptual | Equivalente en ELK |
 |---|---|---|
 | **Logstash** | Recolección + Procesamiento | Logstash |
@@ -73,6 +75,8 @@ Esta correspondencia casi exacta no es casual: ambos stacks descienden del mismo
 El stack OLO es intensivo en memoria, ya que combina un motor de indexación distribuida (OpenSearch), un procesador de logs sobre la JVM (Logstash) y una capa de visualización (OpenSearch Dashboards). El **consumo estimado del stack es de ~5 GB de RAM en estado estable**, por lo que se recomienda disponer de al menos 8 GB libres para operar con holgura.
 
 Cada servicio del `docker-compose.yml` declara un límite de memoria (`mem_limit`) que acota su consumo y previene que un único contenedor agote la memoria del anfitrión:
+
+**Tabla 2.** Servicios del stack OLO, su función en el pipeline y límites de memoria por defecto.
 
 | Servicio | Función en el pipeline | `mem_limit` por defecto |
 |----------|------------------------|-------------------------|

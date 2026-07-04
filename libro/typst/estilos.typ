@@ -161,6 +161,10 @@
 // Tamaño 9pt para los títulos (pies de figura/tabla) de ilustraciones y tablas
 #show figure.caption: set text(size: 9pt)
 
+// Separador de los títulos de figuras y tablas: "Tabla 2.1. Título" (punto en
+// lugar del ":" por defecto de Typst)
+#set figure.caption(separator: [. ])
+
 // Evitar la división silábica con guiones en todos los títulos (capítulos y secciones)
 #show heading: set text(hyphenate: false)
 
@@ -173,6 +177,12 @@
   if fig.body.func() == block and fig.body.has("inset") and type(fig.body.inset) == dictionary and fig.body.inset.at("top", default: none) == 0.123pt {
     fig
   } else {
+    // En Typst el contador de figuras se incrementa a nivel del elemento,
+    // independientemente de la regla show: la figura original Y la figura
+    // envolvente creada aquí incrementan ambas el contador, lo que hacía
+    // saltar la numeración visible (2.2, 2.4, 2.6, ...). Se compensa
+    // decrementando el contador antes de emitir la figura envolvente.
+    counter(figure.where(kind: "quarto-float-fig")).update(n => n - 1)
     figure(
       placement: fig.placement,
       caption: fig.caption,

@@ -55,6 +55,8 @@ Observa que GELF es un **protocolo**, no una herramienta: define *cómo* se empa
 
 **Graylog** es la plataforma que recibe los logs vía GELF, los procesa y los pone a disposición para búsqueda y visualización. Para ello se apoya en dos almacenes con roles bien diferenciados:
 
+**Tabla 1.** Componentes de la plataforma Graylog y su rol.
+
 | Componente | Rol |
 |---|---|
 | **Graylog** | Ingestión (vía GELF), búsqueda y visualización |
@@ -78,6 +80,8 @@ Observa que GELF es un **protocolo**, no una herramienta: define *cómo* se empa
 ### Dimensionamiento de recursos
 
 El **consumo estimado del stack** es de **~5 GB de RAM en estado estable**. Para evitar que un contenedor agote la memoria del anfitrión, cada servicio del `docker-compose.yml` declara un límite de memoria (`mem_limit`):
+
+**Tabla 2.** Servicios del stack Graylog, su función en el pipeline y límites de memoria por defecto.
 
 | Servicio | Función en el pipeline | `mem_limit` por defecto |
 |----------|------------------------|-------------------------|

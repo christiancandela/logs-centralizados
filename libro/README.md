@@ -144,6 +144,15 @@ Las referencias a secciones del marco conceptual se escriben en el `.md` fuente 
 > [!NOTE]
 > La conversión solo afecta a los números `5.x` (el marco conceptual). Las referencias internas de cada guía a sus propias secciones (p. ej. `sección 7.1` en la guía de Fluentd) se dejan intactas, ya que apuntan al mismo documento. Si en el futuro se desea enlazar también esas referencias internas, habría que extender `convert_section_refs`/`inject_section_ids` con identificadores por guía (p. ej. `sec-fluentd-7-1`).
 
+### Rótulos de tablas
+
+Las tablas se rotulan en los `.md` fuente con una línea en negrita antes de la tabla —`**Tabla 3.** Título descriptivo.`— porque GitHub la renderiza de forma legible. Durante la compilación, `convert_table_captions` en `prepare_book.py`:
+
+1. **Mueve** el rótulo después de la tabla como caption nativo de Quarto (`: Título {#tbl-<prefijo>-3}`), de modo que en el PDF las tablas se numeran automáticamente por capítulo (`Tabla 2.1.`), con el mismo esquema que las figuras.
+2. **Convierte** las menciones textuales `Tabla N` del mismo documento en referencias cruzadas `@tbl-...`, que se renderizan con el número real del PDF y como hiperenlace.
+
+El prefijo del identificador es único por documento (`base` para el readme, `gd`/`ge` para las guías docente y de estudio, y el nombre corto del stack para cada guía), lo que evita colisiones entre archivos. Los títulos de las figuras Mermaid se declaran, en cambio, directamente en el bloque fuente mediante `%%| fig-cap:` (las líneas `%%|` son comentarios para el renderizador de GitHub).
+
 ---
 
 ## Formatos generados

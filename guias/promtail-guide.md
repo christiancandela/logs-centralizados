@@ -42,6 +42,8 @@ Si las guías de ELK y OLO te mostraron el paradigma del índice invertido, esta
 
 Recordando los tres paradigmas de almacenamiento del marco conceptual (§5.7.3), Loki encarna el tercero: el **índice de solo etiquetas**. La diferencia con ELK es radical y vale la pena detenerse en ella:
 
+**Tabla 1.** Comparación de los modelos de indexación de ELK/OpenSearch y Loki.
+
 | | ELK / OpenSearch | Loki |
 |---|---|---|
 | Qué indexa | Cada término de cada mensaje | Solo un puñado de etiquetas (metadatos) |
@@ -54,6 +56,8 @@ Recordando los tres paradigmas de almacenamiento del marco conceptual (§5.7.3),
 El resultado es un sistema mucho más ligero en disco y memoria que un motor de indexación completa, a cambio de búsquedas de texto libre más lentas. De nuevo: no es "mejor" ni "peor", es un compromiso distinto.
 
 El stack PLG (Promtail, Loki, Grafana) se reparte las etapas conceptuales de esta forma:
+
+**Tabla 2.** Correspondencia entre los componentes del stack PLG y las etapas conceptuales.
 
 | Componente | Etapa conceptual | Rol |
 |---|---|---|
@@ -75,6 +79,8 @@ El stack PLG (Promtail, Loki, Grafana) se reparte las etapas conceptuales de est
 **Consumo estimado del stack:** ~2.5 GB de RAM en estado estable. Se trata de un stack ligero (la indexación de Loki se basa solo en etiquetas), apto incluso para equipos con 4 GB de RAM.
 
 Cada servicio declara un `mem_limit` en el `docker-compose.yml` para acotar su consumo de memoria:
+
+**Tabla 3.** Servicios del stack PLG, su función en el pipeline y límites de memoria por defecto.
 
 | Servicio | Función en el pipeline | `mem_limit` por defecto |
 |----------|------------------------|-------------------------|

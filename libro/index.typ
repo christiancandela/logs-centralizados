@@ -608,6 +608,10 @@
 // Tamaño 9pt para los títulos (pies de figura/tabla) de ilustraciones y tablas
 #show figure.caption: set text(size: 9pt)
 
+// Separador de los títulos de figuras y tablas: "Tabla 2.1. Título" (punto en
+// lugar del ":" por defecto de Typst)
+#set figure.caption(separator: [. ])
+
 // Evitar la división silábica con guiones en todos los títulos (capítulos y secciones)
 #show heading: set text(hyphenate: false)
 
@@ -620,6 +624,12 @@
   if fig.body.func() == block and fig.body.has("inset") and type(fig.body.inset) == dictionary and fig.body.inset.at("top", default: none) == 0.123pt {
     fig
   } else {
+    // En Typst el contador de figuras se incrementa a nivel del elemento,
+    // independientemente de la regla show: la figura original Y la figura
+    // envolvente creada aquí incrementan ambas el contador, lo que hacía
+    // saltar la numeración visible (2.2, 2.4, 2.6, ...). Se compensa
+    // decrementando el contador antes de emitir la figura envolvente.
+    counter(figure.where(kind: "quarto-float-fig")).update(n => n - 1)
     figure(
       placement: fig.placement,
       caption: fig.caption,
@@ -961,9 +971,9 @@ El desarrollo metodológico integra cuatro referentes teóricos de la educación
 
 ]
 ], caption: figure.caption(
-separator: "", 
 position: bottom, 
 [
+Referentes metodológicos que orientan el diseño del recurso educativo.
 ]), 
 kind: "quarto-float-fig", 
 supplement: "Figura", 
@@ -1007,9 +1017,9 @@ Para la consecución de los objetivos propuestos, el proyecto se organizó en si
 
 ]
 ], caption: figure.caption(
-separator: "", 
 position: bottom, 
 [
+Cronograma de las fases metodológicas del proyecto.
 ]), 
 kind: "quarto-float-fig", 
 supplement: "Figura", 
@@ -1017,10 +1027,9 @@ supplement: "Figura",
 <fig-fases-metodologicas>
 
 
-A continuación, la Tabla 1 detalla las actividades principales, los productos esperados y los criterios de aceptación de cada una de las fases a la luz de los requerimientos de portabilidad y adaptabilidad que definen a un Recurso Educativo Abierto (REA):
+A continuación, la #ref(<tbl-base-1>, supplement: [Tabla]) detalla las actividades principales, los productos esperados y los criterios de aceptación de cada una de las fases a la luz de los requerimientos de portabilidad y adaptabilidad que definen a un Recurso Educativo Abierto (REA):
 
-#strong[Tabla 1.] Fases metodológicas, productos esperados y criterios de aceptación.
-
+#figure([
 #table(
   columns: (25%, 25%, 25%, 25%),
   align: (left,left,left,left,),
@@ -1034,12 +1043,22 @@ A continuación, la Tabla 1 detalla las actividades principales, los productos e
   [#strong[\6. Verificación Técnica (V&V Multi-OS)]], [\* Despliegue y pruebas de portabilidad (verificación ejecutada sobre macOS Apple Silicon ARM; Windows 11/WSL2 y Ubuntu Linux como objetivos de verificación en curso).\* Monitoreo de consumos con #NormalTok("docker stats");.], [Matriz de pruebas y reportes de portabilidad del entorno.], [Cada stack se despliega en un host limpio e indica sus prerrequisitos técnicos de forma transparente; la cobertura multi-OS completa se documenta como verificación en curso.],
   [#strong[\7. Sistematización y Licenciamiento]], [\* Empaquetado final de códigos y documentación base.\* Configuración de licencia Creative Commons (CC BY-SA 4.0).\* Publicación e indexación del recurso en Zenodo (generación de DOI).], [Repositorio definitivo publicado, archivo CITATION.cff y DOI.], [El recurso cuenta con un DOI válido, licencia abierta compatible con REA y directrices claras de citación estructurada para adopción externa.],
 )
+], caption: figure.caption(
+position: top, 
+[
+Fases metodológicas, productos esperados y criterios de aceptación.
+]), 
+kind: "quarto-float-tbl", 
+supplement: "Tabla", 
+)
+<tbl-base-1>
+
+
 == Especificación de requisitos del recurso educativo
 <especificación-de-requisitos-del-recurso-educativo>
 El catálogo de requisitos del REA se estructura a partir de criterios técnicos e instruccionales, aplicables en cualquier equipo personal con un motor de contenedores:
 
-#strong[Tabla 2.] Clasificación de requisitos del recurso educativo abierto.
-
+#figure([
 #table(
   columns: (25%, 25%, 25%, 25%),
   align: (left,left,left,left,),
@@ -1050,6 +1069,17 @@ El catálogo de requisitos del REA se estructura a partir de criterios técnicos
   [#strong[Requisitos Pedagógicos (Interoperabilidad)]], [Filosofía REA y adaptabilidad curricular.], [El diseño didáctico debe alinearse con estándares de computación internacionales (ACM/IEEE) y estructurarse mediante #strong[Rutas de Aprendizaje Modulares] e instrumentos de evaluación genéricos. Esto facilita que cualquier docente de asignaturas afines (DevOps, Redes, Sistemas Distribuidos, Arquitectura) pueda reusar y adoptar el recurso de forma modular en sus propios LMS (Moodle, Canvas, Classroom).], [Estructuración homogénea de la Guía del Docente (#NormalTok("guia_docente.md");) con matrices de mapeo temático multiplan, rúbricas de evaluación genéricas y planeaciones adaptativas según el enfoque del curso.],
   [#strong[Restricción de Entorno (Transparencia)]], [Filosofía REA y adaptabilidad de contextos educativos.], [El recurso didáctico debe declarar de forma explícita los requisitos mínimos y recomendados de hardware (RAM/CPU) y software de cada práctica, y parametrizar los límites de memoria de Docker (#NormalTok("mem_limit");) para permitir su escalado o atenuación adaptativa.], [Sección estructurada "Dimensionamiento y Prerrequisitos de Recursos" al inicio de cada una de las 9 guías prácticas en el repositorio.],
 )
+], caption: figure.caption(
+position: top, 
+[
+Clasificación de requisitos del recurso educativo abierto.
+]), 
+kind: "quarto-float-tbl", 
+supplement: "Tabla", 
+)
+<tbl-base-2>
+
+
 == Diseño instruccional y pedagógico de las guías prácticas
 <diseño-instruccional-y-pedagógico-de-las-guías-prácticas>
 El diseño de las prácticas académicas asume el computador personal del estudiante como laboratorio de experimentación activa, reproducible en cualquier equipo que disponga de un motor de contenedores Docker. Cada una de las 9 guías prácticas se diseña bajo la estructura del #strong[Ciclo de Aprendizaje Experiencial de Kolb], garantizando que el paso a paso sea una oportunidad de reflexión teórica:
@@ -1060,9 +1090,9 @@ El diseño de las prácticas académicas asume el computador personal del estudi
 
 ]
 ], caption: figure.caption(
-separator: "", 
 position: bottom, 
 [
+Ciclo de aprendizaje experiencial de Kolb aplicado a la estructura de las guías prácticas.
 ]), 
 kind: "quarto-float-fig", 
 supplement: "Figura", 
@@ -1103,8 +1133,7 @@ El marco de verificación y validación del recurso se centra en dos dimensiones
 <prueba-de-humo-estandarizada>
 Cada una de las nueve soluciones incorpora un script de prueba de humo (#NormalTok("smoke_test.sh");) que automatiza la verificación de extremo a extremo del pipeline: levanta el ecosistema, espera a que la aplicación productora esté lista, emite un log de prueba con un marcador único y confirma su registro en el motor de almacenamiento correspondiente. Este procedimiento de prueba materializa empíricamente el principio de #strong[independencia instrumental]: la fase de #strong[generación] del log es idéntica en los nueve stacks, mientras que solo la #strong[verificación del registro] varía según la herramienta. La siguiente tabla separa ambas partes:
 
-#strong[Tabla 3.] Estandarización de la prueba de humo: fase de generación (invariante) frente a verificación del registro (específica de la herramienta).
-
+#figure([
 #table(
   columns: (33.33%, 33.33%, 33.33%),
   align: (left,left,left,),
@@ -1116,14 +1145,24 @@ Cada una de las nueve soluciones incorpora un script de prueba de humo (#NormalT
   [#strong[Emisión del log de prueba]], [#strong[Invariante]], [#NormalTok("POST /logs"); con el esquema #NormalTok("{\"level\": \"WARN\", \"message\": \"<marcador único>\"}"); hacia la misma interfaz del productor.],
   [Verificación del registro], [Específica de la herramienta], [Consulta #NormalTok("_search"); en Elasticsearch/OpenSearch, #NormalTok("query_range"); (LogQL) en Loki o SQL en ClickHouse, según el motor.],
 )
+], caption: figure.caption(
+position: top, 
+[
+Estandarización de la prueba de humo: fase de generación (invariante) frente a verificación del registro (específica de la herramienta).
+]), 
+kind: "quarto-float-tbl", 
+supplement: "Tabla", 
+)
+<tbl-base-3>
+
+
 Las únicas variaciones en la fase de generación responden a restricciones técnicas justificadas: el puerto del productor cambia en el stack que coexiste con servicios que ocupan el puerto por defecto, y dos stacks añaden pasos previos de aprovisionamiento (creación del #emph[input] de ingesta o clonado del repositorio base). Que la interfaz de emisión de logs permanezca constante mientras el conjunto de herramientas cambia por completo constituye evidencia operativa directa de la tesis central del recurso: #strong[las etapas funcionales del pipeline son invariantes; las tecnologías que las implementan, no].
 
 == Matriz de trazabilidad con la propuesta aprobada
 <matriz-de-trazabilidad-con-la-propuesta-aprobada>
 La siguiente matriz detalla de forma explícita cómo cada uno de los tres objetivos específicos (OE) comprometidos en la propuesta oficial aprobada de ascenso a Titular se materializa formalmente en los capítulos, guías, configuraciones y criterios del presente recurso educativo:
 
-#strong[Tabla 4.] Trazabilidad entre los objetivos específicos de la propuesta aprobada y los componentes del recurso.
-
+#figure([
 #table(
   columns: (25%, 25%, 25%, 25%),
   align: (left,left,left,left,),
@@ -1133,12 +1172,22 @@ La siguiente matriz detalla de forma explícita cómo cada uno de los tres objet
   [#strong[OE2:] Elaborar guías prácticas para el despliegue progresivo de soluciones para centralización de logs utilizando Docker.], [\* Carpeta de guías didácticas (#NormalTok("guias/"); de la 1 a la 9).\* Rúbricas y planeación sugerida (#NormalTok("guia_docente.md");).], [\* 9 Guías académicas estructuradas bajo el modelo instruccional de Kolb.\* Rúbrica analítica homogénea y entregables exigibles definidos en la guía docente, aplicables a las 9 guías.], [Se diseñan 9 guías instruccionales que cubren desde los stacks tradicionales hasta soluciones en el estado del arte, ordenadas por complejidad progresiva.],
   [#strong[OE3:] Implementar cada guía en entornos funcionales y reproducibles para los estudiantes.], [\* Carpeta de configuraciones y entornos (#NormalTok("soluciones/"); de la 1 a la 9).\* Repositorio de código con archivos #NormalTok("docker-compose.yml"); y configs.], [\* Archivos YAML de Docker Compose funcionales.\* Archivos de configuración de colectores e indexadores.\* Aplicaciones mocks generadoras de logs.\* Logs e historiales de comandos.], [Las 9 soluciones y contenedores de observabilidad son funcionales, portables y reproducibles, estructuradas de forma parametrizada y con guías de dimensionamiento técnico.],
 )
+], caption: figure.caption(
+position: top, 
+[
+Trazabilidad entre los objetivos específicos de la propuesta aprobada y los componentes del recurso.
+]), 
+kind: "quarto-float-tbl", 
+supplement: "Tabla", 
+)
+<tbl-base-4>
+
+
 == Gestión de evidencias del trabajo
 <gestión-de-evidencias-del-trabajo>
-Para que el cumplimiento de los objetivos sea verificable por pares académicos, el recurso adopta una gestión explícita de evidencias: todo resultado declarado en este documento está respaldado por un artefacto observable dentro del repositorio público. Este enfoque es coherente con la naturaleza del trabajo como artefacto de Design Science Research, cuyo valor se demuestra mediante productos tangibles y auditables, y aprovecha una característica diferencial del recurso: al publicarse como repositorio navegable con DOI, cualquier evaluador puede inspeccionar las evidencias e incluso reproducirlas en su propio equipo. La Tabla 5 inventaría las evidencias del trabajo, su ubicación y el objetivo específico al que aportan.
+Para que el cumplimiento de los objetivos sea verificable por pares académicos, el recurso adopta una gestión explícita de evidencias: todo resultado declarado en este documento está respaldado por un artefacto observable dentro del repositorio público. Este enfoque es coherente con la naturaleza del trabajo como artefacto de Design Science Research, cuyo valor se demuestra mediante productos tangibles y auditables, y aprovecha una característica diferencial del recurso: al publicarse como repositorio navegable con DOI, cualquier evaluador puede inspeccionar las evidencias e incluso reproducirlas en su propio equipo. La #ref(<tbl-base-5>, supplement: [Tabla]) inventaría las evidencias del trabajo, su ubicación y el objetivo específico al que aportan.
 
-#strong[Tabla 5.] Inventario de evidencias verificables del recurso educativo.
-
+#figure([
 #table(
   columns: (25%, 25%, 25%, 25%),
   align: (left,left,left,left,),
@@ -1153,7 +1202,18 @@ Para que el cumplimiento de los objetivos sea verificable por pares académicos,
   [Parametrización de recursos], [Archivos #NormalTok(".env"); de cada solución], [Límites de memoria de los contenedores (#NormalTok("mem_limit");) ajustables mediante variables de entorno, en cumplimiento del principio de transparencia de recursos.], [OE3],
   [Metadatos de publicación abierta], [#NormalTok("CITATION.cff");, #NormalTok(".zenodo.json");, #NormalTok("LICENSE");], [Citación estructurada, DOI persistente y licenciamiento abierto que habilitan la adopción y trazabilidad externa del recurso.], [Transversal],
 )
-Cada evidencia se presenta acompañada de su propósito y de su relación con el objetivo que soporta: las capturas y salidas incluidas en las guías se contextualizan con el paso del procedimiento al que corresponden, los scripts de verificación declaran qué comprueban y cómo interpretarlo, y la matriz de trazabilidad de la Tabla 4 vincula formalmente cada conjunto de evidencias con sus criterios y métricas de cumplimiento. El capítulo de resultados retoma este inventario para sintetizar, objetivo por objetivo, lo efectivamente producido y su evidencia asociada.
+], caption: figure.caption(
+position: top, 
+[
+Inventario de evidencias verificables del recurso educativo.
+]), 
+kind: "quarto-float-tbl", 
+supplement: "Tabla", 
+)
+<tbl-base-5>
+
+
+Cada evidencia se presenta acompañada de su propósito y de su relación con el objetivo que soporta: las capturas y salidas incluidas en las guías se contextualizan con el paso del procedimiento al que corresponden, los scripts de verificación declaran qué comprueban y cómo interpretarlo, y la matriz de trazabilidad de la #ref(<tbl-base-4>, supplement: [Tabla]) vincula formalmente cada conjunto de evidencias con sus criterios y métricas de cumplimiento. El capítulo de resultados retoma este inventario para sintetizar, objetivo por objetivo, lo efectivamente producido y su evidencia asociada.
 
 = Marco conceptual
 <sec-marco-conceptual>
@@ -1169,6 +1229,7 @@ Conviene precisar que el término #emph[observabilidad] no se originó en la ing
 
 En la práctica, la observabilidad de un sistema de software se construye sobre tres tipos de señales complementarias, conocidas como los #strong[tres pilares de la observabilidad] \(#link(<ref-majors-2022>)[Majors et~al., 2022]\; #link(<ref-sridharan-2018>)[Sridharan, 2018]):
 
+#figure([
 #table(
   columns: (25%, 25%, 25%, 25%),
   align: (auto,auto,auto,auto,),
@@ -1178,6 +1239,17 @@ En la práctica, la observabilidad de un sistema de software se construye sobre 
   [#strong[Métricas]], [Valores numéricos agregados en el tiempo], [¿Cuánto, con qué frecuencia, con qué tendencia?], [#NormalTok("solicitudes_por_segundo = 1450");],
   [#strong[Trazas]], [Recorrido de una solicitud a través de varios servicios], [¿Por dónde pasó la solicitud y dónde se demoró?], [#NormalTok("petición #abc: API (2 ms) → pagos (310 ms) → BD (15 ms)");],
 )
+], caption: figure.caption(
+position: top, 
+[
+Los tres pilares de la observabilidad.
+]), 
+kind: "quarto-float-tbl", 
+supplement: "Tabla", 
+)
+<tbl-base-6>
+
+
 Aunque los tres pilares se complementan, presentan diferencias importantes en su costo de almacenamiento y en su riqueza contextual. Las métricas son altamente compactas, pero pierden el detalle de los eventos individuales; las trazas revelan la topología de las interacciones, pero requieren instrumentación explícita; los logs, en cambio, preservan el contexto semántico completo de cada evento, razón por la cual constituyen el foco de este documento. Un concepto transversal a los tres pilares es el de #strong[cardinalidad] (el número de valores distintos que puede tomar un atributo), cuya gestión inadecuada constituye uno de los principales retos de costo y rendimiento de los sistemas de observabilidad, como se discute en la #ref(<sec-5-6>, supplement: [Sección]).
 
 == Logs como fuente primaria de información
@@ -1256,9 +1328,9 @@ Introducir esta arquitectura a nivel conceptual resulta pertinente desde el punt
 
 ]
 ], caption: figure.caption(
-separator: "", 
 position: bottom, 
 [
+Arquitectura conceptual de la centralización de logs en cuatro etapas.
 ]), 
 kind: "quarto-float-fig", 
 supplement: "Figura", 
@@ -1294,6 +1366,7 @@ A nivel conceptual, este componente introduce nociones fundamentales relacionada
 
 Desde una perspectiva más avanzada, no existe un único modelo de almacenamiento óptimo: las soluciones adoptan distintos #strong[paradigmas de indexación], cada uno con compromisos diferentes entre velocidad de consulta, flexibilidad y costo. Comprender estos paradigmas permite entender por qué soluciones distintas resultan más adecuadas para necesidades distintas, y constituye uno de los criterios de diseño más transferibles del área:
 
+#figure([
 #table(
   columns: (20%, 20%, 20%, 20%, 20%),
   align: (auto,auto,auto,auto,auto,),
@@ -1303,6 +1376,17 @@ Desde una perspectiva más avanzada, no existe un único modelo de almacenamient
   [#strong[Almacén columnar] (analítico / OLAP)], [Columnas completas de atributos estructurados], [Agregaciones y análisis sobre grandes volúmenes], [Eficiente en compresión; menos flexible para texto libre], [Análisis cuantitativo a gran escala],
   [#strong[Índice de solo etiquetas]], [Únicamente un conjunto reducido de etiquetas (metadatos)], [Filtrado rápido por etiquetas; el contenido se examina al consultar], [Muy bajo costo de indexación y almacenamiento], [Grandes volúmenes con consultas acotadas por etiquetas],
 )
+], caption: figure.caption(
+position: top, 
+[
+Paradigmas de indexación y almacenamiento y sus compromisos.
+]), 
+kind: "quarto-float-tbl", 
+supplement: "Tabla", 
+)
+<tbl-base-7>
+
+
 El #strong[índice invertido], heredado de la disciplina de recuperación de información, asocia cada término al conjunto de registros que lo contienen, lo que habilita búsquedas de texto completo muy flexibles a cambio de un alto costo de indexación y almacenamiento \(#link(<ref-manning-2008>)[Manning et~al., 2008]). El #strong[almacenamiento columnar], propio de los sistemas analíticos, organiza los datos por columnas en lugar de por filas, lo que permite comprimir y agregar grandes volúmenes de datos estructurados con notable eficiencia, aunque resulta menos apto para la búsqueda libre de texto \(#link(<ref-abadi-2008>)[Abadi et~al., 2008]). Finalmente, el #strong[índice de solo etiquetas] minimiza deliberadamente lo que se indexa (apenas un conjunto reducido de metadatos), reduciendo de forma drástica el costo a cambio de exigir que el contenido se examine en el momento de la consulta. Estas tres aproximaciones no son excluyentes, y las guías prácticas complementarias permiten contrastar empíricamente sus implicaciones en ecosistemas tecnológicos concretos.
 
 === Visualización y análisis
@@ -1373,10 +1457,9 @@ El marco se complementa con la guía de estudio, que operacionaliza la fundament
 <resultados-del-diseño-instruccional-y-las-prácticas-académicas>
 En cumplimiento del OE2 se diseñaron nueve guías prácticas con estructura formal homogénea (RAE observables, dimensionamiento explícito de recursos, diagrama del pipeline lógico, procedimiento reproducible y cuestionario de análisis crítico), organizadas bajo el ciclo de aprendizaje experiencial de Kolb y ordenadas por complejidad progresiva, desde el ecosistema tradicional más extendido hasta las plataformas del estado del arte. El diseño instruccional se completa con la guía docente, que aporta una alineación explícita con el microcurrículo oficial de la asignatura (resultados de aprendizaje, núcleos temáticos, unidades de competencia y ejes Ser--Saber--Saber Hacer del sílabo, donde los patrones de observabilidad figuran como temática declarada), tres rutas de planificación según el tiempo disponible, una estrategia de evaluación de tres componentes con rúbrica analítica homogénea aplicable a cualquiera de las nueve guías, y un repertorio de dificultades frecuentes con orientaciones para anticiparlas en el aula.
 
-La Tabla 6 sintetiza la cobertura conceptual del conjunto: cada guía materializa la misma arquitectura de cuatro etapas con un aporte conceptual diferencial, de modo que la progresión completa expone al estudiante a los tres paradigmas de almacenamiento caracterizados en la #ref(<sec-5-7-3>, supplement: [Sección]) y a los principales patrones de recolección y transporte.
+La #ref(<tbl-base-8>, supplement: [Tabla]) sintetiza la cobertura conceptual del conjunto: cada guía materializa la misma arquitectura de cuatro etapas con un aporte conceptual diferencial, de modo que la progresión completa expone al estudiante a los tres paradigmas de almacenamiento caracterizados en la #ref(<sec-5-7-3>, supplement: [Sección]) y a los principales patrones de recolección y transporte.
 
-#strong[Tabla 6.] Resultados del diseño instruccional: cobertura conceptual de las nueve guías prácticas.
-
+#figure([
 #table(
   columns: (25%, 25%, 25%, 25%),
   align: (left,left,left,left,),
@@ -1392,12 +1475,22 @@ La Tabla 6 sintetiza la cobertura conceptual del conjunto: cada guía materializ
   [8], [SigNoz (ClickHouse)], [Almacén columnar], [Plataforma integrada con almacenamiento analítico columnar y OTLP nativo.],
   [9], [Grafana Alloy], [Índice de solo etiquetas], [Configuración orientada al flujo de datos y migración entre recolectores.],
 )
+], caption: figure.caption(
+position: top, 
+[
+Resultados del diseño instruccional: cobertura conceptual de las nueve guías prácticas.
+]), 
+kind: "quarto-float-tbl", 
+supplement: "Tabla", 
+)
+<tbl-base-8>
+
+
 == Resultados técnicos verificables
 <resultados-técnicos-verificables>
-En cumplimiento del OE3, cada guía cuenta con una solución implementada como entorno funcional, autocontenido y reproducible. La Tabla 7 enuncia los resultados técnicos junto con su evidencia:
+En cumplimiento del OE3, cada guía cuenta con una solución implementada como entorno funcional, autocontenido y reproducible. La #ref(<tbl-base-9>, supplement: [Tabla]) enuncia los resultados técnicos junto con su evidencia:
 
-#strong[Tabla 7.] Resultados técnicos verificables y sus evidencias.
-
+#figure([
 #table(
   columns: (33.33%, 33.33%, 33.33%),
   align: (left,left,left,),
@@ -1409,14 +1502,24 @@ En cumplimiento del OE3, cada guía cuenta con una solución implementada como e
   [Verificación de portabilidad sobre la primera plataforma objetivo.], [Despliegue verificado sobre macOS Apple Silicon (ARM); la cobertura de Windows 11/WSL2 y Ubuntu Linux se documenta como verificación en curso.], [Marco de verificación y validación de la metodología],
   [Publicación abierta, citable e indexada del recurso completo.], [DOI persistente, metadatos de citación estructurada y licencia abierta.], [#NormalTok("CITATION.cff");, #NormalTok(".zenodo.json"); y registro en Zenodo],
 )
+], caption: figure.caption(
+position: top, 
+[
+Resultados técnicos verificables y sus evidencias.
+]), 
+kind: "quarto-float-tbl", 
+supplement: "Tabla", 
+)
+<tbl-base-9>
+
+
 Un resultado transversal merece mención explícita: la prueba de humo estandarizada demostró que la fase de generación del log es idéntica en los nueve stacks mientras solo varía la verificación del registro, lo que constituye evidencia operativa directa de la tesis central del recurso: las etapas funcionales del pipeline son invariantes; las tecnologías que las implementan, no.
 
 == Síntesis y correspondencia con los objetivos del trabajo
 <síntesis-y-correspondencia-con-los-objetivos-del-trabajo>
-La Tabla 8 consolida la correspondencia entre los objetivos específicos comprometidos, los resultados obtenidos y sus evidencias:
+La #ref(<tbl-base-10>, supplement: [Tabla]) consolida la correspondencia entre los objetivos específicos comprometidos, los resultados obtenidos y sus evidencias:
 
-#strong[Tabla 8.] Correspondencia entre objetivos específicos, resultados y evidencias.
-
+#figure([
 #table(
   columns: (25%, 25%, 25%, 25%),
   align: (left,left,left,left,),
@@ -1426,6 +1529,17 @@ La Tabla 8 consolida la correspondencia entre los objetivos específicos comprom
   [#strong[OE2:] Elaborar guías prácticas para el despliegue progresivo de soluciones de centralización de logs con Docker.], [Guías prácticas y guía docente.], [Nueve guías instruccionales progresivas bajo el ciclo de Kolb, con instrumentos de evaluación homogéneos.], [#NormalTok("guias/");, #NormalTok("guia_docente.md");],
   [#strong[OE3:] Implementar cada guía en entornos funcionales y reproducibles para los estudiantes.], [Soluciones del repositorio.], [Nueve ecosistemas reproducibles, parametrizados y con verificación automatizada de extremo a extremo.], [#NormalTok("soluciones/");, #NormalTok("smoke_test.sh");],
 )
+], caption: figure.caption(
+position: top, 
+[
+Correspondencia entre objetivos específicos, resultados y evidencias.
+]), 
+kind: "quarto-float-tbl", 
+supplement: "Tabla", 
+)
+<tbl-base-10>
+
+
 En conjunto, los resultados demuestran que el recurso educativo cumple los compromisos formulados en la propuesta aprobada y genera evidencias verificables en cada dimensión: conceptual (marco teórico neutral y material de estudio), instruccional (guías y evaluación alineadas constructivamente), técnica (entornos reproducibles con verificación automatizada) y de publicación abierta (repositorio navegable, DOI y licenciamiento explícito). Adicionalmente, la ampliación del espectro tecnológico respecto de lo enunciado originalmente (justificada en la introducción por la evolución del estado del arte) constituye un resultado que excede los compromisos iniciales sin alterar su naturaleza.
 
 = Discusión académica, pedagógica e institucional
@@ -1700,6 +1814,7 @@ La relación de este trabajo con el sílabo es directa. El Núcleo Temático 3, 
 
 === Contribución a los resultados de aprendizaje del sílabo
 <contribución-a-los-resultados-de-aprendizaje-del-sílabo>
+#figure([
 #table(
   columns: (33.33%, 33.33%, 33.33%),
   align: (auto,auto,auto,),
@@ -1709,8 +1824,20 @@ La relación de este trabajo con el sílabo es directa. El Núcleo Temático 3, 
   [#strong[R.A.2] --- Construyo soluciones software basadas en la arquitectura orientada a microservicios, desplegadas mediante contenedores y cloud computing.], [Todas las guías despliegan ecosistemas multicontenedor con Docker Compose, configuran aplicaciones para emitir logs estructurados y validan la operación de extremo a extremo.], [Las nueve guías prácticas con sus soluciones; componente práctico (informe de laboratorio).],
   [#strong[R.A.3] --- Construyo recursos documentales acerca de tecnologías basadas en microservicios, en primera y segunda lengua, con perspectiva ética y estándares de la industria.], [Los entregables son recursos documentales técnicos (informe de laboratorio y ensayo comparativo); las guías exigen leer documentación oficial en inglés; el desafío de sanitización de datos sensibles aporta la perspectiva ética; el formato ECS y OTLP ilustran los estándares de la industria.], [Entregables de los componentes práctico e integrador; guía de estudio; guía de Vector (sanitización).],
 )
+], caption: figure.caption(
+position: top, 
+[
+Contribución de la unidad a los resultados de aprendizaje del sílabo oficial.
+]), 
+kind: "quarto-float-tbl", 
+supplement: "Tabla", 
+)
+<tbl-gd-1>
+
+
 === Cobertura de los núcleos temáticos
 <cobertura-de-los-núcleos-temáticos>
+#figure([
 #table(
   columns: (33.33%, 33.33%, 33.33%),
   align: (auto,auto,auto,),
@@ -1720,10 +1847,22 @@ La relación de este trabajo con el sílabo es directa. El Núcleo Temático 3, 
   [#strong[NT2] --- Tecnologías para la implementación y ejecución de microservicios.], [Formatos de transferencia de datos (JSON); escenarios de despliegue (virtualización y cloud); automatización de pruebas.], [Logging estructurado en JSON/ECS; despliegue contenerizado en las nueve guías; la prueba de humo (#NormalTok("smoke_test.sh");) como ejemplo trabajado de prueba automatizada de extremo a extremo.],
   [#strong[NT3] --- Patrones de diseño en la arquitectura de microservicios.], [#strong[Patrones de observabilidad] (temática explícita del sílabo) y su relación con los patrones de despliegue y de fiabilidad.], [Cobertura directa y en profundidad: la unidad completa desarrolla esta temática. Los modelos de recolección y los paradigmas de almacenamiento se presentan como decisiones de patrón con ventajas y desventajas contrastables.],
 )
+], caption: figure.caption(
+position: top, 
+[
+Cobertura de los núcleos temáticos del sílabo por la unidad.
+]), 
+kind: "quarto-float-tbl", 
+supplement: "Tabla", 
+)
+<tbl-gd-2>
+
+
 === Aporte a las unidades de competencia del programa
 <aporte-a-las-unidades-de-competencia-del-programa>
 El sílabo declara mayor nivel de aporte a cinco unidades de competencia (UC) del programa; la unidad contribuye a cada una así:
 
+#figure([
 #table(
   columns: (50%, 50%),
   align: (auto,auto,),
@@ -1735,10 +1874,22 @@ El sílabo declara mayor nivel de aporte a cinco unidades de competencia (UC) de
   [#strong[U.C.6 --- Lo Complementario.]], [El estudiante produce documentos técnicos formales (informe de laboratorio y ensayo comparativo) con las convenciones del área.],
   [#strong[U.C.7 --- La Formación Integral.]], [El estudiante analiza críticamente la dimensión ética del manejo de datos (sanitización de información sensible) y procesa documentación técnica en primera y segunda lengua.],
 )
+], caption: figure.caption(
+position: top, 
+[
+Aporte de la unidad a las unidades de competencia del programa.
+]), 
+kind: "quarto-float-tbl", 
+supplement: "Tabla", 
+)
+<tbl-gd-3>
+
+
 === Correspondencia con los ejes Ser, Saber y Saber Hacer
 <correspondencia-con-los-ejes-ser-saber-y-saber-hacer>
 El sílabo organiza cada núcleo temático en ejes actitudinales (Ser), conceptuales (Saber) y procedimentales (Saber Hacer). La unidad los desarrolla de la siguiente manera:
 
+#figure([
 #table(
   columns: (33.33%, 33.33%, 33.33%),
   align: (auto,auto,auto,),
@@ -1748,6 +1899,17 @@ El sílabo organiza cada núcleo temático en ejes actitudinales (Ser), conceptu
   [#strong[Saber] (conceptual)], [Comprensión de la observabilidad, los tres pilares, la arquitectura de cuatro etapas, los desafíos de diseño y los paradigmas de almacenamiento.], [Componente conceptual (cuestionario de la guía de estudio).],
   [#strong[Saber Hacer] (procedimental)], [Despliegue de soluciones en ambientes virtuales, evaluación del funcionamiento mediante pruebas automatizadas y proposición de soluciones contrastadas a problemas reales.], [Componentes práctico e integrador (informe de laboratorio y ensayo comparativo).],
 )
+], caption: figure.caption(
+position: top, 
+[
+Correspondencia de la unidad con los ejes Ser, Saber y Saber Hacer del sílabo.
+]), 
+kind: "quarto-float-tbl", 
+supplement: "Tabla", 
+)
+<tbl-gd-4>
+
+
 Finalmente, la estrategia de evaluación del recurso instrumenta varias de las estrategias previstas por el propio sílabo: las #strong[prácticas] y el #strong[estudio de caso] corresponden al componente práctico; los #strong[talleres y exámenes] al componente conceptual; las #strong[exposiciones o debates] pueden apoyar el componente integrador; y la rúbrica del recurso puede entregarse al estudiante como #strong[matriz de evaluación personal], tal como el sílabo lo sugiere.
 
 == Panorama de las nueve guías prácticas
@@ -1758,6 +1920,7 @@ Esta sección permite al docente preparar una sesión de laboratorio sin recorre
 <tabla-de-consulta-rápida>
 Cada fila resume el reto de la guía, las condiciones que conviene verificar antes de la sesión y el entregable mínimo con el que el estudiante demuestra el logro. Los números de la última columna corresponden a los resultados de aprendizaje (RA) enumerados en la sección 4.
 
+#figure([
 #table(
   columns: (3.9%, 7.79%, 33.77%, 23.38%, 24.68%, 6.49%),
   align: (auto,auto,auto,auto,auto,auto,),
@@ -1773,12 +1936,24 @@ Cada fila resume el reto de la guía, las condiciones que conviene verificar ant
   [8], [#link(<sec-guia-signoz>)[SigNoz]], [Operar una plataforma integrada con almacenamiento analítico columnar y OTLP nativo.], [8 GB de RAM libres.], [Compose funcional, captura en SigNoz y #NormalTok("smoke_test.sh"); exitoso.], [2, 4, 5],
   [9], [#link(<sec-guia-alloy>)[Alloy]], [Migrar el recolector a su sucesor oficial con configuración orientada al flujo de datos.], [Funciona cómodamente con 4 GB de RAM libres.], [Compose funcional, captura en Grafana y #NormalTok("smoke_test.sh"); exitoso.], [4, 5],
 )
+], caption: figure.caption(
+position: top, 
+[
+Consulta rápida de las nueve guías prácticas.
+]), 
+kind: "quarto-float-tbl", 
+supplement: "Tabla", 
+)
+<tbl-gd-5>
+
+
 Cada guía declara, además, su tiempo estimado (2 horas de laboratorio acompañado y 2 horas de trabajo independiente) y sus evidencias esperadas.
 
 === Matriz de alineación con los resultados de aprendizaje de la unidad
 <matriz-de-alineación-con-los-resultados-de-aprendizaje-de-la-unidad>
 La siguiente matriz vincula cada resultado de aprendizaje de la unidad con las guías que lo desarrollan, la evidencia observable y el instrumento con que se evalúa, en aplicación del principio de alineación constructiva:
 
+#figure([
 #table(
   columns: (19.35%, 27.96%, 23.66%, 29.03%),
   align: (auto,auto,auto,auto,),
@@ -1790,12 +1965,24 @@ La siguiente matriz vincula cada resultado de aprendizaje de la unidad con las g
   [#strong[RA4] --- Desplegar y validar un stack completo sobre un entorno reproducible.], [Cualquiera de las nueve guías.], [Repositorio con configuraciones, capturas de validación y salida del #NormalTok("smoke_test.sh");.], [Criterios de despliegue funcional y calidad técnica de la rúbrica.],
   [#strong[RA5] --- Contrastar decisiones arquitectónicas entre stacks.], [Pares contrastantes de la ruta mínima.], [Ensayo comparativo sobre al menos dos criterios del marco.], [Componente integrador de la estrategia de evaluación.],
 )
+], caption: figure.caption(
+position: top, 
+[
+Matriz de alineación entre resultados de aprendizaje de la unidad, guías, evidencias e instrumentos.
+]), 
+kind: "quarto-float-tbl", 
+supplement: "Tabla", 
+)
+<tbl-gd-6>
+
+
 == Rutas sugeridas
 <rutas-sugeridas>
 === Ruta mínima (2 semanas, 4 sesiones)
 <ruta-mínima-2-semanas-4-sesiones>
 Es la ruta recomendada para la unidad estándar. Cubre teoría completa y dos guías prácticas que ilustran enfoques contrastados.
 
+#figure([
 #table(
   columns: (20.51%, 25.64%, 28.21%, 25.64%),
   align: (auto,auto,auto,auto,),
@@ -1806,6 +1993,17 @@ Es la ruta recomendada para la unidad estándar. Cubre teoría completa y dos gu
   [#strong[3]], [2 h], [#strong[Laboratorio 1] --- Stack base: ELK #emph[o] PLG. Despliegue, ingreso de logs y consultas básicas.], [#link(<sec-guia-elk>)[Guía ELK] #emph[o] #link(<sec-guia-promtail>)[Guía PLG]],
   [#strong[4]], [2 h], [#strong[Laboratorio 2 + Cierre] --- Stack contrastante: OpenTelemetry #emph[o] Vector. Discusión comparada y evaluación.], [#link(<sec-guia-otel>)[Guía OpenTelemetry] #emph[o] #link(<sec-guia-vector>)[Guía Vector]],
 )
+], caption: figure.caption(
+position: top, 
+[
+Planeación de la ruta mínima en cuatro sesiones.
+]), 
+kind: "quarto-float-tbl", 
+supplement: "Tabla", 
+)
+<tbl-gd-7>
+
+
 #strong[Recomendación de pares contrastantes:]
 
 - #strong[ELK + OpenTelemetry:] contrapone el stack clásico de indexación completa con el estándar unificado moderno.
@@ -1820,6 +2018,7 @@ Para estudiantes que desarrollarán un trabajo final, electiva especializada o s
 <ruta-corta-1-semana-2-sesiones>
 Si la unidad debe condensarse en una sola semana:
 
+#figure([
 #table(
   columns: (42.11%, 57.89%),
   align: (auto,auto,),
@@ -1828,6 +2027,17 @@ Si la unidad debe condensarse en una sola semana:
   [#strong[1]], [Toda la teoría conceptual del #link(<sec-marco-conceptual>)[documento base], centrándose en los conceptos esenciales y delegando lecturas a casa.],
   [#strong[2]], [Un único laboratorio con la guía de #strong[OpenTelemetry], por ser la más representativa del estado del arte y cubrir los tres pilares en una sola implementación.],
 )
+], caption: figure.caption(
+position: top, 
+[
+Planeación de la ruta corta en dos sesiones.
+]), 
+kind: "quarto-float-tbl", 
+supplement: "Tabla", 
+)
+<tbl-gd-8>
+
+
 == Estrategia de evaluación
 <estrategia-de-evaluación>
 Se propone una evaluación de #strong[tres componentes] con peso ponderado, alineada con los resultados de aprendizaje siguiendo el principio de #strong[alineación constructiva] (coherencia explícita entre resultados de aprendizaje, actividades y criterios de evaluación). Los porcentajes son sugerencias; el docente debe ajustarlos a la ponderación general del curso. La rúbrica y los entregables definidos en esta sección constituyen los #strong[instrumentos de evaluación homogéneos] del recurso, aplicables de forma uniforme a cualquiera de las nueve guías prácticas.
@@ -1876,6 +2086,7 @@ white
 ]
 #strong[Rúbrica sugerida:]
 
+#figure([
 #table(
   columns: (14.08%, 8.45%, 23.94%, 23.94%, 29.58%),
   align: (auto,auto,auto,auto,auto,),
@@ -1886,6 +2097,17 @@ white
   [Reflexión escrita], [20 %], [Articula decisiones de diseño y compromisos], [Describe lo realizado sin análisis], [Reproduce contenido de la guía sin elaboración],
   [Calidad técnica], [10 %], [Configuración limpia, versionada, reproducible], [Configuración funcional pero desordenada], [Configuración no reproducible],
 )
+], caption: figure.caption(
+position: top, 
+[
+Rúbrica analítica del componente práctico.
+]), 
+kind: "quarto-float-tbl", 
+supplement: "Tabla", 
+)
+<tbl-gd-9>
+
+
 === Componente integrador (30 %)
 <componente-integrador-30>
 #strong[Instrumento:] Ensayo comparativo breve (máx. 1000 palabras) que contraste #strong[dos stacks] vistos en clase a partir de #strong[al menos dos criterios] del marco teórico (por ejemplo: modelo de almacenamiento, acoplamiento del recolector, soporte para los tres pilares, gestión de la sanitización).
@@ -1928,6 +2150,7 @@ Cada herramienta introduce su propio lenguaje de configuración: YAML (Promtail,
 
 == Recomendaciones de articulación con otras unidades del curso
 <recomendaciones-de-articulación-con-otras-unidades-del-curso>
+#figure([
 #table(
   columns: (45%, 55%),
   align: (auto,auto,),
@@ -1938,6 +2161,17 @@ Cada herramienta introduce su propio lenguaje de configuración: YAML (Promtail,
   [Seguridad], [Usar el ejercicio de sanitización con VRL (guía Vector) para discutir manejo de credenciales en logs],
   [Despliegue continuo], [El recurso completo se despliega con #NormalTok("docker compose");\; puede extenderse a Kubernetes en una unidad posterior],
 )
+], caption: figure.caption(
+position: top, 
+[
+Articulación de la unidad con otras unidades del curso.
+]), 
+kind: "quarto-float-tbl", 
+supplement: "Tabla", 
+)
+<tbl-gd-10>
+
+
 == Mantenimiento y evolución del recurso
 <mantenimiento-y-evolución-del-recurso>
 El ecosistema de observabilidad evoluciona rápidamente; las versiones de las imágenes Docker quedan obsoletas en plazos de 12 a 18 meses. Se recomienda al docente que reutilice este material:
@@ -2017,6 +2251,7 @@ Observa que esta potencia tiene un precio: construir y mantener el índice inver
 
 ELK está compuesto por tres piezas que mapean directamente a la arquitectura conceptual de cuatro etapas:
 
+#figure([
 #table(
   columns: (33.33%, 33.33%, 33.33%),
   align: (auto,auto,auto,),
@@ -2026,6 +2261,17 @@ ELK está compuesto por tres piezas que mapean directamente a la arquitectura co
   [#strong[Elasticsearch]], [Almacenamiento + Búsqueda], [Indexa (índice invertido) y responde las consultas],
   [#strong[Kibana]], [Visualización], [Explora y grafica los logs centralizados],
 )
+], caption: figure.caption(
+position: top, 
+[
+Correspondencia entre los componentes de ELK y las etapas de la arquitectura conceptual.
+]), 
+kind: "quarto-float-tbl", 
+supplement: "Tabla", 
+)
+<tbl-elk-1>
+
+
 #block[
 #callout(
 body: 
@@ -2064,6 +2310,7 @@ white
 <dimensionamiento-de-recursos>
 #strong[Consumo estimado del stack:] \~5 GB de RAM en estado estable.
 
+#figure([
 #table(
   columns: (33.33%, 33.33%, 33.33%),
   align: (auto,auto,auto,),
@@ -2074,6 +2321,17 @@ white
   [#NormalTok("kibana");], [Visualización y exploración de los datos], [1g],
   [#NormalTok("logs.producer");], [Aplicación Quarkus productora de logs], [512m],
 )
+], caption: figure.caption(
+position: top, 
+[
+Servicios del stack ELK, su función en el pipeline y límites de memoria por defecto.
+]), 
+kind: "quarto-float-tbl", 
+supplement: "Tabla", 
+)
+<tbl-elk-2>
+
+
 Los límites están parametrizados vía #NormalTok(".env"); y pueden ajustarse sin editar el #NormalTok("docker-compose.yml");:
 
 #Skylighting(([#VariableTok("ELASTICSEARCH_MEM_LIMIT");#OperatorTok("=");#NormalTok("2g");],
@@ -2472,6 +2730,7 @@ Observa la lección de fondo: la elección de una tecnología no depende únicam
 
 En lo conceptual, OLO se mapea a la arquitectura de cuatro etapas igual que ELK, componente por componente:
 
+#figure([
 #table(
   columns: (33.33%, 33.33%, 33.33%),
   align: (auto,auto,auto,),
@@ -2481,6 +2740,17 @@ En lo conceptual, OLO se mapea a la arquitectura de cuatro etapas igual que ELK,
   [#strong[OpenSearch]], [Almacenamiento + Búsqueda (índice invertido)], [Elasticsearch],
   [#strong[OpenSearch Dashboards]], [Visualización], [Kibana],
 )
+], caption: figure.caption(
+position: top, 
+[
+Correspondencia entre los componentes de OLO, las etapas conceptuales y sus equivalentes en ELK.
+]), 
+kind: "quarto-float-tbl", 
+supplement: "Tabla", 
+)
+<tbl-olo-1>
+
+
 Esta correspondencia casi exacta no es casual: ambos stacks descienden del mismo código base. Comprenderla te permite transferir de inmediato a OLO todo lo aprendido sobre el paradigma de índice invertido en la guía de ELK.
 
 == Requisitos previos
@@ -2523,6 +2793,7 @@ El stack OLO es intensivo en memoria, ya que combina un motor de indexación dis
 
 Cada servicio del #NormalTok("docker-compose.yml"); declara un límite de memoria (#NormalTok("mem_limit");) que acota su consumo y previene que un único contenedor agote la memoria del anfitrión:
 
+#figure([
 #table(
   columns: (16.95%, 40.68%, 42.37%),
   align: (auto,auto,auto,),
@@ -2533,6 +2804,17 @@ Cada servicio del #NormalTok("docker-compose.yml"); declara un límite de memori
   [#NormalTok("dashboards");], [Visualización y exploración (OpenSearch Dashboards)], [#NormalTok("1g");],
   [#NormalTok("logs.producer");], [Aplicación productora de logs (Quarkus)], [#NormalTok("512m");],
 )
+], caption: figure.caption(
+position: top, 
+[
+Servicios del stack OLO, su función en el pipeline y límites de memoria por defecto.
+]), 
+kind: "quarto-float-tbl", 
+supplement: "Tabla", 
+)
+<tbl-olo-2>
+
+
 Estos límites están #strong[parametrizados mediante variables de entorno], de modo que pueden ajustarse sin modificar el #NormalTok("docker-compose.yml");. Defina los valores en un archivo #NormalTok(".env"); ubicado junto al #NormalTok("docker-compose.yml");:
 
 #Skylighting(([#VariableTok("OPENSEARCH_MEM_LIMIT");#OperatorTok("=");#NormalTok("2g");],
@@ -2984,6 +3266,7 @@ white
 <dimensionamiento-de-recursos-2>
 El #strong[consumo estimado del stack] es de #strong[\~4 GB de RAM] en estado estable, distribuidos entre los servicios que componen el pipeline de centralización de logs.
 
+#figure([
 #table(
   columns: 3,
   align: (auto,auto,auto,),
@@ -2994,6 +3277,17 @@ El #strong[consumo estimado del stack] es de #strong[\~4 GB de RAM] en estado es
   [#NormalTok("fluentd");], [Recolección y procesamiento de eventos], [#NormalTok("512m");],
   [#NormalTok("logs.producer");], [Aplicación productora (Quarkus)], [#NormalTok("512m");],
 )
+], caption: figure.caption(
+position: top, 
+[
+Servicios del stack Fluentd, su función en el pipeline y límites de memoria por defecto.
+]), 
+kind: "quarto-float-tbl", 
+supplement: "Tabla", 
+)
+<tbl-fluentd-1>
+
+
 Cada límite de memoria es #strong[parametrizable vía el archivo #NormalTok(".env");], lo que permite ajustar el dimensionamiento del entorno según los recursos disponibles en la máquina anfitriona:
 
 #Skylighting(([#VariableTok("ELASTICSEARCH_MEM_LIMIT");#OperatorTok("=");#NormalTok("2g");],
@@ -3437,6 +3731,7 @@ Si las guías de ELK y OLO te mostraron el paradigma del índice invertido, esta
 <el-paradigma-de-loki-indexar-solo-etiquetas>
 Recordando los tres paradigmas de almacenamiento del marco conceptual (#ref(<sec-5-7-3>, supplement: [Sección])), Loki encarna el tercero: el #strong[índice de solo etiquetas]. La diferencia con ELK es radical y vale la pena detenerse en ella:
 
+#figure([
 #table(
   columns: (33.33%, 33.33%, 33.33%),
   align: (auto,auto,auto,),
@@ -3447,12 +3742,24 @@ Recordando los tres paradigmas de almacenamiento del marco conceptual (#ref(<sec
   [Costo de almacenamiento], [Alto], [Muy bajo],
   [Analogía], [El índice temático de un libro], [Las etiquetas de las carpetas de un archivador],
 )
+], caption: figure.caption(
+position: top, 
+[
+Comparación de los modelos de indexación de ELK/OpenSearch y Loki.
+]), 
+kind: "quarto-float-tbl", 
+supplement: "Tabla", 
+)
+<tbl-promtail-1>
+
+
 ¿Por qué renunciar a indexar el contenido? Porque indexarlo todo es caro (marco conceptual, #ref(<sec-5-7-3>, supplement: [Sección])). La apuesta de Loki es que, en la práctica, casi siempre acotas tu búsqueda primero por metadatos ("dame los logs del servicio #NormalTok("pagos"); en el entorno #NormalTok("prod"); durante la última hora") y solo entonces buscas dentro de ese subconjunto ya reducido. Loki indexa esas etiquetas (#NormalTok("servicio");, #NormalTok("entorno");…) para filtrar a gran velocidad, y deja el contenido sin indexar, comprimido en bloques baratos que solo se escanean cuando hace falta.
 
 El resultado es un sistema mucho más ligero en disco y memoria que un motor de indexación completa, a cambio de búsquedas de texto libre más lentas. De nuevo: no es "mejor" ni "peor", es un compromiso distinto.
 
 El stack PLG (Promtail, Loki, Grafana) se reparte las etapas conceptuales de esta forma:
 
+#figure([
 #table(
   columns: (33.33%, 33.33%, 33.33%),
   align: (auto,auto,auto,),
@@ -3462,6 +3769,17 @@ El stack PLG (Promtail, Loki, Grafana) se reparte las etapas conceptuales de est
   [#strong[Loki]], [Almacenamiento + Búsqueda], [Indexa solo etiquetas; responde consultas mediante #strong[LogQL]],
   [#strong[Grafana]], [Visualización], [Explora y grafica los logs con LogQL],
 )
+], caption: figure.caption(
+position: top, 
+[
+Correspondencia entre los componentes del stack PLG y las etapas conceptuales.
+]), 
+kind: "quarto-float-tbl", 
+supplement: "Tabla", 
+)
+<tbl-promtail-2>
+
+
 #block[
 #callout(
 body: 
@@ -3500,6 +3818,7 @@ white
 
 Cada servicio declara un #NormalTok("mem_limit"); en el #NormalTok("docker-compose.yml"); para acotar su consumo de memoria:
 
+#figure([
 #table(
   columns: 3,
   align: (auto,auto,auto,),
@@ -3510,6 +3829,17 @@ Cada servicio declara un #NormalTok("mem_limit"); en el #NormalTok("docker-compo
   [#NormalTok("promtail");], [Agente recolector (#emph[file tailing])], [#NormalTok("256m");],
   [#NormalTok("grafana");], [Visualización y consulta (LogQL)], [#NormalTok("512m");],
 )
+], caption: figure.caption(
+position: top, 
+[
+Servicios del stack PLG, su función en el pipeline y límites de memoria por defecto.
+]), 
+kind: "quarto-float-tbl", 
+supplement: "Tabla", 
+)
+<tbl-promtail-3>
+
+
 Estos valores son parametrizables mediante variables de entorno definidas en un archivo #NormalTok(".env"); junto al #NormalTok("docker-compose.yml");, lo que permite ajustarlos sin modificar el compose:
 
 #Skylighting(([#VariableTok("LOKI_MEM_LIMIT");#OperatorTok("=");#NormalTok("512m");],
@@ -3941,6 +4271,7 @@ Observa que GELF es un #strong[protocolo], no una herramienta: define #emph[cóm
 <graylog-y-su-arquitectura-de-dos-almacenes>
 #strong[Graylog] es la plataforma que recibe los logs vía GELF, los procesa y los pone a disposición para búsqueda y visualización. Para ello se apoya en dos almacenes con roles bien diferenciados:
 
+#figure([
 #table(
   columns: (50%, 50%),
   align: (auto,auto,),
@@ -3950,6 +4281,17 @@ Observa que GELF es un #strong[protocolo], no una herramienta: define #emph[cóm
   [#strong[OpenSearch]], [Almacenamiento e indexación de los eventos (índice invertido)],
   [#strong[MongoDB]], [Configuración y metadatos de la propia plataforma Graylog],
 )
+], caption: figure.caption(
+position: top, 
+[
+Componentes de la plataforma Graylog y su rol.
+]), 
+kind: "quarto-float-tbl", 
+supplement: "Tabla", 
+)
+<tbl-gelf-graylog-1>
+
+
 #block[
 #callout(
 body: 
@@ -4014,6 +4356,7 @@ white
 <dimensionamiento-de-recursos-4>
 El #strong[consumo estimado del stack] es de #strong[\~5 GB de RAM en estado estable]. Para evitar que un contenedor agote la memoria del anfitrión, cada servicio del #NormalTok("docker-compose.yml"); declara un límite de memoria (#NormalTok("mem_limit");):
 
+#figure([
 #table(
   columns: (16.95%, 40.68%, 42.37%),
   align: (auto,auto,auto,),
@@ -4024,6 +4367,17 @@ El #strong[consumo estimado del stack] es de #strong[\~5 GB de RAM en estado est
   [#NormalTok("mongo");], [Configuración y metadatos de Graylog], [#NormalTok("512m");],
   [#NormalTok("logs.producer");], [Aplicación productora de logs (Quarkus)], [#NormalTok("512m");],
 )
+], caption: figure.caption(
+position: top, 
+[
+Servicios del stack Graylog, su función en el pipeline y límites de memoria por defecto.
+]), 
+kind: "quarto-float-tbl", 
+supplement: "Tabla", 
+)
+<tbl-gelf-graylog-2>
+
+
 Estos límites se #strong[parametrizan vía #NormalTok(".env");], de modo que puede ajustarlos sin editar el #NormalTok("docker-compose.yml");:
 
 #Skylighting(([#VariableTok("GRAYLOG_MEM_LIMIT");#OperatorTok("=");#NormalTok("1g");],
@@ -4402,6 +4756,7 @@ Una ventaja concreta de este enfoque es la #strong[correlación automática] ent
 <dimensionamiento-de-recursos-5>
 El stack tiene un #strong[consumo estimado de \~3 GB de RAM en estado estable]. Para evitar que un contenedor agote la memoria del host, cada servicio define un límite explícito mediante #NormalTok("mem_limit");:
 
+#figure([
 #table(
   columns: (16.95%, 40.68%, 42.37%),
   align: (auto,auto,auto,),
@@ -4410,6 +4765,17 @@ El stack tiene un #strong[consumo estimado de \~3 GB de RAM en estado estable]. 
   [#NormalTok("otel-lgtm");], [Imagen todo-en-uno: OTel Collector + Loki + Prometheus + Tempo + Grafana], [#NormalTok("2g");],
   [#NormalTok("logs.producer");], [Aplicación Quarkus que genera y exporta logs vía OTLP], [#NormalTok("512m");],
 )
+], caption: figure.caption(
+position: top, 
+[
+Servicios del stack LGTM, su función en el pipeline y límites de memoria por defecto.
+]), 
+kind: "quarto-float-tbl", 
+supplement: "Tabla", 
+)
+<tbl-otel-1>
+
+
 Estos límites son #strong[parametrizables mediante un archivo #NormalTok(".env");] ubicado junto al #NormalTok("docker-compose.yml");, lo que permite ajustarlos según los recursos disponibles del host:
 
 #Skylighting(([#VariableTok("OTEL_LGTM_MEM_LIMIT");#OperatorTok("=");#NormalTok("2g");],
@@ -4613,14 +4979,22 @@ El protocolo #strong[OTLP (OpenTelemetry Protocol)] permite unificar el envío d
 
 Usted puede rastrear un problema en caliente cruzando las tres señales de la siguiente manera:
 
-#block[
-
+#figure([
 #block[
 #box(image("guias/06-otel_files/figure-typst/mermaid-figure-1.png", height: 3.65in, width: 4.68in))
 
 ]
+], caption: figure.caption(
+position: bottom, 
+[
+Correlación de las tres señales de observabilidad para el diagnóstico de un problema.
+]), 
+kind: "quarto-float-fig", 
+supplement: "Figura", 
+)
+<fig-otel-correlacion-senales>
 
-]
+
 ==== Paso 1: Detección a través de logs (Loki)
 <paso-1-detección-a-través-de-logs-loki>
 + Ingrese a #strong[Explore] en Grafana (#NormalTok("http://localhost:3000");) y seleccione el datasource #strong[Loki].
@@ -4784,6 +5158,7 @@ Observa, además, que Vector puede desplegarse en dos roles: como #strong[agente
 
 Cada servicio declara un #NormalTok("mem_limit"); que acota su consumo máximo de memoria:
 
+#figure([
 #table(
   columns: 3,
   align: (auto,auto,auto,),
@@ -4794,6 +5169,17 @@ Cada servicio declara un #NormalTok("mem_limit"); que acota su consumo máximo d
   [Grafana], [Visualización y exploración (LogQL)], [512m],
   [logs.producer (Quarkus)], [Aplicación productora de logs], [512m],
 )
+], caption: figure.caption(
+position: top, 
+[
+Servicios del stack Vector, su función en el pipeline y límites de memoria por defecto.
+]), 
+kind: "quarto-float-tbl", 
+supplement: "Tabla", 
+)
+<tbl-vector-1>
+
+
 Los límites son parametrizables vía variables de entorno definidas en el archivo #NormalTok(".env"); (junto al #NormalTok("docker-compose.yml");):
 
 #Skylighting(([#VariableTok("VECTOR_MEM_LIMIT");#OperatorTok("=");#NormalTok("512m");],
@@ -5231,6 +5617,7 @@ Imagina una tabla de logs con millones de filas y columnas como #NormalTok("time
 
 Este recurso se despliega como un #emph[override] sobre el #NormalTok("docker-compose.yaml"); oficial de SigNoz, por lo que #strong[solo controla los componentes propios] del laboratorio. La siguiente tabla muestra los servicios definidos por este override y su #NormalTok("mem_limit");:
 
+#figure([
 #table(
   columns: 3,
   align: (auto,auto,auto,),
@@ -5238,6 +5625,17 @@ Este recurso se despliega como un #emph[override] sobre el #NormalTok("docker-co
   table.hline(),
   [#NormalTok("logs.producer"); (aplicación Quarkus)], [#NormalTok("512m");], [#NormalTok("PRODUCER_MEM_LIMIT");],
 )
+], caption: figure.caption(
+position: top, 
+[
+Límites de memoria controlados por el archivo de override de Docker Compose.
+]), 
+kind: "quarto-float-tbl", 
+supplement: "Tabla", 
+)
+<tbl-signoz-1>
+
+
 #block[
 #callout(
 body: 
@@ -5299,6 +5697,7 @@ El directorio #NormalTok("signoz/"); se obtiene clonando el repositorio oficial 
 [#NormalTok("  [SigNoz Backend] ---> [SigNoz UI :8080]");],));
 Los componentes internos del stack SigNoz son:
 
+#figure([
 #table(
   columns: (50%, 50%),
   align: (auto,auto,),
@@ -5309,6 +5708,17 @@ Los componentes internos del stack SigNoz son:
   [#NormalTok("signoz-zookeeper-1");], [Coordinación de clúster ClickHouse],
   [#NormalTok("signoz");], [Backend API + Frontend (UI web en :8080)],
 )
+], caption: figure.caption(
+position: top, 
+[
+Componentes internos del stack SigNoz y su rol.
+]), 
+kind: "quarto-float-tbl", 
+supplement: "Tabla", 
+)
+<tbl-signoz-2>
+
+
 == Implementación de la arquitectura
 <implementación-de-la-arquitectura>
 === Paso 1: Descargar el repositorio de SigNoz
@@ -5533,6 +5943,7 @@ En la vista de detalle de un log, el campo #NormalTok("trace_id"); actúa como e
 <generar-tráfico-de-prueba>
 La aplicación expone los siguientes endpoints:
 
+#figure([
 #table(
   columns: (29.63%, 22.22%, 48.15%),
   align: (auto,auto,auto,),
@@ -5541,6 +5952,17 @@ La aplicación expone los siguientes endpoints:
   [#NormalTok("POST");], [#NormalTok("/logs");], [Emite un log al nivel y con el mensaje indicados],
   [#NormalTok("GET");], [#NormalTok("/api/error");], [Genera una #NormalTok("NullPointerException"); intencional],
 )
+], caption: figure.caption(
+position: top, 
+[
+Endpoints expuestos por la aplicación de ejemplo.
+]), 
+kind: "quarto-float-tbl", 
+supplement: "Tabla", 
+)
+<tbl-signoz-3>
+
+
 #Skylighting(([#CommentTok("# Emitir logs de prueba");],
 [#ExtensionTok("curl");#NormalTok(" ");#AttributeTok("-X");#NormalTok(" POST http://localhost:8090/logs ");#DataTypeTok("\\");],
 [#NormalTok("  ");#AttributeTok("-H");#NormalTok(" ");#StringTok("\"Content-Type: application/json\"");#NormalTok(" ");#DataTypeTok("\\");],
@@ -5657,6 +6079,7 @@ Piénsalo como la diferencia entre una receta lineal ("haz esto, luego esto otro
 
 La siguiente tabla resume las equivalencias concretas entre ambos, útil si llegas desde la guía de Promtail:
 
+#figure([
 #table(
   columns: (33.33%, 33.33%, 33.33%),
   align: (auto,auto,auto,),
@@ -5674,6 +6097,17 @@ La siguiente tabla resume las equivalencias concretas entre ambos, útil si lleg
   [Recarga en caliente], [SIGHUP o #NormalTok("/-/reload");], [#NormalTok("/-/reload"); HTTP o SIGHUP],
   [Interfaz de inspección], [Ninguna], [UI web en #NormalTok(":12345"); con grafo de componentes],
 )
+], caption: figure.caption(
+position: top, 
+[
+Equivalencias de configuración entre Promtail y Grafana Alloy.
+]), 
+kind: "quarto-float-tbl", 
+supplement: "Tabla", 
+)
+<tbl-alloy-1>
+
+
 == Requisitos previos
 <requisitos-previos-8>
 - Docker instalado https:\/\/docs.docker.com/engine/install/
@@ -5686,6 +6120,7 @@ La siguiente tabla resume las equivalencias concretas entre ambos, útil si lleg
 
 Cada servicio declara un #NormalTok("mem_limit"); que acota su consumo de memoria. La siguiente tabla resume el rol de cada contenedor en el pipeline y su límite por defecto:
 
+#figure([
 #table(
   columns: (16.95%, 40.68%, 42.37%),
   align: (auto,auto,auto,),
@@ -5696,6 +6131,17 @@ Cada servicio declara un #NormalTok("mem_limit"); que acota su consumo de memori
   [#NormalTok("loki");], [Almacenamiento e indexación por etiquetas de los logs], [#NormalTok("512m");],
   [#NormalTok("grafana");], [Visualización y consulta de los logs], [#NormalTok("512m");],
 )
+], caption: figure.caption(
+position: top, 
+[
+Servicios del stack, su función en el pipeline y límites de memoria por defecto.
+]), 
+kind: "quarto-float-tbl", 
+supplement: "Tabla", 
+)
+<tbl-alloy-2>
+
+
 Los límites son parametrizables mediante variables de entorno definidas en un archivo #NormalTok(".env"); junto al #NormalTok("docker-compose.yml");, lo que permite ajustarlos sin editar el compose:
 
 #Skylighting(([#VariableTok("PRODUCER_MEM_LIMIT");#OperatorTok("=");#NormalTok("512m");],
@@ -6018,6 +6464,7 @@ Configure la escritura a archivo JSON en #NormalTok("application.properties");:
 [#NormalTok("quarkus.log.file.json.log-format=ECS");],));
 La aplicación expone los mismos endpoints que en las guías anteriores:
 
+#figure([
 #table(
   columns: (29.63%, 22.22%, 48.15%),
   align: (auto,auto,auto,),
@@ -6026,6 +6473,17 @@ La aplicación expone los mismos endpoints que en las guías anteriores:
   [#NormalTok("POST");], [#NormalTok("/logs");], [Emite un log al nivel indicado],
   [#NormalTok("GET");], [#NormalTok("/api/error");], [Genera una #NormalTok("NullPointerException"); intencional],
 )
+], caption: figure.caption(
+position: top, 
+[
+Endpoints expuestos por la aplicación de ejemplo.
+]), 
+kind: "quarto-float-tbl", 
+supplement: "Tabla", 
+)
+<tbl-alloy-3>
+
+
 #Skylighting(([#CommentTok("# Emitir logs de prueba");],
 [#ExtensionTok("curl");#NormalTok(" ");#AttributeTok("-X");#NormalTok(" POST http://localhost:8080/logs ");#DataTypeTok("\\");],
 [#NormalTok("  ");#AttributeTok("-H");#NormalTok(" ");#StringTok("\"Content-Type: application/json\"");#NormalTok(" ");#DataTypeTok("\\");],

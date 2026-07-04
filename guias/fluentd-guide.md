@@ -61,6 +61,8 @@ Observa una propiedad clave que conecta directamente con el marco conceptual: Fl
 
 El **consumo estimado del stack** es de **~4 GB de RAM** en estado estable, distribuidos entre los servicios que componen el pipeline de centralización de logs.
 
+**Tabla 1.** Servicios del stack Fluentd, su función en el pipeline y límites de memoria por defecto.
+
 | Servicio | Función en el pipeline | `mem_limit` por defecto |
 |----------|------------------------|-------------------------|
 | `elasticsearch` | Almacenamiento e indexación de eventos | `2g` |
