@@ -32,18 +32,34 @@ En este contexto, se justifica el desarrollo de un trabajo académico que aborde
 
 ## 3. Objetivos
 
+Los objetivos que orientan este trabajo son los comprometidos en la propuesta de ascenso aprobada por la Universidad del Quindío. Se presentan en tres niveles complementarios: el objetivo general y los objetivos específicos del trabajo (el compromiso institucional), los objetivos formativos del componente conceptual (el nivel del diseño instruccional de este documento) y los resultados de aprendizaje esperados (lo observable en el estudiante). Esta jerarquía aplica el mismo principio de alineación constructiva que estructura todo el recurso.
+
 ### 3.1 Objetivo general
 
-Desarrollar un marco conceptual que permita comprender la observabilidad en sistemas distribuidos, con énfasis en la centralización de logs, como fundamento para el análisis y la comprensión del comportamiento de sistemas de software complejos.
+Construir un recurso educativo que integre fundamentos teóricos y un conjunto de guías prácticas para el despliegue de ecosistemas de centralización de logs mediante Docker, con el propósito de apoyar la enseñanza y el aprendizaje en la asignatura *Arquitectura Orientada a Microservicios* del Programa de Ingeniería de Sistemas y Computación de la Universidad del Quindío.
 
 ### 3.2 Objetivos específicos
+
+Los tres objetivos específicos (OE) comprometidos en la propuesta aprobada son:
+
+1. **OE1:** Establecer los elementos teóricos relacionados con los logs centralizados en microservicios.
+2. **OE2:** Elaborar guías prácticas para el despliegue progresivo de soluciones para centralización de logs utilizando Docker.
+3. **OE3:** Implementar cada guía en entornos funcionales y reproducibles para los estudiantes.
+
+La materialización de cada objetivo en componentes concretos del recurso se detalla en la matriz de trazabilidad de la Tabla 4, y su cumplimiento se sintetiza, objetivo por objetivo, en el capítulo de resultados.
+
+### 3.3 Objetivos formativos del componente conceptual
+
+En el nivel del diseño instruccional, el presente documento (el componente teórico del recurso, que desarrolla el OE1) se orienta a:
 
 - Analizar los fundamentos conceptuales de la observabilidad y su relevancia en arquitecturas distribuidas.
 - Examinar el rol de los logs como fuente primaria de información sobre la ejecución de sistemas de software.
 - Describir la centralización de logs como un mecanismo para reducir la complejidad cognitiva y operativa.
 - Identificar beneficios y desafíos conceptuales asociados al diseño de soluciones de centralización de logs.
 
-### 3.3 Resultados de aprendizaje esperados
+Estos objetivos formativos preparan, además, la articulación con las guías prácticas en las que se materializan el OE2 y el OE3.
+
+### 3.4 Resultados de aprendizaje esperados
 
 Al finalizar el estudio de este documento, el estudiante será capaz de:
 
