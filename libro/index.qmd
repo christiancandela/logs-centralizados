@@ -1,20 +1,52 @@
-# Prefacio {.unnumbered}
+# Presentación {.unnumbered}
 
-Este libro recoge en un único volumen el **Recurso Educativo para el Despliegue de Ecosistemas de Centralización de Logs Mediante Docker**, producto resultante del trabajo académico de los tres profesores autores adscritos al Programa de Ingeniería de Sistemas y Computación de la Universidad del Quindío.
+Este libro recoge en un único volumen el **Recurso Educativo para el Despliegue de Ecosistemas de Centralización de Logs Mediante Docker**, producto resultante del trabajo académico de los tres profesores autores adscritos al Programa de Ingeniería de Sistemas y Computación de la Universidad del Quindío. No es un manual de herramientas: es un recurso educativo abierto que articula un marco conceptual tecnológicamente neutral, instrumentos de estudio y de docencia, y nueve laboratorios reproducibles en el equipo personal del estudiante.
 
-## A quién está dirigido
+## El recurso en un vistazo
 
-El recurso se concibe como material de apoyo para cursos universitarios de pregrado y posgrado en áreas relacionadas con la arquitectura de software, los sistemas distribuidos y la ingeniería de microservicios. Está específicamente calibrado para la asignatura **Arquitectura Orientada a Microservicios** del programa de Ingeniería de Sistemas y Computación, aunque su diseño modular permite reutilizarlo en cursos electivos, semilleros de investigación o programas de formación continuada.
+| Problema formativo | Solución propuesta | Evidencia principal | Uso esperado |
+|---|---|---|---|
+| La observabilidad suele enseñarse de forma instrumental, acoplada a herramientas que cambian con rapidez. | Marco conceptual neutral con una arquitectura de cuatro etapas, seis desafíos de diseño y tres paradigmas de almacenamiento. | @sec-marco-conceptual | Fundamentación teórica de la unidad temática. |
+| Los laboratorios dependen de infraestructura institucional o de entornos difíciles de reproducir. | Nueve ecosistemas autocontenidos con Docker Compose, dimensionados, parametrizados y con prueba de humo automatizada. | Parte III y repositorio público de soluciones. | Laboratorios en el equipo personal del estudiante. |
+| La evaluación de los laboratorios técnicos suele desalinearse de los resultados de aprendizaje. | Guía docente con rutas de planificación, rúbrica analítica homogénea y evaluación de tres componentes. | [Guía docente](#sec-guia-docente) | Planificación y evaluación del curso. |
+
+## ¿Para quién y cómo se usa?
+
+| Público | Punto de partida sugerido | Qué encontrará |
+|---|---|---|
+| Docente | [Guía docente](#sec-guia-docente) | Rutas de una y dos semanas, pares de stacks contrastantes, rúbricas y dificultades frecuentes con orientaciones. |
+| Estudiante | @sec-marco-conceptual y [guía de estudio](#sec-guia-estudio) | Fundamentos conceptuales, glosario y cuestionario de autoevaluación con articulación teoría–práctica. |
+| Lector autodidacta | [Guía ELK](#sec-guia-elk) en adelante | Ruta progresiva de nueve laboratorios reproducibles, del ecosistema clásico al estado del arte. |
+| Par académico evaluador | @sec-metodologia y @sec-resultados | Trazabilidad con la propuesta aprobada, gestión de evidencias y correspondencia objetivos–resultados. |
+
+## Indicadores del recurso
+
+| Componente | Magnitud | Valor formativo |
+|---|---|---|
+| Marco conceptual | Arquitectura de 4 etapas, 6 desafíos de diseño, 3 paradigmas de almacenamiento. | Modelo mental transferible entre tecnologías. |
+| Guías prácticas | 9 stacks, del ecosistema tradicional al estado del arte. | Independencia instrumental demostrada empíricamente. |
+| Material de estudio | 20 preguntas resueltas y glosario terminológico. | Autoevaluación y articulación teoría–práctica. |
+| Instrumentos docentes | 3 rutas de planificación y rúbrica analítica de 4 criterios. | Adopción realista en cursos semestrales. |
+| Reproducibilidad | 9 pruebas de humo automatizadas y límites de memoria parametrizados. | Verificación objetiva del entorno en equipos heterogéneos. |
 
 ## Estructura del libro
 
 El volumen se organiza en tres partes complementarias:
 
-- **Parte I — Marco conceptual.** Desarrolla, desde un enfoque teórico y tecnológicamente neutral, los fundamentos de la observabilidad en sistemas distribuidos, con énfasis en la centralización de logs. Aborda la justificación, los objetivos formativos, la arquitectura conceptual de cuatro etapas, los desafíos transversales de diseño y la ruta de aprendizaje propuesta.
+- **Parte I — Documento base.** Desarrolla, desde un enfoque teórico y tecnológicamente neutral, los fundamentos de la observabilidad en sistemas distribuidos, con énfasis en la centralización de logs. Documenta además la metodología de construcción del recurso y su gestión de evidencias, los resultados obtenidos y su correspondencia con los objetivos comprometidos, la discusión académica, pedagógica e institucional, las conclusiones y el trabajo futuro.
 
-- **Parte II — Material de estudio y docencia.** Reúne dos instrumentos pedagógicos: la *Guía de estudio*, organizada en formato pregunta–respuesta con un glosario terminológico y un bloque de preguntas de articulación teoría–práctica; y la *Guía docente*, que ofrece planificaciones sugeridas, rúbricas de evaluación y orientaciones para la integración del recurso en cursos universitarios reales.
+- **Parte II — Material de estudio y docencia.** Reúne dos instrumentos pedagógicos: la *Guía de estudio*, organizada en formato pregunta–respuesta con un glosario terminológico y un bloque de preguntas de articulación teoría–práctica; y la *Guía docente*, que ofrece un panorama de consulta rápida de las nueve guías, una matriz de alineación con los resultados de aprendizaje, planificaciones sugeridas, rúbricas de evaluación y orientaciones para la integración del recurso en cursos universitarios reales.
 
-- **Parte III — Guías prácticas.** Reúne nueve laboratorios reproducibles, cada uno orientado a una pila tecnológica distinta de centralización y observabilidad. Las guías comparten una estructura común (objetivo, prerrequisitos, despliegue con Docker Compose, validación, profundización) y se diseñaron para permitir tanto la lectura lineal como el uso selectivo según los intereses del lector o el tiempo disponible en clase.
+- **Parte III — Guías prácticas.** Reúne nueve laboratorios reproducibles, cada uno orientado a una pila tecnológica distinta de centralización y observabilidad. Las guías comparten una estructura común (objetivo, tiempo estimado y evidencias esperadas, prerrequisitos, despliegue con Docker Compose, validación, profundización) y se diseñaron para permitir tanto la lectura lineal como el uso selectivo según los intereses del lector o el tiempo disponible en clase.
+
+## Ruta de lectura sugerida
+
+El libro admite una lectura lineal, pero también rutas selectivas según el propósito del lector:
+
+- **Adopción docente:** guía docente, seguida de dos guías prácticas contrastantes según los pares sugeridos en ella.
+- **Comprensión conceptual:** Parte I completa y guía de estudio, dejando las guías prácticas como profundización.
+- **Práctica autónoma:** guías prácticas en el orden propuesto, consultando el marco conceptual cuando cada guía lo remita.
+- **Evaluación académica del trabajo:** metodología (@sec-metodologia), resultados (@sec-resultados) y discusión (@sec-discusion), que concentran la trazabilidad con la propuesta aprobada, las evidencias y el análisis crítico del alcance.
 
 ## Sobre el uso autónomo y supervisado del recurso
 

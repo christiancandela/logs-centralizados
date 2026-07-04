@@ -33,7 +33,11 @@ book:
         - _generated/01-introduccion-objetivos.qmd
         - _generated/02-metodologia.qmd
         - _generated/03-marco-conceptual.qmd
-        - _generated/04-alcance-conclusiones.qmd
+        - _generated/04-alcance-articulacion.qmd
+        - _generated/05-resultados.qmd
+        - _generated/06-discusion.qmd
+        - _generated/07-conclusiones.qmd
+        - _generated/08-trabajo-futuro.qmd
     - part: "Material de estudio y docencia"
       chapters:
         - 02-guia-estudio.qmd
@@ -49,7 +53,6 @@ book:
         - guias/07-vector.qmd
         - guias/08-signoz.qmd
         - guias/09-alloy.qmd
-#  appendices:
     - _generated/99-referencias.qmd
 
   page-footer:
@@ -60,6 +63,16 @@ book:
 lang: es
 link-citations: true       # citas en el texto clicables -> entrada en la bibliografía
 link-bibliography: true     # enlaces (DOI/URL) clicables dentro de la bibliografía
+
+# Prefijos de referencias cruzadas en español (estilo homogéneo con el
+# delimitador de punto en los títulos de figuras y tablas: "Tabla 4.2.")
+crossref:
+  fig-title: "Figura"
+  fig-prefix: "Figura"
+  tbl-title: "Tabla"
+  tbl-prefix: "Tabla"
+  sec-prefix: "Sección"
+  title-delim: "."
 
 # Localización de etiquetas de callout no traducidas por Quarto al español
 language:
@@ -83,6 +96,8 @@ format:
     citeproc: true
     toc: true
     toc-title: "Tabla de contenido"
+    toc-depth: 3
+    fontsize: 11pt
     section-numbering: 1.1.1
     number-sections: true
     number-depth: 4

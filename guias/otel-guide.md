@@ -16,6 +16,10 @@ Al finalizar esta guía, el estudiante será capaz de:
 - Configurar aplicaciones Java (Logback) para enviar logs usando el agente de OpenTelemetry.
 - Explorar y correlacionar logs centralizados desde Grafana, aprovechando campos como `trace_id`, `span_id` y `exception_stacktrace`.
 
+**Tiempo estimado:** 2 horas de laboratorio acompañado y 2 horas de trabajo independiente (despliegue, validación y desarrollo del cuestionario de análisis crítico).
+
+**Evidencias esperadas:** al finalizar la guía, el estudiante debe contar con (a) el archivo `docker-compose.yml` y las configuraciones del stack funcionales, (b) una captura de la consulta de logs en Grafana que muestre los eventos emitidos por la aplicación de prueba, (c) la salida exitosa del script `smoke_test.sh` de la solución correspondiente y (d) las respuestas al cuestionario de análisis crítico. Los entregables exigibles y la rúbrica de evaluación se definen de forma homogénea en la guía docente del recurso.
+
 ## Propósito y alcance del recurso
 
 El propósito principal de este recurso es guiar el despliegue y uso de una **arquitectura de centralización de logs** basada en el estándar OpenTelemetry, en un entorno local y reproducible mediante Docker Compose.
@@ -36,7 +40,7 @@ Todas las guías anteriores resolvían la observabilidad con herramientas concre
 
 ### OpenTelemetry: el estándar que desacopla la instrumentación del backend
 
-OpenTelemetry no es una herramienta de almacenamiento ni un visualizador: es un **estándar abierto y neutral respecto al proveedor** (*vendor-neutral*). Define un conjunto de APIs, SDKs y herramientas para capturar y exportar las señales de observabilidad —**logs, métricas y trazas**, los tres pilares del marco conceptual (§5.1)— y transmitirlas mediante un protocolo común, el **OTLP (OpenTelemetry Protocol)**.
+OpenTelemetry no es una herramienta de almacenamiento ni un visualizador: es un **estándar abierto y neutral respecto al proveedor** (*vendor-neutral*). Define un conjunto de APIs, SDKs y herramientas para capturar y exportar las señales de observabilidad (**logs, métricas y trazas**, los tres pilares descritos en §5.1 del marco conceptual) y transmitirlas mediante un protocolo común, el **OTLP (OpenTelemetry Protocol)**.
 
 ¿Por qué es esto importante? Porque separa dos responsabilidades que antes estaban entrelazadas:
 

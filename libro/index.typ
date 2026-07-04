@@ -588,10 +588,16 @@
     // Iniciar el índice en página nueva
     pagebreak()
 
-    // Título personalizado que no dispara el pagebreak(to: "odd")
+    // Título personalizado que no dispara el pagebreak(to: "odd").
+    // El color deriva del color principal del libro (oscurecido), de modo que
+    // cambiar el tono en typst-show.typ re-tiñe también este título.
     align(center)[
       #v(1cm)
-      #text(size: 2.2em, weight: "bold", fill: rgb("#003b4f"))[Índice]
+      #context {
+        let mc = main-color-state.at(here())
+        let title-color = if mc != none { mc.darken(50%) } else { rgb("#003b4f") }
+        text(size: 2.2em, weight: "bold", fill: title-color)[Índice]
+      }
       #v(1cm)
     ]
     
@@ -663,6 +669,12 @@
 
 #import "./typst/cover.typ": cover
 
+// Color principal del libro. Este único valor controla: el bloque de la portada
+// interior (posterior a la cubierta), el título y los acentos del índice, las
+// franjas y numerales de las páginas de Parte, los títulos de capítulo y las
+// referencias cruzadas. Cambiar el tono = editar este hex.
+#let color-principal = rgb("#0d2942ff")
+
 #page(margin: 0pt, numbering: none, header: none, footer: none)[
 
 #cover(
@@ -717,17 +729,17 @@
     #line(length: 100%, stroke: 0.5pt)
     #v(0.4em)
 
-    #image("images/by-nc-sa.png", width: 2.8cm)
+    #image("images/by-sa.png", width: 2.8cm)
 
     #v(0.15em)
     #text(weight: "bold")[Licencia Creative Commons]
 
     #v(0.1em)
-    Atribución – No Comercial – Compartir Igual 4.0 Internacional (CC BY-NC-SA 4.0) \
-    #link("https://creativecommons.org/licenses/by-nc-sa/4.0/")[creativecommons.org/licenses/by-nc-sa/4.0]
+    Atribución – Compartir Igual 4.0 Internacional (CC BY-SA 4.0) \
+    #link("https://creativecommons.org/licenses/by-sa/4.0/deed.es")[creativecommons.org/licenses/by-sa/4.0]
 
     #v(0.15em)
-    #text(size: 8.5pt)[Esta licencia permite a otros distribuir, remezclar, retocar y crear a partir de esta obra de modo no comercial, siempre y cuando den crédito a los autores y licencien sus nuevas creaciones bajo las mismas condiciones.]
+    #text(size: 8.5pt)[Esta licencia permite a otros distribuir, remezclar, retocar y crear a partir de esta obra, incluso con fines comerciales, siempre y cuando den crédito a los autores y licencien sus nuevas creaciones bajo las mismas condiciones.]
 
     #v(0.3em)
     © 2026  Christian Andrés Candela Uribe, Paola Andrea Acero Franco, Luis Eduardo Sepúlveda Rodríguez
@@ -784,13 +796,14 @@
   // title-size: 2.2em,
   // subtitle-size: 1.4em,
   // author-size: 1.6em,
-  main-color: brand-color.at("primary", default: blue),
+  main-color: color-principal,
   logo: {
     let logo-info = brand-logo.at("medium", default: none)
     if logo-info != none { image(logo-info.path, alt: logo-info.at("alt", default: none)) }
   },
   outline-depth: 3,
   outline-small-depth: 1,
+  font-size: 11pt,
 )
 
 
@@ -810,23 +823,64 @@
   it
 }
 
-#heading(level: 1, numbering: none)[Prefacio]
-<prefacio>
-Este libro recoge en un único volumen el #strong[Recurso Educativo para el Despliegue de Ecosistemas de Centralización de Logs Mediante Docker], producto resultante del trabajo académico de los tres profesores autores adscritos al Programa de Ingeniería de Sistemas y Computación de la Universidad del Quindío.
+#heading(level: 1, numbering: none)[Presentación]
+<presentación>
+Este libro recoge en un único volumen el #strong[Recurso Educativo para el Despliegue de Ecosistemas de Centralización de Logs Mediante Docker], producto resultante del trabajo académico de los tres profesores autores adscritos al Programa de Ingeniería de Sistemas y Computación de la Universidad del Quindío. No es un manual de herramientas: es un recurso educativo abierto que articula un marco conceptual tecnológicamente neutral, instrumentos de estudio y de docencia, y nueve laboratorios reproducibles en el equipo personal del estudiante.
 
-#heading(level: 2, numbering: none)[A quién está dirigido]
-<a-quién-está-dirigido>
-El recurso se concibe como material de apoyo para cursos universitarios de pregrado y posgrado en áreas relacionadas con la arquitectura de software, los sistemas distribuidos y la ingeniería de microservicios. Está específicamente calibrado para la asignatura #strong[Arquitectura Orientada a Microservicios] del programa de Ingeniería de Sistemas y Computación, aunque su diseño modular permite reutilizarlo en cursos electivos, semilleros de investigación o programas de formación continuada.
-
+#heading(level: 2, numbering: none)[El recurso en un vistazo]
+<el-recurso-en-un-vistazo>
+#table(
+  columns: (25%, 25%, 25%, 25%),
+  align: (auto,auto,auto,auto,),
+  table.header([Problema formativo], [Solución propuesta], [Evidencia principal], [Uso esperado],),
+  table.hline(),
+  [La observabilidad suele enseñarse de forma instrumental, acoplada a herramientas que cambian con rapidez.], [Marco conceptual neutral con una arquitectura de cuatro etapas, seis desafíos de diseño y tres paradigmas de almacenamiento.], [#ref(<sec-marco-conceptual>, supplement: [Capítulo])], [Fundamentación teórica de la unidad temática.],
+  [Los laboratorios dependen de infraestructura institucional o de entornos difíciles de reproducir.], [Nueve ecosistemas autocontenidos con Docker Compose, dimensionados, parametrizados y con prueba de humo automatizada.], [Parte III y repositorio público de soluciones.], [Laboratorios en el equipo personal del estudiante.],
+  [La evaluación de los laboratorios técnicos suele desalinearse de los resultados de aprendizaje.], [Guía docente con rutas de planificación, rúbrica analítica homogénea y evaluación de tres componentes.], [#link(<sec-guia-docente>)[Guía docente]], [Planificación y evaluación del curso.],
+)
+#heading(level: 2, numbering: none)[¿Para quién y cómo se usa?]
+<para-quién-y-cómo-se-usa>
+#table(
+  columns: (33.33%, 33.33%, 33.33%),
+  align: (auto,auto,auto,),
+  table.header([Público], [Punto de partida sugerido], [Qué encontrará],),
+  table.hline(),
+  [Docente], [#link(<sec-guia-docente>)[Guía docente]], [Rutas de una y dos semanas, pares de stacks contrastantes, rúbricas y dificultades frecuentes con orientaciones.],
+  [Estudiante], [#ref(<sec-marco-conceptual>, supplement: [Capítulo]) y #link(<sec-guia-estudio>)[guía de estudio]], [Fundamentos conceptuales, glosario y cuestionario de autoevaluación con articulación teoría--práctica.],
+  [Lector autodidacta], [#link(<sec-guia-elk>)[Guía ELK] en adelante], [Ruta progresiva de nueve laboratorios reproducibles, del ecosistema clásico al estado del arte.],
+  [Par académico evaluador], [#ref(<sec-metodologia>, supplement: [Capítulo]) y #ref(<sec-resultados>, supplement: [Capítulo])], [Trazabilidad con la propuesta aprobada, gestión de evidencias y correspondencia objetivos--resultados.],
+)
+#heading(level: 2, numbering: none)[Indicadores del recurso]
+<indicadores-del-recurso>
+#table(
+  columns: (33.33%, 33.33%, 33.33%),
+  align: (auto,auto,auto,),
+  table.header([Componente], [Magnitud], [Valor formativo],),
+  table.hline(),
+  [Marco conceptual], [Arquitectura de 4 etapas, 6 desafíos de diseño, 3 paradigmas de almacenamiento.], [Modelo mental transferible entre tecnologías.],
+  [Guías prácticas], [9 stacks, del ecosistema tradicional al estado del arte.], [Independencia instrumental demostrada empíricamente.],
+  [Material de estudio], [20 preguntas resueltas y glosario terminológico.], [Autoevaluación y articulación teoría--práctica.],
+  [Instrumentos docentes], [3 rutas de planificación y rúbrica analítica de 4 criterios.], [Adopción realista en cursos semestrales.],
+  [Reproducibilidad], [9 pruebas de humo automatizadas y límites de memoria parametrizados.], [Verificación objetiva del entorno en equipos heterogéneos.],
+)
 #heading(level: 2, numbering: none)[Estructura del libro]
 <estructura-del-libro>
 El volumen se organiza en tres partes complementarias:
 
-- #strong[Parte I --- Marco conceptual.] Desarrolla, desde un enfoque teórico y tecnológicamente neutral, los fundamentos de la observabilidad en sistemas distribuidos, con énfasis en la centralización de logs. Aborda la justificación, los objetivos formativos, la arquitectura conceptual de cuatro etapas, los desafíos transversales de diseño y la ruta de aprendizaje propuesta.
+- #strong[Parte I --- Documento base.] Desarrolla, desde un enfoque teórico y tecnológicamente neutral, los fundamentos de la observabilidad en sistemas distribuidos, con énfasis en la centralización de logs. Documenta además la metodología de construcción del recurso y su gestión de evidencias, los resultados obtenidos y su correspondencia con los objetivos comprometidos, la discusión académica, pedagógica e institucional, las conclusiones y el trabajo futuro.
 
-- #strong[Parte II --- Material de estudio y docencia.] Reúne dos instrumentos pedagógicos: la #emph[Guía de estudio], organizada en formato pregunta--respuesta con un glosario terminológico y un bloque de preguntas de articulación teoría--práctica; y la #emph[Guía docente], que ofrece planificaciones sugeridas, rúbricas de evaluación y orientaciones para la integración del recurso en cursos universitarios reales.
+- #strong[Parte II --- Material de estudio y docencia.] Reúne dos instrumentos pedagógicos: la #emph[Guía de estudio], organizada en formato pregunta--respuesta con un glosario terminológico y un bloque de preguntas de articulación teoría--práctica; y la #emph[Guía docente], que ofrece un panorama de consulta rápida de las nueve guías, una matriz de alineación con los resultados de aprendizaje, planificaciones sugeridas, rúbricas de evaluación y orientaciones para la integración del recurso en cursos universitarios reales.
 
-- #strong[Parte III --- Guías prácticas.] Reúne nueve laboratorios reproducibles, cada uno orientado a una pila tecnológica distinta de centralización y observabilidad. Las guías comparten una estructura común (objetivo, prerrequisitos, despliegue con Docker Compose, validación, profundización) y se diseñaron para permitir tanto la lectura lineal como el uso selectivo según los intereses del lector o el tiempo disponible en clase.
+- #strong[Parte III --- Guías prácticas.] Reúne nueve laboratorios reproducibles, cada uno orientado a una pila tecnológica distinta de centralización y observabilidad. Las guías comparten una estructura común (objetivo, tiempo estimado y evidencias esperadas, prerrequisitos, despliegue con Docker Compose, validación, profundización) y se diseñaron para permitir tanto la lectura lineal como el uso selectivo según los intereses del lector o el tiempo disponible en clase.
+
+#heading(level: 2, numbering: none)[Ruta de lectura sugerida]
+<ruta-de-lectura-sugerida>
+El libro admite una lectura lineal, pero también rutas selectivas según el propósito del lector:
+
+- #strong[Adopción docente:] guía docente, seguida de dos guías prácticas contrastantes según los pares sugeridos en ella.
+- #strong[Comprensión conceptual:] Parte I completa y guía de estudio, dejando las guías prácticas como profundización.
+- #strong[Práctica autónoma:] guías prácticas en el orden propuesto, consultando el marco conceptual cuando cada guía lo remita.
+- #strong[Evaluación académica del trabajo:] metodología (#ref(<sec-metodologia>, supplement: [Capítulo])), resultados (#ref(<sec-resultados>, supplement: [Capítulo])) y discusión (#ref(<sec-discusion>, supplement: [Capítulo])), que concentran la trazabilidad con la propuesta aprobada, las evidencias y el análisis crítico del alcance.
 
 #heading(level: 2, numbering: none)[Sobre el uso autónomo y supervisado del recurso]
 <sobre-el-uso-autónomo-y-supervisado-del-recurso>
@@ -853,7 +907,7 @@ Los autores agradecen a la Universidad del Quindío y al Programa de Ingeniería
 <introducción>
 La adopción creciente de arquitecturas basadas en sistemas distribuidos y microservicios ha transformado de manera significativa el desarrollo y la operación del software contemporáneo \(#link(<ref-bosch-2016>)[Bosch, 2016]\; #link(<ref-newman-2015>)[Newman, 2015]\; #link(<ref-richardson-2018>)[Richardson, 2018]). Estas arquitecturas aportan beneficios claros en términos de escalabilidad, resiliencia y evolución independiente de los componentes; sin embargo, también introducen un aumento considerable en la complejidad asociada a su análisis y gestión.
 
-En este escenario, comprender el comportamiento interno de los sistemas en ejecución se convierte en un reto central para la formación en ingeniería de sistemas y disciplinas afines. La #strong[observabilidad] surge como un principio fundamental que permite abordar este reto, al posibilitar la inferencia del estado interno de un sistema a partir de las señales externas que este produce durante su operación \(#link(<ref-beyer-2016>)[Beyer et~al., 2016]\; #link(<ref-majors-2022>)[Majors et~al., 2022]\; #link(<ref-sridharan-2018>)[Sridharan, 2018]).
+En este escenario, comprender el comportamiento interno de los sistemas en ejecución se convierte en un reto central para la formación en ingeniería de sistemas y computación, y disciplinas afines. La #strong[observabilidad] surge como un principio fundamental que permite abordar este reto, al posibilitar la inferencia del estado interno de un sistema a partir de las señales externas que este produce durante su operación \(#link(<ref-beyer-2016>)[Beyer et~al., 2016]\; #link(<ref-majors-2022>)[Majors et~al., 2022]\; #link(<ref-sridharan-2018>)[Sridharan, 2018]).
 
 El presente trabajo escrito tiene como propósito desarrollar, desde un enfoque académico y formativo, los fundamentos conceptuales de la observabilidad en sistemas distribuidos, con énfasis en la #strong[centralización de logs] como uno de sus pilares principales. El documento se concibe como un recurso educativo orientado a facilitar el aprendizaje progresivo de estos conceptos, priorizando los principios y la arquitectura conceptual sobre el uso de herramientas o tecnologías específicas. Esta separación entre el marco teórico y las guías prácticas es una decisión metodológica deliberada: mantener el documento conceptual neutral en términos tecnológicos permite que los fundamentos presentados conserven validez con independencia de la evolución del ecosistema de herramientas, mientras que las guías prácticas ofrecen la experiencia concreta necesaria para anclar el aprendizaje en contextos reales \(#link(<ref-kolb-1984>)[Kolb, 1984]).
 
@@ -861,7 +915,7 @@ Las guías prácticas complementarias cubren un espectro tecnológico más ampli
 
 == Justificación
 <justificación>
-La formación en ingeniería de sistemas enfrenta el desafío de preparar a los estudiantes para comprender y gestionar sistemas de software cada vez más complejos y distribuidos. Si bien los programas académicos suelen abordar con profundidad los aspectos relacionados con el diseño y la construcción de software, los elementos asociados a su operación, análisis y diagnóstico suelen recibir una atención limitada o fragmentada.
+La formación en ingeniería de sistemas y computación enfrenta el desafío de preparar a los estudiantes para comprender y gestionar sistemas de software cada vez más complejos y distribuidos. Si bien los programas académicos suelen abordar con profundidad los aspectos relacionados con el diseño y la construcción de software, los elementos asociados a su operación, análisis y diagnóstico suelen recibir una atención limitada o fragmentada.
 
 En particular, la observabilidad y la centralización de logs suelen introducirse desde enfoques predominantemente instrumentales, centrados en el uso de herramientas específicas. Esta aproximación dificulta la transferencia del conocimiento a contextos tecnológicos diversos y limita la comprensión de los principios conceptuales que subyacen a dichas prácticas \(#link(<ref-cito-2015>)[Cito et~al., 2015]).
 
@@ -892,10 +946,10 @@ Al finalizar el estudio de este documento, el estudiante será capaz de:
 - #strong[Relacionar] los conceptos teóricos desarrollados en este documento con las implementaciones prácticas abordadas en las guías complementarias.
 
 = Metodología de Construcción del Recurso Educativo y Trazabilidad con la Propuesta
-<metodología-de-construcción-del-recurso-educativo-y-trazabilidad-con-la-propuesta>
+<sec-metodologia>
 La construcción de este recurso educativo se concibe como un proceso aplicado de diseño, desarrollo, verificación y validación de un #strong[artefacto instruccional y tecnológico]. Este trabajo tiene como propósito diseñar un #strong[Recurso Educativo Abierto (REA) portable y modular].
 
-Por consiguiente, la metodología se enfoca en la articulación sistémica entre directrices curriculares de la Ingeniería de Sistemas, estándares contemporáneos de observabilidad industrial (DevOps/SRE) y la viabilidad instruccional en entornos heterogéneos mediante contenedores Docker.
+Por consiguiente, la metodología se enfoca en la articulación sistémica entre directrices curriculares de la Ingeniería de Sistemas y Computación, estándares contemporáneos de observabilidad industrial (DevOps/SRE) y la viabilidad instruccional en entornos heterogéneos mediante contenedores Docker.
 
 == Enfoque metodológico adoptado
 <enfoque-metodológico-adoptado>
@@ -931,7 +985,7 @@ El trabajo se clasifica como un #strong[desarrollo académico aplicado con orien
 + Nueve (9) guías prácticas e independientes que materializan dicha arquitectura mediante diferentes combinaciones tecnológicas (#emph[stacks]).
 + Una guía didáctica para docentes y una guía de estudio para estudiantes.
 
-El valor del producto radica en su #strong[portabilidad, modularidad y transferibilidad], permitiendo que cualquier docente o estudiante de Ingeniería de Sistemas pueda replicar los ecosistemas con el único requisito de contar con un motor de contenedores Docker.
+El valor del producto radica en su #strong[portabilidad, modularidad y transferibilidad], permitiendo que cualquier docente o estudiante de Ingeniería de Sistemas y Computación pueda replicar los ecosistemas con el único requisito de contar con un motor de contenedores Docker.
 
 == Principios metodológicos
 <principios-metodológicos>
@@ -1024,7 +1078,7 @@ Para asegurar la coherencia sistémica, cada guía didáctica en el repositorio 
 + #strong[Procedimiento Técnico Paso a Paso:] Comandos y configuraciones limpias, reproducibles y ordenadas.
 + #strong[Cuestionario de Análisis Crítico:] Preguntas diseñadas para la conceptualización abstracta y el diagnóstico reflexivo de fallos.
 
-Los #strong[instrumentos de evaluación] (entregables exigibles y rúbrica analítica de niveles de desempeño) se proveen de forma #strong[homogénea y centralizada] en la guía docente (#NormalTok("guia_docente.md"); §6), aplicables de manera uniforme a cualquiera de las nueve guías. Esta centralización es una decisión deliberada de diseño REA: garantiza criterios de evaluación consistentes entre stacks, evita la duplicación de rúbricas y facilita que el docente adopte y adapte un único conjunto de instrumentos.
+Los #strong[instrumentos de evaluación] (entregables exigibles y rúbrica analítica de niveles de desempeño) se proveen de forma #strong[homogénea y centralizada] en la guía docente (#NormalTok("guia_docente.md"); §8), aplicables de manera uniforme a cualquiera de las nueve guías. Esta centralización es una decisión deliberada de diseño REA: garantiza criterios de evaluación consistentes entre stacks, evita la duplicación de rúbricas y facilita que el docente adopte y adapte un único conjunto de instrumentos.
 
 == Marco de Verificación y Validación (V&V)
 <marco-de-verificación-y-validación-vv>
@@ -1041,9 +1095,9 @@ El marco de verificación y validación del recurso se centra en dos dimensiones
   - #emph[Validación de Imágenes Libres:] Empleo exclusivo de imágenes oficiales de Docker Hub o de registros de código abierto para evitar licenciamientos privativos.
 - #strong[Validación del Artefacto (Eficacia Didáctica y Curricular):]
   - #emph[Validación de Coherencia Pedagógica:] Revisión de que las tareas solicitadas permitan alcanzar y evaluar empíricamente los Resultados de Aprendizaje Esperados (RAE) de la asignatura #emph[Arquitectura Orientada a Microservicios].
-  - #emph[Evaluación Editorial y Estructura Docente:] Revisión de la portabilidad e inteligibilidad de la guía docente (#NormalTok("guia_docente.md");) para asegurar que el recurso pueda ser fácilmente reutilizado por otros docentes del programa de Ingeniería de Sistemas.
+  - #emph[Evaluación Editorial y Estructura Docente:] Revisión de la portabilidad e inteligibilidad de la guía docente (#NormalTok("guia_docente.md");) para asegurar que el recurso pueda ser fácilmente reutilizado por otros docentes del programa de Ingeniería de Sistemas y Computación.
 
-#strong[Delimitación del alcance evaluativo.] Los #strong[Resultados de Aprendizaje Esperados (RAE)] declarados en el recurso son objetivos de diseño instruccional, no mediciones empíricas. Los objetivos comprometidos en la propuesta aprobada se circunscriben al #strong[diseño, desarrollo y verificación técnica] del REA (fundamentación teórica, guías prácticas y entornos reproducibles); la #strong[medición del impacto pedagógico] (la evaluación empírica de los resultados de aprendizaje al aplicar el recurso con estudiantes) excede dichos objetivos y se proyecta como una #strong[fase posterior] de validación en aula ---analítica de uso, encuestas de percepción y ajuste iterativo conforme a los principios de la investigación basada en diseño (DBR)---, dado que esta versión corresponde a la primera publicación del recurso.
+#strong[Delimitación del alcance evaluativo.] Los #strong[Resultados de Aprendizaje Esperados (RAE)] declarados en el recurso son objetivos de diseño instruccional, no mediciones empíricas. Los objetivos comprometidos en la propuesta aprobada se circunscriben al #strong[diseño, desarrollo y verificación técnica] del REA (fundamentación teórica, guías prácticas y entornos reproducibles); la #strong[medición del impacto pedagógico] (la evaluación empírica de los resultados de aprendizaje al aplicar el recurso con estudiantes) excede dichos objetivos y se proyecta como una #strong[fase posterior] de validación en aula, que incluirá analítica de uso, encuestas de percepción y ajuste iterativo conforme a los principios de la investigación basada en diseño (DBR), dado que esta versión corresponde a la primera publicación del recurso. La proyección detallada de esta fase, con sus indicadores de evaluación de impacto, se desarrolla en el capítulo de trabajo futuro.
 
 === Prueba de humo estandarizada
 <prueba-de-humo-estandarizada>
@@ -1079,6 +1133,28 @@ La siguiente matriz detalla de forma explícita cómo cada uno de los tres objet
   [#strong[OE2:] Elaborar guías prácticas para el despliegue progresivo de soluciones para centralización de logs utilizando Docker.], [\* Carpeta de guías didácticas (#NormalTok("guias/"); de la 1 a la 9).\* Rúbricas y planeación sugerida (#NormalTok("guia_docente.md");).], [\* 9 Guías académicas estructuradas bajo el modelo instruccional de Kolb.\* Rúbrica analítica homogénea y entregables exigibles definidos en la guía docente, aplicables a las 9 guías.], [Se diseñan 9 guías instruccionales que cubren desde los stacks tradicionales hasta soluciones en el estado del arte, ordenadas por complejidad progresiva.],
   [#strong[OE3:] Implementar cada guía en entornos funcionales y reproducibles para los estudiantes.], [\* Carpeta de configuraciones y entornos (#NormalTok("soluciones/"); de la 1 a la 9).\* Repositorio de código con archivos #NormalTok("docker-compose.yml"); y configs.], [\* Archivos YAML de Docker Compose funcionales.\* Archivos de configuración de colectores e indexadores.\* Aplicaciones mocks generadoras de logs.\* Logs e historiales de comandos.], [Las 9 soluciones y contenedores de observabilidad son funcionales, portables y reproducibles, estructuradas de forma parametrizada y con guías de dimensionamiento técnico.],
 )
+== Gestión de evidencias del trabajo
+<gestión-de-evidencias-del-trabajo>
+Para que el cumplimiento de los objetivos sea verificable por pares académicos, el recurso adopta una gestión explícita de evidencias: todo resultado declarado en este documento está respaldado por un artefacto observable dentro del repositorio público. Este enfoque es coherente con la naturaleza del trabajo como artefacto de Design Science Research, cuyo valor se demuestra mediante productos tangibles y auditables, y aprovecha una característica diferencial del recurso: al publicarse como repositorio navegable con DOI, cualquier evaluador puede inspeccionar las evidencias e incluso reproducirlas en su propio equipo. La Tabla 5 inventaría las evidencias del trabajo, su ubicación y el objetivo específico al que aportan.
+
+#strong[Tabla 5.] Inventario de evidencias verificables del recurso educativo.
+
+#table(
+  columns: (25%, 25%, 25%, 25%),
+  align: (left,left,left,left,),
+  table.header([Evidencia], [Ubicación en el repositorio], [Descripción], [Objetivo al que aporta],),
+  table.hline(),
+  [Marco conceptual tecnológicamente neutral], [#NormalTok("readme.md"); (este documento)], [Desarrollo teórico de la observabilidad y de la arquitectura conceptual de cuatro etapas, con sus desafíos y paradigmas de almacenamiento.], [OE1],
+  [Guía de estudio], [#NormalTok("guia_estudio.md");], [Veinte preguntas de comprensión con respuesta, glosario terminológico y bloque de articulación teoría--práctica.], [OE1],
+  [Guías prácticas], [#NormalTok("guias/"); (9 documentos)], [Guías instruccionales bajo el ciclo de Kolb, con RAE, dimensionamiento de recursos, procedimiento reproducible y cuestionario de análisis crítico.], [OE2],
+  [Guía docente], [#NormalTok("guia_docente.md");], [Rutas de planificación, instrumentos de evaluación homogéneos (entregables y rúbrica) y anticipación de dificultades frecuentes.], [OE2],
+  [Soluciones ejecutables], [#NormalTok("soluciones/"); (9 entornos)], [Archivos #NormalTok("docker-compose.yml");, configuraciones de colectores e indexadores y aplicación productora de logs de cada stack.], [OE3],
+  [Pruebas de humo automatizadas], [#NormalTok("smoke_test.sh"); en cada solución], [Verificación automatizada de extremo a extremo del pipeline de cada stack, con marcador único y consulta de confirmación en el motor de almacenamiento.], [OE3],
+  [Parametrización de recursos], [Archivos #NormalTok(".env"); de cada solución], [Límites de memoria de los contenedores (#NormalTok("mem_limit");) ajustables mediante variables de entorno, en cumplimiento del principio de transparencia de recursos.], [OE3],
+  [Metadatos de publicación abierta], [#NormalTok("CITATION.cff");, #NormalTok(".zenodo.json");, #NormalTok("LICENSE");], [Citación estructurada, DOI persistente y licenciamiento abierto que habilitan la adopción y trazabilidad externa del recurso.], [Transversal],
+)
+Cada evidencia se presenta acompañada de su propósito y de su relación con el objetivo que soporta: las capturas y salidas incluidas en las guías se contextualizan con el paso del procedimiento al que corresponden, los scripts de verificación declaran qué comprueban y cómo interpretarlo, y la matriz de trazabilidad de la Tabla 4 vincula formalmente cada conjunto de evidencias con sus criterios y métricas de cumplimiento. El capítulo de resultados retoma este inventario para sintetizar, objetivo por objetivo, lo efectivamente producido y su evidencia asociada.
+
 = Marco conceptual
 <sec-marco-conceptual>
 Esta sección desarrolla de manera progresiva los fundamentos conceptuales de la observabilidad y la centralización de logs en sistemas distribuidos. El recorrido inicia con la definición y alcance del concepto de observabilidad, avanza hacia el análisis del rol de los logs como fuente primaria de información y culmina con la presentación de una arquitectura conceptual que integra los distintos componentes involucrados. Esta progresión busca facilitar una comprensión gradual y coherente, orientada al aprendizaje y a la posterior aplicación práctica de los conceptos abordados.
@@ -1164,7 +1240,7 @@ El diseño de soluciones de centralización de logs implica enfrentar diversos d
 - #strong[Seguridad y Privacidad (Sanitización):] Los logs suelen capturar inadvertidamente información sensible (contraseñas, tokens, datos de usuarios PII). Es imperativo que las arquitecturas incluyan mecanismos de censura o enmascaramiento de datos durante la fase de procesamiento antes de su indexación \(#link(<ref-aghili-2025>)[Aghili et~al., 2025]).
 - #strong[Volumen, Cardinalidad y Costo:] El valor analítico de un sistema de centralización depende de su capacidad de indexar los datos para consultarlos con rapidez, pero indexar tiene un costo. Los atributos de alta #emph[cardinalidad] (aquellos con un número muy elevado de valores distintos, como los identificadores de usuario o de petición) pueden provocar un crecimiento desproporcionado de los índices y degradar el rendimiento. Diseñar una solución de centralización implica, por tanto, decidir conscientemente qué campos justifican el costo de ser indexados y cuáles no, decisión que se relaciona directamente con el paradigma de almacenamiento elegido (#ref(<sec-5-7-3>, supplement: [Sección])).
 - #strong[Orden Temporal y Relojes Distribuidos:] Como se discutió en la #ref(<sec-5-3>, supplement: [Sección]), los relojes de los distintos nodos no están perfectamente sincronizados, lo que dificulta establecer el orden real de los eventos a partir de sus marcas temporales \(#link(<ref-lamport-1978>)[Lamport, 1978]). Las soluciones de centralización deben asumir esta limitación y apoyarse en identificadores de correlación y en marcas temporales coherentes para reconstruir las secuencias de ejecución.
-- #strong[Confiabilidad de la Entrega y Contrapresión:] El transporte de logs desde su origen hasta el repositorio central no está exento de fallos. Las soluciones deben definir garantías de entrega ---desde #emph[at-most-once] (se prioriza no duplicar, a riesgo de perder eventos) hasta #emph[at-least-once] (se prioriza no perder, a riesgo de duplicar)--- así como mecanismos de amortiguación (#emph[buffering]) y contrapresión (#emph[backpressure]) que eviten que un pico en la generación de logs sature o derribe los componentes intermedios.
+- #strong[Confiabilidad de la Entrega y Contrapresión:] El transporte de logs desde su origen hasta el repositorio central no está exento de fallos. Las soluciones deben definir garantías de entrega, desde #emph[at-most-once] (se prioriza no duplicar, a riesgo de perder eventos) hasta #emph[at-least-once] (se prioriza no perder, a riesgo de duplicar), así como mecanismos de amortiguación (#emph[buffering]) y contrapresión (#emph[backpressure]) que eviten que un pico en la generación de logs sature o derribe los componentes intermedios.
 
 Desde una perspectiva académica, el análisis de estos desafíos permite a los estudiantes desarrollar criterios transferibles a distintos contextos tecnológicos, fomentando una comprensión crítica de las decisiones de diseño y sus implicaciones operativas y éticas.
 
@@ -1245,8 +1321,8 @@ Desde el punto de vista conceptual, esta integración permite comprender cómo l
 
 De este modo, la arquitectura conceptual presentada establece un puente entre los fundamentos teóricos desarrollados en este trabajo escrito y las actividades prácticas abordadas en los materiales complementarios, manteniendo la neutralidad tecnológica del documento.
 
-= Alcance, articulación y conclusiones
-<alcance-articulación-y-conclusiones>
+= Alcance y articulación con las actividades prácticas
+<alcance-y-articulación-con-las-actividades-prácticas>
 == Alcance del documento
 <alcance-del-documento>
 Este #strong[marco conceptual] se centra en el desarrollo teórico de la centralización de logs como pilar de la observabilidad y se mantiene deliberadamente neutral en términos tecnológicos. Su instanciación práctica se desarrolla en las guías complementarias que forman parte del mismo recurso educativo abierto (REA), de modo que el componente conceptual y el práctico se articulan como partes de un único producto académico, sin que la neutralidad del primero se vea comprometida por las decisiones tecnológicas del segundo.
@@ -1283,15 +1359,160 @@ Aunque las guías son independientes, se sugiere el siguiente orden de consumo p
 + #strong[#link(<sec-guia-signoz>)[SigNoz (ClickHouse)]:] (#emph[Estado del Arte]) Plataforma "Todo en Uno" que utiliza OpenTelemetry nativamente y almacenamiento analítico columnar, representando la alternativa libre a plataformas comerciales.
 + #strong[#link(<sec-guia-alloy>)[Grafana Alloy]:] (#emph[Guía complementaria]) Migración de Promtail al sucesor oficial. Introduce el modelo de configuración orientado al flujo de datos (#emph[dataflow]) con componentes explícitamente conectados.
 
-== Conclusiones
-<conclusiones>
-La observabilidad se consolida como un principio fundamental para la comprensión, análisis y gestión de sistemas distribuidos, al permitir inferir su comportamiento interno a partir de las señales externas generadas durante su ejecución. En arquitecturas basadas en microservicios, donde la complejidad operativa y los comportamientos emergentes son inherentes, este principio resulta indispensable para el diagnóstico, la toma de decisiones y la mejora continua de los sistemas \(#link(<ref-beyer-2016>)[Beyer et~al., 2016]\; #link(<ref-majors-2022>)[Majors et~al., 2022]).
+= Resultados
+<sec-resultados>
+Este capítulo sintetiza los resultados obtenidos durante el desarrollo del recurso educativo, organizándolos en correspondencia con los tres objetivos específicos (OE) comprometidos en la propuesta aprobada de ascenso. Cada resultado se enuncia junto con la evidencia verificable que lo respalda, en coherencia con la gestión de evidencias descrita en la metodología, de modo que un evaluador externo pueda contrastar lo declarado con los artefactos publicados en el repositorio.
 
-Dentro de este marco, la centralización de logs se presenta como un pilar esencial de la observabilidad, no solo por su valor operativo, sino por su capacidad para transformar eventos dispersos en una fuente coherente de información y conocimiento. El desarrollo conceptual propuesto en este trabajo permite comprender la centralización de logs como un flujo integrado que articula componentes de recolección, procesamiento, almacenamiento y visualización, ofreciendo una visión sistémica del ciclo de vida de la información operativa.
+== Resultados de la fundamentación conceptual
+<resultados-de-la-fundamentación-conceptual>
+En cumplimiento del OE1 se produjo un marco conceptual tecnológicamente neutral que desarrolla la observabilidad desde su raíz en la teoría de control \(#link(<ref-kalman-1960>)[Kalman, 1960]) hasta su consolidación como principio de la ingeniería de software contemporánea. Los resultados concretos de esta dimensión son: (a) la caracterización de los tres pilares de la observabilidad y del rol de los logs como fuente primaria de información semánticamente rica; (b) el análisis de la problemática de la dispersión, incluyendo los problemas no triviales de correlación de eventos y orden temporal en sistemas distribuidos; (c) la arquitectura conceptual de cuatro etapas (recolección, procesamiento, almacenamiento y visualización) como modelo mental transferible entre tecnologías; (d) el análisis de seis desafíos transversales de diseño, desde la estandarización semántica hasta la confiabilidad de la entrega; y (e) la caracterización de los tres paradigmas de indexación y almacenamiento con sus compromisos de costo y flexibilidad.
 
-Este enfoque arquitectónico y conceptual proporciona a los estudiantes un modelo mental transferible que facilita la comprensión de distintas implementaciones prácticas, independientemente de las tecnologías específicas empleadas. Al priorizar los principios y la arquitectura sobre las herramientas, el documento contribuye a una formación más sólida, crítica y adaptable a la evolución constante del ecosistema tecnológico.
+El marco se complementa con la guía de estudio, que operacionaliza la fundamentación en veinte preguntas de comprensión con respuesta, un glosario terminológico y un bloque de preguntas de articulación teoría--práctica que conecta explícitamente los conceptos del marco con las implementaciones de las guías. El conjunto se sustenta en más de treinta referencias especializadas con identificadores persistentes.
 
-En conjunto, el trabajo escrito ofrece una base teórica robusta y coherente que apoya los procesos formativos en ingeniería de sistemas y disciplinas afines, fortaleciendo la articulación entre fundamentos conceptuales y escenarios reales de operación, y sentando las bases para un aprendizaje significativo en torno a la observabilidad y la centralización de logs.
+== Resultados del diseño instruccional y las prácticas académicas
+<resultados-del-diseño-instruccional-y-las-prácticas-académicas>
+En cumplimiento del OE2 se diseñaron nueve guías prácticas con estructura formal homogénea (RAE observables, dimensionamiento explícito de recursos, diagrama del pipeline lógico, procedimiento reproducible y cuestionario de análisis crítico), organizadas bajo el ciclo de aprendizaje experiencial de Kolb y ordenadas por complejidad progresiva, desde el ecosistema tradicional más extendido hasta las plataformas del estado del arte. El diseño instruccional se completa con la guía docente, que aporta una alineación explícita con el microcurrículo oficial de la asignatura (resultados de aprendizaje, núcleos temáticos, unidades de competencia y ejes Ser--Saber--Saber Hacer del sílabo, donde los patrones de observabilidad figuran como temática declarada), tres rutas de planificación según el tiempo disponible, una estrategia de evaluación de tres componentes con rúbrica analítica homogénea aplicable a cualquiera de las nueve guías, y un repertorio de dificultades frecuentes con orientaciones para anticiparlas en el aula.
+
+La Tabla 6 sintetiza la cobertura conceptual del conjunto: cada guía materializa la misma arquitectura de cuatro etapas con un aporte conceptual diferencial, de modo que la progresión completa expone al estudiante a los tres paradigmas de almacenamiento caracterizados en la #ref(<sec-5-7-3>, supplement: [Sección]) y a los principales patrones de recolección y transporte.
+
+#strong[Tabla 6.] Resultados del diseño instruccional: cobertura conceptual de las nueve guías prácticas.
+
+#table(
+  columns: (25%, 25%, 25%, 25%),
+  align: (left,left,left,left,),
+  table.header([\#], [Guía (stack)], [Paradigma de almacenamiento], [Aporte conceptual diferencial],),
+  table.hline(),
+  [1], [ELK], [Índice invertido], [Ecosistema tradicional de búsqueda de texto completo; punto de partida de la ruta.],
+  [2], [OLO (OpenSearch)], [Índice invertido], [Evolución y bifurcación de código abierto del ecosistema anterior.],
+  [3], [Fluentd], [Índice invertido], [Desacoplamiento del recolector como componente independiente del almacenamiento.],
+  [4], [Promtail y Loki], [Índice de solo etiquetas], [Compromiso costo--flexibilidad de la indexación mínima.],
+  [5], [GELF y Graylog], [Índice invertido], [Formatos de transporte específicos y plataformas dedicadas a la gestión de logs.],
+  [6], [OpenTelemetry (LGTM)], [Índice de solo etiquetas], [Estándar de protocolo unificado y tratamiento integrado de los tres pilares.],
+  [7], [Vector, Loki y Grafana], [Índice de solo etiquetas], [Pipeline de alto rendimiento y sanitización programable de campos sensibles.],
+  [8], [SigNoz (ClickHouse)], [Almacén columnar], [Plataforma integrada con almacenamiento analítico columnar y OTLP nativo.],
+  [9], [Grafana Alloy], [Índice de solo etiquetas], [Configuración orientada al flujo de datos y migración entre recolectores.],
+)
+== Resultados técnicos verificables
+<resultados-técnicos-verificables>
+En cumplimiento del OE3, cada guía cuenta con una solución implementada como entorno funcional, autocontenido y reproducible. La Tabla 7 enuncia los resultados técnicos junto con su evidencia:
+
+#strong[Tabla 7.] Resultados técnicos verificables y sus evidencias.
+
+#table(
+  columns: (33.33%, 33.33%, 33.33%),
+  align: (left,left,left,),
+  table.header([Resultado], [Evidencia verificable], [Ubicación],),
+  table.hline(),
+  [Nueve ecosistemas de centralización desplegables en un equipo personal.], [Archivos #NormalTok("docker-compose.yml"); autocontenidos, configuraciones de colectores e indexadores y aplicación productora de logs.], [#NormalTok("soluciones/01-ELK"); a #NormalTok("soluciones/09-Alloy");],
+  [Verificación automatizada de extremo a extremo del pipeline en los nueve stacks.], [Prueba de humo estandarizada que emite un log con marcador único y confirma su registro en el motor de almacenamiento.], [#NormalTok("smoke_test.sh"); en cada solución],
+  [Transparencia y dimensionamiento adaptativo de recursos.], [Límites de memoria parametrizados mediante variables de entorno y tablas de dimensionamiento al inicio de cada guía.], [Archivos #NormalTok(".env"); de cada solución y guías prácticas],
+  [Verificación de portabilidad sobre la primera plataforma objetivo.], [Despliegue verificado sobre macOS Apple Silicon (ARM); la cobertura de Windows 11/WSL2 y Ubuntu Linux se documenta como verificación en curso.], [Marco de verificación y validación de la metodología],
+  [Publicación abierta, citable e indexada del recurso completo.], [DOI persistente, metadatos de citación estructurada y licencia abierta.], [#NormalTok("CITATION.cff");, #NormalTok(".zenodo.json"); y registro en Zenodo],
+)
+Un resultado transversal merece mención explícita: la prueba de humo estandarizada demostró que la fase de generación del log es idéntica en los nueve stacks mientras solo varía la verificación del registro, lo que constituye evidencia operativa directa de la tesis central del recurso: las etapas funcionales del pipeline son invariantes; las tecnologías que las implementan, no.
+
+== Síntesis y correspondencia con los objetivos del trabajo
+<síntesis-y-correspondencia-con-los-objetivos-del-trabajo>
+La Tabla 8 consolida la correspondencia entre los objetivos específicos comprometidos, los resultados obtenidos y sus evidencias:
+
+#strong[Tabla 8.] Correspondencia entre objetivos específicos, resultados y evidencias.
+
+#table(
+  columns: (25%, 25%, 25%, 25%),
+  align: (left,left,left,left,),
+  table.header([Objetivo específico], [Componente donde se desarrolla], [Resultado principal], [Evidencia verificable],),
+  table.hline(),
+  [#strong[OE1:] Establecer los elementos teóricos relacionados con los logs centralizados en microservicios.], [Marco conceptual (este documento) y guía de estudio.], [Fundamentación neutral con arquitectura de cuatro etapas, seis desafíos de diseño y tres paradigmas de almacenamiento.], [#NormalTok("readme.md");, #NormalTok("guia_estudio.md");],
+  [#strong[OE2:] Elaborar guías prácticas para el despliegue progresivo de soluciones de centralización de logs con Docker.], [Guías prácticas y guía docente.], [Nueve guías instruccionales progresivas bajo el ciclo de Kolb, con instrumentos de evaluación homogéneos.], [#NormalTok("guias/");, #NormalTok("guia_docente.md");],
+  [#strong[OE3:] Implementar cada guía en entornos funcionales y reproducibles para los estudiantes.], [Soluciones del repositorio.], [Nueve ecosistemas reproducibles, parametrizados y con verificación automatizada de extremo a extremo.], [#NormalTok("soluciones/");, #NormalTok("smoke_test.sh");],
+)
+En conjunto, los resultados demuestran que el recurso educativo cumple los compromisos formulados en la propuesta aprobada y genera evidencias verificables en cada dimensión: conceptual (marco teórico neutral y material de estudio), instruccional (guías y evaluación alineadas constructivamente), técnica (entornos reproducibles con verificación automatizada) y de publicación abierta (repositorio navegable, DOI y licenciamiento explícito). Adicionalmente, la ampliación del espectro tecnológico respecto de lo enunciado originalmente (justificada en la introducción por la evolución del estado del arte) constituye un resultado que excede los compromisos iniciales sin alterar su naturaleza.
+
+= Discusión académica, pedagógica e institucional
+<sec-discusion>
+Este capítulo analiza críticamente los resultados desde tres perspectivas complementarias, contrastándolos con los compromisos de la propuesta aprobada, con los referentes metodológicos adoptados y con la literatura pertinente. El propósito no es reiterar los resultados, sino delimitar su alcance, reconocer sus limitaciones y argumentar su valor diferencial.
+
+== Discusión académica
+<discusión-académica>
+Los tres objetivos específicos comprometidos en la propuesta se cumplieron y quedaron materializados en artefactos verificables. El único punto que se aparta del enunciado original es la cantidad de guías prácticas: el recurso terminó cubriendo más stacks tecnológicos de los inicialmente previstos. Esta ampliación fue una decisión deliberada. Durante el período de desarrollo, el estado del arte cambió con rapidez: se consolidaron estándares de protocolo unificado y aparecieron plataformas de nueva generación. Un recurso limitado al enunciado original habría nacido incompleto. Las guías adicionales se construyeron con el mismo rigor y la misma estructura que las inicialmente propuestas, de modo que la ampliación no altera los compromisos adquiridos: los amplifica. Su justificación se documenta en la introducción y su trazabilidad en la metodología.
+
+El valor diferencial del recurso frente a los materiales disponibles en el área está en combinar cuatro elementos que rara vez aparecen juntos. La observabilidad suele enseñarse de forma instrumental, centrada en herramientas específicas \(#link(<ref-cito-2015>)[Cito et~al., 2015]), y los materiales de referencia dominantes (la documentación de los fabricantes y los tutoriales) no ofrecen fundamento pedagógico ni neutralidad tecnológica. Este recurso, en cambio, reúne un marco conceptual neutral, un diseño instruccional formal, instrumentos de evaluación homogéneos y una verificación automatizada de la reproducibilidad. Esta última característica, materializada en las pruebas de humo, es poco común incluso en recursos educativos técnicos de buena calidad.
+
+También debe reconocerse una limitación del alcance actual: la verificación técnica completa se ejecutó sobre una sola plataforma (macOS Apple Silicon), y la cobertura de Windows y Linux quedó como verificación en curso. La decisión es razonable dados los tiempos y recursos de un trabajo de ascenso, y su riesgo está mitigado por el propio diseño de las soluciones: las imágenes empleadas son oficiales y multiarquitectura, y los recursos están parametrizados. Aun así, es una limitación real, y se prefiere declararla de forma explícita antes que omitirla.
+
+== Discusión pedagógica
+<discusión-pedagógica>
+Un aspecto central es la distinción entre el #strong[diseño del recurso] y su #strong[uso en el aula]. El trabajo produce un recurso instruccional completo y evaluable: resultados de aprendizaje observables, actividades alineadas constructivamente y rúbricas homogéneas \(#link(<ref-biggs-2011>)[Biggs & Tang, 2011]). Sin embargo, la experiencia de uso solo puede observarse en una implementación piloto: los errores reales de los estudiantes, los tiempos efectivos de práctica, la retroalimentación docente y las evidencias de aprendizaje. La validación pedagógica en sentido estricto queda así planteada como necesidad metodológica reconocida y coherente con el ciclo iterativo de la investigación basada en diseño \(#link(<ref-design-2003>)[Design-Based Research Collective, 2003]), no como defecto estructural del diseño.
+
+En la misma línea, la coherencia del diseño con el ciclo de Kolb garantiza la oportunidad de aprendizaje, no el aprendizaje mismo: la efectividad dependerá de condiciones que el recurso no controla, como la mediación docente, los conocimientos previos del estudiante (particularmente Docker y formatos estructurados) y la disponibilidad de equipos con recursos suficientes. La guía docente anticipa estas condiciones mediante rutas alternativas para equipos limitados y un repertorio de dificultades frecuentes, lo que reduce el riesgo sin eliminarlo.
+
+Finalmente, la centralización de los instrumentos de evaluación en la guía docente, en lugar de replicarlos en cada guía, es un compromiso consciente de diseño: prioriza la consistencia de criterios entre stacks y la facilidad de adopción docente sobre la autosuficiencia de cada guía tomada de forma aislada. Para el uso autónomo, cada guía declara sus evidencias esperadas y remite a los instrumentos homogéneos del recurso.
+
+== Discusión institucional
+<discusión-institucional>
+La sostenibilidad del recurso constituye el principal reto institucional. El ecosistema de observabilidad evoluciona con rapidez y las versiones de las imágenes de contenedores quedan obsoletas en plazos de doce a dieciocho meses; el recurso mitiga este riesgo con imágenes oficiales versionadas, parametrización explícita y la recomendación de revisión al inicio de cada semestre, pero su vigencia depende de un mantenimiento activo. La publicación como repositorio abierto habilita un mecanismo de evolución que la distribución como documento cerrado no permite: el reporte de errores y las contribuciones externas, incluidas las de los propios estudiantes como actividad complementaria de aprendizaje.
+
+En términos de gobernanza y transferibilidad, el recurso presenta una fortaleza estructural: se publica como repositorio navegable con DOI persistente, metadatos de citación estructurada y licencia abierta, lo que permite su adopción total o parcial por otros docentes, asignaturas e instituciones con el único requisito de un motor de contenedores y las condiciones de memoria declaradas. La alineación con directrices curriculares internacionales y las rutas de aprendizaje modulares facilitan esa transferencia más allá de la asignatura de origen.
+
+Quedan, sin embargo, preguntas institucionales abiertas que exceden el alcance de este trabajo: la integración formal del recurso en el microcurrículo, la asignación de responsabilidades de actualización periódica y la articulación con otras asignaturas del área dependen de decisiones del programa académico. El recurso habilita esas decisiones, pues aporta el material, los instrumentos y la evidencia de viabilidad, pero no las sustituye.
+
+== Síntesis de la discusión
+<síntesis-de-la-discusión>
+El análisis precedente permite identificar como fortalezas la integración coherente entre fundamentación conceptual neutral, diseño instruccional formal y entornos técnicos verificables, junto con una publicación abierta que garantiza trazabilidad y transferibilidad. Como limitaciones se reconocen la ausencia de validación empírica con estudiantes, la verificación multiplataforma parcial y la dependencia de mantenimiento activo frente a la obsolescencia tecnológica. Estas limitaciones no deslegitiman el trabajo: delimitan con claridad el alcance alcanzado y estructuran la agenda que se desarrolla en el capítulo de trabajo futuro.
+
+= Conclusiones
+<sec-conclusiones>
+Las conclusiones se organizan en correspondencia con los tres objetivos específicos comprometidos en la propuesta aprobada, seguidas de una conclusión integradora, las limitaciones reconocidas y la contribución del trabajo a la formación en ingeniería de sistemas y computación.
+
+== Sobre la fundamentación teórica de la centralización de logs
+<sobre-la-fundamentación-teórica-de-la-centralización-de-logs>
+La observabilidad se consolida como un principio fundamental para la comprensión, análisis y gestión de sistemas distribuidos, al permitir inferir su comportamiento interno a partir de las señales externas generadas durante su ejecución. En arquitecturas basadas en microservicios, donde la complejidad operativa y los comportamientos emergentes son inherentes, este principio resulta indispensable para el diagnóstico, la toma de decisiones y la mejora continua de los sistemas \(#link(<ref-beyer-2016>)[Beyer et~al., 2016]\; #link(<ref-majors-2022>)[Majors et~al., 2022]). El marco conceptual desarrollado demuestra que es posible enseñar la centralización de logs sin acoplar la formación a herramientas específicas: la arquitectura de cuatro etapas, los desafíos transversales y los paradigmas de almacenamiento constituyen un núcleo conceptual estable sobre el cual las tecnologías concretas son instancias intercambiables.
+
+== Sobre el diseño instruccional de las guías prácticas
+<sobre-el-diseño-instruccional-de-las-guías-prácticas>
+La estructuración de las nueve guías bajo el ciclo de aprendizaje experiencial y el principio de alineación constructiva demuestra que un laboratorio técnico puede convertirse en una experiencia de aprendizaje evaluable: cada guía articula resultados de aprendizaje observables, un procedimiento reproducible y un cuestionario de análisis crítico, y los instrumentos homogéneos de la guía docente garantizan una evaluación consistente con independencia del stack elegido. La progresión de complejidad, del ecosistema tradicional al estado del arte, materializa el principio de independencia instrumental: el estudiante comprueba que las etapas del pipeline permanecen constantes mientras las herramientas cambian por completo.
+
+== Sobre la implementación de entornos reproducibles
+<sobre-la-implementación-de-entornos-reproducibles>
+La materialización de los nueve ecosistemas con Docker Compose confirma la viabilidad del computador personal del estudiante como laboratorio de experimentación, sin dependencia de infraestructura institucional ni de servicios externos. La prueba de humo estandarizada aporta, además, una conclusión metodológica: la automatización de la verificación no solo asegura la calidad técnica del recurso, sino que constituye en sí misma evidencia empírica de su tesis central, al demostrar operativamente que la interfaz de emisión de logs permanece invariante mientras el conjunto de herramientas varía por completo.
+
+== Conclusión integradora
+<conclusión-integradora>
+La integración de los tres objetivos produce un recurso educativo que articula fundamentación conceptual, diseño instruccional formal y entornos técnicos verificables como partes de un único producto académico. Este es su valor diferencial frente a manuales técnicos, tutoriales o documentación de fabricantes: el recurso no solo describe cómo desplegar soluciones de centralización de logs, sino que fundamenta por qué la observabilidad es un principio de diseño y no un complemento operativo, cómo verificar objetivamente la reproducibilidad de cada entorno, y de qué manera convertir el despliegue técnico en una experiencia de aprendizaje evaluable. Al priorizar los principios y la arquitectura sobre las herramientas, el recurso contribuye a una formación más sólida, crítica y adaptable a la evolución constante del ecosistema tecnológico.
+
+== Limitaciones
+<limitaciones>
+Se reconocen tres limitaciones principales. Primera, la ausencia de validación empírica con estudiantes: el diseño instruccional y las rúbricas son académicamente coherentes, pero su impacto real solo podrá verificarse en el aula mediante el análisis de evidencias de aprendizaje, lo que se propone como línea prioritaria de trabajo futuro. Segunda, la verificación de portabilidad se ejecutó de forma completa sobre una única plataforma, quedando la cobertura multiplataforma como verificación en curso. Tercera, la dependencia del mantenimiento activo: la obsolescencia natural de las versiones de las imágenes exige revisiones periódicas para preservar la reproducibilidad de las soluciones.
+
+== Contribución a la formación en ingeniería de sistemas y computación
+<contribución-a-la-formación-en-ingeniería-de-sistemas-y-computación>
+El trabajo fortalece el área de arquitectura de software y sistemas distribuidos del programa al aportar un escenario reproducible, documentado y evaluable para experimentar con la observabilidad, un contenido habitualmente relegado a la documentación de fabricantes. Su diseño modular y su alineación con directrices curriculares internacionales lo hacen transferible a asignaturas afines (sistemas distribuidos, DevOps, infraestructura de TI) y a otras instituciones. Adicionalmente, la publicación del recurso como repositorio abierto con DOI y metadatos de citación posiciona una práctica de producción académica replicable en futuros trabajos del programa: la creación de recursos educativos abiertos, trazables y verificables.
+
+= Trabajo futuro
+<sec-trabajo-futuro>
+El desarrollo del recurso abre líneas de evolución en tres planos complementarios. La primera y prioritaria es su implementación en escenarios reales de enseñanza en la asignatura #emph[Arquitectura Orientada a Microservicios], que habilita el ciclo de validación empírica proyectado desde la metodología.
+
+== Proyección pedagógica: validación empírica en aula
+<proyección-pedagógica-validación-empírica-en-aula>
+En coherencia con la investigación basada en diseño (DBR) y el modelo ADDIE, la aplicación del recurso con grupos de estudiantes deberá evaluarse mediante indicadores observables que permitan tanto medir su impacto como identificar oportunidades de mejora iterativa:
+
++ #strong[Logro de los resultados de aprendizaje:] proporción de estudiantes que despliegan y validan de forma autónoma al menos un stack completo, según el criterio de despliegue funcional de la rúbrica.
++ #strong[Desempeño en los componentes de evaluación:] resultados en los componentes conceptual, práctico e integrador definidos en la guía docente.
++ #strong[Capacidad de diagnóstico:] tiempo y efectividad en la resolución de las fricciones documentadas (memoria insuficiente, límites del sistema operativo, conflictos de puertos, formatos de configuración).
++ #strong[Apropiación conceptual:] desempeño en el cuestionario de la guía de estudio, con especial atención al bloque de articulación teoría--práctica.
++ #strong[Calidad del análisis comparativo:] nivel argumentativo del ensayo integrador al contrastar paradigmas y decisiones arquitectónicas entre stacks.
++ #strong[Satisfacción y percepción de utilidad:] valoración de los estudiantes sobre la claridad, aplicabilidad y carga de trabajo del recurso.
++ #strong[Uso efectivo del material:] guías consultadas más allá de las trabajadas en aula, ejecución de las pruebas de humo y contribuciones de estudiantes al repositorio.
+
+Los hallazgos de esta fase alimentarán versiones sucesivas del recurso, publicadas con nuevos identificadores de versión en el repositorio y en Zenodo.
+
+== Proyección técnica
+<proyección-técnica>
+En el plano técnico se proyecta: completar la matriz de verificación multiplataforma (Windows 11/WSL2 y Ubuntu Linux); automatizar la ejecución periódica de las pruebas de humo mediante integración continua, de modo que la obsolescencia de las imágenes se detecte de forma temprana y objetiva; y extender el recurso hacia escenarios que prolonguen la ruta de aprendizaje, como la orquestación con Kubernetes, la profundización en métricas y trazas, y la incorporación de nuevos stacks que consoliden el estado del arte.
+
+== Proyección institucional
+<proyección-institucional>
+En el plano institucional se proyecta la integración formal del recurso en el microcurrículo de la asignatura y su articulación con asignaturas afines del área; la consolidación de un modelo de mantenimiento que incorpore las contribuciones estudiantiles como actividad de aprendizaje; y la difusión del recurso en comunidades docentes y repositorios de recursos educativos abiertos, aprovechando su licenciamiento abierto y su citabilidad estructurada para favorecer la adopción externa y la mejora colaborativa.
 
 #part[Material de estudio y docencia]
 = Guía de Estudio: Observabilidad y Centralización de Logs en Sistemas Distribuidos
@@ -1469,6 +1690,106 @@ Al finalizar las dos semanas, el estudiante debe ser capaz de:
 + #strong[Desplegar y validar] al menos un stack completo de centralización de logs sobre un entorno reproducible con Docker Compose.
 + #strong[Contrastar] decisiones arquitectónicas entre stacks (por ejemplo: indexación completa vs.~solo etiquetas; protocolo específico vs.~estándar unificado).
 
+La correspondencia de estos resultados de la unidad con los resultados de aprendizaje y las unidades de competencia del sílabo oficial de la asignatura se detalla en la sección 5.
+
+== Alineación con el microcurrículo oficial de la asignatura
+<alineación-con-el-microcurrículo-oficial-de-la-asignatura>
+El recurso está calibrado para el espacio académico #strong[Profundización Arquitectura Orientada a Microservicios] (Área de Infraestructura de Tecnología Informática, Programa de Ingeniería de Sistemas y Computación, Universidad del Quindío; códigos 12344, 12345, 12350 y 12351). Esta sección instancia, para el sílabo oficial vigente de ese espacio académico, el mapeo curricular que el recurso declara como principio de interoperabilidad; un docente de otra institución puede replicar este mismo ejercicio con su propio plan de curso.
+
+La relación de este trabajo con el sílabo es directa. El Núcleo Temático 3, dedicado a los patrones de diseño en la arquitectura de microservicios, incluye los #strong[patrones de observabilidad] entre sus temáticas declaradas, y esa es exactamente la temática que esta unidad desarrolla. El recurso aporta, además, lo que el sílabo por sí solo no detalla: el fundamento conceptual, los escenarios de práctica reproducibles y los instrumentos para evaluarla. En otras palabras, el docente que adopta este material no está agregando un tema nuevo al curso; está desplegando uno que el curso ya tiene comprometido.
+
+=== Contribución a los resultados de aprendizaje del sílabo
+<contribución-a-los-resultados-de-aprendizaje-del-sílabo>
+#table(
+  columns: (33.33%, 33.33%, 33.33%),
+  align: (auto,auto,auto,),
+  table.header([RA oficial del sílabo], [Contribución de la unidad], [Componentes que la materializan],),
+  table.hline(),
+  [#strong[R.A.1] --- Diseño soluciones basadas en la arquitectura orientada a microservicios, considerando patrones de diseño aceptados por la industria y los desafíos técnicos, funcionales y no funcionales.], [La unidad desarrolla la observabilidad como familia de patrones de diseño: la arquitectura conceptual de cuatro etapas, los patrones de recolección (agente, sidecar, envío directo) y los desafíos transversales (estandarización, retención, sanitización, cardinalidad) son criterios que el estudiante aprende a razonar y contrastar.], [Marco conceptual; componente integrador (ensayo comparativo de decisiones arquitectónicas).],
+  [#strong[R.A.2] --- Construyo soluciones software basadas en la arquitectura orientada a microservicios, desplegadas mediante contenedores y cloud computing.], [Todas las guías despliegan ecosistemas multicontenedor con Docker Compose, configuran aplicaciones para emitir logs estructurados y validan la operación de extremo a extremo.], [Las nueve guías prácticas con sus soluciones; componente práctico (informe de laboratorio).],
+  [#strong[R.A.3] --- Construyo recursos documentales acerca de tecnologías basadas en microservicios, en primera y segunda lengua, con perspectiva ética y estándares de la industria.], [Los entregables son recursos documentales técnicos (informe de laboratorio y ensayo comparativo); las guías exigen leer documentación oficial en inglés; el desafío de sanitización de datos sensibles aporta la perspectiva ética; el formato ECS y OTLP ilustran los estándares de la industria.], [Entregables de los componentes práctico e integrador; guía de estudio; guía de Vector (sanitización).],
+)
+=== Cobertura de los núcleos temáticos
+<cobertura-de-los-núcleos-temáticos>
+#table(
+  columns: (33.33%, 33.33%, 33.33%),
+  align: (auto,auto,auto,),
+  table.header([Núcleo temático del sílabo], [Temáticas que la unidad desarrolla], [Aporte del recurso],),
+  table.hline(),
+  [#strong[NT1] --- Introducción a microservicios.], [Características de los problemas de los microservicios; contenedores y computación en la nube.], [La dispersión de logs se presenta como problema característico de los microservicios; todas las guías refuerzan el trabajo con contenedores.],
+  [#strong[NT2] --- Tecnologías para la implementación y ejecución de microservicios.], [Formatos de transferencia de datos (JSON); escenarios de despliegue (virtualización y cloud); automatización de pruebas.], [Logging estructurado en JSON/ECS; despliegue contenerizado en las nueve guías; la prueba de humo (#NormalTok("smoke_test.sh");) como ejemplo trabajado de prueba automatizada de extremo a extremo.],
+  [#strong[NT3] --- Patrones de diseño en la arquitectura de microservicios.], [#strong[Patrones de observabilidad] (temática explícita del sílabo) y su relación con los patrones de despliegue y de fiabilidad.], [Cobertura directa y en profundidad: la unidad completa desarrolla esta temática. Los modelos de recolección y los paradigmas de almacenamiento se presentan como decisiones de patrón con ventajas y desventajas contrastables.],
+)
+=== Aporte a las unidades de competencia del programa
+<aporte-a-las-unidades-de-competencia-del-programa>
+El sílabo declara mayor nivel de aporte a cinco unidades de competencia (UC) del programa; la unidad contribuye a cada una así:
+
+#table(
+  columns: (50%, 50%),
+  align: (auto,auto,),
+  table.header([UC del programa], [Cómo aporta la unidad],),
+  table.hline(),
+  [#strong[U.C.2 --- El Diseño.]], [El estudiante analiza y contrasta arquitecturas de centralización de logs, y justifica la elección de paradigmas según requisitos de costo, consulta y volumen.],
+  [#strong[U.C.3 --- La Implementación.]], [El estudiante construye, verifica y valida un stack completo: despliegue, ingesta, consulta y prueba de humo de extremo a extremo.],
+  [#strong[U.C.4 --- La Operación.]], [El estudiante gestiona sistemas en ejecución: diagnóstico de fallos con el visualizador, resolución de fricciones documentadas y dimensionamiento de recursos.],
+  [#strong[U.C.6 --- Lo Complementario.]], [El estudiante produce documentos técnicos formales (informe de laboratorio y ensayo comparativo) con las convenciones del área.],
+  [#strong[U.C.7 --- La Formación Integral.]], [El estudiante analiza críticamente la dimensión ética del manejo de datos (sanitización de información sensible) y procesa documentación técnica en primera y segunda lengua.],
+)
+=== Correspondencia con los ejes Ser, Saber y Saber Hacer
+<correspondencia-con-los-ejes-ser-saber-y-saber-hacer>
+El sílabo organiza cada núcleo temático en ejes actitudinales (Ser), conceptuales (Saber) y procedimentales (Saber Hacer). La unidad los desarrolla de la siguiente manera:
+
+#table(
+  columns: (33.33%, 33.33%, 33.33%),
+  align: (auto,auto,auto,),
+  table.header([Eje], [Cómo lo desarrolla la unidad], [Dónde se evalúa],),
+  table.hline(),
+  [#strong[Ser] (actitudinal)], [Cumplimiento de compromisos y calidad técnica de los entregables; postura crítica frente a la documentación técnica en inglés y español; respeto por la producción intelectual (uso y citación de material con licencia abierta).], [Criterio de calidad técnica de la rúbrica; discusión de las dificultades frecuentes.],
+  [#strong[Saber] (conceptual)], [Comprensión de la observabilidad, los tres pilares, la arquitectura de cuatro etapas, los desafíos de diseño y los paradigmas de almacenamiento.], [Componente conceptual (cuestionario de la guía de estudio).],
+  [#strong[Saber Hacer] (procedimental)], [Despliegue de soluciones en ambientes virtuales, evaluación del funcionamiento mediante pruebas automatizadas y proposición de soluciones contrastadas a problemas reales.], [Componentes práctico e integrador (informe de laboratorio y ensayo comparativo).],
+)
+Finalmente, la estrategia de evaluación del recurso instrumenta varias de las estrategias previstas por el propio sílabo: las #strong[prácticas] y el #strong[estudio de caso] corresponden al componente práctico; los #strong[talleres y exámenes] al componente conceptual; las #strong[exposiciones o debates] pueden apoyar el componente integrador; y la rúbrica del recurso puede entregarse al estudiante como #strong[matriz de evaluación personal], tal como el sílabo lo sugiere.
+
+== Panorama de las nueve guías prácticas
+<panorama-de-las-nueve-guías-prácticas>
+Esta sección permite al docente preparar una sesión de laboratorio sin recorrer cada guía completa, y hace explícita la correspondencia entre las guías y los resultados de aprendizaje de la unidad.
+
+=== Tabla de consulta rápida
+<tabla-de-consulta-rápida>
+Cada fila resume el reto de la guía, las condiciones que conviene verificar antes de la sesión y el entregable mínimo con el que el estudiante demuestra el logro. Los números de la última columna corresponden a los resultados de aprendizaje (RA) enumerados en la sección 4.
+
+#table(
+  columns: (3.9%, 7.79%, 33.77%, 23.38%, 24.68%, 6.49%),
+  align: (auto,auto,auto,auto,auto,auto,),
+  table.header([\#], [Guía], [Reto y logro verificable], [Antes de iniciar], [Entregable mínimo], [RA],),
+  table.hline(),
+  [1], [#link(<sec-guia-elk>)[ELK]], [Desplegar el stack clásico de indexación de texto completo y consultar logs estructurados en Kibana.], [8 GB de RAM libres; #NormalTok("vm.max_map_count"); en Linux/WSL.], [Compose funcional, captura de consulta en Kibana y #NormalTok("smoke_test.sh"); exitoso.], [2, 4],
+  [2], [#link(<sec-guia-olo>)[OLO]], [Repetir el pipeline sobre la bifurcación de código abierto y contrastarla con ELK.], [8 GB de RAM libres; #NormalTok("vm.max_map_count"); en Linux/WSL.], [Compose funcional, captura en OpenSearch Dashboards y #NormalTok("smoke_test.sh"); exitoso.], [2, 4, 5],
+  [3], [#link(<sec-guia-fluentd>)[Fluentd]], [Desacoplar la recolección en un agente independiente del almacenamiento.], [8 GB de RAM libres (usa Elasticsearch); #NormalTok("vm.max_map_count");.], [Compose funcional, captura en Kibana y #NormalTok("smoke_test.sh"); exitoso.], [2, 4],
+  [4], [#link(<sec-guia-promtail>)[Promtail y Loki]], [Comprobar el compromiso costo--consulta de la indexación de solo etiquetas.], [Funciona cómodamente con 4 GB de RAM libres.], [Compose funcional, captura en Grafana y #NormalTok("smoke_test.sh"); exitoso.], [2, 4, 5],
+  [5], [#link(<sec-guia-gelf-graylog>)[GELF y Graylog]], [Transportar logs mediante un formato de protocolo específico hacia una plataforma dedicada.], [8 GB de RAM libres.], [Compose funcional, captura en Graylog y #NormalTok("smoke_test.sh"); exitoso.], [2, 4],
+  [6], [#link(<sec-guia-otel>)[OpenTelemetry]], [Integrar logs, métricas y trazas bajo un protocolo unificado.], [4 GB suelen bastar (almacenamiento sobre Loki).], [Compose funcional, captura en Grafana y #NormalTok("smoke_test.sh"); exitoso.], [1, 2, 4, 5],
+  [7], [#link(<sec-guia-vector>)[Vector]], [Construir un pipeline de alto rendimiento con sanitización programable de campos sensibles.], [Funciona cómodamente con 4 GB de RAM libres.], [Compose funcional, captura en Grafana y #NormalTok("smoke_test.sh"); exitoso.], [3, 4, 5],
+  [8], [#link(<sec-guia-signoz>)[SigNoz]], [Operar una plataforma integrada con almacenamiento analítico columnar y OTLP nativo.], [8 GB de RAM libres.], [Compose funcional, captura en SigNoz y #NormalTok("smoke_test.sh"); exitoso.], [2, 4, 5],
+  [9], [#link(<sec-guia-alloy>)[Alloy]], [Migrar el recolector a su sucesor oficial con configuración orientada al flujo de datos.], [Funciona cómodamente con 4 GB de RAM libres.], [Compose funcional, captura en Grafana y #NormalTok("smoke_test.sh"); exitoso.], [4, 5],
+)
+Cada guía declara, además, su tiempo estimado (2 horas de laboratorio acompañado y 2 horas de trabajo independiente) y sus evidencias esperadas.
+
+=== Matriz de alineación con los resultados de aprendizaje de la unidad
+<matriz-de-alineación-con-los-resultados-de-aprendizaje-de-la-unidad>
+La siguiente matriz vincula cada resultado de aprendizaje de la unidad con las guías que lo desarrollan, la evidencia observable y el instrumento con que se evalúa, en aplicación del principio de alineación constructiva:
+
+#table(
+  columns: (19.35%, 27.96%, 23.66%, 29.03%),
+  align: (auto,auto,auto,auto,),
+  table.header([RA de la unidad], [Guías que lo desarrollan], [Evidencia observable], [Instrumento de evaluación],),
+  table.hline(),
+  [#strong[RA1] --- Explicar la observabilidad como requisito de diseño.], [Marco conceptual; se refuerza en cualquiera de las guías.], [Respuestas al cuestionario conceptual.], [Componente conceptual de la estrategia de evaluación.],
+  [#strong[RA2] --- Describir la arquitectura de cuatro etapas y reconocerla en al menos dos implementaciones distintas.], [Cualquier par contrastante de guías (ver rutas sugeridas).], [Mapeo etapa--componente en el informe de laboratorio.], [Criterio de identificación arquitectónica de la rúbrica.],
+  [#strong[RA3] --- Justificar los desafíos de estandarización, ciclo de vida y sanitización.], [Vector (sanitización), ELK y OLO (indexación y retención), OpenTelemetry (estandarización semántica).], [Reflexión escrita del informe de laboratorio.], [Criterio de reflexión escrita de la rúbrica.],
+  [#strong[RA4] --- Desplegar y validar un stack completo sobre un entorno reproducible.], [Cualquiera de las nueve guías.], [Repositorio con configuraciones, capturas de validación y salida del #NormalTok("smoke_test.sh");.], [Criterios de despliegue funcional y calidad técnica de la rúbrica.],
+  [#strong[RA5] --- Contrastar decisiones arquitectónicas entre stacks.], [Pares contrastantes de la ruta mínima.], [Ensayo comparativo sobre al menos dos criterios del marco.], [Componente integrador de la estrategia de evaluación.],
+)
 == Rutas sugeridas
 <rutas-sugeridas>
 === Ruta mínima (2 semanas, 4 sesiones)
@@ -1629,9 +1950,9 @@ El ecosistema de observabilidad evoluciona rápidamente; las versiones de las im
 <contacto>
 Para consultas sobre el uso pedagógico, propuestas de mejora o solicitudes de colaboración:
 
-- Ph.D.~Christian Andrés Candela Uribe --- Profesor Asociado, Universidad del Quindío
-- M.Sc. Paola Andrea Acero Franco --- Profesor Asociado, Universidad del Quindío
-- Ph.D.~Luis Eduardo Sepúlveda Rodríguez --- Profesor Asociado, Universidad del Quindío
+- PhD Christian Andrés Candela Uribe --- Profesor Asociado, Universidad del Quindío
+- MSc Paola Andrea Acero Franco --- Profesor Asociado, Universidad del Quindío
+- PhD Luis Eduardo Sepúlveda Rodríguez --- Profesor Asociado, Universidad del Quindío
 
 #horizontalrule
 
@@ -1659,6 +1980,10 @@ Al finalizar esta guía, el estudiante será capaz de:
 - Configurar aplicaciones para emitir logs estructurados.
 - Analizar y correlacionar eventos centralizados.
 - Reconocer desafíos y limitaciones de una solución básica de logging.
+
+#strong[Tiempo estimado:] 2 horas de laboratorio acompañado y 2 horas de trabajo independiente (despliegue, validación y desarrollo del cuestionario de análisis crítico).
+
+#strong[Evidencias esperadas:] al finalizar la guía, el estudiante debe contar con (a) el archivo #NormalTok("docker-compose.yml"); y las configuraciones del stack funcionales, (b) una captura de la consulta de logs en Kibana que muestre los eventos emitidos por la aplicación de prueba, (c) la salida exitosa del script #NormalTok("smoke_test.sh"); de la solución correspondiente y (d) las respuestas al cuestionario de análisis crítico. Los entregables exigibles y la rúbrica de evaluación se definen de forma homogénea en la guía docente del recurso.
 
 == Propósito y alcance del recurso
 <propósito-y-alcance-del-recurso>
@@ -2116,6 +2441,10 @@ Al finalizar esta guía, el estudiante será capaz de:
 - Configurar aplicaciones para emitir logs estructurados.
 - Analizar y correlacionar eventos centralizados.
 - Reconocer desafíos y limitaciones de una solución básica de logging.
+
+#strong[Tiempo estimado:] 2 horas de laboratorio acompañado y 2 horas de trabajo independiente (despliegue, validación y desarrollo del cuestionario de análisis crítico).
+
+#strong[Evidencias esperadas:] al finalizar la guía, el estudiante debe contar con (a) el archivo #NormalTok("docker-compose.yml"); y las configuraciones del stack funcionales, (b) una captura de la consulta de logs en OpenSearch Dashboards que muestre los eventos emitidos por la aplicación de prueba, (c) la salida exitosa del script #NormalTok("smoke_test.sh"); de la solución correspondiente y (d) las respuestas al cuestionario de análisis crítico. Los entregables exigibles y la rúbrica de evaluación se definen de forma homogénea en la guía docente del recurso.
 
 == Propósito y alcance del recurso
 <propósito-y-alcance-del-recurso-1>
@@ -2586,6 +2915,10 @@ Al finalizar esta guía, el estudiante será capaz de:
 - Configurar aplicaciones para emitir logs hacia Fluentd.
 - Analizar y correlacionar eventos centralizados.
 - Reconocer desafíos y limitaciones de una solución básica de logging.
+
+#strong[Tiempo estimado:] 2 horas de laboratorio acompañado y 2 horas de trabajo independiente (despliegue, validación y desarrollo del cuestionario de análisis crítico).
+
+#strong[Evidencias esperadas:] al finalizar la guía, el estudiante debe contar con (a) el archivo #NormalTok("docker-compose.yml"); y las configuraciones del stack funcionales, (b) una captura de la consulta de logs en Kibana que muestre los eventos emitidos por la aplicación de prueba, (c) la salida exitosa del script #NormalTok("smoke_test.sh"); de la solución correspondiente y (d) las respuestas al cuestionario de análisis crítico. Los entregables exigibles y la rúbrica de evaluación se definen de forma homogénea en la guía docente del recurso.
 
 == Propósito y alcance del recurso
 <propósito-y-alcance-del-recurso-2>
@@ -3080,6 +3413,10 @@ Al finalizar esta guía, el estudiante será capaz de:
 - Configurar Promtail para recolectar y enviar (#emph[scrape]) logs desde volúmenes compartidos.
 - Analizar y correlacionar eventos centralizados utilizando el lenguaje LogQL en Grafana.
 
+#strong[Tiempo estimado:] 2 horas de laboratorio acompañado y 2 horas de trabajo independiente (despliegue, validación y desarrollo del cuestionario de análisis crítico).
+
+#strong[Evidencias esperadas:] al finalizar la guía, el estudiante debe contar con (a) el archivo #NormalTok("docker-compose.yml"); y las configuraciones del stack funcionales, (b) una captura de la consulta de logs en Grafana que muestre los eventos emitidos por la aplicación de prueba, (c) la salida exitosa del script #NormalTok("smoke_test.sh"); de la solución correspondiente y (d) las respuestas al cuestionario de análisis crítico. Los entregables exigibles y la rúbrica de evaluación se definen de forma homogénea en la guía docente del recurso.
+
 == Propósito y alcance del recurso
 <propósito-y-alcance-del-recurso-3>
 El propósito principal de este recurso es guiar el diseño, despliegue y uso de una #strong[arquitectura de centralización de logs] eficiente, basada en la filosofía de Loki (indexación ligera basada en etiquetas en lugar de texto completo).
@@ -3566,6 +3903,10 @@ Al finalizar esta guía, el estudiante será capaz de:
 - Explorar y consultar logs centralizados desde la interfaz de Graylog.
 - Reconocer desafíos y limitaciones de un envío basado en UDP y mensajes fragmentados.
 
+#strong[Tiempo estimado:] 2 horas de laboratorio acompañado y 2 horas de trabajo independiente (despliegue, validación y desarrollo del cuestionario de análisis crítico).
+
+#strong[Evidencias esperadas:] al finalizar la guía, el estudiante debe contar con (a) el archivo #NormalTok("docker-compose.yml"); y las configuraciones del stack funcionales, (b) una captura de la consulta de logs en Graylog que muestre los eventos emitidos por la aplicación de prueba, (c) la salida exitosa del script #NormalTok("smoke_test.sh"); de la solución correspondiente y (d) las respuestas al cuestionario de análisis crítico. Los entregables exigibles y la rúbrica de evaluación se definen de forma homogénea en la guía docente del recurso.
+
 == Propósito y alcance del recurso
 <propósito-y-alcance-del-recurso-4>
 El propósito principal de este recurso es guiar el despliegue y uso de una #strong[arquitectura básica de centralización de logs] basada en Graylog, en un entorno local y reproducible mediante Docker Compose.
@@ -4014,6 +4355,10 @@ Al finalizar esta guía, el estudiante será capaz de:
 - Configurar aplicaciones Java (Logback) para enviar logs usando el agente de OpenTelemetry.
 - Explorar y correlacionar logs centralizados desde Grafana, aprovechando campos como #NormalTok("trace_id");, #NormalTok("span_id"); y #NormalTok("exception_stacktrace");.
 
+#strong[Tiempo estimado:] 2 horas de laboratorio acompañado y 2 horas de trabajo independiente (despliegue, validación y desarrollo del cuestionario de análisis crítico).
+
+#strong[Evidencias esperadas:] al finalizar la guía, el estudiante debe contar con (a) el archivo #NormalTok("docker-compose.yml"); y las configuraciones del stack funcionales, (b) una captura de la consulta de logs en Grafana que muestre los eventos emitidos por la aplicación de prueba, (c) la salida exitosa del script #NormalTok("smoke_test.sh"); de la solución correspondiente y (d) las respuestas al cuestionario de análisis crítico. Los entregables exigibles y la rúbrica de evaluación se definen de forma homogénea en la guía docente del recurso.
+
 == Propósito y alcance del recurso
 <propósito-y-alcance-del-recurso-5>
 El propósito principal de este recurso es guiar el despliegue y uso de una #strong[arquitectura de centralización de logs] basada en el estándar OpenTelemetry, en un entorno local y reproducible mediante Docker Compose.
@@ -4034,7 +4379,7 @@ Todas las guías anteriores resolvían la observabilidad con herramientas concre
 
 === OpenTelemetry: el estándar que desacopla la instrumentación del backend
 <opentelemetry-el-estándar-que-desacopla-la-instrumentación-del-backend>
-OpenTelemetry no es una herramienta de almacenamiento ni un visualizador: es un #strong[estándar abierto y neutral respecto al proveedor] (#emph[vendor-neutral]). Define un conjunto de APIs, SDKs y herramientas para capturar y exportar las señales de observabilidad ---#strong[logs, métricas y trazas], los tres pilares del marco conceptual (#ref(<sec-5-1>, supplement: [Sección]))--- y transmitirlas mediante un protocolo común, el #strong[OTLP (OpenTelemetry Protocol)].
+OpenTelemetry no es una herramienta de almacenamiento ni un visualizador: es un #strong[estándar abierto y neutral respecto al proveedor] (#emph[vendor-neutral]). Define un conjunto de APIs, SDKs y herramientas para capturar y exportar las señales de observabilidad (#strong[logs, métricas y trazas], los tres pilares descritos en #ref(<sec-5-1>, supplement: [Sección]) del marco conceptual) y transmitirlas mediante un protocolo común, el #strong[OTLP (OpenTelemetry Protocol)].
 
 ¿Por qué es esto importante? Porque separa dos responsabilidades que antes estaban entrelazadas:
 
@@ -4387,6 +4732,10 @@ Al finalizar esta guía, el estudiante será capaz de:
 - Configurar aplicaciones Java para emitir logs estructurados en JSON vía TCP hacia Vector.
 - Explorar y consultar logs centralizados desde Grafana usando #strong[LogQL].
 - Comparar el enfoque Vector frente a alternativas como Logstash o Fluentd en términos de rendimiento y consumo de recursos.
+
+#strong[Tiempo estimado:] 2 horas de laboratorio acompañado y 2 horas de trabajo independiente (despliegue, validación y desarrollo del cuestionario de análisis crítico).
+
+#strong[Evidencias esperadas:] al finalizar la guía, el estudiante debe contar con (a) el archivo #NormalTok("docker-compose.yml"); y las configuraciones del stack funcionales, (b) una captura de la consulta de logs en Grafana que muestre los eventos emitidos por la aplicación de prueba, (c) la salida exitosa del script #NormalTok("smoke_test.sh"); de la solución correspondiente y (d) las respuestas al cuestionario de análisis crítico. Los entregables exigibles y la rúbrica de evaluación se definen de forma homogénea en la guía docente del recurso.
 
 == Propósito y alcance del recurso
 <propósito-y-alcance-del-recurso-6>
@@ -4828,6 +5177,10 @@ Al finalizar esta guía, el estudiante será capaz de:
 - Configurar aplicaciones Quarkus para emitir telemetría nativa OTLP hacia SigNoz.
 - Explorar y correlacionar logs con trazas distribuidas desde la interfaz de SigNoz.
 - Comprender el patrón de #emph[override] de Docker Compose como técnica para extender stacks de terceros sin modificar sus archivos.
+
+#strong[Tiempo estimado:] 2 horas de laboratorio acompañado y 2 horas de trabajo independiente (despliegue, validación y desarrollo del cuestionario de análisis crítico).
+
+#strong[Evidencias esperadas:] al finalizar la guía, el estudiante debe contar con (a) el archivo #NormalTok("docker-compose.yml"); y las configuraciones del stack funcionales, (b) una captura de la consulta de logs en SigNoz que muestre los eventos emitidos por la aplicación de prueba, (c) la salida exitosa del script #NormalTok("smoke_test.sh"); de la solución correspondiente y (d) las respuestas al cuestionario de análisis crítico. Los entregables exigibles y la rúbrica de evaluación se definen de forma homogénea en la guía docente del recurso.
 
 == Propósito y alcance del recurso
 <propósito-y-alcance-del-recurso-7>
@@ -5277,6 +5630,10 @@ Al finalizar esta guía, el estudiante será capaz de:
 - Configurar los componentes #NormalTok("local.file_match");, #NormalTok("loki.source.file");, #NormalTok("loki.process"); y #NormalTok("loki.write"); para construir un pipeline de #emph[file tailing] hacia Loki.
 - Utilizar la interfaz web integrada de Alloy para inspeccionar el estado de los componentes en tiempo real.
 - Migrar conceptualmente una configuración Promtail existente a Alloy.
+
+#strong[Tiempo estimado:] 2 horas de laboratorio acompañado y 2 horas de trabajo independiente (despliegue, validación y desarrollo del cuestionario de análisis crítico).
+
+#strong[Evidencias esperadas:] al finalizar la guía, el estudiante debe contar con (a) el archivo #NormalTok("docker-compose.yml"); y las configuraciones del stack funcionales, (b) una captura de la consulta de logs en Grafana que muestre los eventos emitidos por la aplicación de prueba, (c) la salida exitosa del script #NormalTok("smoke_test.sh"); de la solución correspondiente y (d) las respuestas al cuestionario de análisis crítico. Los entregables exigibles y la rúbrica de evaluación se definen de forma homogénea en la guía docente del recurso.
 
 == Propósito y alcance del recurso
 <propósito-y-alcance-del-recurso-8>

@@ -3,6 +3,12 @@
 
 #import "./typst/cover.typ": cover
 
+// Color principal del libro. Este único valor controla: el bloque de la portada
+// interior (posterior a la cubierta), el título y los acentos del índice, las
+// franjas y numerales de las páginas de Parte, los títulos de capítulo y las
+// referencias cruzadas. Cambiar el tono = editar este hex.
+#let color-principal = rgb("#0d2942ff")
+
 #page(margin: 0pt, numbering: none, header: none, footer: none)[
 
 #cover(
@@ -63,17 +69,17 @@ $endif$
     #line(length: 100%, stroke: 0.5pt)
     #v(0.4em)
 
-    #image("images/by-nc-sa.png", width: 2.8cm)
+    #image("images/by-sa.png", width: 2.8cm)
 
     #v(0.15em)
     #text(weight: "bold")[Licencia Creative Commons]
 
     #v(0.1em)
-    Atribución – No Comercial – Compartir Igual 4.0 Internacional (CC BY-NC-SA 4.0) \
-    #link("https://creativecommons.org/licenses/by-nc-sa/4.0/")[creativecommons.org/licenses/by-nc-sa/4.0]
+    Atribución – Compartir Igual 4.0 Internacional (CC BY-SA 4.0) \
+    #link("https://creativecommons.org/licenses/by-sa/4.0/deed.es")[creativecommons.org/licenses/by-sa/4.0]
 
     #v(0.15em)
-    #text(size: 8.5pt)[Esta licencia permite a otros distribuir, remezclar, retocar y crear a partir de esta obra de modo no comercial, siempre y cuando den crédito a los autores y licencien sus nuevas creaciones bajo las mismas condiciones.]
+    #text(size: 8.5pt)[Esta licencia permite a otros distribuir, remezclar, retocar y crear a partir de esta obra, incluso con fines comerciales, siempre y cuando den crédito a los autores y licencien sus nuevas creaciones bajo las mismas condiciones.]
 
     #v(0.3em)
     © $book.date$ $for(book.author)$ $it.name$$sep$,$endfor$
@@ -130,7 +136,7 @@ $endif$
   // title-size: 2.2em,
   // subtitle-size: 1.4em,
   // author-size: 1.6em,
-  main-color: brand-color.at("primary", default: blue),
+  main-color: color-principal,
   logo: {
     let logo-info = brand-logo.at("medium", default: none)
     if logo-info != none { image(logo-info.path, alt: logo-info.at("alt", default: none)) }

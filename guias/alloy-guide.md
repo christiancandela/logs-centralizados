@@ -18,6 +18,10 @@ Al finalizar esta guía, el estudiante será capaz de:
 - Utilizar la interfaz web integrada de Alloy para inspeccionar el estado de los componentes en tiempo real.
 - Migrar conceptualmente una configuración Promtail existente a Alloy.
 
+**Tiempo estimado:** 2 horas de laboratorio acompañado y 2 horas de trabajo independiente (despliegue, validación y desarrollo del cuestionario de análisis crítico).
+
+**Evidencias esperadas:** al finalizar la guía, el estudiante debe contar con (a) el archivo `docker-compose.yml` y las configuraciones del stack funcionales, (b) una captura de la consulta de logs en Grafana que muestre los eventos emitidos por la aplicación de prueba, (c) la salida exitosa del script `smoke_test.sh` de la solución correspondiente y (d) las respuestas al cuestionario de análisis crítico. Los entregables exigibles y la rúbrica de evaluación se definen de forma homogénea en la guía docente del recurso.
+
 ## Propósito y alcance del recurso
 
 **Grafana Alloy** (v1.x) es el sucesor unificado de Promtail y del Grafana Agent. A diferencia de Promtail, que es un agente especializado en *file tailing* hacia Loki, Alloy es una plataforma de telemetría genérica que puede recolectar logs, métricas y trazas desde múltiples fuentes y enviarlos a múltiples destinos.

@@ -17,6 +17,10 @@ Al finalizar esta guía, el estudiante será capaz de:
 - Explorar y consultar logs centralizados desde la interfaz de Graylog.
 - Reconocer desafíos y limitaciones de un envío basado en UDP y mensajes fragmentados.
 
+**Tiempo estimado:** 2 horas de laboratorio acompañado y 2 horas de trabajo independiente (despliegue, validación y desarrollo del cuestionario de análisis crítico).
+
+**Evidencias esperadas:** al finalizar la guía, el estudiante debe contar con (a) el archivo `docker-compose.yml` y las configuraciones del stack funcionales, (b) una captura de la consulta de logs en Graylog que muestre los eventos emitidos por la aplicación de prueba, (c) la salida exitosa del script `smoke_test.sh` de la solución correspondiente y (d) las respuestas al cuestionario de análisis crítico. Los entregables exigibles y la rúbrica de evaluación se definen de forma homogénea en la guía docente del recurso.
+
 ## Propósito y alcance del recurso
 
 El propósito principal de este recurso es guiar el despliegue y uso de una **arquitectura básica de centralización de logs** basada en Graylog, en un entorno local y reproducible mediante Docker Compose.

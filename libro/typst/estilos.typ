@@ -141,10 +141,16 @@
     // Iniciar el índice en página nueva
     pagebreak()
 
-    // Título personalizado que no dispara el pagebreak(to: "odd")
+    // Título personalizado que no dispara el pagebreak(to: "odd").
+    // El color deriva del color principal del libro (oscurecido), de modo que
+    // cambiar el tono en typst-show.typ re-tiñe también este título.
     align(center)[
       #v(1cm)
-      #text(size: 2.2em, weight: "bold", fill: rgb("#003b4f"))[Índice]
+      #context {
+        let mc = main-color-state.at(here())
+        let title-color = if mc != none { mc.darken(50%) } else { rgb("#003b4f") }
+        text(size: 2.2em, weight: "bold", fill: title-color)[Índice]
+      }
       #v(1cm)
     ]
     

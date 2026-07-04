@@ -1,14 +1,14 @@
 # Recurso Educativo para el Despliegue de Ecosistemas de Centralización de Logs Mediante Docker
 
 **Autores**  
-- Ph.D. Christian Andrés Candela Uribe — Profesor Asociado ([ORCID](https://orcid.org/0000-0002-3961-1840))  
-- M.Sc. Paola Andrea Acero Franco — Profesor Asociado ([ORCID](https://orcid.org/0009-0005-6538-5030))  
-- Ph.D. Luis Eduardo Sepúlveda Rodríguez — Profesor Asociado ([ORCID](https://orcid.org/0000-0003-2446-0602))  
+- PhD Christian Andrés Candela Uribe — Profesor Asociado ([ORCID](https://orcid.org/0000-0002-3961-1840))  
+- MSc Paola Andrea Acero Franco — Profesor Asociado ([ORCID](https://orcid.org/0009-0005-6538-5030))  
+- PhD Luis Eduardo Sepúlveda Rodríguez — Profesor Asociado ([ORCID](https://orcid.org/0000-0003-2446-0602))  
 
 **Universidad del Quindío** — Programa de Ingeniería de Sistemas y Computación  
 **Asignatura asociada:** Arquitectura Orientada a Microservicios  
 **Versión:** 1.0.0 | **Fecha:** mayo de 2026  
-[![CC BY-SA 4.0](https://licensebuttons.net/l/by-sa/4.0/88x31.png)](https://creativecommons.org/licenses/by-sa/4.0/deed.es) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20535747.svg)](https://doi.org/10.5281/zenodo.20535747)
+[![CC BY-SA 4.0](https://licensebuttons.net/l/by-sa/4.0/88x31.png)](https://creativecommons.org/licenses/by-sa/4.0/deed.es) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20187576.svg)](https://doi.org/10.5281/zenodo.20187576)
 
 > Este recurso educativo abierto consta de: (a) el presente marco conceptual, (b) una guía de estudio con preguntas de comprensión y articulación teoría–práctica ([`guia_estudio.md`](./guia_estudio.md)), (c) una guía para docentes con planificación sugerida y rúbricas ([`guia_docente.md`](./guia_docente.md)), y (d) nueve guías prácticas reproducibles en el directorio [`guias/`](./guias/) con sus respectivas soluciones en [`soluciones/`](./soluciones/).
 
@@ -16,7 +16,7 @@
 
 La adopción creciente de arquitecturas basadas en sistemas distribuidos y microservicios ha transformado de manera significativa el desarrollo y la operación del software contemporáneo (Newman, 2015; Richardson, 2018; Bosch, 2016). Estas arquitecturas aportan beneficios claros en términos de escalabilidad, resiliencia y evolución independiente de los componentes; sin embargo, también introducen un aumento considerable en la complejidad asociada a su análisis y gestión.
 
-En este escenario, comprender el comportamiento interno de los sistemas en ejecución se convierte en un reto central para la formación en ingeniería de sistemas y disciplinas afines. La **observabilidad** surge como un principio fundamental que permite abordar este reto, al posibilitar la inferencia del estado interno de un sistema a partir de las señales externas que este produce durante su operación (Majors, Fong-Jones & Miranda, 2022; Beyer et al., 2016; Sridharan, 2018).
+En este escenario, comprender el comportamiento interno de los sistemas en ejecución se convierte en un reto central para la formación en ingeniería de sistemas y computación, y disciplinas afines. La **observabilidad** surge como un principio fundamental que permite abordar este reto, al posibilitar la inferencia del estado interno de un sistema a partir de las señales externas que este produce durante su operación (Majors, Fong-Jones & Miranda, 2022; Beyer et al., 2016; Sridharan, 2018).
 
 El presente trabajo escrito tiene como propósito desarrollar, desde un enfoque académico y formativo, los fundamentos conceptuales de la observabilidad en sistemas distribuidos, con énfasis en la **centralización de logs** como uno de sus pilares principales. El documento se concibe como un recurso educativo orientado a facilitar el aprendizaje progresivo de estos conceptos, priorizando los principios y la arquitectura conceptual sobre el uso de herramientas o tecnologías específicas. Esta separación entre el marco teórico y las guías prácticas es una decisión metodológica deliberada: mantener el documento conceptual neutral en términos tecnológicos permite que los fundamentos presentados conserven validez con independencia de la evolución del ecosistema de herramientas, mientras que las guías prácticas ofrecen la experiencia concreta necesaria para anclar el aprendizaje en contextos reales (Kolb, 1984).
 
@@ -24,7 +24,7 @@ Las guías prácticas complementarias cubren un espectro tecnológico más ampli
 
 ## 2. Justificación
 
-La formación en ingeniería de sistemas enfrenta el desafío de preparar a los estudiantes para comprender y gestionar sistemas de software cada vez más complejos y distribuidos. Si bien los programas académicos suelen abordar con profundidad los aspectos relacionados con el diseño y la construcción de software, los elementos asociados a su operación, análisis y diagnóstico suelen recibir una atención limitada o fragmentada.
+La formación en ingeniería de sistemas y computación enfrenta el desafío de preparar a los estudiantes para comprender y gestionar sistemas de software cada vez más complejos y distribuidos. Si bien los programas académicos suelen abordar con profundidad los aspectos relacionados con el diseño y la construcción de software, los elementos asociados a su operación, análisis y diagnóstico suelen recibir una atención limitada o fragmentada.
 
 En particular, la observabilidad y la centralización de logs suelen introducirse desde enfoques predominantemente instrumentales, centrados en el uso de herramientas específicas. Esta aproximación dificulta la transferencia del conocimiento a contextos tecnológicos diversos y limita la comprensión de los principios conceptuales que subyacen a dichas prácticas (Cito et al., 2015).
 
@@ -58,7 +58,7 @@ Al finalizar el estudio de este documento, el estudiante será capaz de:
 
 La construcción de este recurso educativo se concibe como un proceso aplicado de diseño, desarrollo, verificación y validación de un **artefacto instruccional y tecnológico**. Este trabajo tiene como propósito diseñar un **Recurso Educativo Abierto (REA) portable y modular**.
 
-Por consiguiente, la metodología se enfoca en la articulación sistémica entre directrices curriculares de la Ingeniería de Sistemas, estándares contemporáneos de observabilidad industrial (DevOps/SRE) y la viabilidad instruccional en entornos heterogéneos mediante contenedores Docker.
+Por consiguiente, la metodología se enfoca en la articulación sistémica entre directrices curriculares de la Ingeniería de Sistemas y Computación, estándares contemporáneos de observabilidad industrial (DevOps/SRE) y la viabilidad instruccional en entornos heterogéneos mediante contenedores Docker.
 
 ### 4.1. Enfoque metodológico adoptado
 
@@ -99,7 +99,7 @@ El trabajo se clasifica como un **desarrollo académico aplicado con orientació
 3. Nueve (9) guías prácticas e independientes que materializan dicha arquitectura mediante diferentes combinaciones tecnológicas (*stacks*).
 4. Una guía didáctica para docentes y una guía de estudio para estudiantes.
 
-El valor del producto radica en su **portabilidad, modularidad y transferibilidad**, permitiendo que cualquier docente o estudiante de Ingeniería de Sistemas pueda replicar los ecosistemas con el único requisito de contar con un motor de contenedores Docker.
+El valor del producto radica en su **portabilidad, modularidad y transferibilidad**, permitiendo que cualquier docente o estudiante de Ingeniería de Sistemas y Computación pueda replicar los ecosistemas con el único requisito de contar con un motor de contenedores Docker.
 
 ### 4.3. Principios metodológicos
 
@@ -187,7 +187,7 @@ Para asegurar la coherencia sistémica, cada guía didáctica en el repositorio 
 4. **Procedimiento Técnico Paso a Paso:** Comandos y configuraciones limpias, reproducibles y ordenadas.
 5. **Cuestionario de Análisis Crítico:** Preguntas diseñadas para la conceptualización abstracta y el diagnóstico reflexivo de fallos.
 
-Los **instrumentos de evaluación** (entregables exigibles y rúbrica analítica de niveles de desempeño) se proveen de forma **homogénea y centralizada** en la guía docente (`guia_docente.md` §6), aplicables de manera uniforme a cualquiera de las nueve guías. Esta centralización es una decisión deliberada de diseño REA: garantiza criterios de evaluación consistentes entre stacks, evita la duplicación de rúbricas y facilita que el docente adopte y adapte un único conjunto de instrumentos.
+Los **instrumentos de evaluación** (entregables exigibles y rúbrica analítica de niveles de desempeño) se proveen de forma **homogénea y centralizada** en la guía docente (`guia_docente.md` §8), aplicables de manera uniforme a cualquiera de las nueve guías. Esta centralización es una decisión deliberada de diseño REA: garantiza criterios de evaluación consistentes entre stacks, evita la duplicación de rúbricas y facilita que el docente adopte y adapte un único conjunto de instrumentos.
 
 ### 4.7. Marco de Verificación y Validación (V&V)
 
@@ -204,9 +204,9 @@ El marco de verificación y validación del recurso se centra en dos dimensiones
   * *Validación de Imágenes Libres:* Empleo exclusivo de imágenes oficiales de Docker Hub o de registros de código abierto para evitar licenciamientos privativos.
 * **Validación del Artefacto (Eficacia Didáctica y Curricular):**
   * *Validación de Coherencia Pedagógica:* Revisión de que las tareas solicitadas permitan alcanzar y evaluar empíricamente los Resultados de Aprendizaje Esperados (RAE) de la asignatura *Arquitectura Orientada a Microservicios*.
-  * *Evaluación Editorial y Estructura Docente:* Revisión de la portabilidad e inteligibilidad de la guía docente (`guia_docente.md`) para asegurar que el recurso pueda ser fácilmente reutilizado por otros docentes del programa de Ingeniería de Sistemas.
+  * *Evaluación Editorial y Estructura Docente:* Revisión de la portabilidad e inteligibilidad de la guía docente (`guia_docente.md`) para asegurar que el recurso pueda ser fácilmente reutilizado por otros docentes del programa de Ingeniería de Sistemas y Computación.
 
-**Delimitación del alcance evaluativo.** Los **Resultados de Aprendizaje Esperados (RAE)** declarados en el recurso son objetivos de diseño instruccional, no mediciones empíricas. Los objetivos comprometidos en la propuesta aprobada se circunscriben al **diseño, desarrollo y verificación técnica** del REA (fundamentación teórica, guías prácticas y entornos reproducibles); la **medición del impacto pedagógico** (la evaluación empírica de los resultados de aprendizaje al aplicar el recurso con estudiantes) excede dichos objetivos y se proyecta como una **fase posterior** de validación en aula —analítica de uso, encuestas de percepción y ajuste iterativo conforme a los principios de la investigación basada en diseño (DBR)—, dado que esta versión corresponde a la primera publicación del recurso.
+**Delimitación del alcance evaluativo.** Los **Resultados de Aprendizaje Esperados (RAE)** declarados en el recurso son objetivos de diseño instruccional, no mediciones empíricas. Los objetivos comprometidos en la propuesta aprobada se circunscriben al **diseño, desarrollo y verificación técnica** del REA (fundamentación teórica, guías prácticas y entornos reproducibles); la **medición del impacto pedagógico** (la evaluación empírica de los resultados de aprendizaje al aplicar el recurso con estudiantes) excede dichos objetivos y se proyecta como una **fase posterior** de validación en aula, que incluirá analítica de uso, encuestas de percepción y ajuste iterativo conforme a los principios de la investigación basada en diseño (DBR), dado que esta versión corresponde a la primera publicación del recurso. La proyección detallada de esta fase, con sus indicadores de evaluación de impacto, se desarrolla en el capítulo de trabajo futuro.
 
 #### 4.7.1. Prueba de humo estandarizada
 
@@ -235,6 +235,25 @@ La siguiente matriz detalla de forma explícita cómo cada uno de los tres objet
 | **OE1:** Establecer los elementos teóricos relacionados con los logs centralizados en microservicios. | * Capítulos 1, 2, 3 y 4 del libro base (`readme.md`).<br>* Cuestionario de estudio conceptual (`guia_estudio.md`). | * Marco conceptual de la observabilidad (recolección, procesamiento, almacenamiento, visualización).<br>* Bibliografía de referencia especializada indexada. | El marco conceptual es agnóstico a las herramientas, fundamenta científicamente la observabilidad en sistemas distribuidos y analiza las implicaciones del esquema semántico y la privacidad. |
 | **OE2:** Elaborar guías prácticas para el despliegue progresivo de soluciones para centralización de logs utilizando Docker. | * Carpeta de guías didácticas (`guias/` de la 1 a la 9).<br>* Rúbricas y planeación sugerida (`guia_docente.md`). | * 9 Guías académicas estructuradas bajo el modelo instruccional de Kolb.<br>* Rúbrica analítica homogénea y entregables exigibles definidos en la guía docente, aplicables a las 9 guías. | Se diseñan 9 guías instruccionales que cubren desde los stacks tradicionales hasta soluciones en el estado del arte, ordenadas por complejidad progresiva. |
 | **OE3:** Implementar cada guía en entornos funcionales y reproducibles para los estudiantes. | * Carpeta de configuraciones y entornos (`soluciones/` de la 1 a la 9).<br>* Repositorio de código con archivos `docker-compose.yml` y configs. | * Archivos YAML de Docker Compose funcionales.<br>* Archivos de configuración de colectores e indexadores.<br>* Aplicaciones mocks generadoras de logs.<br>* Logs e historiales de comandos. | Las 9 soluciones y contenedores de observabilidad son funcionales, portables y reproducibles, estructuradas de forma parametrizada y con guías de dimensionamiento técnico. |
+
+### 4.9. Gestión de evidencias del trabajo
+
+Para que el cumplimiento de los objetivos sea verificable por pares académicos, el recurso adopta una gestión explícita de evidencias: todo resultado declarado en este documento está respaldado por un artefacto observable dentro del repositorio público. Este enfoque es coherente con la naturaleza del trabajo como artefacto de Design Science Research, cuyo valor se demuestra mediante productos tangibles y auditables, y aprovecha una característica diferencial del recurso: al publicarse como repositorio navegable con DOI, cualquier evaluador puede inspeccionar las evidencias e incluso reproducirlas en su propio equipo. La Tabla 5 inventaría las evidencias del trabajo, su ubicación y el objetivo específico al que aportan.
+
+**Tabla 5.** Inventario de evidencias verificables del recurso educativo.
+
+| Evidencia | Ubicación en el repositorio | Descripción | Objetivo al que aporta |
+| :--- | :--- | :--- | :--- |
+| Marco conceptual tecnológicamente neutral | `readme.md` (este documento) | Desarrollo teórico de la observabilidad y de la arquitectura conceptual de cuatro etapas, con sus desafíos y paradigmas de almacenamiento. | OE1 |
+| Guía de estudio | `guia_estudio.md` | Veinte preguntas de comprensión con respuesta, glosario terminológico y bloque de articulación teoría–práctica. | OE1 |
+| Guías prácticas | `guias/` (9 documentos) | Guías instruccionales bajo el ciclo de Kolb, con RAE, dimensionamiento de recursos, procedimiento reproducible y cuestionario de análisis crítico. | OE2 |
+| Guía docente | `guia_docente.md` | Rutas de planificación, instrumentos de evaluación homogéneos (entregables y rúbrica) y anticipación de dificultades frecuentes. | OE2 |
+| Soluciones ejecutables | `soluciones/` (9 entornos) | Archivos `docker-compose.yml`, configuraciones de colectores e indexadores y aplicación productora de logs de cada stack. | OE3 |
+| Pruebas de humo automatizadas | `smoke_test.sh` en cada solución | Verificación automatizada de extremo a extremo del pipeline de cada stack, con marcador único y consulta de confirmación en el motor de almacenamiento. | OE3 |
+| Parametrización de recursos | Archivos `.env` de cada solución | Límites de memoria de los contenedores (`mem_limit`) ajustables mediante variables de entorno, en cumplimiento del principio de transparencia de recursos. | OE3 |
+| Metadatos de publicación abierta | `CITATION.cff`, `.zenodo.json`, `LICENSE` | Citación estructurada, DOI persistente y licenciamiento abierto que habilitan la adopción y trazabilidad externa del recurso. | Transversal |
+
+Cada evidencia se presenta acompañada de su propósito y de su relación con el objetivo que soporta: las capturas y salidas incluidas en las guías se contextualizan con el paso del procedimiento al que corresponden, los scripts de verificación declaran qué comprueban y cómo interpretarlo, y la matriz de trazabilidad de la Tabla 4 vincula formalmente cada conjunto de evidencias con sus criterios y métricas de cumplimiento. El capítulo de resultados retoma este inventario para sintetizar, objetivo por objetivo, lo efectivamente producido y su evidencia asociada.
 
 ## 5. Desarrollo de la temática
 
@@ -324,7 +343,7 @@ El diseño de soluciones de centralización de logs implica enfrentar diversos d
 - **Seguridad y Privacidad (Sanitización):** Los logs suelen capturar inadvertidamente información sensible (contraseñas, tokens, datos de usuarios PII). Es imperativo que las arquitecturas incluyan mecanismos de censura o enmascaramiento de datos durante la fase de procesamiento antes de su indexación (Aghili, Li & Khomh, 2025).
 - **Volumen, Cardinalidad y Costo:** El valor analítico de un sistema de centralización depende de su capacidad de indexar los datos para consultarlos con rapidez, pero indexar tiene un costo. Los atributos de alta *cardinalidad* (aquellos con un número muy elevado de valores distintos, como los identificadores de usuario o de petición) pueden provocar un crecimiento desproporcionado de los índices y degradar el rendimiento. Diseñar una solución de centralización implica, por tanto, decidir conscientemente qué campos justifican el costo de ser indexados y cuáles no, decisión que se relaciona directamente con el paradigma de almacenamiento elegido (sección 5.7.3).
 - **Orden Temporal y Relojes Distribuidos:** Como se discutió en la sección 5.3, los relojes de los distintos nodos no están perfectamente sincronizados, lo que dificulta establecer el orden real de los eventos a partir de sus marcas temporales (Lamport, 1978). Las soluciones de centralización deben asumir esta limitación y apoyarse en identificadores de correlación y en marcas temporales coherentes para reconstruir las secuencias de ejecución.
-- **Confiabilidad de la Entrega y Contrapresión:** El transporte de logs desde su origen hasta el repositorio central no está exento de fallos. Las soluciones deben definir garantías de entrega —desde *at-most-once* (se prioriza no duplicar, a riesgo de perder eventos) hasta *at-least-once* (se prioriza no perder, a riesgo de duplicar)— así como mecanismos de amortiguación (*buffering*) y contrapresión (*backpressure*) que eviten que un pico en la generación de logs sature o derribe los componentes intermedios.
+- **Confiabilidad de la Entrega y Contrapresión:** El transporte de logs desde su origen hasta el repositorio central no está exento de fallos. Las soluciones deben definir garantías de entrega, desde *at-most-once* (se prioriza no duplicar, a riesgo de perder eventos) hasta *at-least-once* (se prioriza no perder, a riesgo de duplicar), así como mecanismos de amortiguación (*buffering*) y contrapresión (*backpressure*) que eviten que un pico en la generación de logs sature o derribe los componentes intermedios.
 
 Desde una perspectiva académica, el análisis de estos desafíos permite a los estudiantes desarrollar criterios transferibles a distintos contextos tecnológicos, fomentando una comprensión crítica de las decisiones de diseño y sus implicaciones operativas y éticas.
 
@@ -442,17 +461,153 @@ Aunque las guías son independientes, se sugiere el siguiente orden de consumo p
 8. **[SigNoz (ClickHouse)](guias/signoz-guide.md):** (*Estado del Arte*) Plataforma "Todo en Uno" que utiliza OpenTelemetry nativamente y almacenamiento analítico columnar, representando la alternativa libre a plataformas comerciales.
 9. **[Grafana Alloy](guias/alloy-guide.md):** (*Guía complementaria*) Migración de Promtail al sucesor oficial. Introduce el modelo de configuración orientado al flujo de datos (*dataflow*) con componentes explícitamente conectados.
 
-## 8. Conclusiones
+## 8. Resultados
 
-La observabilidad se consolida como un principio fundamental para la comprensión, análisis y gestión de sistemas distribuidos, al permitir inferir su comportamiento interno a partir de las señales externas generadas durante su ejecución. En arquitecturas basadas en microservicios, donde la complejidad operativa y los comportamientos emergentes son inherentes, este principio resulta indispensable para el diagnóstico, la toma de decisiones y la mejora continua de los sistemas (Majors, Fong-Jones & Miranda, 2022; Beyer et al., 2016).
+Este capítulo sintetiza los resultados obtenidos durante el desarrollo del recurso educativo, organizándolos en correspondencia con los tres objetivos específicos (OE) comprometidos en la propuesta aprobada de ascenso. Cada resultado se enuncia junto con la evidencia verificable que lo respalda, en coherencia con la gestión de evidencias descrita en la metodología, de modo que un evaluador externo pueda contrastar lo declarado con los artefactos publicados en el repositorio.
 
-Dentro de este marco, la centralización de logs se presenta como un pilar esencial de la observabilidad, no solo por su valor operativo, sino por su capacidad para transformar eventos dispersos en una fuente coherente de información y conocimiento. El desarrollo conceptual propuesto en este trabajo permite comprender la centralización de logs como un flujo integrado que articula componentes de recolección, procesamiento, almacenamiento y visualización, ofreciendo una visión sistémica del ciclo de vida de la información operativa.
+### 8.1 Resultados de la fundamentación conceptual
 
-Este enfoque arquitectónico y conceptual proporciona a los estudiantes un modelo mental transferible que facilita la comprensión de distintas implementaciones prácticas, independientemente de las tecnologías específicas empleadas. Al priorizar los principios y la arquitectura sobre las herramientas, el documento contribuye a una formación más sólida, crítica y adaptable a la evolución constante del ecosistema tecnológico.
+En cumplimiento del OE1 se produjo un marco conceptual tecnológicamente neutral que desarrolla la observabilidad desde su raíz en la teoría de control (Kalman, 1960) hasta su consolidación como principio de la ingeniería de software contemporánea. Los resultados concretos de esta dimensión son: (a) la caracterización de los tres pilares de la observabilidad y del rol de los logs como fuente primaria de información semánticamente rica; (b) el análisis de la problemática de la dispersión, incluyendo los problemas no triviales de correlación de eventos y orden temporal en sistemas distribuidos; (c) la arquitectura conceptual de cuatro etapas (recolección, procesamiento, almacenamiento y visualización) como modelo mental transferible entre tecnologías; (d) el análisis de seis desafíos transversales de diseño, desde la estandarización semántica hasta la confiabilidad de la entrega; y (e) la caracterización de los tres paradigmas de indexación y almacenamiento con sus compromisos de costo y flexibilidad.
 
-En conjunto, el trabajo escrito ofrece una base teórica robusta y coherente que apoya los procesos formativos en ingeniería de sistemas y disciplinas afines, fortaleciendo la articulación entre fundamentos conceptuales y escenarios reales de operación, y sentando las bases para un aprendizaje significativo en torno a la observabilidad y la centralización de logs.
+El marco se complementa con la guía de estudio, que operacionaliza la fundamentación en veinte preguntas de comprensión con respuesta, un glosario terminológico y un bloque de preguntas de articulación teoría–práctica que conecta explícitamente los conceptos del marco con las implementaciones de las guías. El conjunto se sustenta en más de treinta referencias especializadas con identificadores persistentes.
 
-## 9. Referencias bibliográficas
+### 8.2 Resultados del diseño instruccional y las prácticas académicas
+
+En cumplimiento del OE2 se diseñaron nueve guías prácticas con estructura formal homogénea (RAE observables, dimensionamiento explícito de recursos, diagrama del pipeline lógico, procedimiento reproducible y cuestionario de análisis crítico), organizadas bajo el ciclo de aprendizaje experiencial de Kolb y ordenadas por complejidad progresiva, desde el ecosistema tradicional más extendido hasta las plataformas del estado del arte. El diseño instruccional se completa con la guía docente, que aporta una alineación explícita con el microcurrículo oficial de la asignatura (resultados de aprendizaje, núcleos temáticos, unidades de competencia y ejes Ser–Saber–Saber Hacer del sílabo, donde los patrones de observabilidad figuran como temática declarada), tres rutas de planificación según el tiempo disponible, una estrategia de evaluación de tres componentes con rúbrica analítica homogénea aplicable a cualquiera de las nueve guías, y un repertorio de dificultades frecuentes con orientaciones para anticiparlas en el aula.
+
+La Tabla 6 sintetiza la cobertura conceptual del conjunto: cada guía materializa la misma arquitectura de cuatro etapas con un aporte conceptual diferencial, de modo que la progresión completa expone al estudiante a los tres paradigmas de almacenamiento caracterizados en la sección 5.7.3 y a los principales patrones de recolección y transporte.
+
+**Tabla 6.** Resultados del diseño instruccional: cobertura conceptual de las nueve guías prácticas.
+
+| # | Guía (stack) | Paradigma de almacenamiento | Aporte conceptual diferencial |
+| :--- | :--- | :--- | :--- |
+| 1 | ELK | Índice invertido | Ecosistema tradicional de búsqueda de texto completo; punto de partida de la ruta. |
+| 2 | OLO (OpenSearch) | Índice invertido | Evolución y bifurcación de código abierto del ecosistema anterior. |
+| 3 | Fluentd | Índice invertido | Desacoplamiento del recolector como componente independiente del almacenamiento. |
+| 4 | Promtail y Loki | Índice de solo etiquetas | Compromiso costo–flexibilidad de la indexación mínima. |
+| 5 | GELF y Graylog | Índice invertido | Formatos de transporte específicos y plataformas dedicadas a la gestión de logs. |
+| 6 | OpenTelemetry (LGTM) | Índice de solo etiquetas | Estándar de protocolo unificado y tratamiento integrado de los tres pilares. |
+| 7 | Vector, Loki y Grafana | Índice de solo etiquetas | Pipeline de alto rendimiento y sanitización programable de campos sensibles. |
+| 8 | SigNoz (ClickHouse) | Almacén columnar | Plataforma integrada con almacenamiento analítico columnar y OTLP nativo. |
+| 9 | Grafana Alloy | Índice de solo etiquetas | Configuración orientada al flujo de datos y migración entre recolectores. |
+
+### 8.3 Resultados técnicos verificables
+
+En cumplimiento del OE3, cada guía cuenta con una solución implementada como entorno funcional, autocontenido y reproducible. La Tabla 7 enuncia los resultados técnicos junto con su evidencia:
+
+**Tabla 7.** Resultados técnicos verificables y sus evidencias.
+
+| Resultado | Evidencia verificable | Ubicación |
+| :--- | :--- | :--- |
+| Nueve ecosistemas de centralización desplegables en un equipo personal. | Archivos `docker-compose.yml` autocontenidos, configuraciones de colectores e indexadores y aplicación productora de logs. | `soluciones/01-ELK` a `soluciones/09-Alloy` |
+| Verificación automatizada de extremo a extremo del pipeline en los nueve stacks. | Prueba de humo estandarizada que emite un log con marcador único y confirma su registro en el motor de almacenamiento. | `smoke_test.sh` en cada solución |
+| Transparencia y dimensionamiento adaptativo de recursos. | Límites de memoria parametrizados mediante variables de entorno y tablas de dimensionamiento al inicio de cada guía. | Archivos `.env` de cada solución y guías prácticas |
+| Verificación de portabilidad sobre la primera plataforma objetivo. | Despliegue verificado sobre macOS Apple Silicon (ARM); la cobertura de Windows 11/WSL2 y Ubuntu Linux se documenta como verificación en curso. | Marco de verificación y validación de la metodología |
+| Publicación abierta, citable e indexada del recurso completo. | DOI persistente, metadatos de citación estructurada y licencia abierta. | `CITATION.cff`, `.zenodo.json` y registro en Zenodo |
+
+Un resultado transversal merece mención explícita: la prueba de humo estandarizada demostró que la fase de generación del log es idéntica en los nueve stacks mientras solo varía la verificación del registro, lo que constituye evidencia operativa directa de la tesis central del recurso: las etapas funcionales del pipeline son invariantes; las tecnologías que las implementan, no.
+
+### 8.4 Síntesis y correspondencia con los objetivos del trabajo
+
+La Tabla 8 consolida la correspondencia entre los objetivos específicos comprometidos, los resultados obtenidos y sus evidencias:
+
+**Tabla 8.** Correspondencia entre objetivos específicos, resultados y evidencias.
+
+| Objetivo específico | Componente donde se desarrolla | Resultado principal | Evidencia verificable |
+| :--- | :--- | :--- | :--- |
+| **OE1:** Establecer los elementos teóricos relacionados con los logs centralizados en microservicios. | Marco conceptual (este documento) y guía de estudio. | Fundamentación neutral con arquitectura de cuatro etapas, seis desafíos de diseño y tres paradigmas de almacenamiento. | `readme.md`, `guia_estudio.md` |
+| **OE2:** Elaborar guías prácticas para el despliegue progresivo de soluciones de centralización de logs con Docker. | Guías prácticas y guía docente. | Nueve guías instruccionales progresivas bajo el ciclo de Kolb, con instrumentos de evaluación homogéneos. | `guias/`, `guia_docente.md` |
+| **OE3:** Implementar cada guía en entornos funcionales y reproducibles para los estudiantes. | Soluciones del repositorio. | Nueve ecosistemas reproducibles, parametrizados y con verificación automatizada de extremo a extremo. | `soluciones/`, `smoke_test.sh` |
+
+En conjunto, los resultados demuestran que el recurso educativo cumple los compromisos formulados en la propuesta aprobada y genera evidencias verificables en cada dimensión: conceptual (marco teórico neutral y material de estudio), instruccional (guías y evaluación alineadas constructivamente), técnica (entornos reproducibles con verificación automatizada) y de publicación abierta (repositorio navegable, DOI y licenciamiento explícito). Adicionalmente, la ampliación del espectro tecnológico respecto de lo enunciado originalmente (justificada en la introducción por la evolución del estado del arte) constituye un resultado que excede los compromisos iniciales sin alterar su naturaleza.
+
+## 9. Discusión académica, pedagógica e institucional
+
+Este capítulo analiza críticamente los resultados desde tres perspectivas complementarias, contrastándolos con los compromisos de la propuesta aprobada, con los referentes metodológicos adoptados y con la literatura pertinente. El propósito no es reiterar los resultados, sino delimitar su alcance, reconocer sus limitaciones y argumentar su valor diferencial.
+
+### 9.1 Discusión académica
+
+Los tres objetivos específicos comprometidos en la propuesta se cumplieron y quedaron materializados en artefactos verificables. El único punto que se aparta del enunciado original es la cantidad de guías prácticas: el recurso terminó cubriendo más stacks tecnológicos de los inicialmente previstos. Esta ampliación fue una decisión deliberada. Durante el período de desarrollo, el estado del arte cambió con rapidez: se consolidaron estándares de protocolo unificado y aparecieron plataformas de nueva generación. Un recurso limitado al enunciado original habría nacido incompleto. Las guías adicionales se construyeron con el mismo rigor y la misma estructura que las inicialmente propuestas, de modo que la ampliación no altera los compromisos adquiridos: los amplifica. Su justificación se documenta en la introducción y su trazabilidad en la metodología.
+
+El valor diferencial del recurso frente a los materiales disponibles en el área está en combinar cuatro elementos que rara vez aparecen juntos. La observabilidad suele enseñarse de forma instrumental, centrada en herramientas específicas (Cito et al., 2015), y los materiales de referencia dominantes (la documentación de los fabricantes y los tutoriales) no ofrecen fundamento pedagógico ni neutralidad tecnológica. Este recurso, en cambio, reúne un marco conceptual neutral, un diseño instruccional formal, instrumentos de evaluación homogéneos y una verificación automatizada de la reproducibilidad. Esta última característica, materializada en las pruebas de humo, es poco común incluso en recursos educativos técnicos de buena calidad.
+
+También debe reconocerse una limitación del alcance actual: la verificación técnica completa se ejecutó sobre una sola plataforma (macOS Apple Silicon), y la cobertura de Windows y Linux quedó como verificación en curso. La decisión es razonable dados los tiempos y recursos de un trabajo de ascenso, y su riesgo está mitigado por el propio diseño de las soluciones: las imágenes empleadas son oficiales y multiarquitectura, y los recursos están parametrizados. Aun así, es una limitación real, y se prefiere declararla de forma explícita antes que omitirla.
+
+### 9.2 Discusión pedagógica
+
+Un aspecto central es la distinción entre el **diseño del recurso** y su **uso en el aula**. El trabajo produce un recurso instruccional completo y evaluable: resultados de aprendizaje observables, actividades alineadas constructivamente y rúbricas homogéneas (Biggs & Tang, 2011). Sin embargo, la experiencia de uso solo puede observarse en una implementación piloto: los errores reales de los estudiantes, los tiempos efectivos de práctica, la retroalimentación docente y las evidencias de aprendizaje. La validación pedagógica en sentido estricto queda así planteada como necesidad metodológica reconocida y coherente con el ciclo iterativo de la investigación basada en diseño (Design-Based Research Collective, 2003), no como defecto estructural del diseño.
+
+En la misma línea, la coherencia del diseño con el ciclo de Kolb garantiza la oportunidad de aprendizaje, no el aprendizaje mismo: la efectividad dependerá de condiciones que el recurso no controla, como la mediación docente, los conocimientos previos del estudiante (particularmente Docker y formatos estructurados) y la disponibilidad de equipos con recursos suficientes. La guía docente anticipa estas condiciones mediante rutas alternativas para equipos limitados y un repertorio de dificultades frecuentes, lo que reduce el riesgo sin eliminarlo.
+
+Finalmente, la centralización de los instrumentos de evaluación en la guía docente, en lugar de replicarlos en cada guía, es un compromiso consciente de diseño: prioriza la consistencia de criterios entre stacks y la facilidad de adopción docente sobre la autosuficiencia de cada guía tomada de forma aislada. Para el uso autónomo, cada guía declara sus evidencias esperadas y remite a los instrumentos homogéneos del recurso.
+
+### 9.3 Discusión institucional
+
+La sostenibilidad del recurso constituye el principal reto institucional. El ecosistema de observabilidad evoluciona con rapidez y las versiones de las imágenes de contenedores quedan obsoletas en plazos de doce a dieciocho meses; el recurso mitiga este riesgo con imágenes oficiales versionadas, parametrización explícita y la recomendación de revisión al inicio de cada semestre, pero su vigencia depende de un mantenimiento activo. La publicación como repositorio abierto habilita un mecanismo de evolución que la distribución como documento cerrado no permite: el reporte de errores y las contribuciones externas, incluidas las de los propios estudiantes como actividad complementaria de aprendizaje.
+
+En términos de gobernanza y transferibilidad, el recurso presenta una fortaleza estructural: se publica como repositorio navegable con DOI persistente, metadatos de citación estructurada y licencia abierta, lo que permite su adopción total o parcial por otros docentes, asignaturas e instituciones con el único requisito de un motor de contenedores y las condiciones de memoria declaradas. La alineación con directrices curriculares internacionales y las rutas de aprendizaje modulares facilitan esa transferencia más allá de la asignatura de origen.
+
+Quedan, sin embargo, preguntas institucionales abiertas que exceden el alcance de este trabajo: la integración formal del recurso en el microcurrículo, la asignación de responsabilidades de actualización periódica y la articulación con otras asignaturas del área dependen de decisiones del programa académico. El recurso habilita esas decisiones, pues aporta el material, los instrumentos y la evidencia de viabilidad, pero no las sustituye.
+
+### 9.4 Síntesis de la discusión
+
+El análisis precedente permite identificar como fortalezas la integración coherente entre fundamentación conceptual neutral, diseño instruccional formal y entornos técnicos verificables, junto con una publicación abierta que garantiza trazabilidad y transferibilidad. Como limitaciones se reconocen la ausencia de validación empírica con estudiantes, la verificación multiplataforma parcial y la dependencia de mantenimiento activo frente a la obsolescencia tecnológica. Estas limitaciones no deslegitiman el trabajo: delimitan con claridad el alcance alcanzado y estructuran la agenda que se desarrolla en el capítulo de trabajo futuro.
+
+## 10. Conclusiones
+
+Las conclusiones se organizan en correspondencia con los tres objetivos específicos comprometidos en la propuesta aprobada, seguidas de una conclusión integradora, las limitaciones reconocidas y la contribución del trabajo a la formación en ingeniería de sistemas y computación.
+
+### 10.1 Sobre la fundamentación teórica de la centralización de logs
+
+La observabilidad se consolida como un principio fundamental para la comprensión, análisis y gestión de sistemas distribuidos, al permitir inferir su comportamiento interno a partir de las señales externas generadas durante su ejecución. En arquitecturas basadas en microservicios, donde la complejidad operativa y los comportamientos emergentes son inherentes, este principio resulta indispensable para el diagnóstico, la toma de decisiones y la mejora continua de los sistemas (Majors, Fong-Jones & Miranda, 2022; Beyer et al., 2016). El marco conceptual desarrollado demuestra que es posible enseñar la centralización de logs sin acoplar la formación a herramientas específicas: la arquitectura de cuatro etapas, los desafíos transversales y los paradigmas de almacenamiento constituyen un núcleo conceptual estable sobre el cual las tecnologías concretas son instancias intercambiables.
+
+### 10.2 Sobre el diseño instruccional de las guías prácticas
+
+La estructuración de las nueve guías bajo el ciclo de aprendizaje experiencial y el principio de alineación constructiva demuestra que un laboratorio técnico puede convertirse en una experiencia de aprendizaje evaluable: cada guía articula resultados de aprendizaje observables, un procedimiento reproducible y un cuestionario de análisis crítico, y los instrumentos homogéneos de la guía docente garantizan una evaluación consistente con independencia del stack elegido. La progresión de complejidad, del ecosistema tradicional al estado del arte, materializa el principio de independencia instrumental: el estudiante comprueba que las etapas del pipeline permanecen constantes mientras las herramientas cambian por completo.
+
+### 10.3 Sobre la implementación de entornos reproducibles
+
+La materialización de los nueve ecosistemas con Docker Compose confirma la viabilidad del computador personal del estudiante como laboratorio de experimentación, sin dependencia de infraestructura institucional ni de servicios externos. La prueba de humo estandarizada aporta, además, una conclusión metodológica: la automatización de la verificación no solo asegura la calidad técnica del recurso, sino que constituye en sí misma evidencia empírica de su tesis central, al demostrar operativamente que la interfaz de emisión de logs permanece invariante mientras el conjunto de herramientas varía por completo.
+
+### 10.4 Conclusión integradora
+
+La integración de los tres objetivos produce un recurso educativo que articula fundamentación conceptual, diseño instruccional formal y entornos técnicos verificables como partes de un único producto académico. Este es su valor diferencial frente a manuales técnicos, tutoriales o documentación de fabricantes: el recurso no solo describe cómo desplegar soluciones de centralización de logs, sino que fundamenta por qué la observabilidad es un principio de diseño y no un complemento operativo, cómo verificar objetivamente la reproducibilidad de cada entorno, y de qué manera convertir el despliegue técnico en una experiencia de aprendizaje evaluable. Al priorizar los principios y la arquitectura sobre las herramientas, el recurso contribuye a una formación más sólida, crítica y adaptable a la evolución constante del ecosistema tecnológico.
+
+### 10.5 Limitaciones
+
+Se reconocen tres limitaciones principales. Primera, la ausencia de validación empírica con estudiantes: el diseño instruccional y las rúbricas son académicamente coherentes, pero su impacto real solo podrá verificarse en el aula mediante el análisis de evidencias de aprendizaje, lo que se propone como línea prioritaria de trabajo futuro. Segunda, la verificación de portabilidad se ejecutó de forma completa sobre una única plataforma, quedando la cobertura multiplataforma como verificación en curso. Tercera, la dependencia del mantenimiento activo: la obsolescencia natural de las versiones de las imágenes exige revisiones periódicas para preservar la reproducibilidad de las soluciones.
+
+### 10.6 Contribución a la formación en ingeniería de sistemas y computación
+
+El trabajo fortalece el área de arquitectura de software y sistemas distribuidos del programa al aportar un escenario reproducible, documentado y evaluable para experimentar con la observabilidad, un contenido habitualmente relegado a la documentación de fabricantes. Su diseño modular y su alineación con directrices curriculares internacionales lo hacen transferible a asignaturas afines (sistemas distribuidos, DevOps, infraestructura de TI) y a otras instituciones. Adicionalmente, la publicación del recurso como repositorio abierto con DOI y metadatos de citación posiciona una práctica de producción académica replicable en futuros trabajos del programa: la creación de recursos educativos abiertos, trazables y verificables.
+
+## 11. Trabajo futuro
+
+El desarrollo del recurso abre líneas de evolución en tres planos complementarios. La primera y prioritaria es su implementación en escenarios reales de enseñanza en la asignatura *Arquitectura Orientada a Microservicios*, que habilita el ciclo de validación empírica proyectado desde la metodología.
+
+### 11.1 Proyección pedagógica: validación empírica en aula
+
+En coherencia con la investigación basada en diseño (DBR) y el modelo ADDIE, la aplicación del recurso con grupos de estudiantes deberá evaluarse mediante indicadores observables que permitan tanto medir su impacto como identificar oportunidades de mejora iterativa:
+
+1. **Logro de los resultados de aprendizaje:** proporción de estudiantes que despliegan y validan de forma autónoma al menos un stack completo, según el criterio de despliegue funcional de la rúbrica.
+2. **Desempeño en los componentes de evaluación:** resultados en los componentes conceptual, práctico e integrador definidos en la guía docente.
+3. **Capacidad de diagnóstico:** tiempo y efectividad en la resolución de las fricciones documentadas (memoria insuficiente, límites del sistema operativo, conflictos de puertos, formatos de configuración).
+4. **Apropiación conceptual:** desempeño en el cuestionario de la guía de estudio, con especial atención al bloque de articulación teoría–práctica.
+5. **Calidad del análisis comparativo:** nivel argumentativo del ensayo integrador al contrastar paradigmas y decisiones arquitectónicas entre stacks.
+6. **Satisfacción y percepción de utilidad:** valoración de los estudiantes sobre la claridad, aplicabilidad y carga de trabajo del recurso.
+7. **Uso efectivo del material:** guías consultadas más allá de las trabajadas en aula, ejecución de las pruebas de humo y contribuciones de estudiantes al repositorio.
+
+Los hallazgos de esta fase alimentarán versiones sucesivas del recurso, publicadas con nuevos identificadores de versión en el repositorio y en Zenodo.
+
+### 11.2 Proyección técnica
+
+En el plano técnico se proyecta: completar la matriz de verificación multiplataforma (Windows 11/WSL2 y Ubuntu Linux); automatizar la ejecución periódica de las pruebas de humo mediante integración continua, de modo que la obsolescencia de las imágenes se detecte de forma temprana y objetiva; y extender el recurso hacia escenarios que prolonguen la ruta de aprendizaje, como la orquestación con Kubernetes, la profundización en métricas y trazas, y la incorporación de nuevos stacks que consoliden el estado del arte.
+
+### 11.3 Proyección institucional
+
+En el plano institucional se proyecta la integración formal del recurso en el microcurrículo de la asignatura y su articulación con asignaturas afines del área; la consolidación de un modelo de mantenimiento que incorpore las contribuciones estudiantiles como actividad de aprendizaje; y la difusión del recurso en comunidades docentes y repositorios de recursos educativos abiertos, aprovechando su licenciamiento abierto y su citabilidad estructurada para favorecer la adopción externa y la mejora colaborativa.
+
+## 12. Referencias bibliográficas
 
 Abadi, D. J., Madden, S. R., & Hachem, N. (2008). Column-stores vs. row-stores: How different are they really? In *Proceedings of the 2008 ACM SIGMOD International Conference on Management of Data* (pp. 967–980). Association for Computing Machinery. https://doi.org/10.1145/1376616.1376712
 
@@ -516,11 +671,11 @@ Xu, W., Huang, L., Fox, A., Patterson, D., & Jordan, M. I. (2009). Detecting lar
 
 Zhu, J., He, S., Liu, J., He, P., Xie, Q., Zheng, Z., & Lyu, M. R. (2019). Tools and benchmarks for automated log parsing. In *Proceedings of the 41st International Conference on Software Engineering: Software Engineering in Practice* (pp. 121–130). IEEE. https://doi.org/10.1109/ICSE-SEIP.2019.00021
 
-## 10. Cómo citar este trabajo
+## 13. Cómo citar este trabajo
 
 Si reutiliza, adapta o referencia este recurso educativo en publicaciones académicas, materiales docentes o trabajos derivados, se sugiere la siguiente forma de cita en formato APA 7:
 
-> Candela Uribe, C. A., Acero Franco, P. A., & Sepúlveda Rodríguez, L. E. (2026). *Recurso educativo para el despliegue de ecosistemas de centralización de logs mediante Docker* (Versión 1.0.0) [Recurso educativo abierto]. Universidad del Quindío. https://doi.org/10.5281/zenodo.20535747
+> Candela Uribe, C. A., Acero Franco, P. A., & Sepúlveda Rodríguez, L. E. (2026). *Recurso educativo para el despliegue de ecosistemas de centralización de logs mediante Docker* (Versión 1.0.0) [Recurso educativo abierto]. Universidad del Quindío. https://doi.org/10.5281/zenodo.20187576
 
 **Entrada BibTeX:**
 
@@ -536,12 +691,12 @@ Si reutiliza, adapta o referencia este recurso educativo en publicaciones acadé
   howpublished = {Recurso educativo abierto},
   institution  = {Universidad del Quind{\'i}o},
   note         = {Licencia CC BY-SA 4.0},
-  doi          = {10.5281/zenodo.20535747},
-  url          = {https://doi.org/10.5281/zenodo.20535747}
+  doi          = {10.5281/zenodo.20187576},
+  url          = {https://doi.org/10.5281/zenodo.20187576}
 }
 ```
 
-## 11. Licencia
+## 14. Licencia
 
 Este obra está licenciada bajo una [Licencia Creative Commons Atribución-CompartirIgual 4.0 Internacional (CC BY-SA 4.0)](https://creativecommons.org/licenses/by-sa/4.0/deed.es). Vea el archivo [`LICENSE`](./LICENSE) para los términos completos.
 

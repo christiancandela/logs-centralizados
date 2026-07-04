@@ -23,7 +23,7 @@ generate:
 pdf: check generate
 	quarto render --to pdf
 
-pdf2: check generate
+pdf2: generate
 	quarto render --to typst
 
 html: check generate
