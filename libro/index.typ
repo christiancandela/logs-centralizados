@@ -500,6 +500,13 @@
 }
 
 
+// Los capítulos y las partes inician en la página siguiente, no forzosamente
+// en página impar: se neutralizan los saltos 'to: "odd"' de la plantilla
+// orange-book, que insertaban una página en blanco al final de los capítulos
+// que terminan en página impar (convención de impresión a doble cara que no
+// aplica a este PDF de lectura digital).
+#show pagebreak.where(to: "odd"): it => pagebreak(weak: true)
+
 // Referencias cruzadas (@fig-, @tbl-, @sec-) en el mismo color azul que citas y enlaces
 #show ref: it => context {
   let mc = main-color-state.at(here())
