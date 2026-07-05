@@ -8,7 +8,7 @@
 **Universidad del Quindío** — Programa de Ingeniería de Sistemas y Computación  
 **Asignatura asociada:** Arquitectura Orientada a Microservicios  
 **Versión:** 1.0.0 | **Fecha:** mayo de 2026  
-[![CC BY-SA 4.0](https://licensebuttons.net/l/by-sa/4.0/88x31.png)](https://creativecommons.org/licenses/by-sa/4.0/deed.es) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20187576.svg)](https://doi.org/10.5281/zenodo.20187576) [![Repositorio](https://img.shields.io/badge/GitHub-logs--centralizados-181717?logo=github)](https://github.com/christiancandela/logs-centralizados) [![Versión web](https://img.shields.io/badge/Versi%C3%B3n%20web-github.io-2ea44f)](https://christiancandela.github.io/logs-centralizados/)
+[![CC BY-SA 4.0](https://licensebuttons.net/l/by-sa/4.0/88x31.png)](https://creativecommons.org/licenses/by-sa/4.0/deed.es) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21210497.svg)](https://doi.org/10.5281/zenodo.21210497) [![Repositorio](https://img.shields.io/badge/GitHub-logs--centralizados-181717?logo=github)](https://github.com/christiancandela/logs-centralizados) [![Versión web](https://img.shields.io/badge/Versi%C3%B3n%20web-github.io-2ea44f)](https://christiancandela.github.io/logs-centralizados/)
 
 > Este recurso educativo abierto consta de: (a) el presente marco conceptual, (b) una guía de estudio con preguntas de comprensión y articulación teoría–práctica ([`guia_estudio.md`](./guia_estudio.md)), (c) una guía para docentes con planificación sugerida y rúbricas ([`guia_docente.md`](./guia_docente.md)), y (d) nueve guías prácticas reproducibles en el directorio [`guias/`](./guias/) con sus respectivas soluciones en [`soluciones/`](./soluciones/).
 
@@ -699,7 +699,7 @@ Zhu, J., He, S., Liu, J., He, P., Xie, Q., Zheng, Z., & Lyu, M. R. (2019). Tools
 
 Si reutiliza, adapta o referencia este recurso educativo en publicaciones académicas, materiales docentes o trabajos derivados, se sugiere la siguiente forma de cita en formato APA 7:
 
-> Candela Uribe, C. A., Acero Franco, P. A., & Sepúlveda Rodríguez, L. E. (2026). *Recurso educativo para el despliegue de ecosistemas de centralización de logs mediante Docker* (Versión 1.0.0) [Recurso educativo abierto]. Universidad del Quindío. https://doi.org/10.5281/zenodo.20187576
+> Candela Uribe, C. A., Acero Franco, P. A., & Sepúlveda Rodríguez, L. E. (2026). *Recurso educativo para el despliegue de ecosistemas de centralización de logs mediante Docker* (Versión 1.0.0) [Recurso educativo abierto]. Universidad del Quindío. https://doi.org/10.5281/zenodo.21210497
 
 **Entrada BibTeX:**
 
@@ -715,8 +715,8 @@ Si reutiliza, adapta o referencia este recurso educativo en publicaciones acadé
   howpublished = {Recurso educativo abierto},
   institution  = {Universidad del Quind{\'i}o},
   note         = {Licencia CC BY-SA 4.0},
-  doi          = {10.5281/zenodo.20187576},
-  url          = {https://doi.org/10.5281/zenodo.20187576}
+  doi          = {10.5281/zenodo.21210497},
+  url          = {https://doi.org/10.5281/zenodo.21210497}
 }
 ```
 

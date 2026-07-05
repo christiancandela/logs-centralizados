@@ -64,7 +64,7 @@ El código fuente completo de las nueve guías prácticas, incluidos los archivo
 
 ## Forma de cita sugerida
 
-> Candela Uribe, C. A., Acero Franco, P. A., & Sepúlveda Rodríguez, L. E. (2026). *Recurso educativo para el despliegue de ecosistemas de centralización de logs mediante Docker* (Versión 1.0.0) [Recurso educativo abierto]. Universidad del Quindío. <https://doi.org/10.5281/zenodo.20187576>
+> Candela Uribe, C. A., Acero Franco, P. A., & Sepúlveda Rodríguez, L. E. (2026). *Recurso educativo para el despliegue de ecosistemas de centralización de logs mediante Docker* (Versión 1.0.0) [Recurso educativo abierto]. Universidad del Quindío. <https://doi.org/10.5281/zenodo.21210497>
 
 \vspace{1em}
 
